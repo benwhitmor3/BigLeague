@@ -1,0 +1,72 @@
+import sys
+sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
+import pandas as pd
+import sqlite3
+from random import gauss
+import math
+import generation
+
+# this should be front end javascript. No because then can't see other peoples bidding. Need to hit DB?
+
+def gen_salary(contract, epv, renew, t_option, p_option, age):
+    salary = 0
+    grade = 5
+    if contract != 0:
+        salary = grade * (epv / (contract + 1))
+        if renew == "repeat":
+            salary += 2 * (epv / (contract + 1))
+        elif renew == "non-repeat":
+            salary += 1 * (epv / (contract + 1))
+        # need to edit this for now null options
+        if t_option != 0:
+            salary += (contract - t_option) * (epv / (contract + 1))
+        if p_option != 0:
+            salary -= 0.5 * (contract - p_option) * (epv / (contract + 1))
+
+        if age >= 27:
+            salary -= (age - 26) * (epv / (contract + 1))
+        # this makes options with a zero that are generated as 0 = none, need to keep zero beforehand
+        # for salary calculation
+        if t_option == 0:
+            t_option = ''
+        if p_option == 0:
+            p_option = ''
+    else:
+        salary = None
+
+    print(salary)
+    
+    # salary = random.randint(10, 50)
+    # identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
+    # shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
+    # "renew non-repeat" is 1 not 2 now.
+
+
+def player_option_true():
+    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    players = pd.read_sql_query("select * from players", conn)
+    conn.close()
+
+    # COULD MAKE THIS POSITION BASED. WOULD BE KIND OF COOL.
+    total_salary = 0
+    total_epv = 0
+    # this sums up salaries and epv for all active/paid players.
+    for index, row in players.iterrows():
+        if not math.isnan(row.salary):
+            total_salary = total_salary + row.salary
+            total_epv = total_epv + row.epv
+
+    # makes player option TRUE if salary is less than 75% of average for their EPV
+    dollar_to_epv = total_salary / total_epv
+
+    # is the player option activated?
+    for index, row in players.iterrows():
+        if row.salary/row.epv < (dollar_to_epv*0.75) and row.p_option == 0:
+            print(row)
+            print(row.salary)
+            print(row.salary/row.epv)
+            print((dollar_to_epv*0.75))
+            print(row.p_option)
+
+
+

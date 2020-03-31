@@ -1,0 +1,71 @@
+body {
+  background-color: white;
+  padding: 20px;
+  margin: 0;
+}
+h1, h2, p, ul, li {
+  font-family: Arial;
+}
+ul.nav li {
+  display: inline;
+  list-style-type: none;
+  margin: -10 px;
+}
+ul.nav {
+  position: fixed;
+  top: 0px;
+  background-color: black;
+  padding: 0;
+  font-weight: bold;
+  width: 110%;
+  margin-left: -10 px;
+}
+ul.nav li a {
+  color: white;
+  text-decoration: none;
+  padding: 20px;
+  display: inline-block;
+}
+.content {
+  background-color: white;
+  padding: 100px;
+  margin-left: -90px;
+}
+.content h2 {
+  padding: 0;
+  margin: 0;
+}
+.content li {
+  margin-bottom: 10px;
+}
+.active {
+  background-color: coral;
+}
+
+ .dropdown {
+     position: relative;
+     display: inline-block;
+}
+ li:hover {
+     background-color: lightsalmon;
+}
+ .button{
+     width:170px;
+     height:15px;
+     background-color: -moz-default-background-color;
+     padding:10px;
+     border-radius:0px;
+     font-weight: bolder;
+     color: black;
+}
+ /*This is the button for prospects dropdown on draft page*/
+ .button:before{
+     content:"";
+     position:absolute;
+     width:0px;
+     height:0px;
+     border: 8px solid;
+     border-color: black transparent transparent transparent;
+     right:20px;
+     top:16px;
+}
