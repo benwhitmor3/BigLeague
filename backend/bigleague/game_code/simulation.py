@@ -1,16 +1,15 @@
+import sys
 import sqlite3
 import pandas as pd
 from random import gauss
-
-team_names = ['alpha', 'bravo', 'charlie', 'delta']
-
-league_schedule = [['alpha', 'bravo'], ['alpha', 'charlie'], ['alpha', 'delta'], ['bravo', 'charlie'],
-                   ['bravo', 'delta'], ['charlie', 'delta']]
+sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
+from variables import *
 
 
 def simulation():
     conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
     players = pd.read_sql_query("select * from players", conn)
+    franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
 
     suit_list = []
@@ -38,27 +37,30 @@ def simulation():
 
         return suit_bonus
 
-    # run a simulation for each scheduled game
+    # run a series for each scheduled match up
     for y in range(len(league_schedule)):
-
-        # num of games and sd for each player
-        games = 41
-        sd = 9
-        a_wins = 0
-        b_wins = 0
-
+        # num of games in a series
+        games = 27
         while games > 0:
-            # Generate Points Scored
+
+            '''___________________________________TEAM A____________________________________'''
+
+            # substitution coach factor
+            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].tolist()[0] == 'guts' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].tolist()[0] == 'guts':
+                sd = 14
+            elif franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].tolist()[0] == 'focus' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].tolist()[0] == 'focus':
+                sd = 7
+            else:
+                sd = 9
 
             # once starter, bench, reserve is added to 'roster' column use this players
             # players.loc[(players['team'] == 'alpha') & (players['roster'] == 'starter')]['pv'].tolist()
             # players.loc[(players['team'] == 'alpha') & (players['roster'] == 'bench')]['pv'].tolist()
-
-            ###TEAM ALPHA
-            # if coach is BLANK for league_schedule[y][0]):
-            #     change whatever
-
             starter_value = players.loc[(players['team'] == league_schedule[y][0])]['pv'][0:5].tolist()
+            # get team pv starter_value (used for underdog coach)
+            a_starter_value = sum(starter_value)
             suit_list = players.loc[(players['team'] == league_schedule[y][0])]['suit'][0:5].tolist()
             suit_bonus()
             # Starters
@@ -78,36 +80,55 @@ def simulation():
             bench_points = [player6_points, player7_points, player8_points]
             bench_points.sort()  # this is done so can drop bench points in the substitutions
 
+            # bench substitution threshold
+            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].tolist()[0] == 'substitution' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].tolist()[
+                0] == 'substitution':
+                substitution = 1
+            else:
+                substitution = 2
+
             # not perfect as will replace players in order of their starting list, does not maximize replacement with
             # WORST performance, however, if the performance is that bad to be -2 SD below value then it will still
-            # probably be replaced by a bench player. Basically if only 1 bench player and two bad starters the first
-            # (not worst) one will be replaced (if bench_points) is to ensure the bench_players is not an empty list
+            # probably be replaced by a bench player.
             if bench_points:
-                if starter_points[0] < starter_value[0] - (2 * sd) and starter_points[0] < bench_points[-1]:
+                if starter_points[0] < starter_value[0] - (substitution * sd) and starter_points[0] < bench_points[-1]:
                     starter_points[0] = bench_points[-1]
                     del bench_points[-1]
             if bench_points:
-                if starter_points[1] < starter_value[1] - (2 * sd) and starter_points[1] < bench_points[-1]:
+                if starter_points[1] < starter_value[1] - (substitution * sd) and starter_points[1] < bench_points[-1]:
                     starter_points[1] = bench_points[-1]
                     del bench_points[-1]
             if bench_points:
-                if starter_points[2] < starter_value[2] - (2 * sd) and starter_points[2] < bench_points[-1]:
+                if starter_points[2] < starter_value[2] - (substitution * sd) and starter_points[2] < bench_points[-1]:
                     starter_points[2] = bench_points[-1]
                     del bench_points[-1]
             if bench_points:
-                if starter_points[3] < starter_value[3] - (2 * sd) and starter_points[3] < bench_points[-1]:
+                if starter_points[3] < starter_value[3] - (substitution * sd) and starter_points[3] < bench_points[-1]:
                     starter_points[3] = bench_points[-1]
                     del bench_points[-1]
             if bench_points:
-                if starter_points[4] < starter_value[4] - (2 * sd) and starter_points[4] < bench_points[-1]:
+                if starter_points[4] < starter_value[4] - (substitution * sd) and starter_points[4] < bench_points[-1]:
                     starter_points[4] = bench_points[-1]
                     del bench_points[-1]
 
             a = sum(starter_points) + suit_bonus()
 
-            ###TEAM BRAVO
+            '''___________________________________TEAM B____________________________________'''
+
+            # substitution coach factor
+            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].tolist()[0] == 'guts' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].tolist()[0] == 'guts':
+                sd = 14
+            elif franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].tolist()[0] == 'focus' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].tolist()[0] == 'focus':
+                sd = 7
+            else:
+                sd = 9
 
             starter_value = players.loc[(players['team'] == league_schedule[y][1])]['pv'][0:5].tolist()
+            # get team pv starter_value (used for underdog coach)
+            b_starter_value = sum(starter_value)
             suit_list = players.loc[(players['team'] == league_schedule[y][1])]['suit'][0:5].tolist()
             suit_bonus()
             # Starters
@@ -127,32 +148,67 @@ def simulation():
             bench_points = [player6_points, player7_points, player8_points]
             bench_points.sort()  # this is done so can drop bench points in the substitutions
 
-            # not perfect as will replace players in order of their starting list, does not maximize replacement with WORST
-            # performance, however, if the performance is that bad to be -2 SD below value then it will still probably be
-            # replaced by a bench player
-            # (if bench_points) is to ensure the bench_players is not an empty list
+            # bench substitution threshold
+            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].tolist()[0] == 'substitution' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].tolist()[
+                0] == 'substitution':
+                substitution = 1
+            else:
+                substitution = 2
+
+            # not perfect as will replace players in order of their starting list, does not maximize replacement with
+            # WORST performance, however, if the performance is that bad to be -2 SD below value then it will still
+            # probably be replaced by a bench player.
             if bench_points:
-                if starter_points[0] < starter_value[0] - (2 * sd) and starter_points[0] < bench_points[-1]:
+                if starter_points[0] < starter_value[0] - (substitution * sd) and starter_points[0] < bench_points[-1]:
                     starter_points[0] = bench_points[-1]
                     del bench_points[-1]
             if bench_points:
-                if starter_points[1] < starter_value[1] - (2 * sd) and starter_points[1] < bench_points[-1]:
+                if starter_points[1] < starter_value[1] - (substitution * sd) and starter_points[1] < bench_points[-1]:
                     starter_points[1] = bench_points[-1]
                     del bench_points[-1]
             if bench_points:
-                if starter_points[2] < starter_value[2] - (2 * sd) and starter_points[2] < bench_points[-1]:
+                if starter_points[2] < starter_value[2] - (substitution * sd) and starter_points[2] < bench_points[-1]:
                     starter_points[2] = bench_points[-1]
                     del bench_points[-1]
             if bench_points:
-                if starter_points[3] < starter_value[3] - (2 * sd) and starter_points[3] < bench_points[-1]:
+                if starter_points[3] < starter_value[3] - (substitution * sd) and starter_points[3] < bench_points[-1]:
                     starter_points[3] = bench_points[-1]
                     del bench_points[-1]
             if bench_points:
-                if starter_points[4] < starter_value[4] - (2 * sd) and starter_points[4] < bench_points[-1]:
+                if starter_points[4] < starter_value[4] - (substitution * sd) and starter_points[4] < bench_points[-1]:
                     starter_points[4] = bench_points[-1]
                     del bench_points[-1]
 
             b = sum(starter_points) + suit_bonus()
+
+            # underdog coach factor
+            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].tolist()[0] == 'underdog' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].tolist()[0] == 'underdog':
+                if a_starter_value < b_starter_value:
+                    a = a + 0.4*(b_starter_value - a_starter_value)
+            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].tolist()[0] == 'underdog' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].tolist()[0] == 'underdog':
+                if b_starter_value < a_starter_value:
+                    b = b + 0.4*(a_starter_value - b_starter_value)
+
+            # teamwork coach factor
+            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].tolist()[0] == 'teamwork' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].tolist()[0] == 'teamwork':
+                a = a + 3
+            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].tolist()[0] == 'teamwork' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].tolist()[0] == 'teamwork':
+                b = b + 3
+
+            # clutch coach factor
+            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].tolist()[0] == 'clutch' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].tolist()[0] == 'clutch':
+                if a < b:
+                    a = a + 6
+            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].tolist()[0] == 'clutch' \
+                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].tolist()[0] == 'clutch':
+                if b < a:
+                    b = b + 6
 
             results["game" + str(len(results) + 1)] = ({str(league_schedule[y][0]): a, str(league_schedule[y][1]): b})
 
@@ -178,7 +234,7 @@ def simulation():
     season_summary['losses'] = games_played - team_wins
     # get ppg and create ppg column
     season_summary['ppg'] = league_results.mean(axis=1)
-    # get std and create std column
+    # get std
     season_summary['std'] = league_results.std(axis=1)
 
     # send dataframe to sql

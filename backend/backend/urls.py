@@ -23,6 +23,7 @@ router = routers.DefaultRouter()
 # router.register(r'bigleague', views.LeadView, 'bigleague')
 router.register(r'lead', views.LeadView, 'lead_view')
 router.register(r'playergeneration', views.PlayergenerationView, 'playergeneration_view')
+router.register(r'hankmurphy', views.PlayergenerationView, 'playergeneration_view')
 
 
 urlpatterns = [

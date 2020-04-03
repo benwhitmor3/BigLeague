@@ -3,12 +3,10 @@ sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game
 import pandas as pd
 import sqlite3
 from random import gauss
-import generation
+from variables import *
 
 # need to add coaching/gm changes for development (should add column)? or maybe do a join in SQL
 # based on team?
-
-# team_names = ["alpha", "bravo", "charlie", "delta"]
 
 def development():
 

@@ -1,8 +1,11 @@
+import sys
+sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
 import random
 from random import gauss
 import pandas as pd
 from faker import Faker
 import sqlite3
+from variables import *
 
 desired_width = 200
 pd.set_option('display.width', desired_width)
@@ -10,8 +13,8 @@ pd.set_option("display.max_columns", 20)
 
 db = '/Users/buw0017/projects/ben_walkthrough/bigleague.db'
 
-team_names = ["alpha", "bravo", "charlie", "delta"]
 num_of_teams = len(team_names)
+
 city_names = ["Los Angeles", "Chicago", "New York", "Phoenix", "Indianapolis", "Philadelphia"]
 city_values = [12, 10, 12, 8, 7, 9]
 num_of_prospect_classes = 3
@@ -156,6 +159,9 @@ class Coaches:
         return {"name": self.name, "attribute1": self.attribute1, "attribute2": self.attribute2}
 
 
+from variables import *
+
+
 class Players:
     num_of_players = 0
     team_names = ["alpha", "bravo", "charlie", "delta"]
@@ -184,7 +190,7 @@ class Players:
 
     # generates age for first draft
     def gen_age(self):
-        if y < 2:
+        if year < 2:
             self.age = random.randint(18, 30)
         else:
             self.age = random.randint(18, 22)
@@ -331,7 +337,6 @@ class Players:
 
 
 def generation():
-
     franchise_list = []
     for i in range(num_of_teams):
         franchise = Franchise("team", "stadium_seats", "stadium_boxes", "stadium_grade", "gm", "coach1", "coach2",
@@ -351,14 +356,14 @@ def generation():
         franchise_list[i].gen_city_value()
         del team_names[0]
 
-        def save_franchise():
-            # Converts list of players to a dictionary and data frame in one go with .to_dict method
-            df = pd.DataFrame(f.to_dict() for f in franchise_list)
-            df['revenue'] = 0
-            df['expenses'] = 0
-            print(df)
-            conn = sqlite3.connect(db)
-            df.to_sql('franchise', conn, if_exists='replace', index=False)
+    def save_franchise():
+        # Converts list of players to a dictionary and data frame in one go with .to_dict method
+        df = pd.DataFrame(f.to_dict() for f in franchise_list)
+        df['revenue'] = 0
+        df['expenses'] = 0
+        print(df)
+        conn = sqlite3.connect(db)
+        df.to_sql('franchise', conn, if_exists='replace', index=False)
 
     save_franchise()
 
@@ -427,11 +432,11 @@ def generation():
         player_list[i].gen_grade()
         player_list[i].gen_team()
 
-        def save_players():
-            # Converts list of players to a dictionary and data frame in one go with .to_dict method
-            df = pd.DataFrame(p.to_dict() for p in player_list)
-            print(df)
-            conn = sqlite3.connect(db)
-            df.to_sql('players', conn, if_exists='replace', index=False)
+    def save_players():
+        # Converts list of players to a dictionary and data frame in one go with .to_dict method
+        df = pd.DataFrame(p.to_dict() for p in player_list)
+        print(df)
+        conn = sqlite3.connect(db)
+        df.to_sql('players', conn, if_exists='replace', index=False)
 
     save_players()
