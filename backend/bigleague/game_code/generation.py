@@ -361,6 +361,9 @@ def generation():
         df = pd.DataFrame(f.to_dict() for f in franchise_list)
         df['revenue'] = 0
         df['expenses'] = 0
+        df['advertising'] = 1
+        df['fanbase'] = 0
+        df['fanindex'] = 70
         print(df)
         conn = sqlite3.connect(db)
         df.to_sql('franchise', conn, if_exists='replace', index=False)

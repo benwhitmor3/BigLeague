@@ -28,18 +28,34 @@ def gen_salary(contract, epv, renew, t_option, p_option, age):
         # this makes options with a zero that are generated as 0 = none, need to keep zero beforehand
         # for salary calculation
         if t_option == 0:
-            t_option = ''
+            t_option = None
         if p_option == 0:
-            p_option = ''
+            p_option = None
     else:
         salary = None
 
     print(salary)
     
-    # salary = random.randint(10, 50)
-    # identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
-    # shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
-    # "renew non-repeat" is 1 not 2 now.
+def gen_grade(salary, contract, epv, renew, t_option, p_option, age):
+
+    if contract != 0:
+        grade = (salary * (contract + 1)) / epv
+        if renew == "repeat":
+            grade -= 4
+        elif renew == "non-repeat":
+            grade -= 2
+    
+        if t_option != 0:
+            grade -= (contract - t_option)
+        if p_option != 0:
+            grade += 0.5*(contract - p_option)
+    
+        if age >= 27:
+            grade += age - 26
+    else:
+        grade = None
+
+    return grade
 
 
 def player_option_true():
@@ -67,6 +83,3 @@ def player_option_true():
             print(row.salary/row.epv)
             print((dollar_to_epv*0.75))
             print(row.p_option)
-
-
-
