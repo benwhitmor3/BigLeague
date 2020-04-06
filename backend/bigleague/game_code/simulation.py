@@ -49,12 +49,12 @@ def simulation():
             # focus/guts coach factor
             if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].iloc[0] == 'guts' \
                     or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].iloc[0] == 'guts':
-                sd = 0
+                sd = 14
             elif franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].iloc[0] == 'focus' \
                     or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].iloc[0] == 'focus':
-                sd = 0
+                sd = 7
             else:
-                sd = 0
+                sd = 9
 
             # once starter, bench, reserve is added to 'roster' column use this players
             # players.loc[(players['team'] == 'alpha') & (players['roster'] == 'starter')]['pv'].tolist()
@@ -125,12 +125,12 @@ def simulation():
             # focus/guts coach factor
             if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].iloc[0] == 'guts' \
                     or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].iloc[0] == 'guts':
-                sd = 0
+                sd = 14
             elif franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].iloc[0] == 'focus' \
                     or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].iloc[0] == 'focus':
-                sd = 0
+                sd = 7
             else:
-                sd = 0
+                sd = 9
 
             starter_value = players.loc[(players['team'] == league_schedule[y][1])]['pv'][0:5].tolist()
             # sum team pv starter_value (used for underdog coach)
@@ -227,17 +227,17 @@ def simulation():
 
     '''__________________________season_stats_____and______season_summary_______________________'''
     # creating df for the season statistics
-    league_results = pd.DataFrame(results)
+    season = pd.DataFrame(results)
     conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
-    league_results.to_sql('season', conn, if_exists='replace', index=True)
+    season.to_sql('season', conn, if_exists='replace', index=True)
     conn.close()
 
     # create season_summary df
-    season_summary = league_results[[]].copy()
+    season_summary = season[[]].copy()
     # get games played
-    games_played = league_results.count(axis=1)[0]
+    games_played = season.count(axis=1)[0]
     # get wins and create wins column
-    winner = league_results.idxmax().to_list()
+    winner = season.idxmax().to_list()
     team_wins = []
     for team in team_names:
         team_wins.append(winner.count(team))
@@ -245,9 +245,9 @@ def simulation():
     # gets losses and create losses column
     season_summary['losses'] = games_played - team_wins
     # get ppg and create ppg column
-    season_summary['ppg'] = league_results.mean(axis=1)
+    season_summary['ppg'] = season.mean(axis=1)
     # get std
-    season_summary['std'] = league_results.std(axis=1)
+    season_summary['std'] = season.std(axis=1)
 
     # send dataframe to sql
     conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')

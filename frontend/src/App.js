@@ -11,7 +11,6 @@ import Home from "./components/Home";
 import Stadium from "./components/Stadium";
 import GM from "./components/GM";
 import Draft from "./components/Draft";
-import Spreadsheet from "./components/Spreadsheet";
 
 
 function App() {
@@ -27,7 +26,7 @@ function App() {
           <div className="content">
             <Route exact path="/" component={Home}/>
             <Route path="/Stadium" component={Stadium}/>
-            <Route path="/GM" component={Spreadsheet}/>
+            <Route path="/GM" component={GM}/>
             <Route path="/Draft" component={Draft}/>
           </div>
       </div>

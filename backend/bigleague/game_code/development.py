@@ -106,3 +106,6 @@ def actions():
     conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
+
+
+(dawdadwadwadwawd(dwadawdadadw(Dwadawdadwadw)))

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
 
+
 class Home extends Component {
 
   render() {
@@ -8,7 +9,7 @@ class Home extends Component {
       <div>
         <form>
           <label>
-            Team Name:
+            Please Enter Team Name:
             <input type="text" name="name" />
           </label>
           <input type="submit" value="Submit" />
@@ -16,7 +17,6 @@ class Home extends Component {
           <br/>
         <h2>CHOOSE CITY</h2>
         <p> Instructions </p>
-
       </div>
     );
   }
