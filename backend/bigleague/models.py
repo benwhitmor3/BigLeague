@@ -32,3 +32,11 @@ class Playergeneration(models.Model):
 
     def get_api_url(self, request=None):
         return api_reverse("playergeneration", kwargs={'id': self.id}, request=request)
+
+class City(models.Model):
+    city = models.CharField(max_length=50)
+    city_value = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+

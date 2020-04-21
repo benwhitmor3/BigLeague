@@ -1,25 +1,42 @@
-import React, { Component } from "react";
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
+export default function Home() {
+  return <DataFetching />
 
-class Home extends Component {
-
-  render() {
-    return (
-      <div>
-        <form>
-          <label>
-            Please Enter Team Name:
-            <input type="text" name="name" />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
-          <br/>
-        <h2>CHOOSE CITY</h2>
-        <p> Instructions </p>
-      </div>
-    );
-  }
 }
 
-export default Home;
+function DataFetching() {
+  const[city, setCity] = useState([])
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/api/citychoice/')
+        .then(res => {
+          console.log(res)
+          setCity(res.data)
+        })
+        .catch(err => {
+          console.log(err)
+    })
+  }, [])
+
+  let dropdown = city.map(city => (
+    <option key={city.id} value={city.name}>
+      {city.city} {city.city_value}
+    </option>
+  ));
+
+  return (
+      <div>
+        <ul>
+          {
+            city.map(city => <li key={city.id}>{city.city} {city.city_value}</li>)
+          }
+        </ul>
+        <select>
+        <option>Select City</option>
+                {dropdown}
+        </select>
+      </div>
+  )
+}

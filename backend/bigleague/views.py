@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import LeadSerializer, PlayergenerationSerializer
-from .models import Lead, Playergeneration
+from .serializers import LeadSerializer, PlayergenerationSerializer, CitySerializer
+from .models import Lead, Playergeneration, City
 
 
 # Create your views here.
@@ -17,10 +17,19 @@ class PlayergenerationView(viewsets.ModelViewSet):
         query = self.request.GET.get('q')
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save()
 
-    def put(self, request, *args, **kwargs):
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
     def get_serializer_context(self, *args, **kwargs):
         return {'request': self.request}
+
+
+class CityView(viewsets.ModelViewSet):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+

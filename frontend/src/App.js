@@ -1,36 +1,39 @@
-import React, { Component } from "react";
-import Modal from "./components/Modal";
-import axios from "axios";
-import './App.css';
-import {
-  Route,
-  NavLink,
-  HashRouter
-} from "react-router-dom";
-import Home from "./components/Home";
-import Stadium from "./components/Stadium";
-import GM from "./components/GM";
-import Draft from "./components/Draft";
+import React, { useState } from "react";
+import ReactDOM from 'react-dom';
+import './index.css';
+import Header from './components/Header';
+import Home from './components/Home';
+import Draft from './components/Draft';
+import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+
+import CustomSelect from "./components/CustomSelect.js";
+import Button from "./components/Button.js";
+import Modal from "./components/Modal.js";
 
 
 function App() {
+
   return (
-      <HashRouter>
-      <div className="App">
-          <ul className="nav">
-            <li><NavLink exact to="/">Home</NavLink></li>
-            <li><NavLink to="/Stadium">Stadium</NavLink></li>
-            <li><NavLink to="/GM">Spreadsheet and Pricing</NavLink></li>
-            <li><NavLink to="/Draft">Draft</NavLink></li>
-          </ul>
-          <div className="content">
-            <Route exact path="/" component={Home}/>
-            <Route path="/Stadium" component={Stadium}/>
-            <Route path="/GM" component={GM}/>
-            <Route path="/Draft" component={Draft}/>
-          </div>
+          <div className='App'>
+      <Header />
+      <div className='Content'>
+        <h4>In Progress...</h4>
+          <form>
+        <Modal show={true} message={"Hello"}>
+          <p>THIS IS A MODAL</p>
+        </Modal>
+        <Button variant="danger" size={"sm"} >Small Button</Button>
+        <Button variant="primary" size={"lg"} >Smaller Button</Button>
+        <Button variant="warning" size={"xs"} >Big Button</Button>
+      </form>
+      <Router>
+      <Switch>
+      <Route exact path='/Home' component={Home} />
+      <Route exact path='/Draft' component={Draft} />
+      </Switch>
+      </Router>
       </div>
-      </HashRouter>
+    </div>
   );
 }
 

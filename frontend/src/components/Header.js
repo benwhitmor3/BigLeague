@@ -1,23 +1,53 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
+import "./Header.css";
+import { CSSTransition } from "react-transition-group";
+import file from "./BigLeagueInstructions.pdf";
 
-class Header extends Component {
-  render() {
-    return (
-      <div className="text-center">
-        <img
-          src="https://logrocket-assets.io/img/logo.png"
-          width="300"
-          className="img-thumbnail"
-          style={{ marginTop: "20px" }}
-        />
-        <hr />
-        <h5>
-          <i>presents</i>
-        </h5>
-        <h1>App with React + Django</h1>
-      </div>
-    );
-  }
+
+export default function Header() {
+  const [isNavVisible, setNavVisibility] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 700px)");
+    mediaQuery.addListener(handleMediaQueryChange);
+    handleMediaQueryChange(mediaQuery);
+
+    return () => {
+      mediaQuery.removeListener(handleMediaQueryChange);
+    };
+  }, []);
+
+  const handleMediaQueryChange = mediaQuery => {
+    if (mediaQuery.matches) {
+      setIsSmallScreen(true);
+    } else {
+      setIsSmallScreen(false);
+    }
+  };
+
+  const toggleNav = () => {
+    setNavVisibility(!isNavVisible);
+  };
+
+  return (
+    <header className="Header">
+        <CSSTransition in={!isSmallScreen || isNavVisible}
+      timeout={350} classNames="NavAnimation" unmountOnExit>
+        <nav className="Nav">
+          <a href="/Home">Home</a>
+          <a href="/Stadium">Stadium</a>
+          <a href="/GM">GM</a>
+          <a href="/Draft">Draft</a>
+          <a href="/Season">Season</a>
+          <a href="/OffSeason">OffSeason</a>
+          <a href = {file} target = "_blank">Instructions</a>
+
+        </nav>
+      </CSSTransition>
+      <button onClick={toggleNav} className="Burger">
+        <span role="img" aria-label="Basketball">🏀</span>
+      </button>
+    </header>
+  );
 }
-
-export default Header;
