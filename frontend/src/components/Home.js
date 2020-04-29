@@ -2,8 +2,13 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
 export default function Home() {
-  return <DataFetching />
+  return (
+      <div>
+      <h2>Welcome to the Big League</h2>
+        <DataFetching />
+      </div>
 
+  );
 }
 
 function DataFetching() {

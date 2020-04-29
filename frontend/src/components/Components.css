@@ -1,0 +1,41 @@
+h1 {
+  margin-bottom: 50px;
+}
+
+.number-inputs {
+  margin-bottom: 20px;
+}
+
+input {
+  font-size: 80px;
+  border-radius: 10px;
+  border: 1px solid #ffad83;
+  width: 10%;
+  padding: 10px;
+  text-align: center;
+  background: #eb776d;
+  color: #ffffff;
+}
+
+input::placeholder {
+  color: #c3c3c3;
+}
+
+input:first-child {
+  margin-right: 20px;
+}
+
+button {
+  padding: 25px 50px;
+  font-size: 30px;
+  border-radius: 20px 40px;
+  background: #eb776d;
+  border: none;
+  margin-bottom: 250px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+h3 {
+  padding-top: 15px;
+}

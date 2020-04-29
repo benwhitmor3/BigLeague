@@ -4,11 +4,13 @@ import './index.css';
 import Header from './components/Header';
 import Home from './components/Home';
 import Draft from './components/Draft';
+import Stadium from './components/Stadium';
+import GM from './components/GM';
+import Season from './components/Season';
+import OffSeason from './components/OffSeason';
+
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
-import CustomSelect from "./components/CustomSelect.js";
-import Button from "./components/Button.js";
-import Modal from "./components/Modal.js";
 
 
 function App() {
@@ -18,18 +20,15 @@ function App() {
       <Header />
       <div className='Content'>
         <h4>In Progress...</h4>
-          <form>
-        <Modal show={true} message={"Hello"}>
-          <p>THIS IS A MODAL</p>
-        </Modal>
-        <Button variant="danger" size={"sm"} >Small Button</Button>
-        <Button variant="primary" size={"lg"} >Smaller Button</Button>
-        <Button variant="warning" size={"xs"} >Big Button</Button>
-      </form>
       <Router>
       <Switch>
       <Route exact path='/Home' component={Home} />
+      <Route exact path='/Stadium' component={Stadium} />
+      <Route exact path='/GM' component={GM} />
       <Route exact path='/Draft' component={Draft} />
+      <Route exact path='/Stadium' component={Stadium} />
+      <Route exact path='/Season' component={Season} />
+      <Route exact path='/OffSeason' component={OffSeason} />
       </Switch>
       </Router>
       </div>

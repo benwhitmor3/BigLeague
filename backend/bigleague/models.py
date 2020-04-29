@@ -29,9 +29,9 @@ class Playergeneration(models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_api_url(self, request=None):
-        return api_reverse("playergeneration", kwargs={'id': self.id}, request=request)
+    #
+    # def get_api_url(self, request=None):
+    #     return api_reverse("playergeneration", kwargs={'id': self.id}, request=request)
 
 class City(models.Model):
     city = models.CharField(max_length=50)
