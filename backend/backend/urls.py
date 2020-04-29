@@ -24,6 +24,7 @@ router = routers.DefaultRouter()
 router.register(r'lead', views.LeadView, 'lead_view')
 router.register(r'playergeneration', views.PlayergenerationView, 'playergeneration_view')
 router.register(r'citychoice', views.CityView, 'citychoice_view')
+router.register(r'gm', views.GMView, 'gm_view')
 
 
 

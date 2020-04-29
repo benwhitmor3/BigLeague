@@ -4,6 +4,7 @@ from django_pandas.io import read_frame
 
 from rest_framework.reverse import reverse as api_reverse
 
+
 # Create your models here.
 class Lead(models.Model):
     name = models.CharField(max_length=100)
@@ -12,6 +13,7 @@ class Lead(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Playergeneration(models.Model):
     name = models.CharField(max_length=50)
@@ -29,14 +31,18 @@ class Playergeneration(models.Model):
 
     def __str__(self):
         return self.name
-    #
-    # def get_api_url(self, request=None):
-    #     return api_reverse("playergeneration", kwargs={'id': self.id}, request=request)
+
+
+class GM(models.Model):
+    gm = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.gm
+
 
 class City(models.Model):
     city = models.CharField(max_length=50)
     city_value = models.IntegerField()
 
     def __str__(self):
-        return self.name
-
+        return self.city
