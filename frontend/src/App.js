@@ -8,6 +8,7 @@ import Stadium from './components/Stadium';
 import GM from './components/GM';
 import Season from './components/Season';
 import OffSeason from './components/OffSeason';
+import Page from './components/Page';
 
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
@@ -28,7 +29,7 @@ function App() {
       <Route exact path='/Draft' component={Draft} />
       <Route exact path='/Stadium' component={Stadium} />
       <Route exact path='/Season' component={Season} />
-      <Route exact path='/OffSeason' component={OffSeason} />
+      <Route exact path='/OffSeason' component={Page} />
       </Switch>
       </Router>
       </div>

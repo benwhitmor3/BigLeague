@@ -50,10 +50,3 @@ function GMList() {
       </div>
   )
 }
-
-
-
-
-        //
-        // gm_weight = ['facilitator'] * 10 + ['promoter'] * 10 + ['recruiter'] * 10 + ['scouter'] * 10 + \
-        //             ['suitor'] * 10 + ['trainer'] * 10

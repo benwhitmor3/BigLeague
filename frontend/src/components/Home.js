@@ -5,13 +5,13 @@ export default function Home() {
   return (
       <div>
       <h2>Welcome to the Big League</h2>
-        <DataFetching />
+        <CityDropdown />
       </div>
 
   );
 }
 
-function DataFetching() {
+function CityDropdown() {
   const[city, setCity] = useState([])
 
   useEffect(() => {
@@ -33,11 +33,13 @@ function DataFetching() {
 
   return (
       <div>
-        <ul>
+        <p>
           {
-            city.map(city => <li key={city.id}>{city.city} {city.city_value}</li>)
+            city.map(city => <p
+                key={city.id}>{city.city}  &nbsp; {city.city_value}
+            </p>)
           }
-        </ul>
+        </p>
         <select>
         <option>Select City</option>
                 {dropdown}
