@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import Signing from "./Signing/Signing";
 
-export default function Season() {
+export default function () {
   return (
       <div>
-      <h2>Season Component</h2>
+        <Signing/>
       </div>
 
   );

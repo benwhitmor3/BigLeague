@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class PlayergenerationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Playergeneration
-        fields = ['id', 'name', 'suit', 'age', 'pv', 'epv',
+        fields = ['id', 'name', 'suit', 'age', 'pv', 'epv', 's_epv',
                   'contract', 't_option', 'p_option', 'renew',
                   'salary', 'grade', 'team']
 

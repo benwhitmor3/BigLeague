@@ -22,16 +22,6 @@ class CityView(viewsets.ModelViewSet):
     serializer_class = CitySerializer
 
 
-@api_view(['GET'])
-def current_user(request):
-    """
-    Determine the current user by their token, and return their data
-    """
-
-    serializer = UserSerializer(request.user)
-    return Response(serializer.data)
-
-
 class UserList(APIView):
     """
     Create a new user. It's called 'UserList' because normally we'd have a get
@@ -46,3 +36,13 @@ class UserList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def current_user(request):
+    """
+    Determine the current user by their token, and return their data
+    """
+
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)

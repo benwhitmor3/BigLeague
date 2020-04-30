@@ -47,6 +47,9 @@ def development():
     # updating epv based on new pv
     for index, row in players.iterrows():
         players.at[index, 'epv'] = row['pv'] + gauss(0, 3)
+    # updating s_epv based on new pv
+    for index, row in players.iterrows():
+        players.at[index, 'epv'] = row['pv'] + gauss(0, 2)
 
     # updating contract years and option years left (once option is zero can be activated)
     for index, row in players.iterrows():
@@ -106,6 +109,3 @@ def actions():
     conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
-
-
-(dawdadwadwadwawd(dwadawdadadw(Dwadawdadwadw)))

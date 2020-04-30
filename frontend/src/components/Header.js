@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Header.css";
 import { CSSTransition } from "react-transition-group";
-import file from "./BigLeagueInstructions.pdf";
+import file from "./Instructions/BigLeagueInstructions.pdf";
 
 
 export default function Header() {
