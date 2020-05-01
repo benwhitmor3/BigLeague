@@ -23,9 +23,12 @@ from bigleague.views import current_user
 
 router = routers.DefaultRouter()
 
-router.register(r'playergeneration', views.PlayergenerationView, 'playergeneration_view')
-router.register(r'citychoice', views.CityView, 'citychoice_view')
-router.register(r'gm', views.GMView, 'gm_view')
+router.register(r'cities', views.CitiesView, 'cities_view')
+router.register(r'teams', views.TeamsView, 'teams_view')
+router.register(r'players', views.PlayersView, 'players_view')
+router.register(r'gms', views.GMsView, 'gms_view')
+router.register(r'coaches', views.CoachesView, 'coaches_view')
+router.register(r'seasons', views.SeasonsView, 'seasons_view')
 
 
 urlpatterns = [

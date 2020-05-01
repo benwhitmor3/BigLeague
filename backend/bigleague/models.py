@@ -6,36 +6,70 @@ from rest_framework.reverse import reverse as api_reverse
 
 
 # Create your models here.
+class Cities(models.Model):
+    city = models.CharField(max_length=50, primary_key=True)
+    city_value = models.IntegerField()
 
-class Playergeneration(models.Model):
-    name = models.CharField(max_length=50)
-    suit = models.CharField(max_length=10)
-    age = models.IntegerField()
-    pv = models.FloatField()
-    epv = models.FloatField()
-    s_epv = models.FloatField()
-    contract = models.IntegerField()
-    t_option = models.IntegerField(blank=True, null=True)
-    p_option = models.IntegerField(blank=True, null=True)
-    renew = models.CharField(max_length=10)
-    salary = models.FloatField()
-    grade = models.FloatField()
-    team = models.CharField(max_length=25)
+    def __str__(self):
+        return self.city
+
+
+class Teams(models.Model):
+    name = models.CharField(max_length=50, primary_key=True)
+    stadium_seats = models.IntegerField(blank=True, null=True)
+    stadium_boxes = models.IntegerField(blank=True, null=True)
+    stadium_grade = models.IntegerField(blank=True, null=True)
+    stadium_max_grade = models.IntegerField(blank=True, null=True)
+    city = models.ForeignKey(Cities, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
 
-class GM(models.Model):
-    gm = models.CharField(max_length=50)
+class Players(models.Model):
+    name = models.CharField(max_length=50, primary_key=True)
+    suit = models.CharField(max_length=10)
+    age = models.IntegerField()
+    pv = models.FloatField()
+    epv = models.FloatField()
+    s_epv = models.FloatField()
+    contract = models.IntegerField(blank=True, null=True)
+    t_option = models.IntegerField(blank=True, null=True)
+    p_option = models.IntegerField(blank=True, null=True)
+    renew = models.CharField(max_length=10, blank=True)
+    salary = models.FloatField(blank=True, null=True)
+    grade = models.FloatField(blank=True, null=True)
+    team = models.ForeignKey(Teams, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.gm
+        return self.name
 
 
-class City(models.Model):
-    city = models.CharField(max_length=50)
-    city_value = models.IntegerField()
+class GMs(models.Model):
+    trait = models.CharField(max_length=50, primary_key=True)
+    team = models.ForeignKey(Teams, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.city
+        return self.trait
+
+
+class Coaches(models.Model):
+    name = models.CharField(max_length=50, primary_key=True)
+    attribute1 = models.CharField(max_length=25)
+    attribute2 = models.CharField(max_length=25)
+    team = models.ForeignKey(Teams, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class Seasons(models.Model):
+    season = models.IntegerField(primary_key=True)
+    wins = models.IntegerField()
+    losses = models.IntegerField()
+    ppg = models.FloatField()
+    std = models.FloatField()
+    team = models.ForeignKey(Teams, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.season

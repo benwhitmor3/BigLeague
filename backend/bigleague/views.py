@@ -3,23 +3,40 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import PlayergenerationSerializer, GMSerializer, CitySerializer, UserSerializer, \
-    UserSerializerWithToken
-from .models import Playergeneration, GM, City
+from .serializers import CitiesSerializer, TeamsSerializer, PlayersSerializer, GMsSerializer, CoachesSerializer, \
+    SeasonsSerializer, \
+    UserSerializer, UserSerializerWithToken
+from .models import Cities, Teams, Players, GMs, Coaches, Seasons
 
 
 # Create your views here.
-class PlayergenerationView(viewsets.ModelViewSet):
-    queryset = Playergeneration.objects.all()
-    serializer_class = PlayergenerationSerializer
+class CitiesView(viewsets.ModelViewSet):
+    queryset = Cities.objects.all()
+    serializer_class = CitiesSerializer
 
-class GMView(viewsets.ModelViewSet):
-    queryset = GM.objects.all()
-    serializer_class = GMSerializer
 
-class CityView(viewsets.ModelViewSet):
-    queryset = City.objects.all()
-    serializer_class = CitySerializer
+class TeamsView(viewsets.ModelViewSet):
+    queryset = Teams.objects.all()
+    serializer_class = TeamsSerializer
+
+
+class PlayersView(viewsets.ModelViewSet):
+    queryset = Players.objects.all()
+    serializer_class = PlayersSerializer
+
+
+class GMsView(viewsets.ModelViewSet):
+    queryset = GMs.objects.all()
+    serializer_class = GMsSerializer
+
+
+class CoachesView(viewsets.ModelViewSet):
+    queryset = Coaches.objects.all()
+    serializer_class = CoachesSerializer
+
+class SeasonsView(viewsets.ModelViewSet):
+    queryset = Seasons.objects.all()
+    serializer_class = SeasonsSerializer
 
 
 class UserList(APIView):

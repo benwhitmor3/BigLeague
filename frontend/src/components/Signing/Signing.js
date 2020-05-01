@@ -59,6 +59,11 @@ function Signing() {
     </option>
 ));
 
+
+function signPlayer () {
+      console.log({length}, {renewal}, {teamoption}, {playeroption})
+  }
+
   return (
     <div>
 
@@ -66,7 +71,6 @@ function Signing() {
         <option>Select Contract Length</option>
                 {lengthdropdown}
         </select>
-
         <select onChange={e => setRenewal(e.currentTarget.value)}>
         <option>Select Renewal</option>
                 {renewaldropdown}
@@ -82,6 +86,7 @@ function Signing() {
                 {playeroptiondropdown}
         </select>
 
+       <button onClick={signPlayer}> Sign</button>
       </div>
   );
 }

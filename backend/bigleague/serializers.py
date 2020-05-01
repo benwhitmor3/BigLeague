@@ -1,26 +1,42 @@
 from rest_framework import serializers
-from .models import Playergeneration, City, GM
+from .models import Cities, Teams, Players, GMs, Coaches, Seasons
 
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 
 
-class PlayergenerationSerializer(serializers.ModelSerializer):
+class CitiesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Playergeneration
-        fields = ['id', 'name', 'suit', 'age', 'pv', 'epv', 's_epv',
+        model = Cities
+        fields = ['city', 'city_value']
+
+class TeamsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teams
+        fields = ['name', 'stadium_seats', 'stadium_boxes',
+                  'stadium_grade', 'stadium_max_grade', 'city']
+
+class PlayersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Players
+        fields = ['name', 'suit', 'age', 'pv', 'epv', 's_epv',
                   'contract', 't_option', 'p_option', 'renew',
                   'salary', 'grade', 'team']
 
-class GMSerializer(serializers.ModelSerializer):
+class GMsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = GM
-        fields = ['id', 'gm']
+        model = GMs
+        fields = ['trait', 'team']
 
-class CitySerializer(serializers.ModelSerializer):
+class CoachesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = City
-        fields = ['id', 'city', 'city_value']
+        model = Coaches
+        fields = ['name', 'attribute1', 'attribute2']
+
+class SeasonsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Seasons
+        fields = ['season', 'wins', 'losses', 'ppg', 'std', 'team']
 
 
 
