@@ -5,7 +5,7 @@ function CityList() {
   const[city, setCity] = useState([])
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/citychoice/')
+    axios.get('http://127.0.0.1:8000/api/cities/')
         .then(res => {
           console.log(res)
           setCity(res.data)

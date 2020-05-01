@@ -5,7 +5,7 @@ function GMList() {
   const[gm, setGm] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/gm/')
+    axios.get('http://127.0.0.1:8000/api/gms/')
         .then(res => {
           console.log(res)
           setGm(res.data)
@@ -21,7 +21,7 @@ function GMList() {
           {
             gm.map(gm =>
                 <p key={gm.id}>
-                    General Manager: {gm.gm}
+                    General Manager: {gm.trait}
                 </p>)
           }
         </p>

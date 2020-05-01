@@ -6,7 +6,7 @@ function GMDropdown() {
   const[selected, setSelected] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/gm/')
+    axios.get('http://127.0.0.1:8000/api/gms/')
         .then(res => {
           console.log(res)
           setGm(res.data)
@@ -18,7 +18,7 @@ function GMDropdown() {
 
   let dropdown = gm.map(gm => (
     <option key={gm.id} value={gm.value}>
-        {gm.gm}
+        {gm.trait}
     </option>
   ));
 

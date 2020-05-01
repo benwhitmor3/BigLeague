@@ -5,7 +5,7 @@ function DraftableList() {
   const[player, setPlayer] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/playergeneration/')
+    axios.get('http://127.0.0.1:8000/api/players/')
         .then(res => {
           console.log(res)
           setPlayer(res.data)

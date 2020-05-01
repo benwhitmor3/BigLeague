@@ -34,6 +34,7 @@ class CoachesView(viewsets.ModelViewSet):
     queryset = Coaches.objects.all()
     serializer_class = CoachesSerializer
 
+
 class SeasonsView(viewsets.ModelViewSet):
     queryset = Seasons.objects.all()
     serializer_class = SeasonsSerializer
