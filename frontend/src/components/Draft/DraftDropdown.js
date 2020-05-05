@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState} from 'react';
+import useInputState from './useInputState';
 import axios from "axios";
 
-function DraftDropdown() {
+const DraftDropdown = ({ saveDrafted }) => {
+  const { value, reset, onChange } = useInputState();
+
   const[player, setPlayer] = useState([]);
-  const[selected, setSelected] = useState([]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/players/')
@@ -22,22 +24,22 @@ function DraftDropdown() {
     </option>
   ));
 
-
-
-  function draftPlayer () {
-      console.log({selected})
-  }
-
-
   return (
-      <div>
-        <select onChange={e => setSelected(e.currentTarget.value)}>
+    <div>
+      <h3>Drafting {value}</h3>
+        <select onChange={onChange}>
         <option>Select Player</option>
                 {dropdown}
         </select>
-      <h3>Drafting {selected}</h3>
-        </div>
-  )
-}
+        <p></p>
+       <button onClick={event => {
+        event.preventDefault();
 
-export default DraftDropdown
+        saveDrafted(value);
+        reset();
+      }}> Draft</button>
+    </div>
+  );
+};
+
+export default DraftDropdown;

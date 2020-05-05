@@ -3,23 +3,21 @@ import List from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@materia
 import ListItem from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/ListItem';
 import ListItemSecondaryAction from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/ListItemText';
-// import Checkbox from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/Checkbox';
+import Checkbox from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/Checkbox';
 import IconButton from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/IconButton';
 import DeleteIcon from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/icons/Delete.js';
 
-
-
-const DraftedList = ({ drafted, deleteDrafted }) => (
+const ListFromForm = ({ list, deleteList }) => (
   <List>
-    {drafted.map((drafted, index) => (
+    {list.map((list, index) => (
       <ListItem key={index.toString()} dense button>
-        {/*<Checkbox tabIndex={-1} disableRipple />*/}
-        <ListItemText primary={drafted} />
+        <Checkbox tabIndex={-1} disableRipple />
+        <ListItemText primary={list} />
         <ListItemSecondaryAction>
           <IconButton
             aria-label="Delete"
             onClick={() => {
-              deleteDrafted(index);
+              deleteList(index);
             }}
           >
             <DeleteIcon />
@@ -30,4 +28,4 @@ const DraftedList = ({ drafted, deleteDrafted }) => (
   </List>
 );
 
-export default DraftedList;
+export default ListFromForm;
