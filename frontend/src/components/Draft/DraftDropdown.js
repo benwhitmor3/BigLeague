@@ -22,9 +22,12 @@ function DraftDropdown() {
     </option>
   ));
 
+
+
   function draftPlayer () {
       console.log({selected})
   }
+
 
   return (
       <div>
@@ -33,8 +36,7 @@ function DraftDropdown() {
                 {dropdown}
         </select>
       <h3>Drafting {selected}</h3>
-       <button onClick={draftPlayer}> Draft</button>
-      </div>
+        </div>
   )
 }
 
