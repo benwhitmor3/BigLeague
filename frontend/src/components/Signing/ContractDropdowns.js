@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
 
+//add conditional dropdown, so that team and player option are always less than contract length
+
 function ContractDropdowns() {
   const [contractlength] = React.useState([
     {label: "One Year", value: 1},
@@ -16,7 +18,7 @@ function ContractDropdowns() {
   ]);
   //Make this a conditional select based on contract length?
   const [contractteamoption] = React.useState([
-    {label: "None", value: []},
+    {label: "None", value: ""},
     {label: "Year One", value: 1},
     {label: "Year Two", value: 2},
     {label: "Year Three", value: 3},
@@ -24,17 +26,17 @@ function ContractDropdowns() {
   ]);
   //Make this a conditional select based on contract length?
   const [contractplayeroption] = React.useState([
-    {label: "None", value: []},
+    {label: "None", value: ""},
     {label: "Year One", value: 1},
     {label: "Year Two", value: 2},
     {label: "Year Three", value: 3},
     {label: "Year Four", value: 4},
   ]);
 
-  const[length, setLength] = useState([]);
-  const[renewal, setRenewal] = useState([]);
-  const[teamoption, setTeamOption] = useState([]);
-  const[playeroption, setPlayerOption] = useState([]);
+  const[length, setLength] = useState("Select Contract Length");
+  const[renewal, setRenewal] = useState("Select Renewal");
+  const[teamoption, setTeamOption] = useState("Select Team Option");
+  const[playeroption, setPlayerOption] = useState("Select Player Option");
 
   let lengthdropdown = contractlength.map(contractlength => (
     <option key={contractlength.value} value={contractlength.value}>
@@ -57,23 +59,75 @@ function ContractDropdowns() {
     </option>
 ));
 
-let ren_value = 0;
-    if (renewal === "non-repeat") {
-        ren_value = 1;
-    } else {
-        ren_value = 2;
+
+const[salary, setSalary] = useState("Ready for Negotiation!");
+
+function handleSalary() {
+
+let grade = 5;
+let epv = 25;
+let age = 25;
+let contractlength = length;
+let calculatedsalary = 0;
+
+    if (length !== "Select Contract Length") {
+        calculatedsalary += grade * (epv / (contractlength));
+    }
+    else {
+        calculatedsalary = "NaN"
     }
 
-const[salary, setSalary] = useState("n/a");
-function handleSalary() {
-    let grade = 5;
-    let epv = 20;
-setSalary(ren_value + (grade * (epv / length + 1 )).toFixed(0));
-}
+    if (renewal !== "Select Renewal" && renewal === "repeat") {
+        calculatedsalary += 4 * (epv / (contractlength));
+    }
+    else if (renewal !== "Select Renewal" && renewal === "non-repeat") {
+        calculatedsalary += 2 * (epv / (contractlength));
+    }
+    else if (renewal !== "Select Renewal" && renewal === "no") {
+        calculatedsalary = calculatedsalary
+    }
+        else {
+        calculatedsalary = "NaN"
+    }
 
-function signPlayer () {
-      console.log({length}, {renewal}, {teamoption}, {playeroption})
-  }
+    //if team option doesn't equal label then that means it has a value 0-5
+    if (teamoption !== "Select Team Option" && teamoption !== "") {
+        calculatedsalary += ((epv / contractlength) * (contractlength - teamoption));
+    }
+    else {
+        calculatedsalary = calculatedsalary
+    }
+
+    //if player option doesn't equal label then that means it has a value 0-5
+    if (playeroption !== "Select Player Option" && playeroption !== "") {
+        calculatedsalary -= ((epv / contractlength) * 0.5 * (contractlength - playeroption));
+    }
+    else {
+        calculatedsalary = calculatedsalary
+    }
+
+    if (age >= 27) {
+        calculatedsalary -= (age - 26) * (epv / (length + 1))
+    }
+    else {
+        calculatedsalary = calculatedsalary
+    }
+
+
+    if (calculatedsalary === "NaN") {
+        setSalary("NaN");
+    }
+    else {
+        setSalary(calculatedsalary.toFixed(0));
+    }
+
+    console.log(length)
+    console.log(renewal)
+    console.log(teamoption)
+    console.log(playeroption)
+
+    }
+
 
 
   return (
