@@ -4,8 +4,14 @@ import DraftDropdown from './Draft/DraftDropdown';
 import DraftedList from './Draft/DraftedList';
 import useDraftedState from './Draft/useDraftedState';
 
+
 export default function Draft() {
     const { drafted, addDrafted, deleteDrafted } = useDraftedState([]);
+
+    function Drafted() {
+    console.log(drafted)
+        return [drafted]
+}
 
     return (
       <div>
@@ -18,7 +24,7 @@ export default function Draft() {
             addDrafted(trimmedText); } } } />
 
       <DraftedList drafted={drafted} deleteDrafted={deleteDrafted} />
-
+      <Drafted/>
       </div>
 
   );

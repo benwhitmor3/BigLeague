@@ -10,7 +10,7 @@ import DeleteIcon from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@m
 
 
 const DraftedList = ({ drafted, deleteDrafted }) => (
-  <List>
+    <List>
     {drafted.map((drafted, index) => (
       <ListItem key={index.toString()} dense button>
         {/*<Checkbox tabIndex={-1} disableRipple />*/}

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Signing from "./Signing/Signing";
 
-export default function () {
+export default function Season () {
   return (
       <div>
         <Signing/>
