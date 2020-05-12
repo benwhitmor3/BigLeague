@@ -207,9 +207,7 @@ function Table({ columns, data }) {
             )
           })}
         </tbody>
-
       </table>
-
       <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
       <pre>
         <code>
@@ -258,7 +256,7 @@ function CitiesTable() {
   }, []);
 
   return (
-    <Styles>
+      <Styles>
       <Table columns={columns} data={data} />
     </Styles>
   )

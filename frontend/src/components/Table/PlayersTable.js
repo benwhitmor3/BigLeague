@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import styled from 'styled-components'
-import { useTable, useFilters, useRowSelect, useSortBy } from 'react-table'
+import { useTable, useFilters, useSortBy } from 'react-table'
 // A great library for fuzzy filtering/sorting items
 import matchSorter from 'match-sorter'
 
@@ -153,25 +153,8 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 fuzzyTextFilterFn.autoRemove = val => !val
 
 
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef()
-    const resolvedRef = ref || defaultRef
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate
-    }, [resolvedRef, indeterminate])
-
-    return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    )
-  }
-)
-
 // Our table component
-function Table({ columns, data }) {
+function Table({ columns, data}) {
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -206,8 +189,6 @@ function Table({ columns, data }) {
     headerGroups,
     rows,
     prepareRow,
-    selectedFlatRows,
-    state: { selectedRowIds },
   } = useTable(
     {
       columns,
@@ -217,37 +198,12 @@ function Table({ columns, data }) {
     },
     useFilters, // useFilters!
     useSortBy,
-    useRowSelect,
-    hooks => {
-      hooks.visibleColumns.push(columns => [
-        // Let's make a column for selection
-        {
-          id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-        ...columns,
-      ])
-    }
   );
-
 
   return (
     <>
-      <table {...getTableProps()}>
-
+        <h1>Players</h1>
+      <table {...getTableProps()} >
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -260,7 +216,7 @@ function Table({ columns, data }) {
                       ? column.isSortedDesc
                         ? ' ↓'
                         : ' ↑'
-                      : ' ↕'}
+                      : ' '}
                   </span>
                 </th>
               ))}
@@ -295,40 +251,9 @@ function Table({ columns, data }) {
         </tbody>
 
       </table>
-
-      <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              selectedRowIds: selectedRowIds,
-              'selectedFlatRows[].original': selectedFlatRows.map(
-                d => d.original
-              ),
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre>
     </>
   )
 }
-
-
-        // "name": "Serena Williams",
-        // "suit": "Club",
-        // "age": 28,
-        // "pv": 18.0,
-        // "epv": 18.0,
-        // "s_epv": 18.0,
-        // "contract": 5,
-        // "t_option": null,
-        // "p_option": null,
-        // "renew": "",
-        // "salary": null,
-        // "grade": null,
-        // "team": "Alpha"
 
 function PlayersTable() {
   const columns = useMemo(
@@ -357,9 +282,29 @@ function PlayersTable() {
         Filter: NumberRangeColumnFilter,
         filter: 'between',
       },
+      {
+     Header: 'ConsoleLogEdit',
+     Cell: row => (
+         <div>
+         <button onClick={() => console.log(row.row.original)}>Console Log</button>
+         </div>
+     ),
+    },
+    {
+     Header: 'Refresh',
+     Cell: row => (
+         <div>
+         <button onClick={() => {refreshPage()}}>Refresh</button>
+         </div>
+     ),
+    },
     ],
     [],
   );
+
+  function refreshPage(){
+    window.location.reload();
+}
 
   const [data, setData] = useState([]);
 
@@ -372,9 +317,11 @@ function PlayersTable() {
   }, []);
 
   return (
-    <Styles>
+    <div>
+      <Styles>
       <Table columns={columns} data={data} />
     </Styles>
+    </div>
   )
 }
 
