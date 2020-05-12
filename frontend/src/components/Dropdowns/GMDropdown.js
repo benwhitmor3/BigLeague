@@ -17,7 +17,7 @@ function GMDropdown() {
   }, []);
 
   let dropdown = gm.map(gm => (
-    <option key={gm.id} value={gm.value}>
+    <option key={gm.trait} value={gm.value}>
         {gm.trait}
     </option>
   ));

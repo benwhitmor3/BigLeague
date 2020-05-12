@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react';
-import axios from "axios";
+import React, {useState} from 'react';
 
 //add conditional dropdown, so that team and player option are always less than contract length
 

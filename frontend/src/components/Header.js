@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../Header.css";
+import "./Header.css";
 import { CSSTransition } from "react-transition-group";
 import file from "/Users/buw0017/projects/TheBigLeagueGame/frontend/src/components/Instructions/BigLeagueInstructions.pdf";
 
@@ -41,7 +41,7 @@ export default function Header() {
           <a href="/Draft">Draft</a>
           <a href="/Season">Season</a>
           <a href="/OffSeason">OffSeason</a>
-          <a href = {file} target = "_blank">Instructions</a>
+          <a href = {file}>Instructions</a>
 
         </nav>
       </CSSTransition>

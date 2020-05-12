@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import './Components.css';
-import HowToAddFormList from '/Users/buw0017/projects/TheBigLeagueGame/frontend/src/components/FormList/HowToAddFormList.js';
+import React, {useState} from 'react';
+import './Stadium.css';
 
-export default function Stadium({ calculateTotal }) {
+export default function Stadium() {
   const [seats, setSeats] = useState();
   const [boxes, setBoxes] = useState();
   const [total, setTotal] = useState(0);
@@ -42,9 +41,6 @@ export default function Stadium({ calculateTotal }) {
       <h3>{boxes}</h3>
       <h3>{total}</h3>
        <button onClick={calculateTotal}> Calculate</button>
-
-
-        <HowToAddFormList/>
 
     </div>
   );

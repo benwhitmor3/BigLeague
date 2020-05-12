@@ -1,30 +1,28 @@
-import React, {useEffect, useState} from 'react';
-import DraftableList from "./Draft/DraftableList";
-import DraftDropdown from './Draft/DraftDropdown';
-import DraftedList from './Draft/DraftedList';
+import React from 'react';
+import DraftDropdown from './Dropdowns/DraftDropdown';
+import PlayerFormList from './Lists/PlayerFormList';
 import useDraftedState from './Draft/useDraftedState';
 
 
 export default function Draft() {
     const { drafted, addDrafted, deleteDrafted } = useDraftedState([]);
 
-    function Drafted() {
-    console.log(drafted)
-        return [drafted]
-}
+    // function Drafted() {
+    //     return [drafted]
+// }
 
     return (
       <div>
-
-      <DraftableList/>
 
       <DraftDropdown saveDrafted={draftedText => {
           const trimmedText = draftedText.trim();
             if (trimmedText.length > 0) {
             addDrafted(trimmedText); } } } />
 
-      <DraftedList drafted={drafted} deleteDrafted={deleteDrafted} />
-      <Drafted/>
+      <PlayerFormList drafted={drafted} deleteDrafted={deleteDrafted} />
+
+      {/*<Drafted/>*/}
+
       </div>
 
   );

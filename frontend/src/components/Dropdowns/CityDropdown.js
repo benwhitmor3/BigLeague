@@ -3,7 +3,8 @@ import axios from "axios";
 
 
 function CityDropdown() {
-  const[city, setCity] = useState([])
+  const[city, setCity] = useState([]);
+  const[selected, setSelected] = useState([]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/cities/')
@@ -17,17 +18,23 @@ function CityDropdown() {
   }, [])
 
   let dropdown = city.map(city => (
-    <option key={city.id} value={city.name}>
+    <option key={city.city} value={city.city}>
       {city.city} {city.city_value}
     </option>
   ));
 
+    function pickCity () {
+      console.log({selected})
+  }
+
   return (
       <div>
-        <select>
+        <select onChange={e => setSelected(e.currentTarget.value)}>
         <option>Select City</option>
                 {dropdown}
         </select>
+          <p></p>
+       <button onClick={pickCity}> Confirm City</button>
       </div>
   );
 }

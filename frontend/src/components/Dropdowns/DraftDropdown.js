@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import useInputState from './useInputState';
 import axios from "axios";
-import DraftedList from './DraftedList';
 
 const DraftDropdown = ({ saveDrafted }) => {
   const { value, reset, onChange } = useInputState();
@@ -20,7 +19,7 @@ const DraftDropdown = ({ saveDrafted }) => {
   }, []);
 
   let dropdown = player.map(player => (
-    <option key={player.name} value={player["suit"]}>
+    <option key={player.name} value={player["name"]}>
         {player.name}
     </option>
   ));

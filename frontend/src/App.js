@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import ReactDOM from 'react-dom';
+import React from "react";
 import './index.css';
-import Header from './components/Header/Header';
+import Header from './components/Header';
 import Home from './components/Home';
 import Draft from './components/Draft';
 import Stadium from './components/Stadium';
@@ -17,7 +16,6 @@ function App() {
           <div className='App'>
       <Header />
       <div className='Content'>
-        <h4>In Progress...</h4>
       <Router>
       <Switch>
       <Route exact path='/Home' component={Home} />

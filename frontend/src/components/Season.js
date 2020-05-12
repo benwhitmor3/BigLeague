@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import Signing from "./Signing/Signing";
 
 export default function Season () {

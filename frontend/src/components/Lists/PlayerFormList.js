@@ -3,13 +3,12 @@ import List from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@materia
 import ListItem from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/ListItem';
 import ListItemSecondaryAction from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/ListItemText';
-// import Checkbox from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/Checkbox';
 import IconButton from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/core/IconButton';
 import DeleteIcon from '/Users/buw0017/projects/TheBigLeagueGame/node_modules/@material-ui/icons/Delete.js';
 
 
 
-const DraftedList = ({ drafted, deleteDrafted }) => (
+const PlayerFormList = ({ drafted, deleteDrafted }) => (
     <List>
     {drafted.map((drafted, index) => (
       <ListItem key={index.toString()} dense button>
@@ -30,4 +29,4 @@ const DraftedList = ({ drafted, deleteDrafted }) => (
   </List>
 );
 
-export default DraftedList;
+export default PlayerFormList;

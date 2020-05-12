@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import ContractDropdowns from "./ContractDropdowns";
+import ContractDropdowns from "../Dropdowns/ContractDropdowns";
 import MappedPlayers from "./MappedPlayers";
 import axios from "axios";
 
