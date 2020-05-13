@@ -18,23 +18,19 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from bigleague import views
-from rest_framework_jwt.views import obtain_jwt_token
-from bigleague.views import current_user
 
 router = routers.DefaultRouter()
 
-router.register(r'cities', views.CitiesView, 'cities_view')
-router.register(r'teams', views.TeamsView, 'teams_view')
-router.register(r'players', views.PlayersView, 'players_view')
-router.register(r'gms', views.GMsView, 'gms_view')
-router.register(r'coaches', views.CoachesView, 'coaches_view')
-router.register(r'seasons', views.SeasonsView, 'seasons_view')
+router.register(r'owners', views.OwnerView, 'owner_view')
+router.register(r'cities', views.CityView, 'city_view')
+router.register(r'stadiums', views.StadiumView, 'team_view')
+router.register(r'players', views.PlayerView, 'player_view')
+router.register(r'gms', views.GMView, 'gm_view')
+router.register(r'coaches', views.CoachView, 'coach_view')
+router.register(r'seasons', views.SeasonView, 'season_view')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('token-auth/', obtain_jwt_token),
-    path('current_user/', current_user),
-    path('users/', views.UserList.as_view())
     ]

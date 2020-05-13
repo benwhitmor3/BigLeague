@@ -1,73 +1,47 @@
 from rest_framework import serializers
-from .models import Cities, Teams, Players, GMs, Coaches, Seasons
-
-from rest_framework_jwt.settings import api_settings
-from django.contrib.auth.models import User
+from .models import Owner, City, Stadium, Player, GM, Coach, Season
 
 
-class CitiesSerializer(serializers.ModelSerializer):
+class OwnerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cities
+        model = Owner
+        fields = '__all__'
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
         fields = ['city', 'city_value']
 
-class TeamsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Teams
-        fields = ['name', 'stadium_seats', 'stadium_boxes',
-                  'stadium_grade', 'stadium_max_grade', 'city']
 
-class PlayersSerializer(serializers.ModelSerializer):
+class StadiumSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Players
+        model = Stadium
+        fields = ['stadium_seats', 'stadium_boxes',
+                  'stadium_grade', 'stadium_max_grade', 'team']
+
+
+class PlayerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Player
         fields = ['name', 'suit', 'age', 'pv', 'epv', 's_epv',
                   'contract', 't_option', 'p_option', 'renew',
                   'salary', 'grade', 'team']
 
-class GMsSerializer(serializers.ModelSerializer):
+
+class GMSerializer(serializers.ModelSerializer):
     class Meta:
-        model = GMs
+        model = GM
         fields = ['trait', 'team']
 
-class CoachesSerializer(serializers.ModelSerializer):
+
+class CoachSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Coaches
+        model = Coach
         fields = ['name', 'attribute1', 'attribute2']
 
-class SeasonsSerializer(serializers.ModelSerializer):
+
+class SeasonSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Seasons
+        model = Season
         fields = ['season', 'wins', 'losses', 'ppg', 'std', 'team']
-
-
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('username', 'team')
-
-
-class UserSerializerWithToken(serializers.ModelSerializer):
-
-    token = serializers.SerializerMethodField()
-    password = serializers.CharField(write_only=True)
-
-    def get_token(self, obj):
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-        payload = jwt_payload_handler(obj)
-        token = jwt_encode_handler(payload)
-        return token
-
-    def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)
-        if password is not None:
-            instance.set_password(password)
-        instance.save()
-        return instance
-
-    class Meta:
-        model = User
-        fields = ('token', 'username', 'password')
