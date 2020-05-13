@@ -17,7 +17,7 @@
   /*  this controls where the text in the header will be */
   grid-area: auto;
   /*  this specifies how many headers before it creates a second row*/
-  grid-template-columns: repeat(7, auto);
+  grid-template-columns: repeat(8, auto);
   align-items: start;
   /*  how items are aligned in the grid*/
   justify-items: center;

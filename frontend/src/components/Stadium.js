@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Stadium.css';
 
 export default function Stadium() {
@@ -6,11 +6,11 @@ export default function Stadium() {
   const [boxes, setBoxes] = useState();
   const [total, setTotal] = useState(0);
 
-    // Function to add numbers and update total in state
-  function calculateTotal() {
-      setTotal(seats + boxes);
-      // setTotal((seats * 15000) + (boxes * 500000));
-  }
+    // Function to add numbers and update total state
+  useEffect(() => {
+    // Update the document title using the browser API
+    setTotal((seats * 15000) + (boxes * 500000));
+  });
 
   return (
     <div className="App">
@@ -22,7 +22,6 @@ export default function Stadium() {
           value={seats}
           onChange={event => {
               setSeats(event.target.valueAsNumber);
-              calculateTotal();
           }}
           placeholder="seats"
         />
@@ -31,16 +30,12 @@ export default function Stadium() {
           value={boxes}
           onChange={event => {
               setBoxes(event.target.valueAsNumber);
-              calculateTotal();
           }}
           placeholder="boxes"
         />
       </div>
 
-      <h3>{seats}</h3>
-      <h3>{boxes}</h3>
-      <h3>{total}</h3>
-       <button onClick={calculateTotal}> Calculate</button>
+      <h3> Construction Cost: {total}</h3>
 
     </div>
   );

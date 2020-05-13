@@ -35,6 +35,7 @@ export default function Header() {
         <CSSTransition in={!isSmallScreen || isNavVisible}
       timeout={350} classNames="NavAnimation" unmountOnExit>
         <nav className="Nav">
+          <a href="/Login">Page</a>
           <a href="/Home">Home</a>
           <a href="/Stadium">Stadium</a>
           <a href="/GM">GM</a>
