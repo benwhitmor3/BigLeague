@@ -7,7 +7,6 @@ import Stadium from './components/Stadium';
 import GM from './components/GM';
 import Season from './components/Season';
 import OffSeason from './components/OffSeason';
-import Page from './components/Login/Page';
 
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 

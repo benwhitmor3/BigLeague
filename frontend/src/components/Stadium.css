@@ -9,16 +9,16 @@ h1 {
 input {
   font-size: 80px;
   border-radius: 10px;
-  border: 1px solid #ffad83;
+  border: 1px solid #ff9e5e;
   width: 10%;
   padding: 10px;
   text-align: center;
-  background: #eb776d;
+  background: #ff9e5e;
   color: #ffffff;
 }
 
 input::placeholder {
-  color: #c3c3c3;
+  color: #ffe1bc;
 }
 
 input:first-child {
@@ -29,13 +29,9 @@ button {
   padding: 25px 50px;
   font-size: 30px;
   border-radius: 20px 40px;
-  background: #eb776d;
+  background: #ff9e5e;
   border: none;
   margin-bottom: 250px;
   color: #ffffff;
   cursor: pointer;
-}
-
-h3 {
-  padding-top: 15px;
 }

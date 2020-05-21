@@ -124,7 +124,10 @@ function calculateSalary() {
     else {
         setSalary(salary.toFixed(0))
     }
+}
 
+function Sign() {
+    console.log(salary);
 }
 
 
@@ -151,7 +154,8 @@ function calculateSalary() {
         </select>
 
         &nbsp;
-       <button onClick={calculateSalary}> Negotiate</button>
+       <button style={{margin: '0.5rem', border: '1px solid black',}} onClick={calculateSalary}> Negotiate</button>
+       <button style={{border: '1px solid black',}} onClick={Sign}> Sign</button>
 
         &nbsp; Salary: &nbsp; {salary}
 

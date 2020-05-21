@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Header.css";
 import { CSSTransition } from "react-transition-group";
-import file from "/Users/buw0017/projects/TheBigLeagueGame/frontend/src/components/Instructions/BigLeagueInstructions.pdf";
+import file from "./Instructions/BigLeagueInstructions.pdf";
 
 
 export default function Header() {
@@ -9,7 +9,7 @@ export default function Header() {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 700px)");
+    const mediaQuery = window.matchMedia("(max-width: 800px)");
     mediaQuery.addListener(handleMediaQueryChange);
     handleMediaQueryChange(mediaQuery);
 
@@ -32,6 +32,7 @@ export default function Header() {
 
   return (
     <header className="Header">
+
         <CSSTransition in={!isSmallScreen || isNavVisible}
       timeout={350} classNames="NavAnimation" unmountOnExit>
         <nav className="Nav">
@@ -42,12 +43,13 @@ export default function Header() {
           <a href="/Season">Season</a>
           <a href="/OffSeason">OffSeason</a>
           <a href = {file}>Instructions</a>
-
         </nav>
       </CSSTransition>
+
       <button onClick={toggleNav} className="Burger">
         <span role="img" aria-label="Basketball">🏀</span>
       </button>
+
     </header>
   );
 }

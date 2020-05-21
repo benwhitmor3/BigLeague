@@ -2,7 +2,8 @@ import React from 'react';
 import Signing from "./Signing/Signing";
 
 export default function Season () {
-  return (
+
+    return (
       <div>
         <Signing/>
       </div>

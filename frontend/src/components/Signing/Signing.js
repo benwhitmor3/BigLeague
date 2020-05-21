@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import ContractDropdowns from "../Dropdowns/ContractDropdowns";
-import MappedPlayers from "./MappedPlayers";
+import SigningPlayers from "./SigningPlayers";
 import axios from "axios";
 
 function Signing() {
@@ -21,11 +21,11 @@ axios.get('http://127.0.0.1:8000/api/players/')
   return (
     <div>
     <p>
-    <MappedPlayers/>
+    <SigningPlayers/>
         {
         player.map(player =>
         <p>
-                <ContractDropdowns/>
+                {/*<ContractDropdowns/>*/}
         </p>)
         }
     </p>

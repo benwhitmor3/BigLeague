@@ -1,47 +1,44 @@
 from rest_framework import serializers
-from .models import Owner, City, Stadium, Player, GM, Coach, Season
+from .models import Franchise, City, Stadium, Player, GM, Coach, Season
 
 
-class OwnerSerializer(serializers.ModelSerializer):
+class FranchiseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Owner
+        model = Franchise
         fields = '__all__'
 
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = ['city', 'city_value']
+        fields = '__all__'
 
 
 class StadiumSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stadium
-        fields = ['stadium_seats', 'stadium_boxes',
-                  'stadium_grade', 'stadium_max_grade', 'team']
+        fields = '__all__'
 
 
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
-        fields = ['name', 'suit', 'age', 'pv', 'epv', 's_epv',
-                  'contract', 't_option', 'p_option', 'renew',
-                  'salary', 'grade', 'team']
+        fields = '__all__'
 
 
 class GMSerializer(serializers.ModelSerializer):
     class Meta:
         model = GM
-        fields = ['trait', 'team']
+        fields = '__all__'
 
 
 class CoachSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coach
-        fields = ['name', 'attribute1', 'attribute2']
+        fields = '__all__'
 
 
 class SeasonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Season
-        fields = ['season', 'wins', 'losses', 'ppg', 'std', 'team']
+        fields = '__all__'

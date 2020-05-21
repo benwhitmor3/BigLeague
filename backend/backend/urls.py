@@ -21,7 +21,7 @@ from bigleague import views
 
 router = routers.DefaultRouter()
 
-router.register(r'owners', views.OwnerView, 'owner_view')
+router.register(r'franchises', views.FranchiseView, 'franchise_view')
 router.register(r'cities', views.CityView, 'city_view')
 router.register(r'stadiums', views.StadiumView, 'team_view')
 router.register(r'players', views.PlayerView, 'player_view')

@@ -4,15 +4,14 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class Owner(models.Model):
-    team = models.CharField(max_length=100, unique=True)
-    username = models.CharField(max_length=100, unique=True)
+class Franchise(models.Model):
+    franchise = models.CharField(max_length=25, primary_key=True)
     owner = models.ForeignKey(
         User, related_name="Owner", on_delete=models.CASCADE, null=True)
 
 
 class City(models.Model):
-    city = models.CharField(max_length=50, primary_key=True)
+    city = models.CharField(max_length=20, primary_key=True)
     city_value = models.IntegerField()
 
     def __str__(self):
@@ -20,14 +19,16 @@ class City(models.Model):
 
 
 class Stadium(models.Model):
+    stadium_name = models.CharField(max_length=20, primary_key=True)
     stadium_seats = models.IntegerField(blank=True, null=True)
     stadium_boxes = models.IntegerField(blank=True, null=True)
     stadium_grade = models.IntegerField(blank=True, null=True)
     stadium_max_grade = models.IntegerField(blank=True, null=True)
-    team = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.stadium_name
 
 
 class Player(models.Model):
@@ -43,7 +44,8 @@ class Player(models.Model):
     renew = models.CharField(max_length=10, blank=True)
     salary = models.FloatField(blank=True, null=True)
     grade = models.FloatField(blank=True, null=True)
-    team = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    franchise = models.CharField(max_length=25, blank=True, null=True)
+    lineup = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -51,7 +53,7 @@ class Player(models.Model):
 
 class GM(models.Model):
     trait = models.CharField(max_length=50, primary_key=True)
-    team = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    franchise = models.CharField(max_length=25, blank=True, null=True)
 
     def __str__(self):
         return self.trait
@@ -61,7 +63,7 @@ class Coach(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
     attribute1 = models.CharField(max_length=25)
     attribute2 = models.CharField(max_length=25)
-    team = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    franchise = models.CharField(max_length=25, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -73,7 +75,7 @@ class Season(models.Model):
     losses = models.IntegerField()
     ppg = models.FloatField()
     std = models.FloatField()
-    team = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.season

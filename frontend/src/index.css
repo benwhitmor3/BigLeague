@@ -7,10 +7,13 @@ body {
 .App {
   height: 100vh;
   width: 100vw;
-  background-color: #fff;
+  /*default background color for app*/
+  background-color: #ffffff;
 }
 
 .App .Content {
   padding-top: 100px;
   text-align: center;
+  /*default font color for app*/
+  color: black;
 }

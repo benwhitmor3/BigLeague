@@ -1,15 +1,15 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import OwnerSerializer, CitySerializer, StadiumSerializer, PlayerSerializer, GMSerializer, \
+from .serializers import FranchiseSerializer, CitySerializer, StadiumSerializer, PlayerSerializer, GMSerializer, \
     CoachSerializer, \
     SeasonSerializer
-from .models import Owner, City, Stadium, Player, GM, Coach, Season
+from .models import Franchise, City, Stadium, Player, GM, Coach, Season
 
 
 # Create your views here.
-class OwnerView(viewsets.ModelViewSet):
-    queryset = Owner.objects.all()
-    serializer_class = OwnerSerializer
+class FranchiseView(viewsets.ModelViewSet):
+    queryset = Franchise.objects.all()
+    serializer_class = FranchiseSerializer
 
     # permission_classes = [
     #     permissions.IsAuthenticated,

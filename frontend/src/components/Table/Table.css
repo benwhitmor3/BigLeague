@@ -1,0 +1,11 @@
+table {
+    border-collapse: collapse;
+    /*makes table center flexibly*/
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table, th, td {
+  border: 2px solid black;
+  height: 50px;
+}

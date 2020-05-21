@@ -1,46 +1,9 @@
 import React, {useEffect, useMemo, useState} from 'react'
-import styled from 'styled-components'
 import { useTable, useFilters, useSortBy } from 'react-table'
 // A great library for fuzzy filtering/sorting items
 import matchSorter from 'match-sorter'
-
+import './Table.css';
 import axios from "axios";
-
-const Styles = styled.div`
-  padding: 1rem;
-
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-   
-  Input {
-  width: 100%;
-  padding: 12px 20px;
-  color: white;
-}
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`
-
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
@@ -49,12 +12,15 @@ function DefaultColumnFilter({
   const count = preFilteredRows.length;
 
   return (
-    <input
+  <input
       value={filterValue || ''}
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
       }}
-      placeholder={`Search from ${count} players...`}
+      placeholder={`Search from ${count} records`}
+              style={{
+          width: '100%',
+        }}
     />
   )
 }
@@ -123,8 +89,9 @@ function NumberRangeColumnFilter({
         }}
         placeholder={`Min (${min})`}
         style={{
-          width: '120px',
+          width: '100%',
           marginRight: '0.5rem',
+          marginLeft: '0.5rem',
         }}
       />
       to
@@ -137,7 +104,8 @@ function NumberRangeColumnFilter({
         }}
         placeholder={`Max (${max})`}
         style={{
-          width: '120px',
+          width: '100%',
+          marginRight: '0.5rem',
           marginLeft: '0.5rem',
         }}
       />
@@ -202,7 +170,7 @@ function Table({ columns, data}) {
 
   return (
     <>
-        <h1>Players</h1>
+        <h2>Players Table</h2>
       <table {...getTableProps()} >
         <thead>
           {headerGroups.map(headerGroup => (
@@ -282,19 +250,15 @@ function PlayersTable() {
         Filter: NumberRangeColumnFilter,
         filter: 'between',
       },
+        {
+        Header: 'FRANCHISE',
+        accessor: 'franchise', // accessor is the "key" in the data
+      },
       {
-     Header: 'ConsoleLogEdit',
+     Header: 'ConsoleLogPlayer',
      Cell: row => (
          <div>
-         <button onClick={() => console.log(row.row.original)}>Console Log</button>
-         </div>
-     ),
-    },
-    {
-     Header: 'Refresh',
-     Cell: row => (
-         <div>
-         <button onClick={() => {refreshPage()}}>Refresh</button>
+         <button onClick={() => console.log(row.row.original)}>Draft</button>
          </div>
      ),
     },
@@ -302,9 +266,6 @@ function PlayersTable() {
     [],
   );
 
-  function refreshPage(){
-    window.location.reload();
-}
 
   const [data, setData] = useState([]);
 
@@ -317,10 +278,10 @@ function PlayersTable() {
   }, []);
 
   return (
-    <div>
-      <Styles>
+    <div className="Table">
+      {/*<Styles>*/}
       <Table columns={columns} data={data} />
-    </Styles>
+    {/*</Styles>*/}
     </div>
   )
 }

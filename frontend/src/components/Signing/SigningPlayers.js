@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import ContractDropdowns from "../Dropdowns/ContractDropdowns";
 
-function MappedPlayers() {
+function SigningPlayers() {
   const[player, setPlayer] = useState([]);
 
   useEffect(() => {
@@ -21,7 +22,11 @@ function MappedPlayers() {
           {
             player.map(player =>
                 <p key={player.id}>
-                    Name: {player.name} &nbsp; Suit: {player.suit} &nbsp; Age: {player.age} &nbsp; EPV: {player.epv}
+                    Name: {player.name} &nbsp;
+                    Suit: {player.suit} &nbsp;
+                    Age: {player.age} &nbsp;
+                    EPV: {player.epv}
+                    <ContractDropdowns/>
                 </p>)
           }
         </p>
@@ -29,4 +34,4 @@ function MappedPlayers() {
   )
 }
 
-export default MappedPlayers
+export default SigningPlayers
