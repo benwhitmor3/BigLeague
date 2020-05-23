@@ -22,12 +22,6 @@ axios.get('http://127.0.0.1:8000/api/players/')
     <div>
     <p>
     <SigningPlayers/>
-        {
-        player.map(player =>
-        <p>
-                {/*<ContractDropdowns/>*/}
-        </p>)
-        }
     </p>
 
       </div>

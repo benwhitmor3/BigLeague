@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 //add conditional dropdown, so that team and player option are always less than contract length
 
-function ContractDropdowns() {
+function ContractDropdowns(player) {
   const [contractlength] = React.useState([
     {label: "One Year", value: 1},
     {label: "Two Years", value: 2},
@@ -63,12 +63,15 @@ const[salary, setSalary] = useState("Please Specify Contract Details");
 
 function calculateSalary() {
 
+    // variables based on dropdown
     let contract = length;
-    let grade = 5;
-    let epv = 20;
     let renew = renewal;
     let t_option = teamoption;
     let p_option = playeroption;
+    // always fixed at 5 for drafted players (age not an issue for drafted players as 22 or younger)
+    let grade = 5;
+    // variable passed with function
+    let epv = player.epv;
 
     let salary = 0
 
@@ -124,9 +127,7 @@ function calculateSalary() {
     else {
         setSalary(salary.toFixed(0))
     }
-}
 
-function Sign() {
     console.log(salary);
 }
 
@@ -155,10 +156,8 @@ function Sign() {
 
         &nbsp;
        <button style={{margin: '0.5rem', border: '1px solid black',}} onClick={calculateSalary}> Negotiate</button>
-       <button style={{border: '1px solid black',}} onClick={Sign}> Sign</button>
 
         &nbsp; Salary: &nbsp; {salary}
-
       </div>
   );
 }

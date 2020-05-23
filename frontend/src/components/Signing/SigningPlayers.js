@@ -16,17 +16,23 @@ function SigningPlayers() {
     })
   }, []);
 
+  function negotiateSalary(name, suit, epv){
+      console.log(name, suit, epv)
+  }
+
   return (
       <div>
         <p>
           {
             player.map(player =>
-                <p key={player.id}>
+                <p key={player.name}>
+                    <div style={{ fontWeight: 'bold' }}>
                     Name: {player.name} &nbsp;
                     Suit: {player.suit} &nbsp;
                     Age: {player.age} &nbsp;
                     EPV: {player.epv}
-                    <ContractDropdowns/>
+                    </div>
+                    <ContractDropdowns name={player.name} epv={player.epv}/>
                 </p>)
           }
         </p>
