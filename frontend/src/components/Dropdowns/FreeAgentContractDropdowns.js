@@ -36,6 +36,7 @@ function ContractDropdowns(player) {
   const[renewal, setRenewal] = useState(null);
   const[teamoption, setTeamOption] = useState(null);
   const[playeroption, setPlayerOption] = useState(null);
+  const [salary, setSalary] = useState(0);
 
   let lengthdropdown = contractlength.map(contractlength => (
     <option key={contractlength.value} value={contractlength.value}>
@@ -58,56 +59,58 @@ function ContractDropdowns(player) {
     </option>
 ));
 
+    const [grade, setGrade] = useState(null);
 
-const[salary, setSalary] = useState();
-
-function calculateSalary() {
+function calculateGrade() {
 
     // variables based on dropdown (need to parse from string to int)
     let contract = parseInt(length);
     let renew = renewal;
     let t_option = parseInt(teamoption);
     let p_option = parseInt(playeroption);
-    // always fixed at 5 for drafted players (age not an issue for drafted players)
-    let grade = 5;
     // variable passed with function
     let epv = player.epv;
+    let age = player.age;
 
-    let salary = 0;
+    let grade = 0
 
     // is contract is greater than zero
     if (contract > 0) {
         // set initial base salary
-        salary = grade * (epv / (contract+1));
+        grade = (salary * (contract + 1)) / epv;
             // adjust for renewal
             if (renew == "repeat") {
-                salary += 2 * (epv / contract)
+                grade -= 2
             }
             else if (renew == "non-repeat") {
-                salary += 1 * (epv / contract)
+                grade -= 1
             }
             // adjust for t_option
             if (t_option > 0) {
-                salary += (contract - t_option) * (epv / contract)
+                grade -= (contract - t_option)
             }
             // adjust for p_option
             if (p_option > 0) {
-                salary -= (contract - p_option) * (epv / contract)
+                grade += 0.5*(contract - p_option)
+            }
+            // adjust for age
+            if (age >= 27) {
+                grade += age - 26
             }
             // set salary after all adjustments
-        setSalary(salary.toFixed(1));
+        setGrade(grade.toFixed(2));
             // stopper for invalid contracts where option is greater than contract length
             if (contract < p_option || contract < t_option) {
-        setSalary("Illegal Contract")
+        setGrade("Illegal Contract")
             }
     }
     else {
-        salary = null
+        grade = null
     }
 }
 
 function signPlayer() {
-    console.log("Signing " + player.name + ' for ' + salary)
+    console.log("Signing " + player.name + ' for ' + salary + ' with grade ' + grade)
 }
 
   return (
@@ -131,13 +134,23 @@ function signPlayer() {
                 {playeroptiondropdown}
         </select>
 
+      <label>
+        <input
+          type="number"
+          value={salary}
+          placeholder={"Salary"}
+          style={{margin: '0.5rem', width: '80%',}}
+          onChange={e => setSalary(e.target.value)}
+        />
+      </label>
+
+
         &nbsp;
-       <button style={{margin: '0.5rem', border: '1px solid black',}} onClick={calculateSalary}> Negotiate</button>
+       <button style={{margin: '0.5rem', border: '1px solid black',}} onClick={calculateGrade}> Calculate Grade</button>
 
-         {(salary >= 0) ? 'Salary: $' + salary + ' million' : "Please Specify Contract Details"}
-         {(salary === "Illegal Contract") ? ' (Illegal Contract)' : null}
+         {grade ? 'Grade: '+ grade : "Please Specify Contract Details"}
 
-        <button style={{margin: '0.5rem', border: '1px solid black',}} onClick={signPlayer}> Sign</button>
+        <button style={{margin: '0.5rem', border: '1px solid black',}} onClick={signPlayer}> Submit Offer</button>
 
       </div>
   );

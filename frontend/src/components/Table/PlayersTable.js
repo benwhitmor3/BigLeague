@@ -87,7 +87,7 @@ function NumberRangeColumnFilter({
           const val = e.target.value
           setFilter((old = []) => [val ? parseInt(val, 10) : undefined, old[1]])
         }}
-        placeholder={`Min (${min})`}
+        placeholder={`Min (${min.toFixed(2)})`}
         style={{
           width: '100%',
           marginRight: '0.5rem',
@@ -102,7 +102,7 @@ function NumberRangeColumnFilter({
           const val = e.target.value
           setFilter((old = []) => [old[0], val ? parseInt(val, 10) : undefined])
         }}
-        placeholder={`Max (${max})`}
+        placeholder={`Max (${max.toFixed(2)})`}
         style={{
           width: '100%',
           marginRight: '0.5rem',
@@ -249,6 +249,7 @@ function PlayersTable() {
         accessor: 'epv', // accessor is the "key" in the data
         Filter: NumberRangeColumnFilter,
         filter: 'between',
+        Cell: props => (props.value).toFixed(2),
       },
         {
         Header: 'FRANCHISE',

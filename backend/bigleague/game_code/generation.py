@@ -11,7 +11,7 @@ desired_width = 200
 pd.set_option('display.width', desired_width)
 pd.set_option("display.max_columns", 20)
 
-db = '/Users/buw0017/projects/ben_walkthrough/bigleague.db'
+db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 
 num_of_teams = len(team_names)
 
@@ -167,7 +167,7 @@ class Players:
     team_names = ["alpha", "bravo", "charlie", "delta"]
     num_of_teams = len(team_names)
 
-    def __init__(self, name, suit, age, pv, epv, s_epv, contract, p_option, t_option, renew, salary, grade, team):
+    def __init__(self, name, suit, age, pv, epv, s_epv, contract, p_option, t_option, renew, salary, grade, team, lineup):
         self.name = name
         self.suit = suit
         self.age = age
@@ -181,6 +181,7 @@ class Players:
         self.salary = salary
         self.grade = grade
         self.team = team
+        self.lineup = lineup
 
         Players.num_of_players += 1
 
@@ -322,9 +323,14 @@ class Players:
             Players.team_names[3]] * 10
         self.team = random.choice(team_weight)
 
+    # generates team name with weight choices
+    def gen_lineup(self):
+        lineup_weight = ["starter"] * 5 + ["bench"] * 3 + ["reserve"] * 2
+        self.lineup = random.choice(lineup_weight)
+
     def __str__(self):
         return (self.name, self.suit, self.age, self.pv, self.epv, self.s_epv, self.contract, self.t_option,
-                self.p_option, self.renew, self.salary, self.grade, self.team)
+                self.p_option, self.renew, self.salary, self.grade, self.team, self.lineup)
 
     def __repr__(self):
         return str(self)
@@ -333,8 +339,7 @@ class Players:
         return {"name": self.name, "suit": self.suit, "age": self.age, "pv": self.pv, "epv": self.epv,
                 "s_epv": self.s_epv, "contract": self.contract, "t_option": self.t_option,
                 "p_option": self.p_option, "renew": self.renew, "salary": self.salary, "grade": self.grade,
-                "team": self.team}
-
+                "franchise": self.team, "lineup": self.lineup}
 
 def generation():
     franchise_list = []
@@ -415,7 +420,7 @@ def generation():
     player_list = []
     for i in range(100):
         player = Players("name", "suit", "age", "pv", "epv", "s_epv",
-                         "contract", "t_option", "p_option", "renew", "salary", "grade", "team")
+                         "contract", "t_option", "p_option", "renew", "salary", "grade", "team", "lineup")
         player_list.append(player)
 
     # Gives stats and info for players using methods above
@@ -434,6 +439,7 @@ def generation():
         player_list[i].gen_salary()
         player_list[i].gen_grade()
         player_list[i].gen_team()
+        player_list[i].gen_lineup()
 
     def save_players():
         # Converts list of players to a dictionary and data frame in one go with .to_dict method

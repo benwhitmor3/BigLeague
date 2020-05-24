@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import ContractDropdowns from "../Dropdowns/ContractDropdowns";
+import FreeAgentContractDropdowns from "../Dropdowns/FreeAgentContractDropdowns";
 
-function SigningPlayers() {
+function SigningFreeAgents() {
   const[player, setPlayer] = useState([]);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ function SigningPlayers() {
                     Age: {player.age} &nbsp;
                     EPV: {player.epv}
                     </div>
-                    <ContractDropdowns name={player.name} epv={player.epv}/>
+                    <FreeAgentContractDropdowns name={player.name} epv={player.epv} age={player.age}/>
                 </p>)
           }
         </p>
@@ -36,4 +36,4 @@ function SigningPlayers() {
   )
 }
 
-export default SigningPlayers
+export default SigningFreeAgents

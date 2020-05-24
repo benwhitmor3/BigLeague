@@ -1,11 +1,11 @@
 import React from 'react';
-import Signing from "./Signing/Signing";
+import SigningPlayers from "./Signing/SigningPlayers";
 
 export default function Season () {
 
     return (
       <div>
-        <Signing/>
+        <SigningPlayers/>
       </div>
 
   );
