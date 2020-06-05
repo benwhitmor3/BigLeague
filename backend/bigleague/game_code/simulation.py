@@ -1,17 +1,34 @@
 import sys
+
+sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
 import sqlite3
 import pandas as pd
 from random import gauss
 
-sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
-from variables import *
+db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 
 
-def simulation():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+'''———————————— Simulate a Season ————————————'''
+
+
+def simulation(games_per_series):
+    conn = sqlite3.connect(db)
     players = pd.read_sql_query("select * from players", conn)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
+    num_of_teams = len(team_names)
+
+    # everybody plays each other once schedule
+    def schedule_creation():
+        schedule = []
+        for base in range(0, num_of_teams):
+            for other in range(base + 1, num_of_teams):
+                schedule.append([team_names[base], team_names[other]])
+        return schedule
+
+    league_schedule = schedule_creation()
 
     suit_list = []
     results = {}
@@ -40,8 +57,7 @@ def simulation():
 
     # run a series for each scheduled match up
     for y in range(len(league_schedule)):
-        # num of games in a series
-        games = 27
+        games = games_per_series
         while games > 0:
 
             '''___________________________________TEAM A____________________________________'''
@@ -60,10 +76,10 @@ def simulation():
             # players.loc[(players['team'] == 'alpha') & (players['roster'] == 'starter')]['pv'].tolist()
             # players.loc[(players['team'] == 'alpha') & (players['roster'] == 'bench')]['pv'].tolist()
 
-            starter_value = players.loc[(players['team'] == league_schedule[y][0])]['pv'][0:5].tolist()
+            starter_value = players.loc[(players['franchise'] == league_schedule[y][0])]['pv'][0:5].tolist()
             # sum team pv starter_value (used for underdog coach)
             a_starter_value = sum(starter_value)
-            suit_list = players.loc[(players['team'] == league_schedule[y][0])]['suit'][0:5].tolist()
+            suit_list = players.loc[(players['franchise'] == league_schedule[y][0])]['suit'][0:5].tolist()
 
             # Starters
             player1_points = gauss(starter_value[0], sd)
@@ -72,7 +88,7 @@ def simulation():
             player4_points = gauss(starter_value[3], sd)
             player5_points = gauss(starter_value[4], sd)
 
-            bench_value = players.loc[(players['team'] == league_schedule[y][0])]['pv'][5:8].tolist()
+            bench_value = players.loc[(players['franchise'] == league_schedule[y][0])]['pv'][5:8].tolist()
 
             # Bench
             player6_points = gauss(bench_value[0], sd)
@@ -92,7 +108,8 @@ def simulation():
 
             # not perfect as will replace players in order of their starting list, does not maximize replacement with
             # WORST performance, however, if the performance is that bad to be -2 SD below value then it will still
-            # probably be replaced by a bench player.
+            # probably be replaced by a bench player. Would need to sort by who had the "worst" SD not just worst
+            # performance since a worse points does not mean worse performance
             if bench_points:
                 if starter_points[0] < starter_value[0] - (substitution * sd) and starter_points[0] < bench_points[-1]:
                     starter_points[0] = bench_points[-1]
@@ -132,10 +149,10 @@ def simulation():
             else:
                 sd = 9
 
-            starter_value = players.loc[(players['team'] == league_schedule[y][1])]['pv'][0:5].tolist()
+            starter_value = players.loc[(players['franchise'] == league_schedule[y][1])]['pv'][0:5].tolist()
             # sum team pv starter_value (used for underdog coach)
             b_starter_value = sum(starter_value)
-            suit_list = players.loc[(players['team'] == league_schedule[y][1])]['suit'][0:5].tolist()
+            suit_list = players.loc[(players['franchise'] == league_schedule[y][1])]['suit'][0:5].tolist()
 
             # Starters
             player1_points = gauss(starter_value[0], sd)
@@ -144,7 +161,7 @@ def simulation():
             player4_points = gauss(starter_value[3], sd)
             player5_points = gauss(starter_value[4], sd)
 
-            bench_value = players.loc[(players['team'] == league_schedule[y][1])]['pv'][5:8].tolist()
+            bench_value = players.loc[(players['franchise'] == league_schedule[y][1])]['pv'][5:8].tolist()
 
             # Bench
             player6_points = gauss(bench_value[0], sd)
@@ -164,7 +181,8 @@ def simulation():
 
             # not perfect as will replace players in order of their starting list, does not maximize replacement with
             # WORST performance, however, if the performance is that bad to be -2 SD below value then it will still
-            # probably be replaced by a bench player.
+            # probably be replaced by a bench player. Would need to sort by who had the "worst" SD not just worst
+            # performance since a worse points does not mean worse performance
             if bench_points:
                 if starter_points[0] < starter_value[0] - (substitution * sd) and starter_points[0] < bench_points[-1]:
                     starter_points[0] = bench_points[-1]
@@ -228,7 +246,7 @@ def simulation():
     '''__________________________season_stats_____and______season_summary_______________________'''
     # creating df for the season statistics
     season = pd.DataFrame(results)
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     season.to_sql('season', conn, if_exists='replace', index=True)
     conn.close()
 
@@ -250,6 +268,8 @@ def simulation():
     season_summary['std'] = season.std(axis=1)
 
     # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     season_summary.to_sql('season_summary', conn, if_exists='replace', index=True)
     conn.close()
+
+    print(season_summary)

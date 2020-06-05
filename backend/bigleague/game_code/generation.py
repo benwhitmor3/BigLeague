@@ -5,21 +5,29 @@ from random import gauss
 import pandas as pd
 from faker import Faker
 import sqlite3
-from variables import *
 
+# used for pandas print to see df
 desired_width = 200
 pd.set_option('display.width', desired_width)
 pd.set_option("display.max_columns", 20)
-
+fake = Faker()
 db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 
+'''——————————————— Variables for Creating the Generation ———————————————'''
+
+# need to make these a get request
+year = 1
+franchise_names = ['alpha', 'bravo', 'charlie', 'delta']  # same as team names but separate for generation
+team_names = ['alpha', 'bravo', 'charlie', 'delta']
 num_of_teams = len(team_names)
 
 city_names = ["Los Angeles", "Chicago", "New York", "Phoenix", "Indianapolis", "Philadelphia"]
 city_values = [12, 10, 12, 8, 7, 9]
+
 num_of_prospect_classes = 3
 
-fake = Faker()
+
+'''———————————————— Generating Franchises, GMs, Coaches, and Players ————————————————'''
 
 
 class Franchise:
@@ -42,7 +50,7 @@ class Franchise:
         Franchise.num_of_franchises += 1
 
     def gen_team(self):
-        self.team = team_names[0]
+        self.team = franchise_names[0]
 
     # generates random stadium_seats to test
     def gen_stadium_seats(self):
@@ -159,15 +167,11 @@ class Coaches:
         return {"name": self.name, "attribute1": self.attribute1, "attribute2": self.attribute2}
 
 
-from variables import *
-
-
 class Players:
     num_of_players = 0
-    team_names = ["alpha", "bravo", "charlie", "delta"]
-    num_of_teams = len(team_names)
 
-    def __init__(self, name, suit, age, pv, epv, s_epv, contract, p_option, t_option, renew, salary, grade, team, lineup):
+    def __init__(self, name, suit, age, pv, epv, s_epv, contract, p_option, t_option, renew, salary, grade, team,
+                 lineup):
         self.name = name
         self.suit = suit
         self.age = age
@@ -189,7 +193,7 @@ class Players:
     def gen_name(self):
         self.name = fake.name()
 
-    # generates age for first draft
+    # generates age for draft depending on year
     def gen_age(self):
         if year < 2:
             self.age = random.randint(18, 30)
@@ -218,6 +222,7 @@ class Players:
         sd = 3
         self.epv = self.pv + gauss(0, sd)
 
+    # generates scouter epv
     def gen_s_epv(self):
         sd = 2
         self.s_epv = self.pv + gauss(0, sd)
@@ -319,8 +324,8 @@ class Players:
 
     # generates team name with weight choices
     def gen_team(self):
-        team_weight = [Players.team_names[0]] * 10 + [Players.team_names[1]] * 10 + [Players.team_names[2]] * 10 + [
-            Players.team_names[3]] * 10
+        team_weight = [team_names[0]] * 10 + [team_names[1]] * 10 + [team_names[2]] * 10 + [
+            team_names[3]] * 10
         self.team = random.choice(team_weight)
 
     # generates team name with weight choices
@@ -341,6 +346,7 @@ class Players:
                 "p_option": self.p_option, "renew": self.renew, "salary": self.salary, "grade": self.grade,
                 "franchise": self.team, "lineup": self.lineup}
 
+
 def generation():
     franchise_list = []
     for i in range(num_of_teams):
@@ -359,7 +365,7 @@ def generation():
         franchise_list[i].gen_coach2()
         franchise_list[i].gen_city()
         franchise_list[i].gen_city_value()
-        del team_names[0]
+        del franchise_names[0]
 
     def save_franchise():
         # Converts list of players to a dictionary and data frame in one go with .to_dict method
@@ -377,7 +383,7 @@ def generation():
 
     # Generates list of coaches. Range creates number of coaches.
     gm_list = []
-    for i in range(20):
+    for i in range(8):
         gm = GM("name", "trait")
         gm_list.append(gm)
 

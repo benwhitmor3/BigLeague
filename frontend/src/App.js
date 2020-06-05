@@ -3,7 +3,7 @@ import './index.css';
 import Header from './components/Header';
 import Home from './components/Home';
 import Draft from './components/Draft';
-import Stadium from './components/Stadium';
+import Stadium from './components/StadiumExample.tsx';
 import GM from './components/GM';
 import Season from './components/Season';
 import OffSeason from './components/OffSeason';
