@@ -1,15 +1,12 @@
 import sys
-
 sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
 import pandas as pd
 import sqlite3
 from random import gauss
-from variables import *
 
-# need to add coaching/gm changes for development (should add column)? or maybe do a join in SQL
-# based on team?
+# need to add coaching/gm changes for development (e.g. trainer)
 
-db = '/Users/buw0017/projects/ben_walkthrough/bigleague.db'
+db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 
 
 def development():
@@ -66,25 +63,27 @@ def development():
     conn.close()
 
 
+# ADD CHANGES FOR ACTIONS
 def stadium_grade():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         franchise.loc[franchise['team'] == team_names[y], 'stadium_grade'] -= 1
 
-        # ADD CHANGES FOR ACTIONS
-
-    # send dataframe to sql
+    # updates SQL table
     conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
     return franchise
 
+
 def actions():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
 

@@ -1,5 +1,4 @@
 import sys
-
 sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
 import sqlite3
 import pandas as pd

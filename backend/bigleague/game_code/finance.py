@@ -1,17 +1,11 @@
 import sys
-
 sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
 import sqlite3
 import pandas as pd
 import numpy as np
-import random
 from random import gauss
-from variables import *
 
-conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
-season_summary = pd.read_sql_query("select * from season_summary", conn)
-franchise = pd.read_sql_query("select * from franchise", conn)
-conn.close()
+db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 
 
 '''NEED TO ADD COACHES SALARIES TO DATABASE AND PRICES FOR SEATS AND TICKETS'''
@@ -20,16 +14,18 @@ conn.close()
 
 
 def operating_costs():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     # add 50 million with 5 million standard deviation to each team as standard operating cost
     for y in range(len(team_names)):
         franchise.loc[franchise['team'] == team_names[y], 'expenses'] += gauss(50000000, 5000000)
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -37,18 +33,20 @@ def operating_costs():
 
 
 def salary_cost():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     players = pd.read_sql_query("select * from players", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     # get salary costs for each team and add them to expenses
     for y in range(len(team_names)):
         salaries = players.loc[(players['team'] == team_names[y])]['salary'].sum()
         franchise.loc[franchise['team'] == team_names[y], 'expenses'] += salaries
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -56,16 +54,18 @@ def salary_cost():
 
 
 def advertising_cost():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         ad = franchise.loc[(franchise['team'] == team_names[y])]['advertising'].iloc[0]
         franchise.loc[franchise['team'] == team_names[y], 'expenses'] += (2 ** ad) * 1000000
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -73,9 +73,11 @@ def advertising_cost():
 
 
 def merchandise_revenue():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         ad = franchise.loc[(franchise['team'] == team_names[y])]['advertising'].iloc[0]
@@ -83,8 +85,8 @@ def merchandise_revenue():
 
         franchise.loc[franchise['team'] == team_names[y], 'revenue'] += (50000 * (ad * fi))
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -92,9 +94,11 @@ def merchandise_revenue():
 
 
 def seats_revenue():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         ad = franchise.loc[(franchise['team'] == team_names[y])]['advertising'].iloc[0]
@@ -117,8 +121,8 @@ def seats_revenue():
 
         franchise.loc[franchise['team'] == team_names[y], 'revenue'] += tickets_sold_per_game * p
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -126,9 +130,11 @@ def seats_revenue():
 
 
 def boxes_revenue():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         ad = franchise.loc[(franchise['team'] == team_names[y])]['advertising'].iloc[0]
@@ -149,8 +155,8 @@ def boxes_revenue():
 
         franchise.loc[franchise['team'] == team_names[y], 'revenue'] += luxury_boxes_sold * p
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -158,11 +164,13 @@ def boxes_revenue():
 
 
 def tv_revenue():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     season_summary = pd.read_sql_query("select * from season_summary", conn)
     season = pd.read_sql_query("select * from season", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     '''vaguely based on an 80 game season'''
 
@@ -199,8 +207,8 @@ def tv_revenue():
     for y in range(len(team_names)):
         franchise.loc[franchise['team'] == team_names[y], 'revenue'] += tv_rev
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -211,9 +219,11 @@ def tv_revenue():
 
 
 def construction():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         stadium_seats = franchise.loc[(franchise['team'] == team_names[y])]['stadium_seats'].iloc[0]
@@ -224,8 +234,8 @@ def construction():
 
         franchise.loc[franchise['team'] == team_names[y], 'expenses'] += seats_cost + boxes_cost
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -233,9 +243,11 @@ def construction():
 
 
 def upkeep():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         stadium_seats = franchise.loc[(franchise['team'] == team_names[y])]['stadium_seats'].iloc[0]
@@ -248,8 +260,8 @@ def upkeep():
 
         franchise.loc[franchise['team'] == team_names[y], 'expenses'] += seats_upkeep + boxes_upkeep + grade_upkeep
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -257,15 +269,17 @@ def upkeep():
 
 
 def renovation():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     age = 1
 
     franchise.loc[franchise['team'] == team_names[y], 'expenses'] += 20000000 * np.log(age + 1)
 
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -276,10 +290,12 @@ def renovation():
 
 
 def fanbase():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     season_summary = pd.read_sql_query("select * from season_summary", conn)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         cv = franchise.loc[(franchise['team'] == team_names[y])]['city_value'].iloc[0]
@@ -293,8 +309,8 @@ def fanbase():
         franchise.loc[franchise['team'] == team_names[y], 'fanbase'] = \
             2 * cv + ppg + wins - losses + 3 * champs + bonuses - penalties
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -302,9 +318,11 @@ def fanbase():
 
 
 def fanindex():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
+
+    team_names = franchise.team.to_list()
 
     for y in range(len(team_names)):
         fb = franchise.loc[(franchise['team'] == team_names[y])]['fanbase'].iloc[0]
@@ -318,8 +336,8 @@ def fanindex():
 
         franchise.loc[franchise['team'] == team_names[y], 'fanindex'] = (0.7 * fb + 0.4 * fi_tminus) + fame
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -330,7 +348,7 @@ def fanindex():
 
 
 def money_payment():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
 
@@ -341,8 +359,8 @@ def money_payment():
     franchise.loc[franchise['team'] == sending_team, 'expenses'] += amount
     franchise.loc[franchise['team'] == receiving_team, 'revenue'] += amount
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     franchise.to_sql('franchise', conn, if_exists='replace', index=False)
     conn.close()
 
@@ -350,7 +368,7 @@ def money_payment():
 
 
 def trade_player():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     players = pd.read_sql_query("select * from players", conn)
     conn.close()
 
@@ -359,8 +377,8 @@ def trade_player():
 
     players.loc[players['name'] == player, 'team'] = receiving_team
 
-    # send dataframe to sql
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    # updates SQL table
+    conn = sqlite3.connect(db)
     players.to_sql('players', conn, if_exists='replace', index=False)
     conn.close()
 
