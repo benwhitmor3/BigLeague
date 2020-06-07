@@ -2,9 +2,9 @@ import sys
 sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
 import pandas as pd
 import sqlite3
-from random import gauss
 import math
-import generation
+
+db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 
 # this should be front end javascript. No because then can't see other peoples bidding. Need to hit DB?
 
@@ -59,7 +59,7 @@ def gen_grade(salary, contract, epv, renew, t_option, p_option, age):
 
 
 def player_option_true():
-    conn = sqlite3.connect('/Users/buw0017/projects/ben_walkthrough/bigleague.db')
+    conn = sqlite3.connect(db)
     players = pd.read_sql_query("select * from players", conn)
     conn.close()
 
