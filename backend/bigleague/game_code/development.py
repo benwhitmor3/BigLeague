@@ -1,7 +1,9 @@
 import sys
+
 sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
 import pandas as pd
 import sqlite3
+import random
 from random import gauss
 
 # need to add coaching/gm changes for development (e.g. trainer)
@@ -87,24 +89,75 @@ def actions():
     franchise = pd.read_sql_query("select * from franchise", conn)
     conn.close()
 
-    actions = ['improved bathrooms', 'improved concessions', 'jumbotron', 'upscale bar',
-               'hall of fame', 'improved seating', 'improved sound', 'party deck', 'w-fi',
-               'fan night', 'family game', 'door prize', 'mvp night', 'parade of championships',
-               'bribe the refs', 'easy runs', 'fan factor', 'train player', 'farm system',
-               'fan favourites', 'gourmet restaurant', 'beer garden', 'naming rights',
-               'event planning', 'bribe city officials']
+    league_actions = ['improved bathrooms', 'improved concessions', 'jumbotron', 'upscale bar',
+                      'hall of fame', 'improved seating', 'improved sound', 'party deck', 'wi-fi',
+                      'fan night', 'family game', 'door prizes', 'mvp night', 'parade of championships',
+                      'bribe the refs', 'easy runs', 'fan factor', 'train player', 'farm system',
+                      'fan favourites', 'gourmet restaurant', 'beer garden', 'naming rights',
+                      'event planning']
 
-    # maybe need to edit this to make actions dependent on coach gm?
-    # add actions columns to franchise dataframe (number of cols dependent on range)
-    for y in range(5):
-        franchise['actions' + str(y + 1)] = ''
+    teams = franchise.team.to_list()
+    d = dict.fromkeys(teams, None)
+    for team in teams:
+        d[team] = random.sample(league_actions, k=3)
 
-        # for each row append a sample of actions from the list to each column
-        for index, row in franchise.iterrows():
-            for team in team_names:
-                action = random.sample(actions, k=1)
-                franchise.at[index, 'actions' + str(y + 1)] = action[0]
+    # teams = franchise.team.to_list()
+    # actions = franchise.actions.to_list()
+    # d = dict(zip(teams, actions))
 
-    conn = sqlite3.connect(db)
-    franchise.to_sql('franchise', conn, if_exists='replace', index=False)
-    conn.close()
+    # handle requirements on the front end (i.e. promoter GM or trainer GM needed), may need to add column in DB
+    # for things like championships and beer garden etc.
+    for team in teams:
+        print(team)
+        if 'improved bathrooms' in d[team]:
+            print('+1 SS')
+        if 'improved concessions' in d[team]:
+            print('+1 SS')
+        if 'jumbotron' in d[team]:
+            print('+1 SS')
+        if 'upscale bar' in d[team]:
+            print('+1 SS')
+
+        if 'hall of fame' in d[team]:
+            print('+2 SS')
+        if 'improved seating' in d[team]:
+            print('+2 SS')
+        if 'improved sound' in d[team]:
+            print('+2 SS')
+        if 'party deck' in d[team]:
+            print('+2 SS')
+        if 'wi-fi' in d[team]:
+            print('+2 SS')
+
+        if 'fan night' in d[team]:
+            print('+6 FI')
+        if 'family game' in d[team]:
+            print('+6 FI')
+        if 'door prizes' in d[team]:
+            print('+6 FI')
+        if 'mvp night' in d[team]:
+            print('+10 FI')
+        if 'parade of champions' in d[team]:
+            print('+10 FI')
+
+        if 'bribe the refs' in d[team]:
+            print('+1 HF')
+        if 'easy runs' in d[team]:
+            print('+1 HF')
+        if 'fan factor' in d[team]:
+            print('+1 HF')
+
+        if 'train player' in d[team]:
+            print('train player')
+
+        if 'fan favourites' in d[team]:
+            print('+1 SS and +1 FI')
+        if 'gourmet restaurant' in d[team]:
+            print('10 mill with 5 mill s.d.')
+        if 'beer garden' in d[team]:
+            print('+2 FI and +1 HF')
+        if 'naming rights' in d[team]:
+            print('75 mill with 25 mill s.d.?')
+        if 'event planning' in d[team]:
+            print('5*SS*CV*Seats')
+

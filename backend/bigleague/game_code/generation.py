@@ -12,13 +12,16 @@ pd.set_option('display.width', desired_width)
 pd.set_option("display.max_columns", 20)
 fake = Faker()
 db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
+conn = sqlite3.connect(db)
+franchise = pd.read_sql_query("select * from franchise", conn)
+conn.close()
 
 '''——————————————— Variables for Creating the Generation ———————————————'''
 
 # need to make these a get request
 year = 1
-franchise_names = ['alpha', 'bravo', 'charlie', 'delta']  # same as team names but separate for generation
-team_names = ['alpha', 'bravo', 'charlie', 'delta']
+franchise_names = franchise.team.to_list()  # same as team names but separate for generation
+team_names = franchise.team.to_list()
 num_of_teams = len(team_names)
 
 city_names = ["Los Angeles", "Chicago", "New York", "Phoenix", "Indianapolis", "Philadelphia"]

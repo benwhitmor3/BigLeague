@@ -1,32 +1,32 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import ContractDropdowns from "../Dropdowns/ContractDropdowns";
-import useAxiosFetch from "../AxiosFetch";
-
 
 function SigningPlayers() {
-  const[player, setPlayer] = useState([]);
+    const [player, setPlayer] = useState({players: [], isFetching: false});
 
-  useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/players/')
-        .then(res => {
-          console.log(res)
-          setPlayer(res.data)
-        })
-        .catch(err => {
-          console.log(err)
-    })
-  }, []);
+    useEffect(() => {
+        const fetchPlayers = async () => {
+            try {
+                setPlayer({players: [], isFetching: true});
+                const response = await axios.get('http://127.0.0.1:8000/api/players/');
+                setPlayer({players: response.data, isFetching: false});
+                // console.log(response);
+            } catch (e) {
+                // console.log(e);
+                setPlayer({players: [], isFetching: false});
+            }
+        };
+        fetchPlayers();
+    }, []);
 
-
-  useAxiosFetch('http://127.0.0.1:8000/api/players/', 500);
-
+console.log(player.players);
 
   return (
       <div>
         <p>
-          {
-            player.map(player =>
+        {
+            player.players.map(player =>
                 <p key={player.name}>
                     <div style={{ fontWeight: 'bold' }}>
                     Name: {player.name} &nbsp;
@@ -36,7 +36,7 @@ function SigningPlayers() {
                     </div>
                     <ContractDropdowns name={player.name} epv={player.epv}/>
                 </p>)
-          }
+        }
         </p>
       </div>
   )
