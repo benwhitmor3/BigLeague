@@ -1,12 +1,12 @@
 import React from "react";
 import './index.css';
-import Header from './components/Header';
-import Home from './components/Home';
-import Draft from './components/Draft';
-import Stadium from './components/StadiumExample.tsx';
-import GM from './components/GM';
-import Season from './components/Season';
-import OffSeason from './components/OffSeason';
+import Header from './components/Header.tsx';
+import Home from './components/Home.tsx';
+import Draft from './components/Draft.tsx';
+import Stadium from './components/Stadium.tsx';
+import GM from './components/GM.tsx';
+import Season from './components/Season.tsx';
+import OffSeason from './components/Offseason.tsx';
 
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 

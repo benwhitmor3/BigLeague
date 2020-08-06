@@ -54,7 +54,7 @@
   transform: scale(1.2);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .Header {
     grid-template-areas: "logo burger" "nav nav";
   }
@@ -64,7 +64,7 @@
     grid-row-gap: 20px;
 
     padding: 30px 0 30px;
-    background: #f64c72;
+    background: #ffbd87;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
