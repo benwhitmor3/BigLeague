@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Select, OptionValue, Option} from "../Select";
+import {Select} from "../Select";
 
 
 function CitySelector() {
-  const[selected, setSelected] = useState("");
+  const[selected, setSelected] = useState("London");
   // specify and city to avoid any type allowed
   const [cities, setCities] = useState([{city: "", label: ""}]);
   // allows typescript to receive appropriate type [value: , label:]
@@ -20,15 +20,10 @@ function CitySelector() {
     })
   }, [])
 
-    function pickCity () {
-        console.log(selected)
-  }
 
   return (
       <div>
        <Select options={options} value={selected} onChange={setSelected}/>
-       <p/>
-       <button onClick={pickCity}> Confirm </button>
       </div>
   );
 }

@@ -118,7 +118,7 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 }
 
 // Let the table remove the filter if the string is empty
-fuzzyTextFilterFn.autoRemove = val => !val
+fuzzyTextFilterFn.autoRemove = val => !val;
 
 
 // Our table component
@@ -131,7 +131,7 @@ function Table({ columns, data}) {
       // "startWith"
       text: (rows, id, filterValue) => {
         return rows.filter(row => {
-          const rowValue = row.values[id]
+          const rowValue = row.values[id];
           return rowValue !== undefined
             ? String(rowValue)
                 .toLowerCase()
@@ -224,7 +224,32 @@ function Table({ columns, data}) {
 }
 
 function PlayersTable() {
-  const columns = useMemo(
+
+
+    const draftPlayer = (player) => {
+    console.log({
+            player
+        });
+          axios.put('http://127.0.0.1:8000/api/players/' + player.name + '/',
+        {
+            name: player.name,
+            suit: player.suit,
+            age: player.age,
+            pv: player.pv,
+            epv: player.epv,
+            s_epv: player.s_epv,
+            franchise: "franchise",
+        }
+    )
+            .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+    })
+};
+
+    const columns = useMemo(
 
     () => [
       {
@@ -252,14 +277,14 @@ function PlayersTable() {
         Cell: props => (props.value).toFixed(2),
       },
         {
-        Header: 'FRANCHISE',
+        Header: 'Franchise',
         accessor: 'franchise', // accessor is the "key" in the data
       },
       {
-     Header: 'ConsoleLogPlayer',
+     Header: 'Draft Player',
      Cell: row => (
          <div>
-         <button onClick={() => console.log(row.row.original)}>Draft</button>
+         <button onClick={() => draftPlayer(row.row.original)}>Draft</button>
          </div>
      ),
     },
@@ -276,13 +301,11 @@ function PlayersTable() {
       const result = await axios("http://127.0.0.1:8000/api/players/");
       setData(result.data);
     })();
-  }, []);
+  }, [draftPlayer]);
 
   return (
     <div className="Table">
-      {/*<Styles>*/}
       <Table columns={columns} data={data} />
-    {/*</Styles>*/}
     </div>
   )
 }

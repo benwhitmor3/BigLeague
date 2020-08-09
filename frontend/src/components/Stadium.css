@@ -1,9 +1,14 @@
 h1 {
   margin-bottom: 50px;
+  padding-bottom: 5px;
 }
 
 .number-inputs {
   margin-bottom: 20px;
+}
+
+label {
+  padding-bottom: 10px;
 }
 
 input {

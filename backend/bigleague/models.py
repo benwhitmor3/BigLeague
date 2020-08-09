@@ -33,7 +33,7 @@ class Stadium(models.Model):
     stadium_grade = models.IntegerField(blank=True, null=True)
     stadium_max_grade = models.IntegerField(blank=True, null=True)
     home_field_advantage = models.IntegerField(blank=True, null=True)
-    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
 
     def __str__(self):
