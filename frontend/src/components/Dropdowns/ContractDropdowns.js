@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import axios from "axios";
+
 
 //add conditional dropdown, so that team and player option are always less than contract length
 
@@ -107,8 +109,26 @@ function calculateSalary() {
 }
 
 function signPlayer() {
-    console.log("Signing " + player.name + ' for ' + salary)
-}
+    console.log("Signing " + player.name + ' for ' + salary + ' with grade ' + 5);
+      axios.patch('http://127.0.0.1:8000/api/players/' + player.name + '/',
+    {
+        name: player.name,
+        contract: length,
+        t_option: teamoption,
+        p_option: playeroption,
+        renew: renewal,
+        salary: salary,
+        grade: 5
+    }
+)
+        .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+};
+
 
   return (
     <div>

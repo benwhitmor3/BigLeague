@@ -1,8 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from "axios";
 
-//add conditional dropdown, so that team and player option are always less than contract length
-
-function ContractDropdowns(player) {
+export function ContractDropdowns(player) {
   const [contractlength] = React.useState([
     {label: "One Year", value: 1},
     {label: "Two Years", value: 2},
@@ -37,6 +36,7 @@ function ContractDropdowns(player) {
   const[teamoption, setTeamOption] = useState(null);
   const[playeroption, setPlayerOption] = useState(null);
   const [salary, setSalary] = useState(0);
+  const [cgrade, setCGrade] = useState(0);
 
   let lengthdropdown = contractlength.map(contractlength => (
     <option key={contractlength.value} value={contractlength.value}>
@@ -109,9 +109,44 @@ function calculateGrade() {
     }
 }
 
+function getCGrade() {
+        axios.get('http://127.0.0.1:8000/api/players/' + player.name + '/')
+            .then(res => {
+                console.log(player.name)
+                console.log(res.data.grade)
+                setCGrade(res.data.grade)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+};
+
 function signPlayer() {
-    console.log("Signing " + player.name + ' for ' + salary + ' with grade ' + grade)
-}
+    // console.log("Signing " + player.name + ' for ' + salary + ' with grade ' + grade);
+    if (player.grade > grade) {
+        alert("failed to sign this player. Needs" + player.grade + "grade")
+    }
+    else {
+        axios.patch('http://127.0.0.1:8000/api/players/' + player.name + '/',
+            {
+                name: player.name,
+                contract: length,
+                t_option: teamoption,
+                p_option: playeroption,
+                renew: renewal,
+                salary: salary,
+                grade: grade
+            }
+        )
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+};
+
 
   return (
     <div>

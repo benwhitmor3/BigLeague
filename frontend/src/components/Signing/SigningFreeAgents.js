@@ -5,6 +5,12 @@ import FreeAgentContractDropdowns from "../Dropdowns/FreeAgentContractDropdowns"
 function SigningFreeAgents() {
   const[player, setPlayer] = useState([]);
 
+  function EndedFA() {
+      window.setTimeout(() => {
+          setPlayer([]);
+      }, 1000);
+  }
+
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/players/')
         .then(res => {
@@ -14,10 +20,12 @@ function SigningFreeAgents() {
         .catch(err => {
           console.log(err)
     })
-  }, []);
+  }, [FreeAgentContractDropdowns]);
 
   return (
+
       <div>
+     <button onClick={() =>EndedFA()}>Begin FA </button>
         <p>
           {
             player.map(player =>
@@ -26,9 +34,10 @@ function SigningFreeAgents() {
                     Name: {player.name} &nbsp;
                     Suit: {player.suit} &nbsp;
                     Age: {player.age} &nbsp;
-                    EPV: {player.epv}
+                    EPV: {player.epv} &nbsp;
+                    Grade: {player.grade}
                     </div>
-                    <FreeAgentContractDropdowns name={player.name} epv={player.epv} age={player.age}/>
+                    <FreeAgentContractDropdowns name={player.name} epv={player.epv} age={player.age} grade={player.grade}/>
                 </p>)
           }
         </p>
