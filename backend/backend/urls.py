@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from bigleague import views
+from graphene_django.views import GraphQLView
+from .schema import schema
 
 router = routers.DefaultRouter()
 
@@ -33,4 +35,8 @@ router.register(r'seasons', views.SeasonView, 'season_view')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('graphql/', GraphQLView.as_view(
+        graphiql=True,
+        schema=schema
+    ))
     ]

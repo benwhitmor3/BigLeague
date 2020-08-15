@@ -1,5 +1,5 @@
 import sqlite3
-from backend.bigleague.models import *
+from bigleague.models import *
 import pandas as pd
 
 db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
@@ -17,6 +17,8 @@ model_instances = [Player(
     epv=record['epv'],
     s_epv=record['s_epv']
 ) for record in players]
+
+Player.objects.filter(name, suit, age, ).update(model_instances=model_instances)
 
 Player.objects.bulk_create(model_instances)
 Player.objects.all().delete()
