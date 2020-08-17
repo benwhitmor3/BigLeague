@@ -1,12 +1,17 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import FranchiseSerializer, CitySerializer, StadiumSerializer, PlayerSerializer, GMSerializer, \
-    CoachSerializer, \
-    SeasonSerializer
-from .models import Franchise, City, Stadium, Player, GM, Coach, Season
+from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
+    GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer, StaffSerializer, \
+    RosterSerializer
+from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Staff, Roster
 
 
 # Create your views here.
+class UserView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
 class FranchiseView(viewsets.ModelViewSet):
     queryset = Franchise.objects.all()
     serializer_class = FranchiseSerializer
@@ -21,6 +26,11 @@ class FranchiseView(viewsets.ModelViewSet):
     #
     # def perform_create(self, serializer):
     #     serializer.save(owner=self.request.user)
+
+
+class LeagueView(viewsets.ModelViewSet):
+    queryset = League.objects.all()
+    serializer_class = LeagueSerializer
 
 
 class CityView(viewsets.ModelViewSet):
@@ -48,6 +58,23 @@ class CoachView(viewsets.ModelViewSet):
     serializer_class = CoachSerializer
 
 
+class ActionView(viewsets.ModelViewSet):
+    queryset = Action.objects.all()
+    serializer_class = ActionSerializer
+
+
 class SeasonView(viewsets.ModelViewSet):
     queryset = Season.objects.all()
     serializer_class = SeasonSerializer
+
+
+class StaffView(viewsets.ModelViewSet):
+    queryset = Staff.objects.all()
+    serializer_class = StaffSerializer
+
+
+class RosterView(viewsets.ModelViewSet):
+    queryset = Roster.objects.all()
+    serializer_class = RosterSerializer
+
+

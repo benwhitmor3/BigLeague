@@ -1,21 +1,76 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 # Create your models here.
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, username, password=None):
+        if not email:
+            raise ValueError("Users must have an email address")
+        if not username:
+            raise ValueError("Users must have a username")
 
-class League(models.Model):
-    league_name = models.CharField(max_length=25, primary_key=True)
-    # add user??
+        user = self.model(
+            email=self.normalize_email(email),
+            username=username,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, username, password=None):
+        user = self.create_user(
+            email=self.normalize_email(email),
+            username=username,
+            password=password,
+        )
+        user.is_admin = True
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+
+class User(AbstractBaseUser):
+    email = models.EmailField(verbose_name='email', max_length=60, unique=True)
+    username = models.CharField(max_length=30, unique=True)
+    date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
+    last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
+    is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', ]
+
+    objects = MyUserManager()
+
+    def __str__(self):
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        return True
 
 
 class Franchise(models.Model):
     franchise = models.CharField(max_length=25, primary_key=True)
-    owner = models.ForeignKey(
-        User, related_name="Owner", on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.franchise
+
+
+class League(models.Model):
+    league_name = models.CharField(max_length=25, primary_key=True)
+    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.league_name
 
 
 class City(models.Model):
@@ -28,59 +83,68 @@ class City(models.Model):
 
 class Stadium(models.Model):
     stadium_name = models.CharField(max_length=20, primary_key=True)
-    stadium_seats = models.IntegerField(blank=True, null=True)
-    stadium_boxes = models.IntegerField(blank=True, null=True)
-    stadium_grade = models.IntegerField(blank=True, null=True)
-    stadium_max_grade = models.IntegerField(blank=True, null=True)
-    home_field_advantage = models.IntegerField(blank=True, null=True)
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
+    seats = models.IntegerField(default=0)
+    boxes = models.IntegerField(default=0)
+    grade = models.IntegerField(default=20)
+    max_grade = models.IntegerField(default=20)
+    home_field_advantage = models.IntegerField(default=0)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.stadium_name
 
 
-class Player(models.Model):
-    name = models.CharField(max_length=50, primary_key=True)
-    suit = models.CharField(max_length=10)
-    age = models.IntegerField()
-    pv = models.FloatField()
-    epv = models.FloatField()
-    s_epv = models.FloatField()
-    contract = models.IntegerField(blank=True, null=True)
-    t_option = models.IntegerField(blank=True, null=True)
-    p_option = models.IntegerField(blank=True, null=True)
-    renew = models.CharField(max_length=10, blank=True)
-    salary = models.FloatField(blank=True, null=True)
-    grade = models.FloatField(blank=True, null=True)
-    franchise = models.CharField(max_length=25, blank=True, null=True)
-    lineup = models.CharField(max_length=10, blank=True, null=True)
-    trainer = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
-
-
 class GM(models.Model):
-    trait = models.CharField(max_length=50)
-    franchise = models.CharField(max_length=25, blank=True, null=True)
+    TRAIT_CHOICES = [('facilitator', 'facilitator'), ('promoter', 'promoter'), ('recruiter', 'recruiter'),
+                     ('scouter', 'scouter'), ('suitor', 'suitor'), ('trainer', 'trainer'), ]
+
+    trait = models.CharField(max_length=20, primary_key=True, choices=TRAIT_CHOICES)
 
     def __str__(self):
         return self.trait
 
 
 class Coach(models.Model):
-    name = models.CharField(max_length=50, primary_key=True)
-    attribute1 = models.CharField(max_length=25)
-    attribute2 = models.CharField(max_length=25)
-    franchise = models.CharField(max_length=25, blank=True, null=True)
+    ATTRIBUTE_CHOICES = [('clutch', 'clutch'), ('fame', 'fame'), ('focus', 'focus'), ('guts', 'guts'),
+                         ('substitution', 'substitution'), ('teamwork', 'teamwork'), ('underdog', 'underdog'),
+                         ('wildcard', 'wildcard'), ]
+
+    name = models.CharField(max_length=30, primary_key=True)
+    attribute_one = models.CharField(max_length=20, blank=True, null=True)
+    attribute_two = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.name
 
 
-class Actions(models.Model):
-    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+class Player(models.Model):
+    SUIT_CHOICES = [('diamond', 'diamond'), ('spade', 'spade'), ('club', 'club'), ('heart', 'heart'), ]
+    RENEW_CHOICES = [('no', 'no'), ('non-repeat', 'non-repeat'), ('repeat', 'repeat'), ]
+    LINEUP_CHOICES = [('starter', 'starter'), ('rotation', 'rotation'), ('bench', 'bench'), ]
+
+    name = models.CharField(max_length=50, primary_key=True)
+    suit = models.CharField(max_length=10, choices=SUIT_CHOICES)
+    age = models.IntegerField(default=20)
+    pv = models.FloatField(default=20)
+    epv = models.FloatField(default=20)
+    s_epv = models.FloatField(default=20)
+    contract = models.IntegerField(blank=True, null=True)
+    t_option = models.IntegerField(blank=True, null=True)
+    p_option = models.IntegerField(blank=True, null=True)
+    renew = models.CharField(max_length=10, blank=True, choices=RENEW_CHOICES)
+    salary = models.FloatField(blank=True, null=True)
+    grade = models.FloatField(blank=True, null=True)
+    lineup = models.CharField(max_length=10, blank=True, null=True, choices=LINEUP_CHOICES)
+    trainer = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Action(models.Model):
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
+    number_of_actions = models.IntegerField(default=2, validators=[MaxValueValidator(5), MinValueValidator(0)])
     improved_bathrooms = models.BooleanField(default=False)
     improved_concessions = models.BooleanField(default=False)
     jumbotron = models.BooleanField(default=False)
@@ -98,7 +162,7 @@ class Actions(models.Model):
     bribe_the_refs = models.BooleanField(default=False)
     easy_runs = models.BooleanField(default=False)
     fan_factor = models.BooleanField(default=False)
-    train_player = models.BooleanField(default=False)
+    train_player = models.IntegerField(default=0, validators=[MaxValueValidator(5), MinValueValidator(0)])
     farm_system = models.BooleanField(default=False)
     fan_favourites = models.BooleanField(default=False)
     gourmet_restaurant = models.BooleanField(default=False)
@@ -106,14 +170,42 @@ class Actions(models.Model):
     naming_rights = models.BooleanField(default=False)
     event_planning = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.franchise
+
 
 class Season(models.Model):
-    season = models.IntegerField()
-    wins = models.IntegerField()
-    losses = models.IntegerField()
-    ppg = models.FloatField()
-    std = models.FloatField()
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
+    ready = models.BooleanField(default=False)
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
+    ppg = models.FloatField(default=0)
+    std = models.FloatField(default=0)
+    championships = models.IntegerField(default=0)
+    bonuses = models.IntegerField(default=0)
+    penalties = models.IntegerField(default=0)
+    fan_base = models.FloatField(default=0)
+    fan_index = models.FloatField(default=0)
+    advertising = models.IntegerField(default=1)
+    revenue = models.FloatField(default=0)
+    expenses = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.franchise
+
+
+class Staff(models.Model):
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
+    gm = models.ForeignKey(GM, on_delete=models.CASCADE, null=True)
+    coach = models.OneToOneField(Coach, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.franchise
+
+
+class Roster(models.Model):
+    player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True)
     franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.season
+        return self.player

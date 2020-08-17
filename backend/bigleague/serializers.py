@@ -1,10 +1,22 @@
 from rest_framework import serializers
-from .models import Franchise, City, Stadium, Player, GM, Coach, Season
+from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Staff, Roster
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
 
 
 class FranchiseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Franchise
+        fields = '__all__'
+
+
+class LeagueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = League
         fields = '__all__'
 
 
@@ -38,7 +50,27 @@ class CoachSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Action
+        fields = '__all__'
+
+
 class SeasonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Season
         fields = '__all__'
+
+
+class StaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Staff
+        fields = '__all__'
+
+
+class RosterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roster
+        fields = '__all__'
+
+

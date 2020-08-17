@@ -23,13 +23,18 @@ from .schema import schema
 
 router = routers.DefaultRouter()
 
+router.register(r'users', views.UserView, 'user_view')
 router.register(r'franchises', views.FranchiseView, 'franchise_view')
+router.register(r'leagues', views.LeagueView, 'league_view')
 router.register(r'cities', views.CityView, 'city_view')
 router.register(r'stadiums', views.StadiumView, 'team_view')
-router.register(r'players', views.PlayerView, 'player_view')
 router.register(r'gms', views.GMView, 'gm_view')
 router.register(r'coaches', views.CoachView, 'coach_view')
+router.register(r'players', views.PlayerView, 'player_view')
+router.register(r'actions', views.ActionView, 'action_view')
 router.register(r'seasons', views.SeasonView, 'season_view')
+router.register(r'staff', views.StaffView, 'staff_view')
+router.register(r'roster', views.RosterView, 'roster_view')
 
 
 urlpatterns = [

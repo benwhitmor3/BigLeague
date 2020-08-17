@@ -65,9 +65,9 @@ REST_FRAMEWORK = {
     ),
 }
 
-JWT_AUTH = {
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'bigleague.utils.my_jwt_response_handler'
-}
+# JWT_AUTH = {
+#     'JWT_RESPONSE_PAYLOAD_HANDLER': 'bigleague.utils.my_jwt_response_handler'
+# }
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -86,6 +86,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'bigleague.User'
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
