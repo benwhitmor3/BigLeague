@@ -39,6 +39,7 @@ class User(AbstractBaseUser):
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
@@ -59,7 +60,7 @@ class User(AbstractBaseUser):
 
 class Franchise(models.Model):
     franchise = models.CharField(max_length=25, primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    username = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
 
     def __str__(self):
         return self.franchise
@@ -95,36 +96,65 @@ class Stadium(models.Model):
         return self.stadium_name
 
 
-class GM(models.Model):
-    TRAIT_CHOICES = [('facilitator', 'facilitator'), ('promoter', 'promoter'), ('recruiter', 'recruiter'),
-                     ('scouter', 'scouter'), ('suitor', 'suitor'), ('trainer', 'trainer'), ]
+class Trait(models.TextChoices):
+    FACILITATOR = 'facilitator', 'facilitator'
+    PROMOTER = 'promoter', 'promoter'
+    RECRUITER = 'recruiter', 'recruiter'
+    SCOUTER = 'scouter', 'scouter'
+    SUITOR = 'suitor', 'suitor'
+    TRAINER = 'trainer', 'trainer'
 
-    trait = models.CharField(max_length=20, primary_key=True, choices=TRAIT_CHOICES)
+
+class GM(models.Model):
+    trait = models.CharField(max_length=12, primary_key=True, choices=Trait.choices)
 
     def __str__(self):
         return self.trait
 
 
-class Coach(models.Model):
-    ATTRIBUTE_CHOICES = [('clutch', 'clutch'), ('fame', 'fame'), ('focus', 'focus'), ('guts', 'guts'),
-                         ('substitution', 'substitution'), ('teamwork', 'teamwork'), ('underdog', 'underdog'),
-                         ('wildcard', 'wildcard'), ]
+class Attribute(models.TextChoices):
+    TEAMWORK = 'teamwork', 'teamwork'
+    CLUTCH = 'clutch', 'clutch'
+    FAME = 'fame', 'fame'
+    FOCUS = 'focus', 'focus'
+    GUTS = 'guts', 'guts'
+    SUBSTITUTION = 'substitution', 'substitution'
+    UNDERDOG = 'underdog', 'underdog'
+    WILDCARD = 'wildcard', 'wildcard'
 
+
+class Coach(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
-    attribute_one = models.CharField(max_length=20, blank=True, null=True)
-    attribute_two = models.CharField(max_length=20, blank=True, null=True)
+    attribute_one = models.CharField(max_length=12, choices=Attribute.choices)
+    attribute_two = models.CharField(max_length=12, choices=Attribute.choices)
 
     def __str__(self):
         return self.name
 
 
+class Suit(models.TextChoices):
+    DIAMOND = 'diamond', 'diamond'
+    SPADE = 'spade', 'spade'
+    CLUB = 'club', 'club'
+    HEART = 'heart', 'heart'
+
+
+class Renew(models.TextChoices):
+    NO = 'no', 'no'
+    NON_REPEAT = 'non-repeat', 'non-repeat'
+    REPEAT = 'repeat', 'repeat'
+
+
+class Lineup(models.TextChoices):
+    BENCH = 'bench', 'bench'
+    ROTATION = 'rotation', 'rotation'
+    STARTER = 'starter', 'starter'
+
+
 class Player(models.Model):
-    SUIT_CHOICES = [('diamond', 'diamond'), ('spade', 'spade'), ('club', 'club'), ('heart', 'heart'), ]
-    RENEW_CHOICES = [('no', 'no'), ('non-repeat', 'non-repeat'), ('repeat', 'repeat'), ]
-    LINEUP_CHOICES = [('starter', 'starter'), ('rotation', 'rotation'), ('bench', 'bench'), ]
 
     name = models.CharField(max_length=50, primary_key=True)
-    suit = models.CharField(max_length=10, choices=SUIT_CHOICES)
+    suit = models.CharField(max_length=10, choices=Suit.choices)
     age = models.IntegerField(default=20)
     pv = models.FloatField(default=20)
     epv = models.FloatField(default=20)
@@ -132,10 +162,10 @@ class Player(models.Model):
     contract = models.IntegerField(blank=True, null=True)
     t_option = models.IntegerField(blank=True, null=True)
     p_option = models.IntegerField(blank=True, null=True)
-    renew = models.CharField(max_length=10, blank=True, choices=RENEW_CHOICES)
+    renew = models.CharField(max_length=10, choices=Renew.choices)
     salary = models.FloatField(blank=True, null=True)
     grade = models.FloatField(blank=True, null=True)
-    lineup = models.CharField(max_length=10, blank=True, null=True, choices=LINEUP_CHOICES)
+    lineup = models.CharField(max_length=10, choices=Lineup.choices)
     trainer = models.BooleanField(default=False)
 
     def __str__(self):

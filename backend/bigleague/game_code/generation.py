@@ -1,3 +1,4 @@
+import os
 import sys
 sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend/bigleague/game_code')
 import random
@@ -13,15 +14,15 @@ pd.set_option("display.max_columns", 20)
 fake = Faker()
 db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 conn = sqlite3.connect(db)
-franchise = pd.read_sql_query("select * from franchise", conn)
+franchise = pd.read_sql_query("select * from bigleague_franchise", conn)
 conn.close()
 
 '''——————————————— Variables for Creating the Generation ———————————————'''
 
 # need to make these a get request
 year = 1
-franchise_names = franchise.team.to_list()  # same as team names but separate for generation
-team_names = franchise.team.to_list()
+franchise_names = franchise.franchise.to_list()  # same as team names but separate for generation
+team_names = franchise.franchise.to_list()
 num_of_teams = len(team_names)
 
 city_names = ["Los Angeles", "Chicago", "New York", "Phoenix", "Indianapolis", "Philadelphia"]
@@ -380,7 +381,7 @@ def generation():
         df['fanindex'] = 70
         print(df)
         conn = sqlite3.connect(db)
-        df.to_sql('franchise', conn, if_exists='replace', index=False)
+        df.to_sql('bigleague_franchise', conn, if_exists='replace', index=False)
 
     save_franchise()
 
@@ -400,7 +401,7 @@ def generation():
         df = pd.DataFrame(g.to_dict() for g in gm_list)
         print(df)
         conn = sqlite3.connect(db)
-        df.to_sql('gm', conn, if_exists='replace', index=False)
+        df.to_sql('bigleague_gm', conn, if_exists='replace', index=False)
 
     save_gm()
 
@@ -421,7 +422,7 @@ def generation():
         df = pd.DataFrame(c.to_dict() for c in coach_list)
         print(df)
         conn = sqlite3.connect(db)
-        df.to_sql('coaches', conn, if_exists='replace', index=False)
+        df.to_sql('bigleague_coach', conn, if_exists='replace', index=False)
 
     save_coach()
 
@@ -455,6 +456,6 @@ def generation():
         df = pd.DataFrame(p.to_dict() for p in player_list)
         print(df)
         conn = sqlite3.connect(db)
-        df.to_sql('players', conn, if_exists='replace', index=False)
+        df.to_sql('bigleague_player', conn, if_exists='replace', index=False)
 
     save_players()
