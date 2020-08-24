@@ -1,40 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./Header.css";
-import { CSSTransition } from "react-transition-group";
 // @ts-ignore
 import file from "./Instructions/BigLeagueInstructions.pdf";
+import 'antd/dist/antd.less'
 
 export default function Header() {
-  const [isNavVisible, setNavVisibility] = useState<boolean>(false);
-  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 800px)");
-    mediaQuery.addListener(handleMediaQueryChange);
-    handleMediaQueryChange(mediaQuery);
-
-    return () => {
-      mediaQuery.removeListener(handleMediaQueryChange);
-    };
-  }, []);
-
-  const handleMediaQueryChange = (mediaQuery: any) => {
-    if (mediaQuery.matches) {
-      setIsSmallScreen(true);
-    } else {
-      setIsSmallScreen(false);
-    }
-  };
-
-  const toggleNav = () => {
-    setNavVisibility(!isNavVisible);
-  };
 
   return (
     <header className="Header">
 
-        <CSSTransition in={!isSmallScreen || isNavVisible}
-      timeout={350} classNames="NavAnimation" unmountOnExit>
         <nav className="Nav">
           <a href="/Home">Home</a>
           <a href="/Stadium">Stadium</a>
@@ -44,11 +18,6 @@ export default function Header() {
           <a href="/OffSeason">OffSeason</a>
           <a href = {file}>Instructions</a>
         </nav>
-      </CSSTransition>
-
-      <button onClick={toggleNav} className="Burger">
-        <span role="img" aria-label="Basketball">🏀</span>
-      </button>
 
     </header>
   );

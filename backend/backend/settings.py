@@ -41,7 +41,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'bigleague',
     'graphene_django',
+    'django_filters',
 ]
+
+
+GRAPHENE = {
+    "SCHEMA": "bigleague.schema.schema"
+}
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -140,7 +147,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
 
 
 # If this is used as TRUE then `CORS_ORIGIN_WHITELIST` will not have any effect, use as false with whitelist

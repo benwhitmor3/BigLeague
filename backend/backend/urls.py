@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from bigleague import views
+from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from .schema import schema
 
@@ -40,8 +41,8 @@ router.register(r'roster', views.RosterView, 'roster_view')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('graphql/', GraphQLView.as_view(
+    path('graphql/', csrf_exempt(GraphQLView.as_view(
         graphiql=True,
         schema=schema
-    ))
+    ))),
     ]

@@ -31,6 +31,7 @@
   transition: 0.5s;
   text-decoration: none;
 }
+
 .Nav a:hover {
   transform: scale(1.2);
   color: #ffffff;

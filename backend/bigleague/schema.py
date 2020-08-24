@@ -1,4 +1,5 @@
 import graphene
+from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
 from graphene_django.forms.mutation import DjangoFormMutation
 from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Staff, Roster

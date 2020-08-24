@@ -17,3 +17,9 @@ body {
   /*default font color for app*/
   color: black;
 }
+
+.site-layout-content {
+  background: #fff;
+  padding: 24px;
+  min-height: 100vh;
+}

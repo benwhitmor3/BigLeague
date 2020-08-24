@@ -17,4 +17,3 @@ admin.site.register(Action)
 admin.site.register(Season)
 admin.site.register(Staff)
 admin.site.register(Roster)
-
