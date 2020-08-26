@@ -3,38 +3,38 @@ import './Stadium.css';
 import {useForm, Controller} from "react-hook-form";
 import axios from "axios";
 import {Select} from "./Select";
-import {Alert} from "antd";
+import {Alert, Input as InputField} from "antd";
 import CSS from "csstype";
 
 type stadiumConfig = {
     stadium_name: string;
     seats: number;
     boxes: number;
+    city: string;
     total: number;
     franchise: string;
-    city: string;
 };
 
 // function for stadium component
 export default function StadiumForm() {
   const {register, handleSubmit, errors, control} = useForm<stadiumConfig>();
-  const onSubmit = handleSubmit(({stadium_name, seats, boxes, total, franchise, city}: stadiumConfig) => {
-        console.log(stadium_name, seats, boxes, total, franchise, city);
+  const onSubmit = handleSubmit(({stadium_name, seats, boxes, city, total, franchise}: stadiumConfig) => {
+        console.log(stadium_name, seats, boxes, city, total, franchise);
     });
 
   const [seats, setSeats] = useState<number>(0);
   const [boxes, setBoxes] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
-  const[city, setCity] = useState<string>("");
+  const [city, setCity] = useState<string>("London");
   // // specify city and label to avoid any type allowed
   // // options allows typescript to receive appropriate type [value: , label:]
   // const [cities, setCities] = useState([{city: "", label: ""}]);
   // let options = cities.map(cities => {return {value: cities.city, label: cities.city}});
   let options = [{ value: "london", label: "London" }, { value: "phoenix", label: "Phoenix" },
                       { value: "new york", label: "New York" }]
-  //
-  // let franchise = "franchise";
-  //
+
+ let franchise = "franchise";
+
 
     useEffect(() => {
         setTotal((seats * 15000) + (boxes * 500000));
@@ -147,14 +147,17 @@ export default function StadiumForm() {
 
             <label style = {{marginRight: '10px'}}>City</label>
             <Controller name="city" style={{fontWeight: 'bold', backgroundColor: '#ffffff', color: '#ad2102'}}
-            as={Select} value={city}
+            as={Select} defaultValue={"London"} value={city}
             onChange={(event: any) => {setCity(event.target.valueAsNumber)}}
             options={options}
             control={control} rules={{ required: true }}/>
 
+            <input name="total" type="number" style={{display: "none"}} value={total} ref={register({})}/>
             <h4 style ={{marginTop: '10px'}}>{total ? 'Construction Cost: $' + +total/1000000 + ' million' : ''}</h4>
 
-            <input type="submit"  style={buttonStyles} value="Build Stadium"/>
+          <input name="franchise" style={{display: "none"}} value={franchise} ref={register({})}/>
+
+            <input type="submit" style={buttonStyles} value="Build Stadium"/>
 
             <br/> {errors.stadium_name && <Alert message={errors.stadium_name.message} type="error" closable/>}
             <br/>
