@@ -11,7 +11,7 @@ import file from "./components/Instructions/BigLeagueInstructions.pdf";
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import 'antd/dist/antd.css';
 import { Layout, Menu} from 'antd';
-
+import './Header.css'
 
 
 const { Header, Content, Footer } = Layout;
@@ -20,19 +20,16 @@ const App: React.FunctionComponent<{}> = () => (
   <div>
 
     <Layout className='layout'>
-
     <Header style={{backgroundColor: '#d4380d' }}>
-      <Menu theme='light' className='menu' mode="horizontal"
-            style={{color: '#fff2e8', backgroundColor: '#d4380d', lineHeight: '63px', fontSize: '16px'}}>
+      <Menu theme="dark" mode="horizontal"  style={{backgroundColor: 'inherit', color: '#fff2e8'}}>
         <Menu.Item key="1" >Home <a href="/Home"/></Menu.Item>
-        <Menu.Item key="2" >Franchise<a href="/Franchise"/></Menu.Item>
+        <Menu.Item key="2" >Franchise<a href="/Stadium"/></Menu.Item>
         <Menu.Item key="3" >OffSeason<a href="/OffSeason"/></Menu.Item>
         <Menu.Item key="4" >Season<a href="/Season"/></Menu.Item>
         <Menu.Item key="5" >League Summary<a href="/League Summary"/></Menu.Item>
         <Menu.Item key="6" >Instructions<a href = {file}/></Menu.Item>
       </Menu>
     </Header>
-
     <Content style={{ margin: '16px' }}>
       <div className="site-layout-content">
       <Router>

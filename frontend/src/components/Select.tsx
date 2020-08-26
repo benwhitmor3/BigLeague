@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import CSS from "csstype";
 
 export type OptionValue = string | number;
 
@@ -11,6 +12,7 @@ type Props<T extends OptionValue> = {
   options: Option<T>[];
   value: T;
   onChange: (value: T) => void;
+  style?: CSS.Properties
 };
 
 export function Select<T extends OptionValue>(props: Props<T>) {
@@ -20,7 +22,7 @@ export function Select<T extends OptionValue>(props: Props<T>) {
     props.onChange(selectedOption.value);
   }
   return (
-    <select value={props.value} onChange={handleOnChange}>
+    <select style={props.style} value={props.value} onChange={handleOnChange}>
       {props.options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label}

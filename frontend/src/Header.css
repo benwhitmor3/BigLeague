@@ -1,0 +1,20 @@
+.ant-menu-item{
+  color: #fff2e8;
+  background-color: #d4380d;
+  height: 63px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.ant-menu-horizontal.ant-menu-dark > .ant-menu-item:hover,
+.ant-menu-horizontal.ant-menu-dark > .ant-menu-submenu:hover,
+.ant-menu-horizontal.ant-menu-dark > .ant-menu-item-active,
+.ant-menu-horizontal.ant-menu-dark > .ant-menu-submenu-active,
+.ant-menu-horizontal.ant-menu-dark > .ant-menu-item-open,
+.ant-menu-horizontal.ant-menu-dark > .ant-menu-submenu-open,
+.ant-menu-horizontal.ant-menu-dark > .ant-menu-item-selected,
+.ant-menu-horizontal.ant-menu-dark > .ant-menu-submenu-selected {
+  background-color: #d4380d;
+  color: #ffffff;
+  border-bottom: 0px solid #ffffff;
+}

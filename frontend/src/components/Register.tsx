@@ -12,7 +12,7 @@ type registrationConfig = {
 
 export default function Register() {
     const {register, handleSubmit, errors} = useForm<registrationConfig>();
-    const onSubmit = handleSubmit(({email, username, password}) => {
+    const onSubmit = handleSubmit(({email, username, password}: registrationConfig) => {
         console.log(email, username, password);
     });
 
@@ -85,10 +85,10 @@ export default function Register() {
 
             <br/> {errors.email && <Alert message={errors.email.message} type="error" closable onClose={onClose}/>}
             <br/>
-            <br/> {errors.username &&
-        <Alert message={errors.username.message} type="error" closable onClose={onClose}/>} <br/>
-            <br/> {errors.password &&
-        <Alert message={errors.password.message} type="error" closable onClose={onClose}/>} <br/>
+            <br/> {errors.username && <Alert message={errors.username.message} type="error" closable onClose={onClose}/>}
+            <br/>
+            <br/> {errors.password && <Alert message={errors.password.message} type="error" closable onClose={onClose}/>}
+            <br/>
 
         </form>
     )
