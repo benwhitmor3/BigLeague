@@ -25,9 +25,10 @@ const App: React.FunctionComponent<{}> = () => (
         <Menu.Item key="1" >Home <a href="/Home"/></Menu.Item>
         <Menu.Item key="2" >Franchise<a href="/Stadium"/></Menu.Item>
         <Menu.Item key="3" >OffSeason<a href="/OffSeason"/></Menu.Item>
-        <Menu.Item key="4" >Season<a href="/Season"/></Menu.Item>
-        <Menu.Item key="5" >League Summary<a href="/League Summary"/></Menu.Item>
-        <Menu.Item key="6" >Instructions<a href = {file}/></Menu.Item>
+        <Menu.Item key="4" >Draft<a href="/Draft"/></Menu.Item>
+        <Menu.Item key="5" >Season<a href="/Season"/></Menu.Item>
+        <Menu.Item key="6" >League Summary<a href="/League Summary"/></Menu.Item>
+        <Menu.Item key="7" >Instructions<a href = {file}/></Menu.Item>
       </Menu>
     </Header>
     <Content style={{ margin: '16px' }}>

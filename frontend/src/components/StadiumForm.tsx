@@ -49,16 +49,8 @@ export default function StadiumForm() {
   //         console.log(err)
   //   })
   // }, []);
-
-//     interface submitStadiumConfig {
-//     stadium_name: string;
-//     seats: number;
-//     boxes: number;
-//     franchise: string;
-//     city: string;
-// }
 //
-//     const submitStadium = ({stadium_name, seats, boxes, franchise, city}: submitStadiumConfig) => {
+//     const submitStadium = ({stadium_name, seats, boxes, franchise, city}: StadiumConfig) => {
 //     console.log({
 //             stadium_name: stadium_name,
 //             stadium_seats: seats,

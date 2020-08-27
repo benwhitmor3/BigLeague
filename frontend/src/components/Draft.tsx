@@ -1,5 +1,6 @@
 import React from 'react';
 import PlayersTable from "./Table/PlayersTable";
+import DraftTable from "./Table/DraftTable";
 
 
 export default function Draft() {
@@ -9,8 +10,8 @@ export default function Draft() {
       <div>
 
 
-
-      <PlayersTable/>
+        <DraftTable/>
+      {/*<PlayersTable/>*/}
 
       </div>
 
