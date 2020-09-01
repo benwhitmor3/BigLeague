@@ -10,6 +10,11 @@ class UserType(DjangoObjectType):
         model = User
 
 
+class FranchiseInput(graphene.InputObjectType):
+    franchise = graphene.String(required=True)
+    username = graphene.String(required=True)
+
+
 class FranchiseType(DjangoObjectType):
     class Meta:
         model = Franchise
@@ -61,6 +66,7 @@ class CoachType(DjangoObjectType):
 class PlayerType(DjangoObjectType):
     class Meta:
         model = Player
+        convert_choices_to_enum = False
 
 
 class PlayerInput(graphene.InputObjectType):
@@ -70,6 +76,13 @@ class PlayerInput(graphene.InputObjectType):
     pv = graphene.Float(required=True)
     epv = graphene.Float(required=True)
     s_epv = graphene.Float(required=True)
+    contract = graphene.Int(default=None)
+    t_option = graphene.Int(default=None)
+    p_option = graphene.Int(default=None)
+    renew = graphene.String(default=None)
+    salary = graphene.Float(default=None)
+    grade = graphene.Float(default=None)
+    trainer = graphene.Boolean(default=False)
 
 
 class PlayerMutation(graphene.Mutation):
@@ -86,6 +99,13 @@ class PlayerMutation(graphene.Mutation):
             pv=player_input.pv,
             epv=player_input.epv,
             s_epv=player_input.s_epv,
+            contract=player_input.contract,
+            t_option=player_input.t_option,
+            p_option=player_input.p_option,
+            renew=player_input.renew,
+            salary=player_input.salary,
+            grade=player_input.grade,
+            trainer=player_input.trainer
         )
         player.save()
         return PlayerMutation(player=player)
@@ -112,9 +132,38 @@ class RosterType(DjangoObjectType):
         convert_choices_to_enum = False
 
 
+class RosterInput(graphene.InputObjectType):
+    player = graphene.Field(PlayerInput)
+    franchise = graphene.Field(FranchiseInput)
+    # player = graphene.String()
+    # franchise = graphene.String()
+    lineup = graphene.String(default="bench")
+
+
+class RosterMutation(graphene.Mutation):
+    roster = graphene.Field(RosterType)
+
+    class Arguments:
+        roster_input = RosterInput(required=True)
+
+    roster = graphene.Field(RosterType)
+
+    @staticmethod
+    def mutate(root, info, roster_input=None):
+        roster = Roster.objects.create(**roster_input)
+        # roster = Roster(
+        #     player=roster_input.player.name,
+        #     franchise=roster_input.franchise.franchise,
+        #     lineup=roster_input.lineup
+        #                 )
+        roster.save()
+        return RosterMutation(roster=roster)
+
+
 class Mutation(graphene.ObjectType):
     update_league = LeagueMutation.Field()
     create_player = PlayerMutation.Field()
+    roster_update = RosterMutation.Field()
 
 
 class Query(graphene.ObjectType):
@@ -131,6 +180,7 @@ class Query(graphene.ObjectType):
     all_staff = graphene.List(StaffType)
     all_roster = graphene.List(RosterType)
     player = graphene.Field(PlayerType)
+    roster = graphene.Field(RosterType)
 
     def resolve_all_user(self, info, **kwargs):
         return User.objects.all()
@@ -175,6 +225,14 @@ class Query(graphene.ObjectType):
             return Player.objects.get(pk=name)
 
         return None
+
+    # def resolve_roster(self, info, **kwargs):
+    #     name = kwargs.get('name')
+    #
+    #     if name is not None:
+    #         return Roster.objects.get(pk=name)
+    #
+    #     return None
 
 
 

@@ -4,7 +4,7 @@ import pandas as pd
 
 db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 conn = sqlite3.connect(db)
-df = pd.read_sql_query("select * from players", conn)
+df = pd.read_sql_query("select * from bigleague_players", conn)
 conn.close()
 
 players = df.to_dict('records')

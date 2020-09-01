@@ -161,10 +161,9 @@ class Player(models.Model):
     contract = models.IntegerField(blank=True, null=True)
     t_option = models.IntegerField(blank=True, null=True)
     p_option = models.IntegerField(blank=True, null=True)
-    renew = models.CharField(max_length=10, choices=Renew.choices)
+    renew = models.CharField(max_length=10, choices=Renew.choices, null=True)
     salary = models.FloatField(blank=True, null=True)
     grade = models.FloatField(blank=True, null=True)
-    lineup = models.CharField(max_length=10, choices=Lineup.choices)
     trainer = models.BooleanField(default=False)
 
     def __str__(self):
@@ -235,6 +234,7 @@ class Staff(models.Model):
 class Roster(models.Model):
     player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True)
     franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+    lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
 
     def __str__(self):
         return self.player

@@ -5,9 +5,6 @@
 import { types } from "mobx-state-tree"
 import { QueryBuilder } from "mst-gql"
 import { ModelBase } from "./ModelBase"
-import { PlayerLineupEnumType } from "./PlayerLineupEnum"
-import { PlayerRenewEnumType } from "./PlayerRenewEnum"
-import { PlayerSuitEnumType } from "./PlayerSuitEnum"
 import { RosterTypeModel, RosterTypeModelType } from "./RosterTypeModel"
 import { RosterTypeModelSelector } from "./RosterTypeModel.base"
 import { RootStoreType } from "./index"
@@ -22,7 +19,7 @@ export const PlayerTypeModelBase = ModelBase
   .props({
     __typename: types.optional(types.literal("PlayerType"), "PlayerType"),
     name: types.union(types.undefined, types.string),
-    suit: types.union(types.undefined, PlayerSuitEnumType),
+    suit: types.union(types.undefined, types.string),
     age: types.union(types.undefined, types.integer),
     pv: types.union(types.undefined, types.number),
     epv: types.union(types.undefined, types.number),
@@ -30,10 +27,10 @@ export const PlayerTypeModelBase = ModelBase
     contract: types.union(types.undefined, types.null, types.integer),
     tOption: types.union(types.undefined, types.null, types.integer),
     pOption: types.union(types.undefined, types.null, types.integer),
-    renew: types.union(types.undefined, PlayerRenewEnumType),
+    renew: types.union(types.undefined, types.string),
     salary: types.union(types.undefined, types.null, types.number),
     grade: types.union(types.undefined, types.null, types.number),
-    lineup: types.union(types.undefined, PlayerLineupEnumType),
+    lineup: types.union(types.undefined, types.string),
     trainer: types.union(types.undefined, types.boolean),
     roster: types.union(types.undefined, types.null, types.late((): any => RosterTypeModel)),
   })

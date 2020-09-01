@@ -38,9 +38,6 @@ import { playerMutationModelPrimitives, PlayerMutationModelSelector } from "./Pl
 import { GmTrait } from "./GmTraitEnum"
 import { CoachAttributeOne } from "./CoachAttributeOneEnum"
 import { CoachAttributeTwo } from "./CoachAttributeTwoEnum"
-import { PlayerSuit } from "./PlayerSuitEnum"
-import { PlayerRenew } from "./PlayerRenewEnum"
-import { PlayerLineup } from "./PlayerLineupEnum"
 
 export type PlayerInput = {
   name: string
@@ -53,6 +50,7 @@ export type PlayerInput = {
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
   userTypes: ObservableMap<string, UserTypeModelType>
+  playerTypes: ObservableMap<string, PlayerTypeModelType>
 }
 
 
@@ -86,7 +84,8 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
   .named("RootStore")
   .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['StaffType', () => StaffTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['RosterType', () => RosterTypeModel], ['PlayerType', () => PlayerTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel]], ['UserType'], "js"))
   .props({
-    userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {})
+    userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {}),
+    playerTypes: types.optional(types.map(types.late((): any => PlayerTypeModel)), {})
   })
   .actions(self => ({
     queryAllUser(variables?: {  }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
