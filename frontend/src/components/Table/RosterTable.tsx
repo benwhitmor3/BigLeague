@@ -38,19 +38,31 @@ export const RosterTable: React.FunctionComponent = observer(() => {
   const players = data.allPlayer;
   console.log(players);
 
-  const[selected, setSelected] = useState("bench");
-  // let options = [{ value: "", label: "" }, { value: "starter", label: "starter" }, { value: "rotation", label: "rotation" },
-  //                     { value: "bench", label: "bench" }];
 
-  const LineupPicker: React.FunctionComponent = (lineup: any) => {
-    // console.log(roster.lineup)
-    const [selected, setSelected] = useState(lineup);
-    console.log(lineup)
-    let options = [{value: lineup, label: lineup}, {value: "starter", label: "starter"}, {value: "rotation", label: "rotation"},
-      {value: "bench", label: "bench"}];
 
-    // @ts-ignore
-    return <Select options={options} value={selected} onChange={setSelected}/>
+  const LineupPicker: React.FunctionComponent = (current_lineup: any, record: any) => {
+
+    const [selected, setSelected] = useState(current_lineup);
+
+    const submit_lineup = (updated_lineup: any) => {
+    setSelected(updated_lineup);
+    console.log(record)
+    console.log(updated_lineup)
+    }
+
+    let other_values = ["starter", "rotation", "bench"].filter(x => ![current_lineup].includes(x));
+
+    const options = (other_values: Array<string>) => {
+      if (other_values.length === 2) {
+        return [{value: current_lineup, label: current_lineup}, {value: other_values[0], label: other_values[0]},
+          {value: other_values[1], label: other_values[1]}];
+      } else {
+        return [{value: current_lineup, label: current_lineup}, {value: other_values[0], label: other_values[0]},
+          {value: other_values[1], label: other_values[1]}, {value: other_values[2], label: other_values[2]}];
+      }
+    }
+
+    return <Select options={options(other_values)} value={selected} onChange={(updated_lineup: any) => submit_lineup(updated_lineup)}/>
   }
 
 
@@ -249,8 +261,8 @@ export const RosterTable: React.FunctionComponent = observer(() => {
       },
     ],
     onFilter: (value: string | number | boolean, record: any) => _lineup(record.roster).indexOf(value) === 0,
-    render: (roster: any) => (
-        LineupPicker(_lineup(roster))),
+    render: (roster: any, record: any) => (
+        LineupPicker(_lineup(roster), record)),
   },
 ];
 
