@@ -29,6 +29,9 @@ export const DraftTable: React.FunctionComponent = observer(() => {
         franchise
       }
       }
+    league{
+      leagueName
+      }
     `,
     ),
     );

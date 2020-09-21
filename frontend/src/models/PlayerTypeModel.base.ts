@@ -5,6 +5,8 @@
 import { types } from "mobx-state-tree"
 import { QueryBuilder } from "mst-gql"
 import { ModelBase } from "./ModelBase"
+import { LeagueTypeModel, LeagueTypeModelType } from "./LeagueTypeModel"
+import { LeagueTypeModelSelector } from "./LeagueTypeModel.base"
 import { RosterTypeModel, RosterTypeModelType } from "./RosterTypeModel"
 import { RosterTypeModelSelector } from "./RosterTypeModel.base"
 import { RootStoreType } from "./index"
@@ -27,11 +29,11 @@ export const PlayerTypeModelBase = ModelBase
     contract: types.union(types.undefined, types.null, types.integer),
     tOption: types.union(types.undefined, types.null, types.integer),
     pOption: types.union(types.undefined, types.null, types.integer),
-    renew: types.union(types.undefined, types.string),
+    renew: types.union(types.undefined, types.null, types.string),
     salary: types.union(types.undefined, types.null, types.number),
     grade: types.union(types.undefined, types.null, types.number),
-    lineup: types.union(types.undefined, types.string),
     trainer: types.union(types.undefined, types.boolean),
+    league: types.union(types.undefined, types.late((): any => LeagueTypeModel)),
     roster: types.union(types.undefined, types.null, types.late((): any => RosterTypeModel)),
   })
   .views(self => ({
@@ -53,12 +55,12 @@ export class PlayerTypeModelSelector extends QueryBuilder {
   get renew() { return this.__attr(`renew`) }
   get salary() { return this.__attr(`salary`) }
   get grade() { return this.__attr(`grade`) }
-  get lineup() { return this.__attr(`lineup`) }
   get trainer() { return this.__attr(`trainer`) }
+  league(builder?: string | LeagueTypeModelSelector | ((selector: LeagueTypeModelSelector) => LeagueTypeModelSelector)) { return this.__child(`league`, LeagueTypeModelSelector, builder) }
   roster(builder?: string | RosterTypeModelSelector | ((selector: RosterTypeModelSelector) => RosterTypeModelSelector)) { return this.__child(`roster`, RosterTypeModelSelector, builder) }
 }
 export function selectFromPlayerType() {
   return new PlayerTypeModelSelector()
 }
 
-export const playerTypeModelPrimitives = selectFromPlayerType().name.suit.age.pv.epv.sEpv.contract.tOption.pOption.renew.salary.grade.lineup.trainer
+export const playerTypeModelPrimitives = selectFromPlayerType().name.suit.age.pv.epv.sEpv.contract.tOption.pOption.renew.salary.grade.trainer

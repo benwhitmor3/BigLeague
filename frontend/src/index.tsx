@@ -31,8 +31,8 @@ render();
 
 declare global {
     interface Window {
-        rootStore:any;
-        getSnapshot: any
+        rootStore: any;
+        getSnapshot: any;
     }
 }
 

@@ -22,6 +22,7 @@ export const RosterTypeModelBase = ModelBase
     __typename: types.optional(types.literal("RosterType"), "RosterType"),
     player: types.union(types.undefined, types.late((): any => PlayerTypeModel)),
     franchise: types.union(types.undefined, types.late((): any => FranchiseTypeModel)),
+    lineup: types.union(types.undefined, types.null, types.string),
   })
   .views(self => ({
     get store() {
@@ -30,6 +31,7 @@ export const RosterTypeModelBase = ModelBase
   }))
 
 export class RosterTypeModelSelector extends QueryBuilder {
+  get lineup() { return this.__attr(`lineup`) }
   player(builder?: string | PlayerTypeModelSelector | ((selector: PlayerTypeModelSelector) => PlayerTypeModelSelector)) { return this.__child(`player`, PlayerTypeModelSelector, builder) }
   franchise(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchise`, FranchiseTypeModelSelector, builder) }
 }
@@ -37,4 +39,4 @@ export function selectFromRosterType() {
   return new RosterTypeModelSelector()
 }
 
-export const rosterTypeModelPrimitives = selectFromRosterType()
+export const rosterTypeModelPrimitives = selectFromRosterType().lineup

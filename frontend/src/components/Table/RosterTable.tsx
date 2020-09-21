@@ -5,7 +5,6 @@ import {PlayerTypeModelType, StoreContext, useQuery} from "../../models";
 import {observer} from "mobx-react";
 import { Switch } from 'antd';
 import {Select} from "../Select";
-import LineupPicker from "./LineupPicker";
 
 export const RosterTable: React.FunctionComponent = observer(() => {
   const {store, error, loading, data} = useQuery(store =>
@@ -31,13 +30,15 @@ export const RosterTable: React.FunctionComponent = observer(() => {
         franchise
       }
       }
+    league{
+      leagueName
+      }
     `,
     ),
     );
   // @ts-ignore
   const players = data.allPlayer;
   console.log(players);
-
 
 
   const LineupPicker: React.FunctionComponent = (current_lineup: any, record: any) => {
@@ -217,9 +218,9 @@ export const RosterTable: React.FunctionComponent = observer(() => {
     key: 'pOption',
   },
   {
-    title: 'Renewal',
-    dataIndex: 'renewal',
-    key: 'renewal',
+    title: 'Renew',
+    dataIndex: 'renew',
+    key: 'renew',
   },
   {
     title: 'Salary',
@@ -360,9 +361,9 @@ export const RosterTable: React.FunctionComponent = observer(() => {
     key: 'pOption',
   },
   {
-    title: 'Renewal',
-    dataIndex: 'renewal',
-    key: 'renewal',
+    title: 'Renew',
+    dataIndex: 'renew',
+    key: 'renew',
   },
   {
     title: 'Salary',
@@ -388,14 +389,24 @@ export const RosterTable: React.FunctionComponent = observer(() => {
   {
     title: 'Action',
     key: 'action',
-    render: (text: string, record: PlayerTypeModelType) => (
-      <Space size="middle">
-        <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-             onClick={() => draft(record)}>
-          Draft Prospect
-        </Tag>
-      </Space>
-    ),
+    dataIndex: "roster",
+    filters: [
+      {
+        text: 'Starter',
+        value: 'starter',
+      },
+      {
+        text: 'Rotation',
+        value: 'rotation',
+      },
+      {
+        text: 'Bench',
+        value: 'bench',
+      },
+    ],
+    onFilter: (value: string | number | boolean, record: any) => _lineup(record.roster).indexOf(value) === 0,
+    render: (roster: any, record: any) => (
+        LineupPicker(_lineup(roster), record)),
   },
 ];
 

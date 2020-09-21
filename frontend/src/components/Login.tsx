@@ -4,16 +4,15 @@ import 'antd/dist/antd.css';
 import { Alert } from 'antd';
 import CSS from 'csstype';
 
-type registrationConfig = {
-  email: string;
+type loginConfig = {
   username: string
   password: string;
 };
 
-export default function Register() {
-    const {register, handleSubmit, errors} = useForm<registrationConfig>();
-    const onSubmit = handleSubmit(({email, username, password}: registrationConfig) => {
-        console.log(email, username, password);
+export default function Login() {
+    const {register, handleSubmit, errors} = useForm<loginConfig>();
+    const onSubmit = handleSubmit(({username, password}: loginConfig) => {
+        console.log(username, password);
     });
 
     const onClose = (e: any) => {
@@ -46,21 +45,6 @@ export default function Register() {
 
     return (
         <form onSubmit={onSubmit}>
-            <label>Email</label>
-            <input name="email" style={formStyles} ref={register({
-                required: {
-                    value: true,
-                    message: "Email is a required field",
-                },
-                pattern: {
-                    value: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-                    message: 'Invalid email address',
-                },
-                maxLength: {
-                    value: 60,
-                    message: 'Max email length is 60',
-                },
-            })}/>
 
             <label>Username</label>
             <input name="username" style={formStyles} ref={register({
@@ -82,10 +66,8 @@ export default function Register() {
                 },
             })}/>
 
-            <input type="submit"  style={buttonStyles} value="Register"/>
+            <input type="submit"  style={buttonStyles} value="Login"/>
 
-            <br/> {errors.email && <Alert message={errors.email.message} type="error" closable onClose={onClose}/>}
-            <br/>
             <br/> {errors.username && <Alert message={errors.username.message} type="error" closable onClose={onClose}/>}
             <br/>
             <br/> {errors.password && <Alert message={errors.password.message} type="error" closable onClose={onClose}/>}

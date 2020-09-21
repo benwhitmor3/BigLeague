@@ -11,6 +11,10 @@ import { FranchiseTypeModel, FranchiseTypeModelType } from "./FranchiseTypeModel
 import { franchiseTypeModelPrimitives, FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
 import { LeagueTypeModel, LeagueTypeModelType } from "./LeagueTypeModel"
 import { leagueTypeModelPrimitives, LeagueTypeModelSelector } from "./LeagueTypeModel.base"
+import { PlayerTypeModel, PlayerTypeModelType } from "./PlayerTypeModel"
+import { playerTypeModelPrimitives, PlayerTypeModelSelector } from "./PlayerTypeModel.base"
+import { RosterTypeModel, RosterTypeModelType } from "./RosterTypeModel"
+import { rosterTypeModelPrimitives, RosterTypeModelSelector } from "./RosterTypeModel.base"
 import { StadiumTypeModel, StadiumTypeModelType } from "./StadiumTypeModel"
 import { stadiumTypeModelPrimitives, StadiumTypeModelSelector } from "./StadiumTypeModel.base"
 import { CityTypeModel, CityTypeModelType } from "./CityTypeModel"
@@ -25,14 +29,12 @@ import { GmTypeModel, GmTypeModelType } from "./GmTypeModel"
 import { gmTypeModelPrimitives, GmTypeModelSelector } from "./GmTypeModel.base"
 import { CoachTypeModel, CoachTypeModelType } from "./CoachTypeModel"
 import { coachTypeModelPrimitives, CoachTypeModelSelector } from "./CoachTypeModel.base"
-import { RosterTypeModel, RosterTypeModelType } from "./RosterTypeModel"
-import { rosterTypeModelPrimitives, RosterTypeModelSelector } from "./RosterTypeModel.base"
-import { PlayerTypeModel, PlayerTypeModelType } from "./PlayerTypeModel"
-import { playerTypeModelPrimitives, PlayerTypeModelSelector } from "./PlayerTypeModel.base"
 import { LeagueMutationModel, LeagueMutationModelType } from "./LeagueMutationModel"
 import { leagueMutationModelPrimitives, LeagueMutationModelSelector } from "./LeagueMutationModel.base"
 import { PlayerMutationModel, PlayerMutationModelType } from "./PlayerMutationModel"
 import { playerMutationModelPrimitives, PlayerMutationModelSelector } from "./PlayerMutationModel.base"
+import { RosterMutationModel, RosterMutationModelType } from "./RosterMutationModel"
+import { rosterMutationModelPrimitives, RosterMutationModelSelector } from "./RosterMutationModel.base"
 
 
 import { GmTrait } from "./GmTraitEnum"
@@ -46,11 +48,26 @@ export type PlayerInput = {
   pv: number
   epv: number
   sEpv: number
+  contract?: number
+  tOption?: number
+  pOption?: number
+  renew?: string
+  salary?: number
+  grade?: number
+  trainer?: boolean
+}
+export type RosterInput = {
+  player?: PlayerInput
+  franchise?: FranchiseInput
+  lineup?: string
+}
+export type FranchiseInput = {
+  franchise: string
+  username: string
 }
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
   userTypes: ObservableMap<string, UserTypeModelType>
-  playerTypes: ObservableMap<string, PlayerTypeModelType>
 }
 
 
@@ -70,11 +87,13 @@ queryAllAction="queryAllAction",
 queryAllSeason="queryAllSeason",
 queryAllStaff="queryAllStaff",
 queryAllRoster="queryAllRoster",
-queryPlayer="queryPlayer"
+queryPlayer="queryPlayer",
+queryRoster="queryRoster"
 }
 export enum RootStoreBaseMutations {
 mutateUpdateLeague="mutateUpdateLeague",
-mutateCreatePlayer="mutateCreatePlayer"
+mutateCreatePlayer="mutateCreatePlayer",
+mutateRosterUpdate="mutateRosterUpdate"
 }
 
 /**
@@ -82,10 +101,9 @@ mutateCreatePlayer="mutateCreatePlayer"
 */
 export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
   .named("RootStore")
-  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['StaffType', () => StaffTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['RosterType', () => RosterTypeModel], ['PlayerType', () => PlayerTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel]], ['UserType'], "js"))
+  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['PlayerType', () => PlayerTypeModel], ['RosterType', () => RosterTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['StaffType', () => StaffTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel], ['RosterMutation', () => RosterMutationModel]], ['UserType'], "js"))
   .props({
-    userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {}),
-    playerTypes: types.optional(types.map(types.late((): any => PlayerTypeModel)), {})
+    userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {})
   })
   .actions(self => ({
     queryAllUser(variables?: {  }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
@@ -153,6 +171,11 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
         ${typeof resultSelector === "function" ? resultSelector(new PlayerTypeModelSelector()).toString() : resultSelector}
       } }`, variables, options)
     },
+    queryRoster(variables?: {  }, resultSelector: string | ((qb: RosterTypeModelSelector) => RosterTypeModelSelector) = rosterTypeModelPrimitives.toString(), options: QueryOptions = {}) {
+      return self.query<{ roster: RosterTypeModelType}>(`query roster { roster {
+        ${typeof resultSelector === "function" ? resultSelector(new RosterTypeModelSelector()).toString() : resultSelector}
+      } }`, variables, options)
+    },
     mutateUpdateLeague(variables: { leagueName: string }, resultSelector: string | ((qb: LeagueMutationModelSelector) => LeagueMutationModelSelector) = leagueMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
       return self.mutate<{ updateLeague: LeagueMutationModelType}>(`mutation updateLeague($leagueName: String!) { updateLeague(leagueName: $leagueName) {
         ${typeof resultSelector === "function" ? resultSelector(new LeagueMutationModelSelector()).toString() : resultSelector}
@@ -161,6 +184,11 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
     mutateCreatePlayer(variables: { playerInput: PlayerInput }, resultSelector: string | ((qb: PlayerMutationModelSelector) => PlayerMutationModelSelector) = playerMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
       return self.mutate<{ createPlayer: PlayerMutationModelType}>(`mutation createPlayer($playerInput: PlayerInput!) { createPlayer(playerInput: $playerInput) {
         ${typeof resultSelector === "function" ? resultSelector(new PlayerMutationModelSelector()).toString() : resultSelector}
+      } }`, variables, optimisticUpdate)
+    },
+    mutateRosterUpdate(variables: { rosterInput: RosterInput }, resultSelector: string | ((qb: RosterMutationModelSelector) => RosterMutationModelSelector) = rosterMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
+      return self.mutate<{ rosterUpdate: RosterMutationModelType}>(`mutation rosterUpdate($rosterInput: RosterInput!) { rosterUpdate(rosterInput: $rosterInput) {
+        ${typeof resultSelector === "function" ? resultSelector(new RosterMutationModelSelector()).toString() : resultSelector}
       } }`, variables, optimisticUpdate)
     },
   })))

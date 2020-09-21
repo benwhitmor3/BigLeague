@@ -165,6 +165,7 @@ class Player(models.Model):
     salary = models.FloatField(blank=True, null=True)
     grade = models.FloatField(blank=True, null=True)
     trainer = models.BooleanField(default=False)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

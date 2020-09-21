@@ -40,40 +40,6 @@ export default function StadiumForm() {
         setTotal((seats * 15000) + (boxes * 500000));
     }, [seats, boxes]);
 
-  //     useEffect(() => {
-  //   axios.get('http://127.0.0.1:8000/api/cities/')
-  //       .then(res => {
-  //         setCities(res.data)
-  //       })
-  //       .catch(err => {
-  //         console.log(err)
-  //   })
-  // }, []);
-//
-//     const submitStadium = ({stadium_name, seats, boxes, franchise, city}: StadiumConfig) => {
-//     console.log({
-//             stadium_name: stadium_name,
-//             stadium_seats: seats,
-//             stadium_boxes: boxes,
-//             franchise: franchise,
-//             city: city
-//         });
-//           axios.post('http://127.0.0.1:8000/api/stadiums/',
-//         {
-//             stadium_name: stadium_name,
-//             stadium_seats: seats,
-//             stadium_boxes: boxes,
-//             franchise: franchise,
-//             city: city
-//         }
-//     )
-//             .then(res => {
-//           console.log(res)
-//         })
-//         .catch(err => {
-//           console.log(err)
-//     })
-// };
 
     const formStyles: CSS.Properties = {
     backgroundColor: '#d4380d',
@@ -159,58 +125,6 @@ export default function StadiumForm() {
             <br/>
 
         </form>
-    //
-    // <div className="Stadium">
-    //   <h1>Stadium Construction</h1>
-    //
-    // <p>Enter your Stadium Name</p>
-    // <input
-    //       type="string"
-    //       value={stadium_name}
-    //       onChange={event => {
-    //           setStadium_Name(event.currentTarget.value);
-    //       }}
-    //       placeholder="stadium name"
-    //     />
-    // <p/>
-    //
-    //     <label>
-    //         Choose your city:
-    //  <Select options={options} value={city} onChange={setCity}/>
-    //     </label>
-    //
-    //
-    // <p>Enter your seats and boxes</p>
-    //
-    //   <div className="number-inputs">
-    //     <input
-    //       type="number"
-    //       value={seats}
-    //       onChange={event => {
-    //           setSeats(event.target.valueAsNumber);
-    //       }}
-    //       placeholder="seats"
-    //       min={0}
-    //     />
-    //     <input
-    //       type="number"
-    //       value={boxes}
-    //       onChange={event => {
-    //           setBoxes(event.target.valueAsNumber);
-    //       }}
-    //       placeholder="boxes"
-    //       min={0}
-    //     />
-    //   </div>
-    //
-    //   <h4>{total ? '$' + +total/100000 + ' million' : ''}</h4>
-    //
-    //   <div>
-    //       {seats && boxes && stadium_name
-    //     ? <button onClick={() =>submitStadium({stadium_name, seats, boxes, franchise, city})}>Submit Stadium Plan </button>
-    //     : null}
-    //   </div>
-    //
-    // </div>
+
   );
 }
