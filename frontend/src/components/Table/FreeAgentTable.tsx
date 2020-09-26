@@ -4,9 +4,8 @@ import {Table, Tag, Space, Input, Modal, Select, Alert} from 'antd';
 import {PlayerTypeModelType, StoreContext, useQuery} from "../../models";
 import {observer} from "mobx-react";
 import { Switch } from 'antd';
-import {useForm} from "react-hook-form";
 import CSS from "csstype";
-import axios from "axios";
+import {colour, suit_icon, _to_fixed} from './TableFunctions'
 
 export const FreeAgentTable: React.FunctionComponent = observer(() => {
   const {store, error, loading, data} = useQuery(store =>
@@ -40,7 +39,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
     );
   // @ts-ignore
   const players = data.allPlayer;
-  console.log(players);
+  // console.log(players);
 
 
   const formStyles: CSS.Properties = {
@@ -60,44 +59,6 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
     fontSize: '14px',
     };
 
-  const colour = (suit: string) => {
-      if (suit === 'diamond') {
-        return '#40a9ff';
-      }
-      else if (suit === 'spade') {
-        return '#ffc53d';
-      }
-      else if (suit === 'heart') {
-        return '#ff4d4f';
-      }
-      else if (suit === 'club') {
-        return '#73d13d';
-      }
-}
-
-  const suit_icon = (suit: string) => {
-    if (suit === 'diamond') {
-      return <span role="img" aria-label="diamond"> ♦ </span>;
-    }
-    else if (suit === 'spade') {
-      return <span role="img" aria-label="spade"> ♠ </span>;
-    }
-    else if (suit === 'heart') {
-      return <span role="img" aria-label="spade"> ♥ </span>;
-    }
-    else if (suit === 'club') {
-      return <span role="img" aria-label="spade"> ♣ </span>;
-    }
-}
-
-  const _to_fixed = (value: any) => {
-  if (value != null) {
-    return value.toFixed(2) ;
-  }
-  else {
-    return "";
-  }
-}
 
   const [visible, setVisible] = useState<boolean>(false)
   const [selectedplayer, setSelectedPlayer] = useState<any>([]);
@@ -109,10 +70,19 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
   const [offergrade, setOfferGrade] = useState<number>(0);
   const [gradecolour, setGradeColour] = useState<string>('#ff4d4f');
 
-  const sign_modal = (player: PlayerTypeModelType) => {
+  const player_modal = (player: PlayerTypeModelType) => {
     setSelectedPlayer(player);
-    console.log(selectedplayer)
     setVisible(true);
+  }
+
+  const sign_player = () => {
+    if (gradecolour == '#73d13d') {
+      console.log("PLAYER SIGNED!");
+      setVisible(false);
+    }
+    else {
+    console.log("PLAYER REJECTED!");
+    }
   }
 
     useEffect(() => {
@@ -235,7 +205,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
     render: (record: PlayerTypeModelType) => (
       <Space size="middle">
         <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-             onClick={() => sign_modal(record)}>
+             onClick={() => player_modal(record)}>
           Offer Contract
         </Tag>
       </Space>
@@ -335,7 +305,8 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
         centered
         visible={visible}
         onOk={() =>
-          setVisible(false)
+            sign_player()
+          // setVisible(false)
         // console.log(record)
         }
         onCancel={() => setVisible(false)}

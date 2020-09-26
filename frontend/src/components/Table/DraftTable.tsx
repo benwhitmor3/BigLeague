@@ -1,9 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import { Table, Tag, Space } from 'antd';
-import {PlayerTypeModelType, StoreContext, useQuery} from "../../models";
+import {PlayerTypeModelType, useQuery} from "../../models";
 import {observer} from "mobx-react";
 import { Switch } from 'antd';
+import {colour, suit_icon, draft} from './TableFunctions'
 
 export const DraftTable: React.FunctionComponent = observer(() => {
   const {store, error, loading, data} = useQuery(store =>
@@ -37,42 +38,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
     );
   // @ts-ignore
   const players = data.allPlayer;
-  console.log(players);
-
-
-  const draft = (player: PlayerTypeModelType) => {
-    console.log(player)
-  }
-
-  const colour = (suit: string) => {
-      if (suit === 'diamond') {
-        return '#40a9ff';
-      }
-      else if (suit === 'spade') {
-        return '#ffc53d';
-      }
-      else if (suit === 'heart') {
-        return '#ff4d4f';
-      }
-      else if (suit === 'club') {
-        return '#73d13d';
-      }
-}
-
-  const suit_icon = (suit: string) => {
-    if (suit === 'diamond') {
-      return <span role="img" aria-label="diamond"> ♦ </span>;
-    }
-    else if (suit === 'spade') {
-      return <span role="img" aria-label="spade"> ♠ </span>;
-    }
-    else if (suit === 'heart') {
-      return <span role="img" aria-label="spade"> ♥ </span>;
-    }
-    else if (suit === 'club') {
-      return <span role="img" aria-label="spade"> ♣ </span>;
-    }
-}
+  // console.log(players);
 
 
   const columns1 = [
