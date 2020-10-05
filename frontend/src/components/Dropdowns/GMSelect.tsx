@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {observer} from "mobx-react";
-import {GmTypeModelType, useQuery} from "../../models";
+import {useQuery} from "../../models";
 import {Select} from "../Select";
 import CSS from "csstype";
 
@@ -29,6 +29,8 @@ export const GMSelect: React.FunctionComponent = observer(() => {
 
     // @ts-ignore
     const traits: any = data.allGm;
+    console.log(data)
+
     const[selected, setSelected] = useState<string>("FACILITATOR");
 
         const update_gm = (updated_gm: any) => {
@@ -37,6 +39,7 @@ export const GMSelect: React.FunctionComponent = observer(() => {
         const submit_gm = (selected: string) => {
         console.log(selected);
     };
+
         let options = traits.map((traits: { trait: string }) => {
             return {value: traits.trait, label: traits.trait.toLowerCase()}});
 

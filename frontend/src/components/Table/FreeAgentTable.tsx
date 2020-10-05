@@ -78,10 +78,12 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
   const sign_player = () => {
     if (gradecolour == '#73d13d') {
       console.log("PLAYER SIGNED!");
+      console.log(selectedplayer)
       setVisible(false);
     }
     else {
     console.log("PLAYER REJECTED!");
+    console.log(selectedplayer)
     }
   }
 
@@ -306,8 +308,6 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
         visible={visible}
         onOk={() =>
             sign_player()
-          // setVisible(false)
-        // console.log(record)
         }
         onCancel={() => setVisible(false)}
         width={'600px'}

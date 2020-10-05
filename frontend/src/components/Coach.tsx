@@ -1,18 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import './Stadium.css';
-import StadiumForm from "./StadiumForm";
-import GMSelect from "./Dropdowns/GMSelect";
 import {observer} from "mobx-react";
 import {useQuery} from "../models";
-import {Coach} from "./Coach";
+import {CoachSelect} from "./Dropdowns/CoachSelect";
 
 
-export const Stadium: React.FunctionComponent = observer(() => {
+export const Coach: React.FunctionComponent = observer(() => {
     const {store, error, loading, data} = useQuery(store =>
-            store.queryAllGm(
+            store.queryAllCoach(
                 {},
                 `
-    trait
+    name
+    attributeOne
+    attributeTwo
     `,
     ),
     );
@@ -21,13 +20,11 @@ export const Stadium: React.FunctionComponent = observer(() => {
     else {
         return (
             <div>
-            <StadiumForm/>
-            <GMSelect/>
-            <Coach/>
+            <CoachSelect/>
             </div>
         );
         }
 }
 )
 
-export default Stadium;
+export default Coach;

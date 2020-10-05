@@ -3,7 +3,6 @@ import './index.css';
 import Home from './components/Home';
 import Draft from './components/Draft';
 import Stadium from './components/Stadium';
-import GM from './components/GM';
 import Season from './components/Season';
 import OffSeason from './components/Offseason';
 // @ts-ignore
@@ -73,7 +72,6 @@ const App: React.FunctionComponent = observer(() => {
                             <Switch>
                                 <Route exact path='/Home' component={Home} />
                                 <Route exact path='/Stadium' component={Stadium} />
-                                <Route exact path='/GM' component={GM} />
                                 <Route exact path='/Draft' component={Draft} />
                                 <Route exact path='/Stadium' component={Stadium} />
                                 <Route exact path='/Season' component={Season} />
