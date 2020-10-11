@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {useQuery} from "../../models";
-import {Select} from "../Select";
+import {Select} from "../Reusables/Select";
 import CSS from "csstype";
 
 

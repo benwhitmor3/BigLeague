@@ -1,5 +1,5 @@
 import React from 'react';
-import {DraftTable} from "./Table/DraftTable";
+import {DraftTable} from "../Table/DraftTable";
 import { Row, Col } from 'antd';
 
 

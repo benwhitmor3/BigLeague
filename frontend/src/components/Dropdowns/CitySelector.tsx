@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Select} from "../Select";
+import {Select} from "../Reusables/Select";
 
 
 function CitySelector() {

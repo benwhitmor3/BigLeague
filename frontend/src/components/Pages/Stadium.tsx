@@ -1,10 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import './Stadium.css';
-import StadiumForm from "./StadiumForm";
-import GMSelect from "./Dropdowns/GMSelect";
+import React from 'react';
+import StadiumForm from "/Users/buw0017/projects/TheBigLeagueGame/frontend/src/components/Forms/StadiumForm";
 import {observer} from "mobx-react";
-import {useQuery} from "../models";
-import {Coach} from "./Coach";
+import {useQuery} from "/Users/buw0017/projects/TheBigLeagueGame/frontend/src/models";
 
 
 export const Stadium: React.FunctionComponent = observer(() => {
@@ -22,8 +19,6 @@ export const Stadium: React.FunctionComponent = observer(() => {
         return (
             <div>
             <StadiumForm/>
-            <GMSelect/>
-            <Coach/>
             </div>
         );
         }
@@ -31,3 +26,4 @@ export const Stadium: React.FunctionComponent = observer(() => {
 )
 
 export default Stadium;
+

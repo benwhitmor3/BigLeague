@@ -1,10 +1,11 @@
 import React from "react";
 import './index.css';
-import Home from './components/Home';
-import Draft from './components/Draft';
-import Stadium from './components/Stadium';
-import Season from './components/Season';
-import OffSeason from './components/Offseason';
+import Home from './components/Pages/Home';
+import Stadium from './components/Pages/Stadium';
+import Franchise from "./components/Pages/Franchise";
+import Draft from './components/Pages/Draft';
+import Season from './components/Pages/Season';
+import OffSeason from './components/Pages/Offseason';
 // @ts-ignore
 import file from "./components/Instructions/BigLeagueInstructions.pdf";
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
@@ -72,6 +73,7 @@ const App: React.FunctionComponent = observer(() => {
                             <Switch>
                                 <Route exact path='/Home' component={Home} />
                                 <Route exact path='/Stadium' component={Stadium} />
+                                <Route exact path='/Franchise' component={Franchise} />
                                 <Route exact path='/Draft' component={Draft} />
                                 <Route exact path='/Stadium' component={Stadium} />
                                 <Route exact path='/Season' component={Season} />

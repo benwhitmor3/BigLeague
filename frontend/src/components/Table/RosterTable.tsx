@@ -4,7 +4,7 @@ import { Table, Tag, Space } from 'antd';
 import {PlayerTypeModelType, StoreContext, useQuery} from "../../models";
 import {observer} from "mobx-react";
 import { Switch } from 'antd';
-import {Select} from "../Select";
+import {Select} from "../Reusables/Select";
 import {colour, suit_icon, _to_fixed, draft, _lineup, _franchise} from './TableFunctions'
 
 export const RosterTable: React.FunctionComponent = observer(() => {

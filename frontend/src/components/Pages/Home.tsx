@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import logo from './Images/BigLeague_Gif.gif';
+import logo from '../Images/BigLeague_Gif.gif';
 // @ts-ignore
-import instructions from "./Instructions/BigLeagueInstructions.pdf";
-import Register from "./Register";
-import Login from "./Login";
+import instructions from "../Instructions/BigLeagueInstructions.pdf";
+import Register from "../Forms/Register";
+import Login from "../Forms/Login";
 import {Col, Row} from "antd";
 
 

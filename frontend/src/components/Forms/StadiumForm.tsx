@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import './Stadium.css';
 import {useForm, Controller} from "react-hook-form";
 import axios from "axios";
-import {Select} from "./Select";
-import {Alert, Input as InputField} from "antd";
+import {Select} from "../Reusables/Select";
+import {Alert} from "antd";
 import CSS from "csstype";
 
 type stadiumConfig = {
@@ -61,6 +60,7 @@ export default function StadiumForm() {
         fontSize: '14px',
         color: '#fff2e8',
         width: '20vh',
+        padding: '8px',
     };
 
   return (

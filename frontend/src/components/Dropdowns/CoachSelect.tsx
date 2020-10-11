@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {observer} from "mobx-react";
 import {useQuery} from "../../models";
-import {Select} from "../Select";
+import {Select} from "../Reusables/Select";
 import CSS from "csstype";
 
 
@@ -48,6 +48,7 @@ export const CoachSelect: React.FunctionComponent = observer(() => {
     else {
         return (
             <div>
+                <br/>
                 <label>Coach</label>
                 <br/>
                 <Select style={{fontWeight: 'bold', backgroundColor: '#ffffff', color: '#ad2102', marginTop: '5px'}}

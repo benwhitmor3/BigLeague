@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {observer} from "mobx-react";
-import {useQuery} from "../models";
-import {CoachSelect} from "./Dropdowns/CoachSelect";
+import {useQuery} from "../../models";
+import {CoachSelect} from "./CoachSelect";
 
 
 export const Coach: React.FunctionComponent = observer(() => {
