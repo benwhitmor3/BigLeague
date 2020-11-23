@@ -51,7 +51,6 @@ const App: React.FunctionComponent = observer(() => {
     if (error) return <div>{error.message}</div>;
     if (loading) return <div>loading</div>;
     else {
-        // console.log(data)
         return (
         <div>
             <Layout className='layout'>
