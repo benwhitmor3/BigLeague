@@ -1,7 +1,5 @@
 import graphene
-from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
-from graphene_django.forms.mutation import DjangoFormMutation
 from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Staff, Roster
 
 
@@ -83,6 +81,7 @@ class PlayerInput(graphene.InputObjectType):
     salary = graphene.Float(default=None)
     grade = graphene.Float(default=None)
     trainer = graphene.Boolean(default=False)
+    league_id = graphene.String(required=True)
 
 
 class PlayerMutation(graphene.Mutation):
@@ -91,6 +90,7 @@ class PlayerMutation(graphene.Mutation):
 
     player = graphene.Field(PlayerType)
 
+    @staticmethod
     def mutate(self, info, player_input=None):
         player = Player(
             name=player_input.name,
@@ -105,7 +105,8 @@ class PlayerMutation(graphene.Mutation):
             renew=player_input.renew,
             salary=player_input.salary,
             grade=player_input.grade,
-            trainer=player_input.trainer
+            trainer=player_input.trainer,
+            league_id=player_input.league_id,
         )
         player.save()
         return PlayerMutation(player=player)
