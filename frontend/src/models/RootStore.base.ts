@@ -55,6 +55,7 @@ export type PlayerInput = {
   salary?: number
   grade?: number
   trainer?: boolean
+  leagueName: string
 }
 export type RosterInput = {
   player?: PlayerInput

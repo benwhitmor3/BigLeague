@@ -1,5 +1,6 @@
 import { Instance } from "mobx-state-tree"
 import { PlayerMutationModelBase } from "./PlayerMutationModel.base"
+import {PlayerInput} from "./RootStore.base";
 
 /* The TypeScript type of an instance of PlayerMutationModel */
 export interface PlayerMutationModelType extends Instance<typeof PlayerMutationModel.Type> {}
@@ -15,5 +16,5 @@ export const PlayerMutationModel = PlayerMutationModelBase
     // This is an auto-generated example action.
     log() {
       console.log(JSON.stringify(self))
-    }
+    },
   }))

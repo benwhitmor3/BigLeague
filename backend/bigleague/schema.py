@@ -81,7 +81,7 @@ class PlayerInput(graphene.InputObjectType):
     salary = graphene.Float(default=None)
     grade = graphene.Float(default=None)
     trainer = graphene.Boolean(default=False)
-    league_id = graphene.String(required=True)
+    league_name = graphene.String(required=True)
 
 
 class PlayerMutation(graphene.Mutation):
@@ -106,7 +106,7 @@ class PlayerMutation(graphene.Mutation):
             salary=player_input.salary,
             grade=player_input.grade,
             trainer=player_input.trainer,
-            league_id=player_input.league_id,
+            league_id=player_input.league_name,
         )
         player.save()
         return PlayerMutation(player=player)

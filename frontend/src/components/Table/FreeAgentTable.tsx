@@ -75,11 +75,45 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
     setVisible(true);
   }
 
+//   {
+//   "playerInput": {
+// 		"name": "gary graphene",
+//     "suit": "diamond",
+//     "age": 22,
+//     "pv": 21.213,
+//     "epv": 21.964,
+//     "sEpv": 21.221,
+//     "trainer": true,
+//     "leagueId": "bigleague"
+//   }
+// }
+
+
   const sign_player = () => {
     if (gradecolour == '#73d13d') {
       console.log("PLAYER SIGNED!");
       console.log(selectedplayer)
+      store.mutateCreatePlayer({
+        "playerInput": {
+          "name": selectedplayer.name,
+          "suit": selectedplayer.suit,
+          "age": selectedplayer.age,
+          "pv": selectedplayer.pv,
+          "epv": selectedplayer.epv,
+          "sEpv": selectedplayer.sEpv,
+          "contract": contractlength,
+          "tOption": teamoption,
+          "pOption": playeroption,
+          "renew": renewal,
+          "salary": salary,
+          "grade": offergrade,
+          "trainer": false,
+          "leagueName": selectedplayer.league.leagueName
+        }
+      })
       setVisible(false);
+
+
     }
     else {
     console.log("PLAYER REJECTED!");

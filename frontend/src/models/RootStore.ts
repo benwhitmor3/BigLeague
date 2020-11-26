@@ -8,5 +8,5 @@ export const RootStore = RootStoreBase
     // This is an auto-generated example action.
     log() {
       console.log(JSON.stringify(self))
-    }
+    },
   }))
