@@ -75,19 +75,6 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
     setVisible(true);
   }
 
-//   {
-//   "playerInput": {
-// 		"name": "gary graphene",
-//     "suit": "diamond",
-//     "age": 22,
-//     "pv": 21.213,
-//     "epv": 21.964,
-//     "sEpv": 21.221,
-//     "trainer": true,
-//     "leagueId": "bigleague"
-//   }
-// }
-
 
   const sign_player = () => {
     if (gradecolour == '#73d13d') {

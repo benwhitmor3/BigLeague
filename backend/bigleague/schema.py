@@ -134,11 +134,9 @@ class RosterType(DjangoObjectType):
 
 
 class RosterInput(graphene.InputObjectType):
-    player = graphene.Field(PlayerInput)
-    franchise = graphene.Field(FranchiseInput)
-    # player = graphene.String()
-    # franchise = graphene.String()
-    lineup = graphene.String(default="bench")
+    player_name = graphene.String()
+    franchise_franchise = graphene.String()
+    lineup = graphene.String()
 
 
 class RosterMutation(graphene.Mutation):
@@ -151,12 +149,11 @@ class RosterMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, roster_input=None):
-        roster = Roster.objects.create(**roster_input)
-        # roster = Roster(
-        #     player=roster_input.player.name,
-        #     franchise=roster_input.franchise.franchise,
-        #     lineup=roster_input.lineup
-        #                 )
+        roster = Roster(
+            player_id=roster_input.player_name,
+            franchise_id=roster_input.franchise_franchise,
+            lineup=roster_input.lineup
+                        )
         roster.save()
         return RosterMutation(roster=roster)
 

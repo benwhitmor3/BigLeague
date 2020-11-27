@@ -39,7 +39,7 @@ export const RosterTable: React.FunctionComponent = observer(() => {
     );
   // @ts-ignore
   const players = data.allPlayer;
-  console.log(players);
+  // console.log(players);
 
 
   const LineupPicker: React.FunctionComponent = (current_lineup: any, record: any) => {
@@ -48,8 +48,15 @@ export const RosterTable: React.FunctionComponent = observer(() => {
 
     const submit_lineup = (updated_lineup: any) => {
     setSelected(updated_lineup);
-    console.log(record)
-    console.log(updated_lineup)
+    // console.log(record)
+    // console.log(updated_lineup)
+    store.mutateRosterUpdate({
+        "rosterInput": {
+		"playerName": record.name,
+		"franchiseFranchise": "franchise",
+        "lineup": updated_lineup
+	    }
+      })
     }
 
     let other_values = ["starter", "rotation", "bench"].filter(x => ![current_lineup].includes(x));
@@ -118,27 +125,27 @@ export const RosterTable: React.FunctionComponent = observer(() => {
     ],
     onFilter: (value: string | number | boolean, record: any) => record.suit.indexOf(value) === 0,
   },
-  {
-    title: 'Lineup',
-    dataIndex: "roster",
-    key: "roster",
-    filters: [
-      {
-        text: 'Starter',
-        value: 'starter',
-      },
-      {
-        text: 'Rotation',
-        value: 'rotation',
-      },
-      {
-        text: 'Bench',
-        value: 'bench',
-      },
-    ],
-    onFilter: (value: string | number | boolean, record: any) => _lineup(record.roster).indexOf(value) === 0,
-    render: (roster: any) => (<text>{_lineup(roster)}</text>),
-  },
+  // {
+  //   title: 'Lineup',
+  //   dataIndex: "roster",
+  //   key: "roster",
+  //   filters: [
+  //     {
+  //       text: 'Starter',
+  //       value: 'starter',
+  //     },
+  //     {
+  //       text: 'Rotation',
+  //       value: 'rotation',
+  //     },
+  //     {
+  //       text: 'Bench',
+  //       value: 'bench',
+  //     },
+  //   ],
+  //   onFilter: (value: string | number | boolean, record: any) => _lineup(record.roster).indexOf(value) === 0,
+  //   render: (roster: any) => (<text>{_lineup(roster)}</text>),
+  // },
   {
     title: 'Contract',
     dataIndex: 'contract',
@@ -261,27 +268,27 @@ export const RosterTable: React.FunctionComponent = observer(() => {
     ],
     onFilter: (value: string | number | boolean, record: any) => record.suit.indexOf(value) === 0,
   },
-  {
-    title: 'Lineup',
-    dataIndex: "roster",
-    key: "roster",
-    filters: [
-      {
-        text: 'Starter',
-        value: 'starter',
-      },
-      {
-        text: 'Rotation',
-        value: 'rotation',
-      },
-      {
-        text: 'Bench',
-        value: 'bench',
-      },
-    ],
-    onFilter: (value: string | number | boolean, record: any) => _lineup(record.roster).indexOf(value) === 0,
-    render: (roster: any) => (<text>{_lineup(roster)}</text>),
-  },
+  // {
+  //   title: 'Lineup',
+  //   dataIndex: "roster",
+  //   key: "roster",
+  //   filters: [
+  //     {
+  //       text: 'Starter',
+  //       value: 'starter',
+  //     },
+  //     {
+  //       text: 'Rotation',
+  //       value: 'rotation',
+  //     },
+  //     {
+  //       text: 'Bench',
+  //       value: 'bench',
+  //     },
+  //   ],
+  //   onFilter: (value: string | number | boolean, record: any) => _lineup(record.roster).indexOf(value) === 0,
+  //   render: (roster: any) => (<text>{_lineup(roster)}</text>),
+  // },
   {
     title: 'Contract',
     dataIndex: 'contract',

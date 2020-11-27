@@ -1,26 +1,66 @@
-
-create_player = '''
-mutation myFirstMutation {
-    createPlayer(playerInput: {name: "Gareth Graphene", suit: "diamond", age: 25, pv: 23.34567, epv: 23.34567, 
-    sEpv: 23.34567}) {
-        player {
-        name, 
-        suit,
-        age,
-        pv,
-        epv,
-        sEpv
-        }
+create_player_mutation = '''
+mutation($playerInput: PlayerInput!) {
+  createPlayer(playerInput: $playerInput){
+  	player {
+      name
+      suit
+      age
+      pv
+      epv
+      sEpv
+  	  contract
+  	  tOption
+  	  pOption
+  	  renew
+  	  salary
+  	  grade
+      trainer
+      league{
+        leagueName
+      }
     }
+  }	
 }
 '''
 
-
-query_all_players = '''
+create_player_variable = '''
 {
-  allPlayer {
-    name
+  "playerInput": {
+    "name": "gary graphene",
+    "suit": "diamond",
+    "age": 22,
+    "pv": 21.213,
+    "epv": 21.964,
+    "sEpv": 21.221,
+    "trainer": true,
+    "leagueName": "bigleague"
   }
+}
+'''
+
+roster_update_mutation = '''
+mutation($rosterInput: RosterInput!) {
+  rosterUpdate(rosterInput: $rosterInput){
+	roster{
+    player{
+      name
+    }
+    franchise{
+      franchise
+    }
+    lineup
+  }
+  }
+}
+'''
+
+roster_update_variable = '''
+{
+  "rosterInput": {
+		"playerName": "gary graphene",
+		"franchiseFranchise": "franchise",
+    "lineup": "starter"
+	}
 }
 '''
 
@@ -45,7 +85,6 @@ query_all_league = '''
   }
 }
 '''
-
 
 # {
 #   allUser{

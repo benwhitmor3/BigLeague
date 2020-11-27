@@ -58,13 +58,9 @@ export type PlayerInput = {
   leagueName: string
 }
 export type RosterInput = {
-  player?: PlayerInput
-  franchise?: FranchiseInput
+  playerName?: string
+  franchiseFranchise?: string
   lineup?: string
-}
-export type FranchiseInput = {
-  franchise: string
-  username: string
 }
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
