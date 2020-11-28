@@ -46,7 +46,10 @@ INSTALLED_APPS = [
 
 
 GRAPHENE = {
-    "SCHEMA": "bigleague.schema.schema"
+    "SCHEMA": "bigleague.schema.schema",
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
 
 
@@ -95,6 +98,11 @@ TEMPLATES = [
 ]
 
 AUTH_USER_MODEL = 'bigleague.User'
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 

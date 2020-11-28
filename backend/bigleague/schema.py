@@ -1,4 +1,6 @@
 import graphene
+import graphql_jwt
+from django.contrib.auth import get_user_model
 from graphene_django.types import DjangoObjectType
 from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Staff, Roster
 
@@ -6,6 +8,26 @@ from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, A
 class UserType(DjangoObjectType):
     class Meta:
         model = User
+
+
+class CreateUser(graphene.Mutation):
+    message = graphene.String()
+    user = graphene.Field(UserType)
+
+    class Arguments:
+        username = graphene.String()
+        email = graphene.String(required=True)
+        password = graphene.String(required=True)
+
+    def mutate(self, info, **kwargs):
+        user = User.objects.create_user(
+            email=kwargs.get('email'),
+            username=kwargs.get('username'),
+        )
+        user.set_password(kwargs.get('password'))
+        user.save()
+        return CreateUser(user=user, message="Successfully created user, {}".format(user.username)
+                          )
 
 
 class FranchiseInput(graphene.InputObjectType):
@@ -153,7 +175,7 @@ class RosterMutation(graphene.Mutation):
             player_id=roster_input.player_name,
             franchise_id=roster_input.franchise_franchise,
             lineup=roster_input.lineup
-                        )
+        )
         roster.save()
         return RosterMutation(roster=roster)
 
@@ -162,6 +184,10 @@ class Mutation(graphene.ObjectType):
     update_league = LeagueMutation.Field()
     create_player = PlayerMutation.Field()
     roster_update = RosterMutation.Field()
+    create_user = CreateUser.Field()
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
 
 
 class Query(graphene.ObjectType):
@@ -179,6 +205,8 @@ class Query(graphene.ObjectType):
     all_roster = graphene.List(RosterType)
     player = graphene.Field(PlayerType)
     roster = graphene.Field(RosterType)
+    users = graphene.List(UserType)
+    me = graphene.Field(UserType)
 
     def resolve_all_user(self, info, **kwargs):
         return User.objects.all()
@@ -224,13 +252,20 @@ class Query(graphene.ObjectType):
 
         return None
 
-    # def resolve_roster(self, info, **kwargs):
-    #     name = kwargs.get('name')
-    #
-    #     if name is not None:
-    #         return Roster.objects.get(pk=name)
-    #
-    #     return None
+    def resolve_roster(self, info, **kwargs):
+        name = kwargs.get('name')
 
+        if name is not None:
+            return Roster.objects.get(pk=name)
 
+        return None
 
+    def resolve_users(self, info):
+        return get_user_model().objects.all()
+
+    def resolve_me(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Not logged in!')
+
+        return user

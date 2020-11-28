@@ -35,6 +35,14 @@ import { PlayerMutationModel, PlayerMutationModelType } from "./PlayerMutationMo
 import { playerMutationModelPrimitives, PlayerMutationModelSelector } from "./PlayerMutationModel.base"
 import { RosterMutationModel, RosterMutationModelType } from "./RosterMutationModel"
 import { rosterMutationModelPrimitives, RosterMutationModelSelector } from "./RosterMutationModel.base"
+import { CreateUserModel, CreateUserModelType } from "./CreateUserModel"
+import { createUserModelPrimitives, CreateUserModelSelector } from "./CreateUserModel.base"
+import { ObtainJsonWebTokenModel, ObtainJsonWebTokenModelType } from "./ObtainJsonWebTokenModel"
+import { obtainJsonWebTokenModelPrimitives, ObtainJsonWebTokenModelSelector } from "./ObtainJsonWebTokenModel.base"
+import { VerifyModel, VerifyModelType } from "./VerifyModel"
+import { verifyModelPrimitives, VerifyModelSelector } from "./VerifyModel.base"
+import { RefreshModel, RefreshModelType } from "./RefreshModel"
+import { refreshModelPrimitives, RefreshModelSelector } from "./RefreshModel.base"
 
 
 import { GmTrait } from "./GmTraitEnum"
@@ -85,12 +93,18 @@ queryAllSeason="queryAllSeason",
 queryAllStaff="queryAllStaff",
 queryAllRoster="queryAllRoster",
 queryPlayer="queryPlayer",
-queryRoster="queryRoster"
+queryRoster="queryRoster",
+queryUsers="queryUsers",
+queryMe="queryMe"
 }
 export enum RootStoreBaseMutations {
 mutateUpdateLeague="mutateUpdateLeague",
 mutateCreatePlayer="mutateCreatePlayer",
-mutateRosterUpdate="mutateRosterUpdate"
+mutateRosterUpdate="mutateRosterUpdate",
+mutateCreateUser="mutateCreateUser",
+mutateTokenAuth="mutateTokenAuth",
+mutateVerifyToken="mutateVerifyToken",
+mutateRefreshToken="mutateRefreshToken"
 }
 
 /**
@@ -98,7 +112,7 @@ mutateRosterUpdate="mutateRosterUpdate"
 */
 export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
   .named("RootStore")
-  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['PlayerType', () => PlayerTypeModel], ['RosterType', () => RosterTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['StaffType', () => StaffTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel], ['RosterMutation', () => RosterMutationModel]], ['UserType'], "js"))
+  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['PlayerType', () => PlayerTypeModel], ['RosterType', () => RosterTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['StaffType', () => StaffTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel], ['RosterMutation', () => RosterMutationModel], ['CreateUser', () => CreateUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel]], ['UserType'], "js"))
   .props({
     userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {})
   })
@@ -173,6 +187,16 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
         ${typeof resultSelector === "function" ? resultSelector(new RosterTypeModelSelector()).toString() : resultSelector}
       } }`, variables, options)
     },
+    queryUsers(variables?: {  }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
+      return self.query<{ users: UserTypeModelType[]}>(`query users { users {
+        ${typeof resultSelector === "function" ? resultSelector(new UserTypeModelSelector()).toString() : resultSelector}
+      } }`, variables, options)
+    },
+    queryMe(variables?: {  }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
+      return self.query<{ me: UserTypeModelType}>(`query me { me {
+        ${typeof resultSelector === "function" ? resultSelector(new UserTypeModelSelector()).toString() : resultSelector}
+      } }`, variables, options)
+    },
     mutateUpdateLeague(variables: { leagueName: string }, resultSelector: string | ((qb: LeagueMutationModelSelector) => LeagueMutationModelSelector) = leagueMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
       return self.mutate<{ updateLeague: LeagueMutationModelType}>(`mutation updateLeague($leagueName: String!) { updateLeague(leagueName: $leagueName) {
         ${typeof resultSelector === "function" ? resultSelector(new LeagueMutationModelSelector()).toString() : resultSelector}
@@ -186,6 +210,27 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
     mutateRosterUpdate(variables: { rosterInput: RosterInput }, resultSelector: string | ((qb: RosterMutationModelSelector) => RosterMutationModelSelector) = rosterMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
       return self.mutate<{ rosterUpdate: RosterMutationModelType}>(`mutation rosterUpdate($rosterInput: RosterInput!) { rosterUpdate(rosterInput: $rosterInput) {
         ${typeof resultSelector === "function" ? resultSelector(new RosterMutationModelSelector()).toString() : resultSelector}
+      } }`, variables, optimisticUpdate)
+    },
+    mutateCreateUser(variables: { email: string, password: string, username?: string }, resultSelector: string | ((qb: CreateUserModelSelector) => CreateUserModelSelector) = createUserModelPrimitives.toString(), optimisticUpdate?: () => void) {
+      return self.mutate<{ createUser: CreateUserModelType}>(`mutation createUser($email: String!, $password: String!, $username: String) { createUser(email: $email, password: $password, username: $username) {
+        ${typeof resultSelector === "function" ? resultSelector(new CreateUserModelSelector()).toString() : resultSelector}
+      } }`, variables, optimisticUpdate)
+    },
+    // Obtain JSON Web Token mutation
+    mutateTokenAuth(variables: { email: string, password: string }, resultSelector: string | ((qb: ObtainJsonWebTokenModelSelector) => ObtainJsonWebTokenModelSelector) = obtainJsonWebTokenModelPrimitives.toString(), optimisticUpdate?: () => void) {
+      return self.mutate<{ tokenAuth: ObtainJsonWebTokenModelType}>(`mutation tokenAuth($email: String!, $password: String!) { tokenAuth(email: $email, password: $password) {
+        ${typeof resultSelector === "function" ? resultSelector(new ObtainJsonWebTokenModelSelector()).toString() : resultSelector}
+      } }`, variables, optimisticUpdate)
+    },
+    mutateVerifyToken(variables: { token?: string }, resultSelector: string | ((qb: VerifyModelSelector) => VerifyModelSelector) = verifyModelPrimitives.toString(), optimisticUpdate?: () => void) {
+      return self.mutate<{ verifyToken: VerifyModelType}>(`mutation verifyToken($token: String) { verifyToken(token: $token) {
+        ${typeof resultSelector === "function" ? resultSelector(new VerifyModelSelector()).toString() : resultSelector}
+      } }`, variables, optimisticUpdate)
+    },
+    mutateRefreshToken(variables: { token?: string }, resultSelector: string | ((qb: RefreshModelSelector) => RefreshModelSelector) = refreshModelPrimitives.toString(), optimisticUpdate?: () => void) {
+      return self.mutate<{ refreshToken: RefreshModelType}>(`mutation refreshToken($token: String) { refreshToken(token: $token) {
+        ${typeof resultSelector === "function" ? resultSelector(new RefreshModelSelector()).toString() : resultSelector}
       } }`, variables, optimisticUpdate)
     },
   })))

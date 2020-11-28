@@ -6,6 +6,7 @@ import Franchise from "./components/Pages/Franchise";
 import Draft from './components/Pages/Draft';
 import Season from './components/Pages/Season';
 import OffSeason from './components/Pages/Offseason';
+import Login from './components/Forms/Login';
 // @ts-ignore
 import file from "./components/Instructions/BigLeagueInstructions.pdf";
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
@@ -14,6 +15,7 @@ import { Layout, Menu} from 'antd';
 import './Header.css'
 import {useQuery} from "./models";
 import {observer} from "mobx-react";
+import {AUTH_TOKEN} from "./Constants";
 
 
 const { Header, Content, Footer } = Layout;
@@ -48,6 +50,7 @@ const App: React.FunctionComponent = observer(() => {
     `,
     ),
     );
+    const authToken = localStorage.getItem(AUTH_TOKEN)
     if (error) return <div>{error.message}</div>;
     if (loading) return <div>loading</div>;
     else {
@@ -64,6 +67,7 @@ const App: React.FunctionComponent = observer(() => {
                         <Menu.Item key="6" >Season<a href="/Season"/></Menu.Item>
                         <Menu.Item key="7" >League Summary<a href="/League Summary"/></Menu.Item>
                         <Menu.Item key="8" >Instructions<a href = {file}/></Menu.Item>
+                        <Menu.Item key="9" >Login<a href="/Login"/></Menu.Item>
                     </Menu>
                 </Header>
                 <Content style={{ margin: '16px' }}>
@@ -77,7 +81,7 @@ const App: React.FunctionComponent = observer(() => {
                                 <Route exact path='/Stadium' component={Stadium} />
                                 <Route exact path='/Season' component={Season} />
                                 <Route exact path='/OffSeason' component={OffSeason} />
-                                <Route exact path='/Login' component={Draft} />
+                                <Route exact path='/login' component={Login} />
                             </Switch>
                         </Router>
                     </div>

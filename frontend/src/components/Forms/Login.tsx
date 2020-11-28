@@ -3,16 +3,26 @@ import { useForm } from "react-hook-form";
 import 'antd/dist/antd.css';
 import { Alert } from 'antd';
 import CSS from 'csstype';
+import {observer} from "mobx-react";
+import {useQuery} from "../../models";
 
 type loginConfig = {
-  username: string
+  email: string
   password: string;
 };
 
-export default function Login() {
+export const Login: React.FunctionComponent = observer(() => {
     const {register, handleSubmit, errors} = useForm<loginConfig>();
-    const onSubmit = handleSubmit(({username, password}: loginConfig) => {
-        console.log(username, password);
+    const {store} = useQuery()
+    const onSubmit = handleSubmit(({email, password}: loginConfig) => {
+        console.log(email, password);
+        store.mutateTokenAuth(
+        {
+		"email": email,
+        "password": password,
+                },
+        "token",
+      )
     });
 
     const onClose = (e: any) => {
@@ -46,20 +56,36 @@ export default function Login() {
     return (
         <form onSubmit={onSubmit}>
 
-            <label>Username</label>
-            <input name="username" style={formStyles} ref={register({
+            {/*<label>Username</label>*/}
+            {/*<input name="username" style={formStyles} ref={register({*/}
+            {/*    required: {*/}
+            {/*        value: true,*/}
+            {/*        message: "Username is a required field",*/}
+            {/*    },*/}
+            {/*    maxLength: {*/}
+            {/*        value: 60,*/}
+            {/*        message: 'Max username length is 60',*/}
+            {/*    },*/}
+            {/*})}/>*/}
+
+            <label>Email</label>
+            <input name="email" style={formStyles} ref={register({
                 required: {
                     value: true,
-                    message: "Username is a required field",
+                    message: "Email is a required field",
+                },
+                pattern: {
+                    value: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                    message: 'Invalid email address',
                 },
                 maxLength: {
                     value: 60,
-                    message: 'Max username length is 60',
+                    message: 'Max email length is 60',
                 },
             })}/>
 
             <label>Password</label>
-            <input name="password" style={formStyles} ref={register({
+            <input name="password" type="password" style={formStyles} ref={register({
                 required: {
                     value: true,
                     message: "Password is a required field",
@@ -68,11 +94,14 @@ export default function Login() {
 
             <input type="submit"  style={buttonStyles} value="Login"/>
 
-            <br/> {errors.username && <Alert message={errors.username.message} type="error" closable onClose={onClose}/>}
+            <br/> {errors.email && <Alert message={errors.email.message} type="error" closable onClose={onClose}/>}
             <br/>
             <br/> {errors.password && <Alert message={errors.password.message} type="error" closable onClose={onClose}/>}
             <br/>
 
         </form>
     )
-};
+}
+)
+
+export default Login;
