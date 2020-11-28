@@ -68,9 +68,42 @@ class CityType(DjangoObjectType):
         model = City
 
 
+class StadiumInput(graphene.InputObjectType):
+    stadium_name = graphene.String()
+    seats = graphene.Int()
+    boxes = graphene.Int()
+    grade = graphene.Int()
+    max_grade = graphene.Int()
+    home_field_advantage = graphene.Int()
+    city = graphene.String()
+    franchise = graphene.String()
+
+
 class StadiumType(DjangoObjectType):
     class Meta:
         model = Stadium
+
+
+class StadiumMutation(graphene.Mutation):
+    class Arguments:
+        stadium_input = StadiumInput(required=True)
+
+    stadium = graphene.Field(StadiumType)
+
+    @staticmethod
+    def mutate(self, info, stadium_input=None):
+        stadium = Stadium(
+            stadium_name=stadium_input.stadium_name,
+            seats=stadium_input.seats,
+            boxes=stadium_input.boxes,
+            grade=stadium_input.grade,
+            max_grade=stadium_input.max_grade,
+            home_field_advantage=stadium_input.home_field_advantage,
+            city_id=stadium_input.city,
+            franchise_id=stadium_input.franchise,
+        )
+        stadium.save()
+        return StadiumMutation(stadium=stadium)
 
 
 class GMType(DjangoObjectType):
@@ -184,6 +217,7 @@ class Mutation(graphene.ObjectType):
     update_league = LeagueMutation.Field()
     create_player = PlayerMutation.Field()
     roster_update = RosterMutation.Field()
+    create_stadium = StadiumMutation.Field()
     create_user = CreateUser.Field()
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()

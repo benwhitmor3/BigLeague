@@ -35,6 +35,8 @@ import { PlayerMutationModel, PlayerMutationModelType } from "./PlayerMutationMo
 import { playerMutationModelPrimitives, PlayerMutationModelSelector } from "./PlayerMutationModel.base"
 import { RosterMutationModel, RosterMutationModelType } from "./RosterMutationModel"
 import { rosterMutationModelPrimitives, RosterMutationModelSelector } from "./RosterMutationModel.base"
+import { StadiumMutationModel, StadiumMutationModelType } from "./StadiumMutationModel"
+import { stadiumMutationModelPrimitives, StadiumMutationModelSelector } from "./StadiumMutationModel.base"
 import { CreateUserModel, CreateUserModelType } from "./CreateUserModel"
 import { createUserModelPrimitives, CreateUserModelSelector } from "./CreateUserModel.base"
 import { ObtainJsonWebTokenModel, ObtainJsonWebTokenModelType } from "./ObtainJsonWebTokenModel"
@@ -70,6 +72,16 @@ export type RosterInput = {
   franchiseFranchise?: string
   lineup?: string
 }
+export type StadiumInput = {
+  stadiumName?: string
+  seats?: number
+  boxes?: number
+  grade?: number
+  maxGrade?: number
+  homeFieldAdvantage?: number
+  city?: string
+  franchise?: string
+}
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
   userTypes: ObservableMap<string, UserTypeModelType>
@@ -101,6 +113,7 @@ export enum RootStoreBaseMutations {
 mutateUpdateLeague="mutateUpdateLeague",
 mutateCreatePlayer="mutateCreatePlayer",
 mutateRosterUpdate="mutateRosterUpdate",
+mutateCreateStadium="mutateCreateStadium",
 mutateCreateUser="mutateCreateUser",
 mutateTokenAuth="mutateTokenAuth",
 mutateVerifyToken="mutateVerifyToken",
@@ -112,7 +125,7 @@ mutateRefreshToken="mutateRefreshToken"
 */
 export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
   .named("RootStore")
-  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['PlayerType', () => PlayerTypeModel], ['RosterType', () => RosterTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['StaffType', () => StaffTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel], ['RosterMutation', () => RosterMutationModel], ['CreateUser', () => CreateUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel]], ['UserType'], "js"))
+  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['PlayerType', () => PlayerTypeModel], ['RosterType', () => RosterTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['StaffType', () => StaffTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel], ['RosterMutation', () => RosterMutationModel], ['StadiumMutation', () => StadiumMutationModel], ['CreateUser', () => CreateUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel]], ['UserType'], "js"))
   .props({
     userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {})
   })
@@ -210,6 +223,11 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
     mutateRosterUpdate(variables: { rosterInput: RosterInput }, resultSelector: string | ((qb: RosterMutationModelSelector) => RosterMutationModelSelector) = rosterMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
       return self.mutate<{ rosterUpdate: RosterMutationModelType}>(`mutation rosterUpdate($rosterInput: RosterInput!) { rosterUpdate(rosterInput: $rosterInput) {
         ${typeof resultSelector === "function" ? resultSelector(new RosterMutationModelSelector()).toString() : resultSelector}
+      } }`, variables, optimisticUpdate)
+    },
+    mutateCreateStadium(variables: { stadiumInput: StadiumInput }, resultSelector: string | ((qb: StadiumMutationModelSelector) => StadiumMutationModelSelector) = stadiumMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
+      return self.mutate<{ createStadium: StadiumMutationModelType}>(`mutation createStadium($stadiumInput: StadiumInput!) { createStadium(stadiumInput: $stadiumInput) {
+        ${typeof resultSelector === "function" ? resultSelector(new StadiumMutationModelSelector()).toString() : resultSelector}
       } }`, variables, optimisticUpdate)
     },
     mutateCreateUser(variables: { email: string, password: string, username?: string }, resultSelector: string | ((qb: CreateUserModelSelector) => CreateUserModelSelector) = createUserModelPrimitives.toString(), optimisticUpdate?: () => void) {

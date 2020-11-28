@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {useForm, Controller} from "react-hook-form";
 import axios from "axios";
 import {Select} from "../Reusables/Select";
 import {Alert} from "antd";
 import CSS from "csstype";
+import {stadiumMutationModelPrimitives, useQuery} from "../../models";
 
 type stadiumConfig = {
     stadium_name: string;
@@ -17,9 +18,22 @@ type stadiumConfig = {
 // function for stadium component
 export default function StadiumForm() {
   const {register, handleSubmit, errors, control} = useForm<stadiumConfig>();
+  const {store} = useQuery(store => store.queryAllUser());
   const onSubmit = handleSubmit(({stadium_name, seats, boxes, city, total, franchise}: stadiumConfig) => {
         console.log(stadium_name, seats, boxes, city, total, franchise);
-    });
+        store.mutateCreateStadium({
+              "stadiumInput": {
+                    "stadiumName": stadium_name,
+                    "seats": seats,
+                    "boxes": boxes,
+                    "grade": 20,
+                    "maxGrade": 20,
+                    "homeFieldAdvantage": 0,
+                    "city": city,
+                    "franchise": "franchise"
+                }
+            })
+        });
 
   const [seats, setSeats] = useState<number>(0);
   const [boxes, setBoxes] = useState<number>(0);
