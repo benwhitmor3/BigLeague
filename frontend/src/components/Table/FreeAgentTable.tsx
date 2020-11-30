@@ -377,7 +377,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
             <br/>
             <label>Current Grade: </label>
               <Tag color={'#afafaf'} style={{marginTop: '10px', fontSize: '14px'}}>
-                {selectedplayer.grade}
+                {selectedplayer.grade ? selectedplayer.grade.toFixed(2) : selectedplayer.grade}
               </Tag>
             <label>Offer Grade: </label>
               <Tag color={gradecolour} style={{marginTop: '10px', fontSize: '14px'}}>

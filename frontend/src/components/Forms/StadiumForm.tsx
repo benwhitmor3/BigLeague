@@ -1,10 +1,9 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useForm, Controller} from "react-hook-form";
-import axios from "axios";
 import {Select} from "../Reusables/Select";
 import {Alert} from "antd";
 import CSS from "csstype";
-import {stadiumMutationModelPrimitives, useQuery} from "../../models";
+import {useQuery} from "../../models";
 
 type stadiumConfig = {
     stadium_name: string;
@@ -30,7 +29,7 @@ export default function StadiumForm() {
                     "maxGrade": 20,
                     "homeFieldAdvantage": 0,
                     "city": city,
-                    "franchise": "franchise"
+                    "franchise": franchise
                 }
             })
         });

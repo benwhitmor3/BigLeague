@@ -17,3 +17,14 @@ export const StadiumTypeModel = StadiumTypeModelBase
       console.log(JSON.stringify(self))
     }
   }))
+  .views((self) => ({
+      get name() {
+          return self.stadiumName
+      },
+      // getAreaPlanUnits(date: string) {
+      //     let units = self.shiftinstanceSet.map((shift) => {
+      //         return shift.getShiftPlanUnits(date)
+      //     })
+      //     return sum(units)
+      // },
+  }))

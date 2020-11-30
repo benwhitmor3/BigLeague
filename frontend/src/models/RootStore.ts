@@ -9,4 +9,17 @@ export const RootStore = RootStoreBase
     log() {
       console.log(JSON.stringify(self))
     },
+    getFranchise() {
+    const query = self.queryAllFranchise(
+      {},
+      `
+    franchise
+    `,
+      {},
+    )
+    return query
+  },
+    getUser() {
+    return self.userTypes.get('2')
+  },
   }))

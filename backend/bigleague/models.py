@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-# Create your models here.
 class MyUserManager(BaseUserManager):
     def create_user(self, email, username, password=None):
         if not email:

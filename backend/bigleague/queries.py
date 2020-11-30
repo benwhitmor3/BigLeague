@@ -64,6 +64,44 @@ roster_update_variable = '''
 }
 '''
 
+
+create_stadium_mutation = '''
+mutation($stadiumInput: StadiumInput!) {
+  createStadium(stadiumInput: $stadiumInput){
+    stadium{
+      stadiumName
+      seats
+      boxes
+      grade
+      maxGrade
+      homeFieldAdvantage
+      city{
+        city
+      }
+      franchise{
+        franchise
+      }
+    }
+  }
+}
+'''
+
+create_stadium_variable = '''
+{
+  "stadiumInput": {
+    "stadiumName": "Test Stadium",
+    "seats": 25000,
+    "boxes": 250,
+    "grade": 20,
+    "maxGrade": 20,
+    "homeFieldAdvantage": 0,
+    "city": "London",
+    "franchise": "franchise"
+	}
+}
+'''
+
+
 query_all_league = '''
 {
   allLeague{

@@ -255,7 +255,7 @@ class Query(graphene.ObjectType):
         return City.objects.all()
 
     def resolve_all_stadium(self, info, **kwargs):
-        return City.objects.all()
+        return Stadium.objects.all()
 
     def resolve_all_gm(self, info, **kwargs):
         return GM.objects.all()
