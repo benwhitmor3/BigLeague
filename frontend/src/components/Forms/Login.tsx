@@ -92,7 +92,7 @@ export const Login: React.FunctionComponent = observer(() => {
                 },
             })}/>
 
-            <input type="submit"  style={buttonStyles} value="Login"/>
+            <input type="submit"  style={buttonStyles} value="Email"/>
 
             <br/> {errors.email && <Alert message={errors.email.message} type="error" closable onClose={onClose}/>}
             <br/>

@@ -58,7 +58,7 @@ class User(AbstractBaseUser):
 
 class Franchise(models.Model):
     franchise = models.CharField(max_length=25, primary_key=True)
-    username = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
 
     def __str__(self):
         return self.franchise

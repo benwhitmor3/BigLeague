@@ -198,7 +198,7 @@ class Players:
 def generate_players():
     # Generates list of players. Range creates number of players.
     player_list = []
-    for i in range(100):
+    for i in range(10):
         player = Players("name", "suit", "age", "pv", "epv", "s_epv",
                          "contract", "t_option", "p_option", "renew", "salary", "grade", "lineup", "trainer")
         player_list.append(player)
