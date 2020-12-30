@@ -1,12 +1,17 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import { Table, Tag, Space } from 'antd';
-import {PlayerTypeModelType, useQuery} from "../../models";
+import {PlayerTypeModelType, useQuery, StoreContext} from "../../models";
 import {observer} from "mobx-react";
 import { Switch } from 'antd';
 import {colour, suit_icon, draft} from './TableFunctions'
 
 export const DraftTable: React.FunctionComponent = observer(() => {
+
+  const storee = useContext(StoreContext)
+  // @ts-ignore
+  window.store = storee
+
   const {store, error, loading, data} = useQuery(store =>
         store.queryAllPlayer(
       {},
@@ -96,7 +101,15 @@ export const DraftTable: React.FunctionComponent = observer(() => {
     render: (text: string, record: PlayerTypeModelType) => (
       <Space size="middle">
         <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-             onClick={() => draft(record)}>
+             onClick={() =>
+             store.mutateRosterUpdate({
+                "rosterInput": {
+                "playerName": record.name,
+                "franchiseFranchise": "test franchise",
+                "lineup": 'bench'
+                }
+              })
+             }>
           Draft Prospect
         </Tag>
       </Space>
@@ -166,7 +179,15 @@ export const DraftTable: React.FunctionComponent = observer(() => {
     render: (text: string, record: PlayerTypeModelType) => (
       <Space size="middle">
         <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-             onClick={() => draft(record)}>
+             onClick={() =>
+                store.mutateRosterUpdate({
+                "rosterInput": {
+                "playerName": record.name,
+                "franchiseFranchise": "test franchise",
+                "lineup": 'bench'
+                }
+              })
+             }>
           Draft Prospect
         </Tag>
       </Space>

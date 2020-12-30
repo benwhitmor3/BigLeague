@@ -1,35 +1,11 @@
-import sqlite3
 from bigleague.models import *
-import pandas as pd
 import random
 from random import gauss
 import faker
 
-
-# db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
-# conn = sqlite3.connect(db)
-# df = pd.read_sql_query("select * from bigleague_player", conn)
-# conn.close()
-#
-# players = df.to_dict('records')
-#
-# model_instances = [Player(
-#     name=record['name'],
-#     suit=record['suit'],
-#     age=record['age'],
-#     pv=record['pv'],
-#     epv=record['epv'],
-#     s_epv=record['s_epv']
-# ) for record in players]
-#
-# Player.objects.filter(name, suit, age, ).update(model_instances=model_instances)
-#
-# Player.objects.bulk_create(model_instances)
-# Player.objects.all().delete()
-
-
 # manually create user, franchise, and league
-def gen_cities(num_of_cities=8):
+
+def gen_city(num_of_cities=8):
     cities = ["Los Angeles", "Chicago", "New York", "Phoenix", "Indianapolis", "Philadelphia", "Houston",
               "San Antonio", "Denver", "Boston", "Las Vegas", "Seattle", "Atalanta", "San Diego"]
     values = [5, 6, 7, 8, 9, 10, 11, 12]
@@ -47,7 +23,8 @@ def gen_cities(num_of_cities=8):
         )
 
 
-def gen_players(num_of_players=50, year=1):
+def gen_player(num_of_players=50, year=1):
+
     # Player.objects.all().delete()
 
     for players in range(num_of_players):
@@ -166,5 +143,32 @@ def gen_players(num_of_players=50, year=1):
             salary=salary,
             grade=grade,
             trainer=0,
-            league=League.objects.all()[0]
+            league=League.objects.all()[0],
+        )
+
+def gen_gm():
+
+    # GM.objects.all().delete()
+
+    gms = ['facilitator', 'promoter', 'recruiter', 'scouter', 'suitor', 'trainer']
+
+    for trait in gms:
+        GM.objects.create(
+        trait=trait,
+    )
+
+
+def gen_coach(num_of_coaches=10):
+
+    # Coach.objects.all().delete()
+
+    for coach in range(num_of_coaches):
+
+        attribute_one = random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'], k=1)[0]
+        attribute_two = random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'], k=1)[0]
+
+        Coach.objects.create(
+            name=faker.Faker().name(),
+            attribute_one=attribute_one,
+            attribute_two=attribute_two,
         )

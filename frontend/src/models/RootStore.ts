@@ -22,4 +22,14 @@ export const RootStore = RootStoreBase
     getUser() {
     return self.userTypes.get('2')
   },
+    draft_mutation(player: any) {
+        self.mutateRosterUpdate({
+        "rosterInput": {
+		"playerName": player.name,
+		"franchiseFranchise": "test franchise",
+        "lineup": 'starter'
+	    }
+      })
+    }
   }))
+

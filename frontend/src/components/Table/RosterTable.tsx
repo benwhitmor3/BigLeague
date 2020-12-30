@@ -48,12 +48,12 @@ export const RosterTable: React.FunctionComponent = observer(() => {
 
     const submit_lineup = (updated_lineup: any) => {
     setSelected(updated_lineup);
-    // console.log(record)
+    console.log(record)
     // console.log(updated_lineup)
     store.mutateRosterUpdate({
         "rosterInput": {
 		"playerName": record.name,
-		"franchiseFranchise": "franchise",
+		"franchiseFranchise": record.roster.franchise.franchise,
         "lineup": updated_lineup
 	    }
       })

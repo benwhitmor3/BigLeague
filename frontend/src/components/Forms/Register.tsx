@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import 'antd/dist/antd.css';
 import { Alert } from 'antd';
 import CSS from 'csstype';
+import {useContext} from "react";
+import {StoreContext} from "../../models";
 
 type registrationConfig = {
   email: string;
@@ -12,7 +14,20 @@ type registrationConfig = {
 
 export default function Register() {
     const {register, handleSubmit, errors} = useForm<registrationConfig>();
+    const store = useContext(StoreContext)
+
     const onSubmit = handleSubmit(({email, username, password}: registrationConfig) => {
+      store.mutateCreateUser({"email": email, "username": username, "password": password},
+          `
+      message
+        user {
+          id
+          email
+          username
+          password
+        }
+      `,
+       )
         console.log(email, username, password);
     });
 

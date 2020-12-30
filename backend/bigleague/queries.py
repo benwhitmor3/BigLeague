@@ -59,7 +59,7 @@ roster_update_variable = '''
   "rosterInput": {
 		"playerName": "gary graphene",
 		"franchiseFranchise": "franchise",
-    "lineup": "starter"
+        "lineup": "starter"
 	}
 }
 '''

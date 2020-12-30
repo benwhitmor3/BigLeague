@@ -8,6 +8,7 @@ import { createHttpClient } from 'mst-gql'
 import { RootStore } from './models'
 import { getSnapshot } from 'mobx-state-tree'
 import { StoreContext } from './models'
+import {getToken} from "./components/Forms/token";
 
 
 const rootStore = RootStore.create(undefined, {
@@ -33,8 +34,10 @@ declare global {
     interface Window {
         rootStore: any;
         getSnapshot: any;
+        token: any;
     }
 }
 
 window.rootStore = rootStore;
 window.getSnapshot = getSnapshot;
+window.token = getToken()

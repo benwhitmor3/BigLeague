@@ -5,6 +5,8 @@ import { Alert } from 'antd';
 import CSS from 'csstype';
 import {observer} from "mobx-react";
 import {useQuery} from "../../models";
+import {getToken, setToken} from "./token";
+import {ObtainJsonWebTokenModelType } from"../../models"
 
 type loginConfig = {
   email: string
@@ -18,11 +20,22 @@ export const Login: React.FunctionComponent = observer(() => {
         console.log(email, password);
         store.mutateTokenAuth(
         {
+            // email: "ben-whitmore@hotmail.com", password: "password",
 		"email": email,
         "password": password,
                 },
         "token",
-      )
+        ).then((token : {tokenAuth: ObtainJsonWebTokenModelType} ) => {
+        if (token) {
+          setToken(token)
+          console.log(token)
+          getToken()
+        }
+      },reason => {
+          console.log(reason)
+          return alert("Invalid Credentials")
+        }
+    );
     });
 
     const onClose = (e: any) => {
@@ -53,7 +66,7 @@ export const Login: React.FunctionComponent = observer(() => {
     };
 
 
-    return (
+        return (
         <form onSubmit={onSubmit}>
 
             {/*<label>Username</label>*/}
@@ -92,7 +105,7 @@ export const Login: React.FunctionComponent = observer(() => {
                 },
             })}/>
 
-            <input type="submit"  style={buttonStyles} value="Email"/>
+            <input type="submit"  style={buttonStyles} value="Login"/>
 
             <br/> {errors.email && <Alert message={errors.email.message} type="error" closable onClose={onClose}/>}
             <br/>
