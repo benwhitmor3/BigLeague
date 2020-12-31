@@ -1,23 +1,28 @@
 import * as React from "react";
+import {useEffect} from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import { Alert } from 'antd';
 import CSS from 'csstype';
 import {observer} from "mobx-react";
-import {useQuery} from "../../models";
-import {getToken, setToken} from "./token";
+import {StoreContext, useQuery, VerifyModelType} from "../../models";
+import {deleteToken, getToken, setToken} from "./token";
 import {ObtainJsonWebTokenModelType } from"../../models"
+import {useContext} from "react";
 
 type loginConfig = {
   email: string
   password: string;
+  data: any
 };
 
-export const Login: React.FunctionComponent = observer(() => {
+export const Login: React.FunctionComponent = observer((props) => {
     const {register, handleSubmit, errors} = useForm<loginConfig>();
-    const {store} = useQuery()
+    const history = useHistory();
+    const store = useContext(StoreContext)
+
     const onSubmit = handleSubmit(({email, password}: loginConfig) => {
-        console.log(email, password);
         store.mutateTokenAuth(
         {
             // email: "ben-whitmore@hotmail.com", password: "password",
@@ -27,19 +32,33 @@ export const Login: React.FunctionComponent = observer(() => {
         "token",
         ).then((token : {tokenAuth: ObtainJsonWebTokenModelType} ) => {
         if (token) {
-          setToken(token)
-          console.log(token)
-          getToken()
+          setToken(token.tokenAuth['token'])
+          history.push("/Home");
+          store.setUser(email)
         }
       },reason => {
           console.log(reason)
           return alert("Invalid Credentials")
         }
     );
+
+    const token: any = getToken()
+    store.mutateVerifyToken({
+                "token": token,
+            },
+            'payload'
+        ).then((payload: {verifyToken: VerifyModelType}) => {
+            if (payload) {
+                console.log(payload)
+                localStorage.setItem('email', payload.verifyToken.payload.email)
+            }
+        },(reason) => {
+          console.log(reason)
+        })
     });
 
     const onClose = (e: any) => {
-        console.log(e, 'I was closed.');
+        console.log(e, 'Error was closed.');
     };
 
     const formStyles: CSS.Properties = {

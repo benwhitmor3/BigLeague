@@ -106,8 +106,7 @@ queryAllStaff="queryAllStaff",
 queryAllRoster="queryAllRoster",
 queryPlayer="queryPlayer",
 queryRoster="queryRoster",
-queryUsers="queryUsers",
-queryMe="queryMe"
+queryUser="queryUser"
 }
 export enum RootStoreBaseMutations {
 mutateUpdateLeague="mutateUpdateLeague",
@@ -200,13 +199,8 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
         ${typeof resultSelector === "function" ? resultSelector(new RosterTypeModelSelector()).toString() : resultSelector}
       } }`, variables, options)
     },
-    queryUsers(variables?: {  }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
-      return self.query<{ users: UserTypeModelType[]}>(`query users { users {
-        ${typeof resultSelector === "function" ? resultSelector(new UserTypeModelSelector()).toString() : resultSelector}
-      } }`, variables, options)
-    },
-    queryMe(variables?: {  }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
-      return self.query<{ me: UserTypeModelType}>(`query me { me {
+    queryUser(variables: { email?: string }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
+      return self.query<{ user: UserTypeModelType}>(`query user($email: String) { user(email: $email) {
         ${typeof resultSelector === "function" ? resultSelector(new UserTypeModelSelector()).toString() : resultSelector}
       } }`, variables, options)
     },

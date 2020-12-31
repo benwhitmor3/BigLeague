@@ -1,13 +1,34 @@
-import React, {useEffect, useState} from 'react';
+import React, { useContext } from 'react'
 import logo from '../Images/BigLeague_Gif.gif';
 // @ts-ignore
 import instructions from "../Instructions/BigLeagueInstructions.pdf";
-import Register from "../Forms/Register";
-import Login from "../Forms/Login";
 import {Col, Row} from "antd";
+import {deleteToken, getToken} from "../Forms/token";
+import {observer} from "mobx-react";
+import {StoreContext, useQuery } from "../../models";
 
 
-export default function Home() {
+const Home = (props: any) => {
+    const store = useContext(StoreContext)
+    const authToken = localStorage.getItem('auth-token');
+
+    console.log(authToken)
+
+    const { loading, setQuery } = useQuery((store) =>
+        store.queryUser(
+              {email: localStorage.getItem('email')!},
+              `
+      id
+      email
+      username
+      franchise{
+        franchise
+      }
+      __typename
+    `,))
+
+    const isLoggedIn = !!getToken();
+
     return (
 <div>
   <h2>Welcome to the Big League</h2>
@@ -15,11 +36,11 @@ export default function Home() {
   <p>Please review the <a href = {instructions}>instructions</a> before starting</p>
   <br/>
 <Row>
-      <Register/>
-      <Login/>
 </Row>
 
 </div>
 
   );
 }
+
+export default (observer(Home))

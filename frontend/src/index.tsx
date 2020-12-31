@@ -12,8 +12,7 @@ import {getToken} from "./components/Forms/token";
 
 
 const rootStore = RootStore.create(undefined, {
-  gqlHttpClient: createHttpClient('http://127.0.0.1:8000/graphql/'),
-})
+  gqlHttpClient: createHttpClient('http://127.0.0.1:8000/graphql/')})
 
 const render = () => {
   ReactDOM.render(

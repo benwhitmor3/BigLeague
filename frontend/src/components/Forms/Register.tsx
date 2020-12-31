@@ -4,7 +4,9 @@ import 'antd/dist/antd.css';
 import { Alert } from 'antd';
 import CSS from 'csstype';
 import {useContext} from "react";
-import {StoreContext} from "../../models";
+import {ObtainJsonWebTokenModelType, StoreContext} from "../../models";
+import {setToken} from "./token";
+import {useHistory} from "react-router";
 
 type registrationConfig = {
   email: string;
@@ -15,7 +17,7 @@ type registrationConfig = {
 export default function Register() {
     const {register, handleSubmit, errors} = useForm<registrationConfig>();
     const store = useContext(StoreContext)
-
+    const history = useHistory();
     const onSubmit = handleSubmit(({email, username, password}: registrationConfig) => {
       store.mutateCreateUser({"email": email, "username": username, "password": password},
           `
@@ -27,8 +29,15 @@ export default function Register() {
           password
         }
       `,
-       )
-        console.log(email, username, password);
+       ).then((id) => {
+        if (id) {
+          history.push("/Login");
+        }
+      },reason => {
+          console.log(reason)
+          return alert("Invalid Registration")
+        }
+    );
     });
 
     const onClose = (e: any) => {

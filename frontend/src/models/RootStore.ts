@@ -1,5 +1,7 @@
-import { Instance } from "mobx-state-tree"
+import {Instance, types} from "mobx-state-tree"
 import { RootStoreBase } from "./RootStore.base"
+import {UserTypeModel} from "./UserTypeModel";
+import {useQuery} from "./reactUtils";
 
 export interface RootStoreType extends Instance<typeof RootStore.Type> {}
 
@@ -9,20 +11,7 @@ export const RootStore = RootStoreBase
     log() {
       console.log(JSON.stringify(self))
     },
-    getFranchise() {
-    const query = self.queryAllFranchise(
-      {},
-      `
-    franchise
-    `,
-      {},
-    )
-    return query
-  },
-    getUser() {
-    return self.userTypes.get('2')
-  },
-    draft_mutation(player: any) {
+  draft_mutation(player: any) {
         self.mutateRosterUpdate({
         "rosterInput": {
 		"playerName": player.name,
@@ -32,4 +21,31 @@ export const RootStore = RootStoreBase
       })
     }
   }))
+  .props({
+    User: types.union(
+      types.undefined,
+      types.reference(types.late(() => UserTypeModel)),
+    ),
+  })
+  .actions((self) => ({
+      setUser(email: string) {
+      const query = self.queryUser(
+              {email: email},
+              `
+      id
+      email
+      username
+      franchise{
+        franchise
+      }
+      __typename
+    `,
+              {fetchPolicy: 'cache-first'},
+          )
+          // @ts-ignore
+        self.User = self.userTypes.get(query!.data!.user.id)
+    return self.User
+      }
+  }))
+
 

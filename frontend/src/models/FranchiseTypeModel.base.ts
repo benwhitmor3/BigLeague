@@ -24,7 +24,7 @@ import { RootStoreType } from "./index"
 
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
-  username: UserTypeModelType;
+  user: UserTypeModelType;
 }
 
 /**
@@ -36,7 +36,7 @@ export const FranchiseTypeModelBase = withTypedRefs<Refs>()(ModelBase
   .props({
     __typename: types.optional(types.literal("FranchiseType"), "FranchiseType"),
     franchise: types.union(types.undefined, types.string),
-    username: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => UserTypeModel))),
+    user: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => UserTypeModel))),
     leagueSet: types.union(types.undefined, types.array(types.late((): any => LeagueTypeModel))),
     stadium: types.union(types.undefined, types.null, types.late((): any => StadiumTypeModel)),
     action: types.union(types.undefined, types.null, types.late((): any => ActionTypeModel)),
@@ -52,7 +52,7 @@ export const FranchiseTypeModelBase = withTypedRefs<Refs>()(ModelBase
 
 export class FranchiseTypeModelSelector extends QueryBuilder {
   get franchise() { return this.__attr(`franchise`) }
-  username(builder?: string | UserTypeModelSelector | ((selector: UserTypeModelSelector) => UserTypeModelSelector)) { return this.__child(`username`, UserTypeModelSelector, builder) }
+  user(builder?: string | UserTypeModelSelector | ((selector: UserTypeModelSelector) => UserTypeModelSelector)) { return this.__child(`user`, UserTypeModelSelector, builder) }
   leagueSet(builder?: string | LeagueTypeModelSelector | ((selector: LeagueTypeModelSelector) => LeagueTypeModelSelector)) { return this.__child(`leagueSet`, LeagueTypeModelSelector, builder) }
   stadium(builder?: string | StadiumTypeModelSelector | ((selector: StadiumTypeModelSelector) => StadiumTypeModelSelector)) { return this.__child(`stadium`, StadiumTypeModelSelector, builder) }
   action(builder?: string | ActionTypeModelSelector | ((selector: ActionTypeModelSelector) => ActionTypeModelSelector)) { return this.__child(`action`, ActionTypeModelSelector, builder) }

@@ -239,8 +239,7 @@ class Query(graphene.ObjectType):
     all_roster = graphene.List(RosterType)
     player = graphene.Field(PlayerType)
     roster = graphene.Field(RosterType)
-    users = graphene.List(UserType)
-    me = graphene.Field(UserType)
+    user = graphene.Field(UserType, email=graphene.String())
 
     def resolve_all_user(self, info, **kwargs):
         return User.objects.all()
@@ -294,12 +293,11 @@ class Query(graphene.ObjectType):
 
         return None
 
-    def resolve_users(self, info):
-        return get_user_model().objects.all()
+    def resolve_user(self, info, **kwargs):
+        email = kwargs.get('email')
 
-    def resolve_me(self, info):
-        user = info.context.user
-        if user.is_anonymous:
-            raise Exception('Not logged in!')
+        if email is not None:
+            return User.objects.get(email=email)
 
-        return user
+        return None
+
