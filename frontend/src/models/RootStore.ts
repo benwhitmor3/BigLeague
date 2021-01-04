@@ -43,7 +43,7 @@ export const RootStore = RootStoreBase
               {fetchPolicy: 'cache-first'},
           )
           // @ts-ignore
-        self.User = self.userTypes.get(query!.data!.user.id)
+    self.User = self.userTypes.get(query!.data!.user.id)
     return self.User
       }
   }))

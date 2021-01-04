@@ -1,5 +1,4 @@
 import * as React from "react";
-import {useEffect} from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
@@ -33,8 +32,20 @@ export const Login: React.FunctionComponent = observer((props) => {
         ).then((token : {tokenAuth: ObtainJsonWebTokenModelType} ) => {
         if (token) {
           setToken(token.tokenAuth['token'])
-          history.push("/Home");
           store.setUser(email)
+          store.mutateVerifyToken({
+                "token": token.tokenAuth['token'],
+            },
+            'payload'
+            ).then((payload: {verifyToken: VerifyModelType}) => {
+            if (payload) {
+                console.log(payload)
+                localStorage.setItem('email', payload.verifyToken.payload.email)
+                history.push("/Home");
+            }
+        },(reason) => {
+          console.log(reason)
+        })
         }
       },reason => {
           console.log(reason)
@@ -42,20 +53,7 @@ export const Login: React.FunctionComponent = observer((props) => {
         }
     );
 
-    const token: any = getToken()
-    store.mutateVerifyToken({
-                "token": token,
-            },
-            'payload'
-        ).then((payload: {verifyToken: VerifyModelType}) => {
-            if (payload) {
-                console.log(payload)
-                localStorage.setItem('email', payload.verifyToken.payload.email)
-            }
-        },(reason) => {
-          console.log(reason)
-        })
-    });
+});
 
     const onClose = (e: any) => {
         console.log(e, 'Error was closed.');

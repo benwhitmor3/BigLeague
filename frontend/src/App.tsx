@@ -30,21 +30,127 @@ const App: React.FunctionComponent = observer(() => {
         store.queryUser(
               {email: "ben-whitmore@hotmail.com"},
               `
-      id
-      email
-      username
-      franchise{
-        franchise
-      }
+    __typename
+    id
+    password
+    email
+    username
+    dateJoined
+    lastLogin
+    franchise{
       __typename
+      league{
+        __typename
+        leagueName
+        playerSet{
+          __typename
+          name
+          suit
+          age
+          pv
+          epv
+          sEpv
+          contract
+          tOption
+          pOption
+          renew
+          salary
+          grade
+          trainer
+          roster{
+            __typename
+            lineup
+            franchise{
+              __typename
+              franchise
+            }
+          }
+        }
+      }
+      stadium{
+        __typename
+        stadiumName
+        seats
+        boxes
+        grade
+        maxGrade
+        homeFieldAdvantage
+        city {
+          __typename
+          city
+          cityValue
+        }
+      }
+      action{
+        numberOfActions
+        improvedBathrooms
+        improvedConcessions
+        jumbotron
+        upscaleBar
+        hallOfFame
+        improvedSeating
+        improvedSound
+        partyDeck
+        wiFi
+        fanNight
+        familyGame
+        doorPrizes
+        mvpNight
+        paradeOfChampions
+        bribeTheRefs
+        easyRuns
+        fanFactor
+        trainPlayer
+        farmSystem
+        fanFavourites
+        gourmetRestaurant
+        beerGarden
+        namingRights
+        eventPlanning
+      }
+      season{
+        __typename
+        ready
+        wins
+        losses
+        ppg
+        std
+        championships
+        bonuses
+        penalties
+        fanBase
+        fanIndex
+        advertising
+        revenue
+        expenses
+      }
+      staff{
+        __typename
+        gm{
+          __typename
+          trait
+        }
+        coach{
+          __typename
+          name
+          attributeOne
+          attributeTwo
+        }
+      }
+    }
     `,
         {fetchPolicy: 'cache-first'}
         ))
+
+
+    window.data = data
+    window.rootStore = store;
 
     const authToken = localStorage.getItem(AUTH_TOKEN)
     if (error) return <div>{error.message}</div>;
     if (loading) return <div>loading</div>;
     else {
+            console.log(data)
         return (
         <div>
             <Layout className='layout'>

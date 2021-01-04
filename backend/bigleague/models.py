@@ -65,8 +65,8 @@ class Franchise(models.Model):
 
 
 class League(models.Model):
-    league_name = models.CharField(max_length=25, primary_key=True)
-    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE, null=True)
+    league_name = models.CharField(max_length=25)
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.league_name

@@ -34,9 +34,9 @@ declare global {
         rootStore: any;
         getSnapshot: any;
         token: any;
+        data: any
     }
 }
 
-window.rootStore = rootStore;
 window.getSnapshot = getSnapshot;
 window.token = getToken()

@@ -16,7 +16,7 @@ const Home = (props: any) => {
 
     const { loading, setQuery } = useQuery((store) =>
         store.queryUser(
-              {email: localStorage.getItem('email')!},
+              {email: "ben-whitmore@hotmail.com"},
               `
       id
       email
