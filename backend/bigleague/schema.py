@@ -2,7 +2,7 @@ import graphene
 import graphql_jwt
 from django.contrib.auth import get_user_model
 from graphene_django.types import DjangoObjectType
-from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Staff, Roster
+from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Roster
 
 
 class UserType(DjangoObjectType):
@@ -30,9 +30,24 @@ class CreateUser(graphene.Mutation):
                           )
 
 
+class DeleteUser(graphene.Mutation):
+    message = graphene.String()
+    user = graphene.Field(UserType)
+
+    class Arguments:
+        email = graphene.String(required=True)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        obj = User.objects.get(email=kwargs["email"])
+        obj.delete()
+        return cls("User " + kwargs["email"] + " successfully deleted")
+
+
 class FranchiseInput(graphene.InputObjectType):
     franchise = graphene.String(required=True)
-    username = graphene.String(required=True)
+    gm = graphene.ID()
+    coach = graphene.ID()
 
 
 class FranchiseType(DjangoObjectType):
@@ -40,26 +55,52 @@ class FranchiseType(DjangoObjectType):
         model = Franchise
 
 
+class CreateFranchiseMutation(graphene.Mutation):
+    class Arguments:
+        franchise_input = FranchiseInput(required=True)
+        email = graphene.String(required=True)
+
+    franchise = graphene.Field(FranchiseType)
+    user = graphene.Field(UserType)
+
+    @staticmethod
+    def mutate(self, info, franchise_input=None, **kwargs):
+        user = User.objects.get(email=kwargs["email"])
+        franchise = Franchise(
+            franchise=franchise_input.franchise,
+            user=user,
+            league=user.league,
+            gm_id=franchise_input.gm,
+            coach_id=franchise_input.coach
+        )
+        franchise.save()
+        return CreateFranchiseMutation(franchise=franchise)
+
+
 class LeagueType(DjangoObjectType):
     class Meta:
         model = League
 
 
-class LeagueMutation(graphene.Mutation):
+class CreateLeagueMutation(graphene.Mutation):
     class Arguments:
         # The input arguments for this mutation
         league_name = graphene.String(required=True)
+        email = graphene.String(required=True)
 
     # The class attributes define the response of the mutation
-    league_name = graphene.Field(LeagueType)
+    league_name = graphene.String()
+    user = graphene.Field(UserType)
 
     @staticmethod
-    def mutate(self, info, league_name):
-        league = League(league_name=league_name)
+    def mutate(self, info, league_name, email):
+        user = User.objects.get(email=email)
+        league = League(league_name=league_name, user=user)
         league.save()
         # Notice we return an instance of this mutation
-        return LeagueMutation(
-            league_name=league.league_name
+        return CreateLeagueMutation(
+            league_name=league.league_name,
+            user=user
         )
 
 
@@ -167,6 +208,31 @@ class PlayerMutation(graphene.Mutation):
         return PlayerMutation(player=player)
 
 
+class EditFranchiseMutation(graphene.Mutation):
+    class Arguments:
+        # The input arguments for this mutation
+        franchise = graphene.String(required=True)
+        gm = graphene.String()
+        coach = graphene.String()
+
+    # The class attributes define the response of the mutation
+    franchise = graphene.Field(FranchiseType)
+    gm = graphene.Field(GMType)
+    coach = graphene.Field(CoachType)
+
+    def mutate(self, info, franchise, gm=None, coach=None):
+        franchise = Franchise.objects.get(pk=franchise)
+        if gm:
+            gm = GM.objects.get(pk=gm)
+        if coach:
+            coach = Coach.objects.get(pk=coach)
+        franchise.gm = gm
+        franchise.coach = coach
+        franchise.save()
+        # Notice we return an instance of this mutation
+        return EditFranchiseMutation(franchise=franchise, gm=gm, coach=coach)
+
+
 class ActionType(DjangoObjectType):
     class Meta:
         model = Action
@@ -175,11 +241,6 @@ class ActionType(DjangoObjectType):
 class SeasonType(DjangoObjectType):
     class Meta:
         model = Season
-
-
-class StaffType(DjangoObjectType):
-    class Meta:
-        model = Staff
 
 
 class RosterType(DjangoObjectType):
@@ -205,8 +266,8 @@ class RosterMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, roster_input=None):
         roster = Roster(
-            player_id=roster_input.player_name,
-            franchise_id=roster_input.franchise_franchise,
+            player_name=roster_input.player_name,
+            franchise_franchise=roster_input.franchise_franchise,
             lineup=roster_input.lineup
         )
         roster.save()
@@ -214,14 +275,24 @@ class RosterMutation(graphene.Mutation):
 
 
 class Mutation(graphene.ObjectType):
-    update_league = LeagueMutation.Field()
-    create_player = PlayerMutation.Field()
-    roster_update = RosterMutation.Field()
-    create_stadium = StadiumMutation.Field()
+
     create_user = CreateUser.Field()
+    delete_user = DeleteUser.Field()
+
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
+
+    create_league = CreateLeagueMutation.Field()
+
+    create_franchise = CreateFranchiseMutation.Field()
+    edit_franchise = EditFranchiseMutation.Field()
+
+    create_player = PlayerMutation.Field()
+
+    roster_update = RosterMutation.Field()
+
+    create_stadium = StadiumMutation.Field()
 
 
 class Query(graphene.ObjectType):
@@ -235,11 +306,11 @@ class Query(graphene.ObjectType):
     all_player = graphene.List(PlayerType)
     all_action = graphene.List(ActionType)
     all_season = graphene.List(SeasonType)
-    all_staff = graphene.List(StaffType)
     all_roster = graphene.List(RosterType)
     player = graphene.Field(PlayerType)
     roster = graphene.Field(RosterType)
     user = graphene.Field(UserType, email=graphene.String())
+    league = graphene.Field(LeagueType, league_name=graphene.String())
 
     def resolve_all_user(self, info, **kwargs):
         return User.objects.all()
@@ -267,9 +338,6 @@ class Query(graphene.ObjectType):
 
     def resolve_all_action(self, info, **kwargs):
         return Action.objects.all()
-
-    def resolve_all_staff(self, info, **kwargs):
-        return Staff.objects.all()
 
     def resolve_all_roster(self, info, **kwargs):
         return Roster.objects.all()
@@ -301,3 +369,10 @@ class Query(graphene.ObjectType):
 
         return None
 
+    def resolve_league(self, info, **kwargs):
+        league_name = kwargs.get('league_name')
+
+        if league_name is not None:
+            return League.objects.get(league_name=league_name)
+
+        return None

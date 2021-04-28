@@ -11,6 +11,10 @@ import { FranchiseTypeModel, FranchiseTypeModelType } from "./FranchiseTypeModel
 import { franchiseTypeModelPrimitives, FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
 import { LeagueTypeModel, LeagueTypeModelType } from "./LeagueTypeModel"
 import { leagueTypeModelPrimitives, LeagueTypeModelSelector } from "./LeagueTypeModel.base"
+import { GmTypeModel, GmTypeModelType } from "./GmTypeModel"
+import { gmTypeModelPrimitives, GmTypeModelSelector } from "./GmTypeModel.base"
+import { CoachTypeModel, CoachTypeModelType } from "./CoachTypeModel"
+import { coachTypeModelPrimitives, CoachTypeModelSelector } from "./CoachTypeModel.base"
 import { PlayerTypeModel, PlayerTypeModelType } from "./PlayerTypeModel"
 import { playerTypeModelPrimitives, PlayerTypeModelSelector } from "./PlayerTypeModel.base"
 import { RosterTypeModel, RosterTypeModelType } from "./RosterTypeModel"
@@ -23,12 +27,6 @@ import { ActionTypeModel, ActionTypeModelType } from "./ActionTypeModel"
 import { actionTypeModelPrimitives, ActionTypeModelSelector } from "./ActionTypeModel.base"
 import { SeasonTypeModel, SeasonTypeModelType } from "./SeasonTypeModel"
 import { seasonTypeModelPrimitives, SeasonTypeModelSelector } from "./SeasonTypeModel.base"
-import { StaffTypeModel, StaffTypeModelType } from "./StaffTypeModel"
-import { staffTypeModelPrimitives, StaffTypeModelSelector } from "./StaffTypeModel.base"
-import { GmTypeModel, GmTypeModelType } from "./GmTypeModel"
-import { gmTypeModelPrimitives, GmTypeModelSelector } from "./GmTypeModel.base"
-import { CoachTypeModel, CoachTypeModelType } from "./CoachTypeModel"
-import { coachTypeModelPrimitives, CoachTypeModelSelector } from "./CoachTypeModel.base"
 import { LeagueMutationModel, LeagueMutationModelType } from "./LeagueMutationModel"
 import { leagueMutationModelPrimitives, LeagueMutationModelSelector } from "./LeagueMutationModel.base"
 import { PlayerMutationModel, PlayerMutationModelType } from "./PlayerMutationModel"
@@ -84,7 +82,17 @@ export type StadiumInput = {
 }
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
-  userTypes: ObservableMap<string, UserTypeModelType>
+  userTypes: ObservableMap<string, UserTypeModelType>,
+  franchiseTypes: ObservableMap<string, FranchiseTypeModelType>,
+  leagueTypes: ObservableMap<string, LeagueTypeModelType>,
+  gmTypes: ObservableMap<string, GmTypeModelType>,
+  coachTypes: ObservableMap<string, CoachTypeModelType>,
+  playerTypes: ObservableMap<string, PlayerTypeModelType>,
+  rosterTypes: ObservableMap<string, RosterTypeModelType>,
+  stadiumTypes: ObservableMap<string, StadiumTypeModelType>,
+  cityTypes: ObservableMap<string, CityTypeModelType>,
+  actionTypes: ObservableMap<string, ActionTypeModelType>,
+  seasonTypes: ObservableMap<string, SeasonTypeModelType>
 }
 
 
@@ -102,11 +110,11 @@ queryAllCoach="queryAllCoach",
 queryAllPlayer="queryAllPlayer",
 queryAllAction="queryAllAction",
 queryAllSeason="queryAllSeason",
-queryAllStaff="queryAllStaff",
 queryAllRoster="queryAllRoster",
 queryPlayer="queryPlayer",
 queryRoster="queryRoster",
-queryUser="queryUser"
+queryUser="queryUser",
+queryLeague="queryLeague"
 }
 export enum RootStoreBaseMutations {
 mutateUpdateLeague="mutateUpdateLeague",
@@ -124,9 +132,19 @@ mutateRefreshToken="mutateRefreshToken"
 */
 export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
   .named("RootStore")
-  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['PlayerType', () => PlayerTypeModel], ['RosterType', () => RosterTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['StaffType', () => StaffTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel], ['RosterMutation', () => RosterMutationModel], ['StadiumMutation', () => StadiumMutationModel], ['CreateUser', () => CreateUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel]], ['UserType'], "js"))
+  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['PlayerType', () => PlayerTypeModel], ['RosterType', () => RosterTypeModel], ['StadiumType', () => StadiumTypeModel], ['CityType', () => CityTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['LeagueMutation', () => LeagueMutationModel], ['PlayerMutation', () => PlayerMutationModel], ['RosterMutation', () => RosterMutationModel], ['StadiumMutation', () => StadiumMutationModel], ['CreateUser', () => CreateUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel]], ['UserType', 'FranchiseType', 'LeagueType', 'GMType', 'CoachType', 'PlayerType', 'RosterType', 'StadiumType', 'CityType', 'ActionType', 'SeasonType'], "js"))
   .props({
-    userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {})
+    userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {}),
+    franchiseTypes: types.optional(types.map(types.late((): any => FranchiseTypeModel)), {}),
+    leagueTypes: types.optional(types.map(types.late((): any => LeagueTypeModel)), {}),
+    gmTypes: types.optional(types.map(types.late((): any => GmTypeModel)), {}),
+    coachTypes: types.optional(types.map(types.late((): any => CoachTypeModel)), {}),
+    playerTypes: types.optional(types.map(types.late((): any => PlayerTypeModel)), {}),
+    rosterTypes: types.optional(types.map(types.late((): any => RosterTypeModel)), {}),
+    stadiumTypes: types.optional(types.map(types.late((): any => StadiumTypeModel)), {}),
+    cityTypes: types.optional(types.map(types.late((): any => CityTypeModel)), {}),
+    actionTypes: types.optional(types.map(types.late((): any => ActionTypeModel)), {}),
+    seasonTypes: types.optional(types.map(types.late((): any => SeasonTypeModel)), {})
   })
   .actions(self => ({
     queryAllUser(variables?: {  }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
@@ -179,11 +197,6 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
         ${typeof resultSelector === "function" ? resultSelector(new SeasonTypeModelSelector()).toString() : resultSelector}
       } }`, variables, options)
     },
-    queryAllStaff(variables?: {  }, resultSelector: string | ((qb: StaffTypeModelSelector) => StaffTypeModelSelector) = staffTypeModelPrimitives.toString(), options: QueryOptions = {}) {
-      return self.query<{ allStaff: StaffTypeModelType[]}>(`query allStaff { allStaff {
-        ${typeof resultSelector === "function" ? resultSelector(new StaffTypeModelSelector()).toString() : resultSelector}
-      } }`, variables, options)
-    },
     queryAllRoster(variables?: {  }, resultSelector: string | ((qb: RosterTypeModelSelector) => RosterTypeModelSelector) = rosterTypeModelPrimitives.toString(), options: QueryOptions = {}) {
       return self.query<{ allRoster: RosterTypeModelType[]}>(`query allRoster { allRoster {
         ${typeof resultSelector === "function" ? resultSelector(new RosterTypeModelSelector()).toString() : resultSelector}
@@ -202,6 +215,11 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
     queryUser(variables: { email?: string }, resultSelector: string | ((qb: UserTypeModelSelector) => UserTypeModelSelector) = userTypeModelPrimitives.toString(), options: QueryOptions = {}) {
       return self.query<{ user: UserTypeModelType}>(`query user($email: String) { user(email: $email) {
         ${typeof resultSelector === "function" ? resultSelector(new UserTypeModelSelector()).toString() : resultSelector}
+      } }`, variables, options)
+    },
+    queryLeague(variables: { leagueName?: string }, resultSelector: string | ((qb: LeagueTypeModelSelector) => LeagueTypeModelSelector) = leagueTypeModelPrimitives.toString(), options: QueryOptions = {}) {
+      return self.query<{ league: LeagueTypeModelType}>(`query league($leagueName: String) { league(leagueName: $leagueName) {
+        ${typeof resultSelector === "function" ? resultSelector(new LeagueTypeModelSelector()).toString() : resultSelector}
       } }`, variables, options)
     },
     mutateUpdateLeague(variables: { leagueName: string }, resultSelector: string | ((qb: LeagueMutationModelSelector) => LeagueMutationModelSelector) = leagueMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {

@@ -3,22 +3,28 @@
 /* tslint:disable */
 
 import { types } from "mobx-state-tree"
-import { QueryBuilder } from "mst-gql"
+import { MSTGQLRef, QueryBuilder, withTypedRefs } from "mst-gql"
 import { ModelBase } from "./ModelBase"
 import { FranchiseTypeModel, FranchiseTypeModelType } from "./FranchiseTypeModel"
 import { FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
 import { RootStoreType } from "./index"
 
 
+/* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
+type Refs = {
+  franchise: FranchiseTypeModelType;
+}
+
 /**
  * ActionTypeBase
  * auto generated base class for the model ActionTypeModel.
  */
-export const ActionTypeModelBase = ModelBase
+export const ActionTypeModelBase = withTypedRefs<Refs>()(ModelBase
   .named('ActionType')
   .props({
     __typename: types.optional(types.literal("ActionType"), "ActionType"),
-    franchise: types.union(types.undefined, types.late((): any => FranchiseTypeModel)),
+    id: types.identifier,
+    franchise: types.union(types.undefined, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
     numberOfActions: types.union(types.undefined, types.integer),
     improvedBathrooms: types.union(types.undefined, types.boolean),
     improvedConcessions: types.union(types.undefined, types.boolean),
@@ -49,9 +55,10 @@ export const ActionTypeModelBase = ModelBase
     get store() {
       return self.__getStore<RootStoreType>()
     }
-  }))
+  })))
 
 export class ActionTypeModelSelector extends QueryBuilder {
+  get id() { return this.__attr(`id`) }
   get numberOfActions() { return this.__attr(`numberOfActions`) }
   get improvedBathrooms() { return this.__attr(`improvedBathrooms`) }
   get improvedConcessions() { return this.__attr(`improvedConcessions`) }

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Staff, Roster
+from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Roster
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -59,12 +59,6 @@ class ActionSerializer(serializers.ModelSerializer):
 class SeasonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Season
-        fields = '__all__'
-
-
-class StaffSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Staff
         fields = '__all__'
 
 

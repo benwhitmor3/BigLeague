@@ -8,7 +8,7 @@ import {colour, suit_icon, draft} from './TableFunctions'
 
 export const DraftTable: React.FunctionComponent = observer(() => {
 
-  const storee = useContext(StoreContext)
+const storee = useContext(StoreContext)
   // @ts-ignore
   window.store = storee
 
@@ -43,7 +43,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
     );
   // @ts-ignore
   const players = data.allPlayer;
-  // console.log(players);
+  console.log(players);
 
 
   const columns1 = [
@@ -202,6 +202,13 @@ export const DraftTable: React.FunctionComponent = observer(() => {
     } else {
       columns = columns1
     }
+
+  if (loading) {
+    return <div>Loading</div>;
+  }
+  if (error) {
+    return <div>Error</div>;
+  }
 
   return(
       <div>

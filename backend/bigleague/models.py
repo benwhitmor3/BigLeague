@@ -57,31 +57,35 @@ class User(AbstractBaseUser):
 
 
 class Franchise(models.Model):
-    franchise = models.CharField(max_length=25, primary_key=True)
+    franchise = models.CharField(max_length=25, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
+    league = models.OneToOneField("League", on_delete=models.CASCADE)
+    gm = models.OneToOneField("GM", on_delete=models.CASCADE, null=True)
+    coach = models.OneToOneField("Coach", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.franchise
 
 
 class League(models.Model):
-    league_name = models.CharField(max_length=25)
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
+    league_name = models.CharField(max_length=25, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
 
     def __str__(self):
         return self.league_name
 
 
 class City(models.Model):
-    city = models.CharField(max_length=20, primary_key=True)
+    city = models.CharField(max_length=20, unique=True)
     city_value = models.IntegerField()
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.city
 
 
 class Stadium(models.Model):
-    stadium_name = models.CharField(max_length=20, primary_key=True)
+    stadium_name = models.CharField(max_length=20, unique=True)
     seats = models.IntegerField(default=0)
     boxes = models.IntegerField(default=0)
     grade = models.IntegerField(default=20)
@@ -104,7 +108,8 @@ class Trait(models.TextChoices):
 
 
 class GM(models.Model):
-    trait = models.CharField(max_length=12, primary_key=True, choices=Trait.choices)
+    trait = models.CharField(max_length=12, unique=True, choices=Trait.choices)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.trait
@@ -122,9 +127,10 @@ class Attribute(models.TextChoices):
 
 
 class Coach(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30, unique=True)
     attribute_one = models.CharField(max_length=12, choices=Attribute.choices)
     attribute_two = models.CharField(max_length=12, choices=Attribute.choices)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -151,7 +157,7 @@ class Lineup(models.TextChoices):
 
 class Player(models.Model):
 
-    name = models.CharField(max_length=50, primary_key=True)
+    name = models.CharField(max_length=50, unique=True)
     suit = models.CharField(max_length=10, choices=Suit.choices)
     age = models.IntegerField(default=20)
     pv = models.FloatField(default=20)
@@ -171,7 +177,7 @@ class Player(models.Model):
 
 
 class Action(models.Model):
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
     number_of_actions = models.IntegerField(default=2, validators=[MaxValueValidator(5), MinValueValidator(0)])
     improved_bathrooms = models.BooleanField(default=False)
     improved_concessions = models.BooleanField(default=False)
@@ -203,7 +209,8 @@ class Action(models.Model):
 
 
 class Season(models.Model):
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
+    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+    season = models.IntegerField(default=1)
     ready = models.BooleanField(default=False)
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
@@ -222,17 +229,8 @@ class Season(models.Model):
         return self.franchise
 
 
-class Staff(models.Model):
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
-    gm = models.ForeignKey(GM, on_delete=models.CASCADE, null=True)
-    coach = models.OneToOneField(Coach, on_delete=models.CASCADE, null=True)
-
-    def __str__(self):
-        return self.franchise
-
-
 class Roster(models.Model):
-    player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True)
+    player = models.OneToOneField(Player, on_delete=models.CASCADE)
     franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
     lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
 

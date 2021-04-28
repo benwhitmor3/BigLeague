@@ -3,7 +3,7 @@
 /* tslint:disable */
 
 import { types } from "mobx-state-tree"
-import { QueryBuilder } from "mst-gql"
+import { MSTGQLRef, QueryBuilder, withTypedRefs } from "mst-gql"
 import { ModelBase } from "./ModelBase"
 import { FranchiseTypeModel, FranchiseTypeModelType } from "./FranchiseTypeModel"
 import { FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
@@ -12,25 +12,33 @@ import { PlayerTypeModelSelector } from "./PlayerTypeModel.base"
 import { RootStoreType } from "./index"
 
 
+/* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
+type Refs = {
+  player: PlayerTypeModelType;
+  franchise: FranchiseTypeModelType;
+}
+
 /**
  * RosterTypeBase
  * auto generated base class for the model RosterTypeModel.
  */
-export const RosterTypeModelBase = ModelBase
+export const RosterTypeModelBase = withTypedRefs<Refs>()(ModelBase
   .named('RosterType')
   .props({
     __typename: types.optional(types.literal("RosterType"), "RosterType"),
-    player: types.union(types.undefined, types.late((): any => PlayerTypeModel)),
-    franchise: types.union(types.undefined, types.late((): any => FranchiseTypeModel)),
+    id: types.identifier,
+    player: types.union(types.undefined, MSTGQLRef(types.late((): any => PlayerTypeModel))),
+    franchise: types.union(types.undefined, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
     lineup: types.union(types.undefined, types.null, types.string),
   })
   .views(self => ({
     get store() {
       return self.__getStore<RootStoreType>()
     }
-  }))
+  })))
 
 export class RosterTypeModelSelector extends QueryBuilder {
+  get id() { return this.__attr(`id`) }
   get lineup() { return this.__attr(`lineup`) }
   player(builder?: string | PlayerTypeModelSelector | ((selector: PlayerTypeModelSelector) => PlayerTypeModelSelector)) { return this.__child(`player`, PlayerTypeModelSelector, builder) }
   franchise(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchise`, FranchiseTypeModelSelector, builder) }

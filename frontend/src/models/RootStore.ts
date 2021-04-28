@@ -1,7 +1,7 @@
 import {Instance, types} from "mobx-state-tree"
 import { RootStoreBase } from "./RootStore.base"
 import {UserTypeModel} from "./UserTypeModel";
-import {useQuery} from "./reactUtils";
+import {FranchiseTypeModel} from "./FranchiseTypeModel";
 
 export interface RootStoreType extends Instance<typeof RootStore.Type> {}
 
@@ -24,7 +24,8 @@ export const RootStore = RootStoreBase
   .props({
     User: types.union(
       types.undefined,
-      types.reference(types.late(() => UserTypeModel)),
+      types.null,
+      types.reference(types.late((): any => UserTypeModel)),
     ),
   })
   .actions((self) => ({
@@ -32,19 +33,15 @@ export const RootStore = RootStoreBase
       const query = self.queryUser(
               {email: email},
               `
-      id
-      email
-      username
-      franchise{
-        franchise
-      }
-      __typename
+    __typename
+    id
+    email
+    username
+    
     `,
-              {fetchPolicy: 'cache-first'},
-          )
-          // @ts-ignore
-    self.User = self.userTypes.get(query!.data!.user.id)
-    return self.User
+      {},
+          ).then((data) => self.User! = self.userTypes!.get(data!.user!.id!))
+  return query
       }
   }))
 

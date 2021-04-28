@@ -1,3 +1,85 @@
+create_user_mutation = '''
+mutation{
+  createUser(email: "email@email.com", 
+    username: "username", 
+    password: "password"){
+    message
+    user{
+      id
+      email
+      password
+    }
+  }
+}
+'''
+
+delete_user_mutation = '''
+mutation{
+  deleteUser(email: "email@email.com"){
+    user{
+      id
+      email
+      password
+      username
+    }
+    message
+  }
+}
+'''
+
+token_auth_mutation = '''
+mutation{
+    tokenAuth(email: "email@email.com", password: "password"){
+        token
+        payload
+        refreshExpiresIn
+    }
+}
+'''
+
+verify_token_mutation = '''
+mutation{
+  verifyToken(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImVtYWlsQGVtYWlsLmNvbSIsImV4cCI6MTYxOTU3NTIzMCwib3JpZ0lhdCI6MTYxOTU3NDkzMH0.nG6Ajf8lz9-7e9fVjI4pt8WJ6tYH5vRHTDOs2oj5hpc"){
+    payload
+  }
+}
+'''
+
+create_league_mutation = '''
+mutation{
+  createLeague(leagueName: "bigleague", email: "email@email.com"){
+    leagueName
+      user{
+        email
+        password
+    }
+  }
+}
+'''
+
+create_franchise_mutation = '''
+mutation($franchiseInput: FranchiseInput!){
+  createFranchise(franchiseInput: $franchiseInput, email: "email@email.com"){
+    franchise{
+      id
+      franchise
+      gm{
+        id
+        trait
+      }
+      coach{
+        id
+        name
+      }
+    }
+    user{
+      password
+      email
+    } 
+  }
+}
+'''
+
 create_player_mutation = '''
 mutation($playerInput: PlayerInput!) {
   createPlayer(playerInput: $playerInput){
@@ -64,7 +146,6 @@ roster_update_variable = '''
 }
 '''
 
-
 create_stadium_mutation = '''
 mutation($stadiumInput: StadiumInput!) {
   createStadium(stadiumInput: $stadiumInput){
@@ -100,7 +181,6 @@ create_stadium_variable = '''
 	}
 }
 '''
-
 
 query_all_league = '''
 {

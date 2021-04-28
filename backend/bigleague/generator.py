@@ -155,6 +155,7 @@ def gen_gm():
     for trait in gms:
         GM.objects.create(
         trait=trait,
+        league=League.objects.all()[0],
     )
 
 
@@ -171,4 +172,5 @@ def gen_coach(num_of_coaches=10):
             name=faker.Faker().name(),
             attribute_one=attribute_one,
             attribute_two=attribute_two,
+            league=League.objects.all()[0],
         )

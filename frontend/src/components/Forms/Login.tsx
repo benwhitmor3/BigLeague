@@ -24,7 +24,6 @@ export const Login: React.FunctionComponent = observer((props) => {
     const onSubmit = handleSubmit(({email, password}: loginConfig) => {
         store.mutateTokenAuth(
         {
-            // email: "ben-whitmore@hotmail.com", password: "password",
 		"email": email,
         "password": password,
                 },

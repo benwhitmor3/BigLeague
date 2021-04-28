@@ -5,7 +5,7 @@ import Stadium from './components/Pages/Stadium';
 import Franchise from "./components/Pages/Franchise";
 import Draft from './components/Pages/Draft';
 import Season from './components/Pages/Season';
-import OffSeason from './components/Pages/Offseason';
+import OffSeason from './components/Pages/OffSeason';
 import Login from './components/Forms/Login';
 import Register from './components/Forms/Register';
 // @ts-ignore
@@ -27,8 +27,8 @@ const App: React.FunctionComponent = observer(() => {
     const isLoggedIn = !!getToken();
 
     const {store, error, loading, data} = useQuery((store) =>
-        store.queryUser(
-              {email: "ben-whitmore@hotmail.com"},
+        store.queryAllUser(
+              {},
               `
     __typename
     id
@@ -41,6 +41,7 @@ const App: React.FunctionComponent = observer(() => {
       __typename
       league{
         __typename
+        id
         leagueName
         playerSet{
           __typename
@@ -136,6 +137,18 @@ const App: React.FunctionComponent = observer(() => {
           attributeOne
           attributeTwo
         }
+      }
+      rosterSet{
+        __typename
+        player{
+          __typename
+          name
+        }
+        franchise{
+          __typename
+          franchise
+        }
+        lineup
       }
     }
     `,

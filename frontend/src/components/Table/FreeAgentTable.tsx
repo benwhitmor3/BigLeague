@@ -8,6 +8,11 @@ import CSS from "csstype";
 import {colour, suit_icon, _to_fixed} from './TableFunctions'
 
 export const FreeAgentTable: React.FunctionComponent = observer(() => {
+
+  const storee = useContext(StoreContext)
+  // @ts-ignore
+  window.store = storee
+
   const {store, error, loading, data} = useQuery(store =>
         store.queryAllPlayer(
       {},
@@ -39,6 +44,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
     );
   // @ts-ignore
   const players = data.allPlayer;
+  console.log(players)
   // console.log(players);
 
 

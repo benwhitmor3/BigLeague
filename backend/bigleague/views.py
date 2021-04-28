@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
-    GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer, StaffSerializer, \
-    RosterSerializer
-from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Staff, Roster
+    GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer, RosterSerializer
+from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Roster
 
 
 # Create your views here.
@@ -66,11 +65,6 @@ class ActionView(viewsets.ModelViewSet):
 class SeasonView(viewsets.ModelViewSet):
     queryset = Season.objects.all()
     serializer_class = SeasonSerializer
-
-
-class StaffView(viewsets.ModelViewSet):
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
 
 
 class RosterView(viewsets.ModelViewSet):
