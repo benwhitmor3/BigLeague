@@ -59,9 +59,10 @@ class User(AbstractBaseUser):
 class Franchise(models.Model):
     franchise = models.CharField(max_length=25, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
-    league = models.OneToOneField("League", on_delete=models.CASCADE)
-    gm = models.OneToOneField("GM", on_delete=models.CASCADE, null=True)
-    coach = models.OneToOneField("Coach", on_delete=models.CASCADE, null=True)
+    league = models.ForeignKey("League", on_delete=models.CASCADE)
+    gm = models.ForeignKey("GM", on_delete=models.SET_NULL, null=True)
+    coach = models.OneToOneField("Coach", on_delete=models.SET_NULL, null=True)
+    city = models.ForeignKey("City", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.franchise
@@ -108,8 +109,11 @@ class Trait(models.TextChoices):
 
 
 class GM(models.Model):
-    trait = models.CharField(max_length=12, unique=True, choices=Trait.choices)
+    trait = models.CharField(max_length=12, choices=Trait.choices)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("trait", "league")
 
     def __str__(self):
         return self.trait

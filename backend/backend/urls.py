@@ -40,6 +40,7 @@ router.register(r'roster', views.RosterView, 'roster_view')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('league_generation', csrf_exempt(views.league_generation_view), name='league_generation'),
     path('graphql/', csrf_exempt(GraphQLView.as_view(
         graphiql=True,
         schema=schema

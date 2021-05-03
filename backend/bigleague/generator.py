@@ -5,7 +5,8 @@ import faker
 
 # manually create user, franchise, and league
 
-def gen_city(num_of_cities=8):
+
+def gen_city(league, num_of_cities=8):
     cities = ["Los Angeles", "Chicago", "New York", "Phoenix", "Indianapolis", "Philadelphia", "Houston",
               "San Antonio", "Denver", "Boston", "Las Vegas", "Seattle", "Atalanta", "San Diego"]
     values = [5, 6, 7, 8, 9, 10, 11, 12]
@@ -18,7 +19,8 @@ def gen_city(num_of_cities=8):
             city=city,
             defaults={
                 'city': city,
-                'city_value': random.choice(values)
+                'city_value': random.choice(values),
+                'league': league
             }
         )
 
@@ -146,7 +148,7 @@ def gen_player(num_of_players=50, year=1):
             league=League.objects.all()[0],
         )
 
-def gen_gm():
+def gen_gm(league):
 
     # GM.objects.all().delete()
 
@@ -155,11 +157,11 @@ def gen_gm():
     for trait in gms:
         GM.objects.create(
         trait=trait,
-        league=League.objects.all()[0],
+        league=league,
     )
 
 
-def gen_coach(num_of_coaches=10):
+def gen_coach(league, num_of_coaches=10):
 
     # Coach.objects.all().delete()
 
@@ -172,5 +174,5 @@ def gen_coach(num_of_coaches=10):
             name=faker.Faker().name(),
             attribute_one=attribute_one,
             attribute_two=attribute_two,
-            league=League.objects.all()[0],
+            league=league,
         )

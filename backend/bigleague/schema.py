@@ -208,29 +208,32 @@ class PlayerMutation(graphene.Mutation):
         return PlayerMutation(player=player)
 
 
-class EditFranchiseMutation(graphene.Mutation):
+class UpdateFranchiseMutation(graphene.Mutation):
     class Arguments:
         # The input arguments for this mutation
-        franchise = graphene.String(required=True)
-        gm = graphene.String()
-        coach = graphene.String()
+        franchise_input = FranchiseInput(required=True)
 
     # The class attributes define the response of the mutation
     franchise = graphene.Field(FranchiseType)
     gm = graphene.Field(GMType)
     coach = graphene.Field(CoachType)
 
-    def mutate(self, info, franchise, gm=None, coach=None):
-        franchise = Franchise.objects.get(pk=franchise)
-        if gm:
-            gm = GM.objects.get(pk=gm)
-        if coach:
-            coach = Coach.objects.get(pk=coach)
+    @staticmethod
+    def mutate(self, info, franchise_input=None):
+        franchise = Franchise.objects.get(pk=franchise_input.franchise)
+        if franchise_input.gm:
+            gm = GM.objects.get(pk=franchise_input.gm)
+        else:
+            gm = None
+        if franchise_input.coach:
+            coach = Coach.objects.get(pk=franchise_input.coach)
+        else:
+            coach = None
         franchise.gm = gm
         franchise.coach = coach
         franchise.save()
         # Notice we return an instance of this mutation
-        return EditFranchiseMutation(franchise=franchise, gm=gm, coach=coach)
+        return UpdateFranchiseMutation(franchise=franchise, gm=gm, coach=coach)
 
 
 class ActionType(DjangoObjectType):
@@ -286,7 +289,7 @@ class Mutation(graphene.ObjectType):
     create_league = CreateLeagueMutation.Field()
 
     create_franchise = CreateFranchiseMutation.Field()
-    edit_franchise = EditFranchiseMutation.Field()
+    update_franchise = UpdateFranchiseMutation.Field()
 
     create_player = PlayerMutation.Field()
 
