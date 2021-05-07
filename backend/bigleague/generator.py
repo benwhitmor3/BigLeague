@@ -3,6 +3,7 @@ import random
 from random import gauss
 import faker
 
+
 # manually create user, franchise, and league
 
 
@@ -14,19 +15,25 @@ def gen_city(league, num_of_cities=8):
 
     # City.objects.all().delete()
 
+    # for city in cities_list:
+    #     City.objects.update_or_create(
+    #         city=city,
+    #         defaults={
+    #             'city': city,
+    #             'city_value': random.choice(values),
+    #             'league': league
+    #         }
+    #     )
+
     for city in cities_list:
-        City.objects.update_or_create(
+        City.objects.create(
             city=city,
-            defaults={
-                'city': city,
-                'city_value': random.choice(values),
-                'league': league
-            }
+            city_value=random.choice(values),
+            league=league
         )
 
 
 def gen_player(num_of_players=50, year=1):
-
     # Player.objects.all().delete()
 
     for players in range(num_of_players):
@@ -148,27 +155,29 @@ def gen_player(num_of_players=50, year=1):
             league=League.objects.all()[0],
         )
 
-def gen_gm(league):
 
+def gen_gm(league):
     # GM.objects.all().delete()
 
     gms = ['facilitator', 'promoter', 'recruiter', 'scouter', 'suitor', 'trainer']
 
     for trait in gms:
         GM.objects.create(
-        trait=trait,
-        league=league,
-    )
+            trait=trait,
+            league=league,
+        )
 
 
 def gen_coach(league, num_of_coaches=10):
-
     # Coach.objects.all().delete()
 
     for coach in range(num_of_coaches):
-
-        attribute_one = random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'], k=1)[0]
-        attribute_two = random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'], k=1)[0]
+        attribute_one = \
+            random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'],
+                           k=1)[0]
+        attribute_two = \
+            random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'],
+                           k=1)[0]
 
         Coach.objects.create(
             name=faker.Faker().name(),

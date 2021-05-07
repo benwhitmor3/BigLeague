@@ -92,8 +92,8 @@ class Stadium(models.Model):
     grade = models.IntegerField(default=20)
     max_grade = models.IntegerField(default=20)
     home_field_advantage = models.IntegerField(default=0)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
+    city = models.OneToOneField(City, on_delete=models.CASCADE)
+    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.stadium_name
@@ -209,7 +209,7 @@ class Action(models.Model):
     event_planning = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.franchise
+        return self.franchise.franchise
 
 
 class Season(models.Model):
@@ -239,4 +239,4 @@ class Roster(models.Model):
     lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
 
     def __str__(self):
-        return self.player
+        return self.player.name

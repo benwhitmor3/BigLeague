@@ -1,6 +1,6 @@
 import random
-
 from django.http import HttpResponse
+from django.db import IntegrityError
 from django.shortcuts import render
 from rest_framework import viewsets
 from .generator import gen_city, gen_gm, gen_coach
@@ -98,10 +98,21 @@ def league_generation_view(request):
             return HttpResponse(request)
         # create cities, gms, and coaches
         num_of_franchises = request.POST.get('num_of_franchises')
-        gen_city(league, 10)
-        gen_gm(league)
-        gen_coach(league, int(num_of_franchises)*2)
-
+        try:
+            gen_city(league, 10)
+        except IntegrityError as e:
+            print(e)
+            print("League already has Cities")
+        try:
+            gen_gm(league)
+        except IntegrityError as e:
+            print(e)
+            print("League already has GMs")
+        try:
+            gen_coach(league, int(num_of_franchises)*2)
+        except IntegrityError as e:
+            print(e)
+            print("League already has Coaches")
         # create other franchises (36 names)
         franchise_names = ["Aces", "All Stars", "Avengers", "Aztecs", "Big Blues", "Big Red", "Champions", "Crimson",
                            "Dragons", "Devils", "Dream Team", "Elite", "Flames", "Flash", "Force", "Groove", "Heatwave",
@@ -115,10 +126,7 @@ def league_generation_view(request):
                 franchise=franchise_name,
                 league=league
             )
-    else:  # GET
-        print("NO GET YET")
-    return HttpResponse(request)
+        return HttpResponse(request)
 
 
-# r = requests.post('http://127.0.0.1:8000/league_generation', data={'franchise_id': '6', 'num_of_teams': '8'})
-# data={'franchise_id': '6', 'num_of_teams': '8'}
+# r = requests.post('http://127.0.0.1:8000/league_generation', data={'franchise_id': '64', 'num_of_franchises': 8})

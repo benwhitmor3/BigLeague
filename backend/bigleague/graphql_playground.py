@@ -80,6 +80,94 @@ mutation($franchiseInput: FranchiseInput!){
 }
 '''
 
+update_franchise_mutation = '''
+mutation($franchiseInput: FranchiseInput!){
+  updateFranchise(franchiseInput: $franchiseInput){
+    franchise{
+      id
+      franchise
+      gm{
+        id
+        trait
+      }
+      coach{
+        id
+        name
+      }
+    }
+  }
+}
+'''
+
+franchise_input = '''
+{
+  "franchiseInput": {
+    "franchise": "6",
+    "gm": "7",
+    "coach": "11"
+  }
+}
+'''
+
+create_stadium_mutation = '''
+mutation($stadiumInput: StadiumInput!) {
+  createStadium(stadiumInput: $stadiumInput){
+    stadium{
+      stadiumName
+      seats
+      boxes
+      grade
+      maxGrade
+      homeFieldAdvantage
+      city{
+        city
+      }
+      franchise{
+        franchise
+      }
+    }
+  }
+}
+'''
+
+update_stadium_mutation = '''
+mutation($stadiumInput: StadiumInput!) {
+  updateStadium(stadiumInput: $stadiumInput){
+    stadium{
+      stadiumName
+      seats
+      boxes
+      grade
+      maxGrade
+      homeFieldAdvantage
+      city{
+        city
+      }
+      franchise{
+        franchise
+      }
+    }
+  }
+}
+'''
+
+stadium_input = '''
+{
+  "stadiumInput": {
+    "stadiumName": "STADIUM NAME",
+    "seats": 25000,
+    "boxes": 250,
+    "grade": 20,
+    "maxGrade": 20,
+    "homeFieldAdvantage": 0,
+    "city": 58,
+    "franchise": 64
+    }
+}
+'''
+
+
+
 create_player_mutation = '''
 mutation($playerInput: PlayerInput!) {
   createPlayer(playerInput: $playerInput){
@@ -120,7 +208,7 @@ create_player_variable = '''
 }
 '''
 
-roster_update_mutation = '''
+roster_create_update_mutation = '''
 mutation($rosterInput: RosterInput!) {
   rosterUpdate(rosterInput: $rosterInput){
 	roster{
@@ -139,45 +227,9 @@ mutation($rosterInput: RosterInput!) {
 roster_update_variable = '''
 {
   "rosterInput": {
-		"playerName": "gary graphene",
-		"franchiseFranchise": "franchise",
-        "lineup": "starter"
-	}
-}
-'''
-
-create_stadium_mutation = '''
-mutation($stadiumInput: StadiumInput!) {
-  createStadium(stadiumInput: $stadiumInput){
-    stadium{
-      stadiumName
-      seats
-      boxes
-      grade
-      maxGrade
-      homeFieldAdvantage
-      city{
-        city
-      }
-      franchise{
-        franchise
-      }
-    }
-  }
-}
-'''
-
-create_stadium_variable = '''
-{
-  "stadiumInput": {
-    "stadiumName": "Test Stadium",
-    "seats": 25000,
-    "boxes": 250,
-    "grade": 20,
-    "maxGrade": 20,
-    "homeFieldAdvantage": 0,
-    "city": "London",
-    "franchise": "franchise"
+		"player": 2,
+		"franchise": 67,
+    "lineup": "starter"
 	}
 }
 '''

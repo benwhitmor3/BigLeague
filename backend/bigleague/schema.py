@@ -116,8 +116,8 @@ class StadiumInput(graphene.InputObjectType):
     grade = graphene.Int()
     max_grade = graphene.Int()
     home_field_advantage = graphene.Int()
-    city = graphene.String()
-    franchise = graphene.String()
+    city = graphene.ID()
+    franchise = graphene.ID()
 
 
 class StadiumType(DjangoObjectType):
@@ -125,7 +125,7 @@ class StadiumType(DjangoObjectType):
         model = Stadium
 
 
-class StadiumMutation(graphene.Mutation):
+class CreateStadiumMutation(graphene.Mutation):
     class Arguments:
         stadium_input = StadiumInput(required=True)
 
@@ -144,7 +144,39 @@ class StadiumMutation(graphene.Mutation):
             franchise_id=stadium_input.franchise,
         )
         stadium.save()
-        return StadiumMutation(stadium=stadium)
+        return CreateStadiumMutation(stadium=stadium)
+
+
+class UpdateStadiumMutation(graphene.Mutation):
+    class Arguments:
+        # The input arguments for this mutation
+        stadium_input = StadiumInput(required=True)
+
+    # The class attributes define the response of the mutation
+    stadium = graphene.Field(StadiumType)
+
+    @staticmethod
+    def mutate(self, info, stadium_input=None):
+        stadium = Stadium.objects.get(stadium_name=stadium_input.stadium_name)
+        if stadium_input.seats:
+            stadium.seats = stadium_input.seats
+        if stadium_input.boxes:
+            stadium.boxes = stadium_input.boxes
+        if stadium_input.grade:
+            stadium.grade = stadium_input.grade
+        if stadium_input.max_grade:
+            stadium.max_grade = stadium_input.max_grade
+        if stadium_input.home_field_advantage:
+            stadium.home_field_advantage = stadium_input.home_field_advantage
+        if stadium_input.city:
+            city = City.objects.get(pk=stadium_input.city)
+            stadium.city = city
+        if stadium_input.franchise:
+            franchise = Franchise.objects.get(pk=stadium_input.franchise)
+            stadium.franchise = franchise
+        stadium.save()
+        # Notice we return an instance of this mutation
+        return UpdateStadiumMutation(stadium=stadium)
 
 
 class GMType(DjangoObjectType):
@@ -250,15 +282,16 @@ class RosterType(DjangoObjectType):
     class Meta:
         model = Roster
         convert_choices_to_enum = False
+        fields = '__all__'
 
 
 class RosterInput(graphene.InputObjectType):
-    player_name = graphene.String()
-    franchise_franchise = graphene.String()
+    player = graphene.ID()
+    franchise = graphene.ID()
     lineup = graphene.String()
 
 
-class RosterMutation(graphene.Mutation):
+class UpdateRosterMutation(graphene.Mutation):
     roster = graphene.Field(RosterType)
 
     class Arguments:
@@ -268,13 +301,21 @@ class RosterMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, roster_input=None):
-        roster = Roster(
-            player_name=roster_input.player_name,
-            franchise_franchise=roster_input.franchise_franchise,
-            lineup=roster_input.lineup
-        )
-        roster.save()
-        return RosterMutation(roster=roster)
+        # if no franchise given then delete from roster
+        if roster_input.franchise is None:
+            roster = Roster.objects.get(player_id=roster_input.player)
+            roster.delete()
+        else:
+            obj, roster = Roster.objects.update_or_create(
+                    player_id=roster_input.player,
+                    defaults={
+                        'player_id': roster_input.player,
+                        'franchise_id': roster_input.franchise,
+                        'lineup': roster_input.lineup
+                    }
+                )
+
+            return UpdateRosterMutation(roster=obj)
 
 
 class Mutation(graphene.ObjectType):
@@ -293,9 +334,10 @@ class Mutation(graphene.ObjectType):
 
     create_player = PlayerMutation.Field()
 
-    roster_update = RosterMutation.Field()
+    roster_update = UpdateRosterMutation.Field()
 
-    create_stadium = StadiumMutation.Field()
+    create_stadium = CreateStadiumMutation.Field()
+    update_stadium = UpdateStadiumMutation.Field()
 
 
 class Query(graphene.ObjectType):
