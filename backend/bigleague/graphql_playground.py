@@ -103,8 +103,8 @@ franchise_input = '''
 {
   "franchiseInput": {
     "franchise": "6",
-    "gm": "7",
-    "coach": "11"
+    "gmId": "7",
+    "coachId": "11"
   }
 }
 '''
@@ -160,15 +160,15 @@ stadium_input = '''
     "grade": 20,
     "maxGrade": 20,
     "homeFieldAdvantage": 0,
-    "city": 58,
-    "franchise": 64
+    "cityId": 58,
+    "franchiseId": 64
     }
 }
 '''
 
 
 
-create_player_mutation = '''
+update_player_mutation = '''
 mutation($playerInput: PlayerInput!) {
   createPlayer(playerInput: $playerInput){
   	player {
@@ -196,14 +196,20 @@ mutation($playerInput: PlayerInput!) {
 create_player_variable = '''
 {
   "playerInput": {
-    "name": "gary graphene",
-    "suit": "diamond",
+    "name": "Gary Graphene",
+    "suit": "heart",
     "age": 22,
     "pv": 21.213,
-    "epv": 21.964,
+    "epv": 21.282,
     "sEpv": 21.221,
+    "contract": null,
+    "tOption": null,
+    "pOption": null,
+    "renew": null,
+    "salary": null,
+    "grade": null,
     "trainer": true,
-    "leagueName": "bigleague"
+    "leagueId": 7
   }
 }
 '''
@@ -227,8 +233,8 @@ mutation($rosterInput: RosterInput!) {
 roster_update_variable = '''
 {
   "rosterInput": {
-		"player": 2,
-		"franchise": 67,
+		"playerId": 2,
+		"franchiseId": 67,
     "lineup": "starter"
 	}
 }
@@ -255,26 +261,44 @@ query_all_league = '''
   }
 }
 '''
-
+#
 # {
 #   allUser{
+#     id
+#     email
 #     username
 #     franchise{
-# 			franchise
-#       leagueSet{
-#         leagueName
+#       __typename
+#       id
+#       gm{
+#         __typename
+#         id
+#         trait
 #       }
-#       staff{
-#         gm{
-#           trait
-#         }
-#         coach{
-#           name
-#           attributeOne
-#           attributeTwo
+#       coach{
+#         __typename
+#         id
+#         name
+#         attributeOne
+#         attributeTwo
+#       }
+# 			stadium{
+#         __typename
+#         id
+#         stadiumName
+#         seats
+#         boxes
+#         grade
+#         maxGrade
+#         homeFieldAdvantage
+#         city{
+#           city
+#           cityValue
 #         }
 #       }
 #       action{
+#         __typename
+#         id
 #         numberOfActions
 #         improvedBathrooms
 #         improvedConcessions
@@ -301,22 +325,14 @@ query_all_league = '''
 #         namingRights
 #         eventPlanning
 #       }
-#       stadium{
-#         stadiumName
-#         seats
-#         boxes
-#         grade
-#         maxGrade
-#         homeFieldAdvantage
-#         city {
-#           city
-#           cityValue
-#         }
+#       seasonSet{
+#         __typename
+#         id
 #         franchise{
-#           franchise
+#           __typename
+#           id
 #         }
-#       }
-#       season{
+#         season
 #         ready
 #         wins
 #         losses
@@ -332,16 +348,97 @@ query_all_league = '''
 #         expenses
 #       }
 #       rosterSet{
-#         player {
+#         __typename
+#         id
+#         player{
+#           __typename
+#           id
+#           name
+#           suit
+#           age
+#           pv
+#           epv
+#           sEpv
 #           contract
 #           tOption
 #           pOption
 #           renew
 #           salary
 #           grade
+#           trainer
+#         }
+#         franchise{
+#           __typename
+#           id
+#           franchise
 #         }
 #         lineup
+#       }
+#       league{
+#         __typename
+#         id
+#         leagueName
+#         franchiseSet{
+#           __typename
+#           id
+#           franchise
+#           gm{
+#             __typename
+#             id
+#             trait
+#           }
+#           coach{
+#             __typename
+#             id
+#             name
+#             attributeOne
+#             attributeTwo
+#           }
+# 					rosterSet{
+#             __typename
+#             id
+#             player{
+#               __typename
+#               id
+#               name
+#               suit
+#               age
+#               pv
+#               epv
+#               sEpv
+#               contract
+#               tOption
+#               pOption
+#               renew
+#               salary
+#               grade
+#               trainer
+#             }
+#             lineup
+#           }
+#         }
+#         citySet{
+#           __typename
+#           id
+#           city
+#           cityValue
+#           league{
+#             __typename
+#             id
+#           }
+#           stadiumSet{
+#             __typename
+#             id
+#             stadiumName
+#             seats
+#             boxes
+#             grade
+#             maxGrade
+#             homeFieldAdvantage
+#           }
+#         }
 #       }
 #     }
 #   }
 # }
+

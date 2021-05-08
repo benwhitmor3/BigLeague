@@ -7,12 +7,15 @@ import { MSTGQLRef, QueryBuilder, withTypedRefs } from "mst-gql"
 import { ModelBase } from "./ModelBase"
 import { FranchiseTypeModel, FranchiseTypeModelType } from "./FranchiseTypeModel"
 import { FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
+import { LeagueTypeModel, LeagueTypeModelType } from "./LeagueTypeModel"
+import { LeagueTypeModelSelector } from "./LeagueTypeModel.base"
 import { RootStoreType } from "./index"
 
 
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
   franchise: FranchiseTypeModelType;
+  league: LeagueTypeModelType;
 }
 
 /**
@@ -34,6 +37,7 @@ export const UserTypeModelBase = withTypedRefs<Refs>()(ModelBase
     isStaff: types.union(types.undefined, types.boolean),
     isSuperuser: types.union(types.undefined, types.boolean),
     franchise: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
+    league: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => LeagueTypeModel))),
   })
   .views(self => ({
     get store() {
@@ -53,6 +57,7 @@ export class UserTypeModelSelector extends QueryBuilder {
   get isStaff() { return this.__attr(`isStaff`) }
   get isSuperuser() { return this.__attr(`isSuperuser`) }
   franchise(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchise`, FranchiseTypeModelSelector, builder) }
+  league(builder?: string | LeagueTypeModelSelector | ((selector: LeagueTypeModelSelector) => LeagueTypeModelSelector)) { return this.__child(`league`, LeagueTypeModelSelector, builder) }
 }
 export function selectFromUserType() {
   return new UserTypeModelSelector()

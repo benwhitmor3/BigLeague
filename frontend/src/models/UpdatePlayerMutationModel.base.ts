@@ -16,13 +16,13 @@ type Refs = {
 }
 
 /**
- * PlayerMutationBase
- * auto generated base class for the model PlayerMutationModel.
+ * UpdatePlayerMutationBase
+ * auto generated base class for the model UpdatePlayerMutationModel.
  */
-export const PlayerMutationModelBase = withTypedRefs<Refs>()(ModelBase
-  .named('PlayerMutation')
+export const UpdatePlayerMutationModelBase = withTypedRefs<Refs>()(ModelBase
+  .named('UpdatePlayerMutation')
   .props({
-    __typename: types.optional(types.literal("PlayerMutation"), "PlayerMutation"),
+    __typename: types.optional(types.literal("UpdatePlayerMutation"), "UpdatePlayerMutation"),
     player: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => PlayerTypeModel))),
   })
   .views(self => ({
@@ -31,11 +31,11 @@ export const PlayerMutationModelBase = withTypedRefs<Refs>()(ModelBase
     }
   })))
 
-export class PlayerMutationModelSelector extends QueryBuilder {
+export class UpdatePlayerMutationModelSelector extends QueryBuilder {
   player(builder?: string | PlayerTypeModelSelector | ((selector: PlayerTypeModelSelector) => PlayerTypeModelSelector)) { return this.__child(`player`, PlayerTypeModelSelector, builder) }
 }
-export function selectFromPlayerMutation() {
-  return new PlayerMutationModelSelector()
+export function selectFromUpdatePlayerMutation() {
+  return new UpdatePlayerMutationModelSelector()
 }
 
-export const playerMutationModelPrimitives = selectFromPlayerMutation()
+export const updatePlayerMutationModelPrimitives = selectFromUpdatePlayerMutation()

@@ -46,8 +46,8 @@ class DeleteUser(graphene.Mutation):
 
 class FranchiseInput(graphene.InputObjectType):
     franchise = graphene.String(required=True)
-    gm = graphene.ID()
-    coach = graphene.ID()
+    gm_id = graphene.ID()
+    coach_id = graphene.ID()
 
 
 class FranchiseType(DjangoObjectType):
@@ -70,8 +70,8 @@ class CreateFranchiseMutation(graphene.Mutation):
             franchise=franchise_input.franchise,
             user=user,
             league=user.league,
-            gm_id=franchise_input.gm,
-            coach_id=franchise_input.coach
+            gm_id=franchise_input.gm_id,
+            coach_id=franchise_input.coach_id
         )
         franchise.save()
         return CreateFranchiseMutation(franchise=franchise)
@@ -116,8 +116,8 @@ class StadiumInput(graphene.InputObjectType):
     grade = graphene.Int()
     max_grade = graphene.Int()
     home_field_advantage = graphene.Int()
-    city = graphene.ID()
-    franchise = graphene.ID()
+    city_id = graphene.ID()
+    franchise_id = graphene.ID()
 
 
 class StadiumType(DjangoObjectType):
@@ -140,8 +140,8 @@ class CreateStadiumMutation(graphene.Mutation):
             grade=stadium_input.grade,
             max_grade=stadium_input.max_grade,
             home_field_advantage=stadium_input.home_field_advantage,
-            city_id=stadium_input.city,
-            franchise_id=stadium_input.franchise,
+            city_id=stadium_input.city_id,
+            franchise_id=stadium_input.franchise_id,
         )
         stadium.save()
         return CreateStadiumMutation(stadium=stadium)
@@ -209,10 +209,10 @@ class PlayerInput(graphene.InputObjectType):
     salary = graphene.Float(default=None)
     grade = graphene.Float(default=None)
     trainer = graphene.Boolean(default=False)
-    league_name = graphene.String(required=True)
+    league_id = graphene.ID(required=True)
 
 
-class PlayerMutation(graphene.Mutation):
+class UpdatePlayerMutation(graphene.Mutation):
     class Arguments:
         player_input = PlayerInput(required=True)
 
@@ -220,24 +220,44 @@ class PlayerMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(self, info, player_input=None):
-        player = Player(
+        obj, player = Player.objects.update_or_create(
             name=player_input.name,
-            suit=player_input.suit,
-            age=player_input.age,
-            pv=player_input.pv,
-            epv=player_input.epv,
-            s_epv=player_input.s_epv,
-            contract=player_input.contract,
-            t_option=player_input.t_option,
-            p_option=player_input.p_option,
-            renew=player_input.renew,
-            salary=player_input.salary,
-            grade=player_input.grade,
-            trainer=player_input.trainer,
-            league_id=player_input.league_name,
+            defaults={
+                'name': player_input.name,
+                'suit': player_input.suit,
+                'age': player_input.age,
+                'pv': player_input.pv,
+                'epv': player_input.epv,
+                's_epv': player_input.s_epv,
+                'contract': player_input.contract,
+                't_option': player_input.t_option,
+                'p_option': player_input.p_option,
+                'renew': player_input.renew,
+                'salary': player_input.salary,
+                'grade': player_input.grade,
+                'trainer': player_input.trainer,
+                'league_id': player_input.league_id,
+            }
         )
-        player.save()
-        return PlayerMutation(player=player)
+        # player = Player(
+        #     name=player_input.name,
+        #     suit=player_input.suit,
+        #     age=player_input.age,
+        #     pv=player_input.pv,
+        #     epv=player_input.epv,
+        #     s_epv=player_input.s_epv,
+        #     contract=player_input.contract,
+        #     t_option=player_input.t_option,
+        #     p_option=player_input.p_option,
+        #     renew=player_input.renew,
+        #     salary=player_input.salary,
+        #     grade=player_input.grade,
+        #     trainer=player_input.trainer,
+        #     league_id=player_input.league_id,
+        # )
+        # player.save()
+        # return PlayerMutation(player=player)
+        return UpdatePlayerMutation(player=obj)
 
 
 class UpdateFranchiseMutation(graphene.Mutation):
@@ -286,8 +306,8 @@ class RosterType(DjangoObjectType):
 
 
 class RosterInput(graphene.InputObjectType):
-    player = graphene.ID()
-    franchise = graphene.ID()
+    player_id = graphene.ID()
+    franchise_id = graphene.ID()
     lineup = graphene.String()
 
 
@@ -302,15 +322,15 @@ class UpdateRosterMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, roster_input=None):
         # if no franchise given then delete from roster
-        if roster_input.franchise is None:
-            roster = Roster.objects.get(player_id=roster_input.player)
+        if roster_input.franchise_id is None:
+            roster = Roster.objects.get(player_id=roster_input.player_id)
             roster.delete()
         else:
             obj, roster = Roster.objects.update_or_create(
-                    player_id=roster_input.player,
+                    player_id=roster_input.player_id,
                     defaults={
-                        'player_id': roster_input.player,
-                        'franchise_id': roster_input.franchise,
+                        'player_id': roster_input.player_id,
+                        'franchise_id': roster_input.franchise_id,
                         'lineup': roster_input.lineup
                     }
                 )
@@ -332,7 +352,7 @@ class Mutation(graphene.ObjectType):
     create_franchise = CreateFranchiseMutation.Field()
     update_franchise = UpdateFranchiseMutation.Field()
 
-    create_player = PlayerMutation.Field()
+    create_player = UpdatePlayerMutation.Field()
 
     roster_update = UpdateRosterMutation.Field()
 

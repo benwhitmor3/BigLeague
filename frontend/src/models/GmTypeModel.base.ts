@@ -2,6 +2,7 @@
 /* eslint-disable */
 /* tslint:disable */
 
+import { IObservableArray } from "mobx"
 import { types } from "mobx-state-tree"
 import { MSTGQLRef, QueryBuilder, withTypedRefs } from "mst-gql"
 import { ModelBase } from "./ModelBase"
@@ -16,7 +17,7 @@ import { RootStoreType } from "./index"
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
   league: LeagueTypeModelType;
-  franchise: FranchiseTypeModelType;
+  franchiseSet: IObservableArray<FranchiseTypeModelType>;
 }
 
 /**
@@ -30,7 +31,7 @@ export const GmTypeModelBase = withTypedRefs<Refs>()(ModelBase
     id: types.identifier,
     trait: types.union(types.undefined, GmTraitEnumType),
     league: types.union(types.undefined, MSTGQLRef(types.late((): any => LeagueTypeModel))),
-    franchise: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
+    franchiseSet: types.union(types.undefined, types.array(MSTGQLRef(types.late((): any => FranchiseTypeModel)))),
   })
   .views(self => ({
     get store() {
@@ -42,7 +43,7 @@ export class GmTypeModelSelector extends QueryBuilder {
   get id() { return this.__attr(`id`) }
   get trait() { return this.__attr(`trait`) }
   league(builder?: string | LeagueTypeModelSelector | ((selector: LeagueTypeModelSelector) => LeagueTypeModelSelector)) { return this.__child(`league`, LeagueTypeModelSelector, builder) }
-  franchise(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchise`, FranchiseTypeModelSelector, builder) }
+  franchiseSet(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchiseSet`, FranchiseTypeModelSelector, builder) }
 }
 export function selectFromGmType() {
   return new GmTypeModelSelector()

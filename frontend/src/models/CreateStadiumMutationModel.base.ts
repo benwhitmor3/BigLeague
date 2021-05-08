@@ -16,13 +16,13 @@ type Refs = {
 }
 
 /**
- * StadiumMutationBase
- * auto generated base class for the model StadiumMutationModel.
+ * CreateStadiumMutationBase
+ * auto generated base class for the model CreateStadiumMutationModel.
  */
-export const StadiumMutationModelBase = withTypedRefs<Refs>()(ModelBase
-  .named('StadiumMutation')
+export const CreateStadiumMutationModelBase = withTypedRefs<Refs>()(ModelBase
+  .named('CreateStadiumMutation')
   .props({
-    __typename: types.optional(types.literal("StadiumMutation"), "StadiumMutation"),
+    __typename: types.optional(types.literal("CreateStadiumMutation"), "CreateStadiumMutation"),
     stadium: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => StadiumTypeModel))),
   })
   .views(self => ({
@@ -31,11 +31,11 @@ export const StadiumMutationModelBase = withTypedRefs<Refs>()(ModelBase
     }
   })))
 
-export class StadiumMutationModelSelector extends QueryBuilder {
+export class CreateStadiumMutationModelSelector extends QueryBuilder {
   stadium(builder?: string | StadiumTypeModelSelector | ((selector: StadiumTypeModelSelector) => StadiumTypeModelSelector)) { return this.__child(`stadium`, StadiumTypeModelSelector, builder) }
 }
-export function selectFromStadiumMutation() {
-  return new StadiumMutationModelSelector()
+export function selectFromCreateStadiumMutation() {
+  return new CreateStadiumMutationModelSelector()
 }
 
-export const stadiumMutationModelPrimitives = selectFromStadiumMutation()
+export const createStadiumMutationModelPrimitives = selectFromCreateStadiumMutation()

@@ -62,7 +62,6 @@ class Franchise(models.Model):
     league = models.ForeignKey("League", on_delete=models.CASCADE)
     gm = models.ForeignKey("GM", on_delete=models.SET_NULL, null=True)
     coach = models.OneToOneField("Coach", on_delete=models.SET_NULL, null=True)
-    city = models.ForeignKey("City", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.franchise
@@ -92,8 +91,8 @@ class Stadium(models.Model):
     grade = models.IntegerField(default=20)
     max_grade = models.IntegerField(default=20)
     home_field_advantage = models.IntegerField(default=0)
-    city = models.OneToOneField(City, on_delete=models.CASCADE)
-    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.stadium_name

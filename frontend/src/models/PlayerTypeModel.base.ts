@@ -5,8 +5,6 @@
 import { types } from "mobx-state-tree"
 import { MSTGQLRef, QueryBuilder, withTypedRefs } from "mst-gql"
 import { ModelBase } from "./ModelBase"
-import { FranchiseTypeModel, FranchiseTypeModelType } from "./FranchiseTypeModel"
-import { FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
 import { LeagueTypeModel, LeagueTypeModelType } from "./LeagueTypeModel"
 import { LeagueTypeModelSelector } from "./LeagueTypeModel.base"
 import { RosterTypeModel, RosterTypeModelType } from "./RosterTypeModel"
@@ -16,7 +14,6 @@ import { RootStoreType } from "./index"
 
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
-  franchise: FranchiseTypeModelType;
   league: LeagueTypeModelType;
   roster: RosterTypeModelType;
 }
@@ -43,7 +40,6 @@ export const PlayerTypeModelBase = withTypedRefs<Refs>()(ModelBase
     salary: types.union(types.undefined, types.null, types.number),
     grade: types.union(types.undefined, types.null, types.number),
     trainer: types.union(types.undefined, types.boolean),
-    franchise: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
     league: types.union(types.undefined, MSTGQLRef(types.late((): any => LeagueTypeModel))),
     roster: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => RosterTypeModel))),
   })
@@ -68,7 +64,6 @@ export class PlayerTypeModelSelector extends QueryBuilder {
   get salary() { return this.__attr(`salary`) }
   get grade() { return this.__attr(`grade`) }
   get trainer() { return this.__attr(`trainer`) }
-  franchise(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchise`, FranchiseTypeModelSelector, builder) }
   league(builder?: string | LeagueTypeModelSelector | ((selector: LeagueTypeModelSelector) => LeagueTypeModelSelector)) { return this.__child(`league`, LeagueTypeModelSelector, builder) }
   roster(builder?: string | RosterTypeModelSelector | ((selector: RosterTypeModelSelector) => RosterTypeModelSelector)) { return this.__child(`roster`, RosterTypeModelSelector, builder) }
 }

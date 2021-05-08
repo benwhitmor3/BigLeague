@@ -33,7 +33,7 @@ def gen_city(league, num_of_cities=8):
         )
 
 
-def gen_player(num_of_players=50, year=1):
+def gen_player(league, num_of_players=50, year=0):
     # Player.objects.all().delete()
 
     for players in range(num_of_players):
@@ -145,14 +145,14 @@ def gen_player(num_of_players=50, year=1):
             pv=pv,
             epv=epv,
             s_epv=s_epv,
-            contract=contract,
-            t_option=t_option,
-            p_option=p_option,
-            renew=renew,
-            salary=salary,
-            grade=grade,
-            trainer=0,
-            league=League.objects.all()[0],
+            # contract=contract,
+            # t_option=t_option,
+            # p_option=p_option,
+            # renew=renew,
+            # salary=salary,
+            # grade=grade,
+            # trainer=0,
+            league=league,
         )
 
 

@@ -16,13 +16,13 @@ type Refs = {
 }
 
 /**
- * RosterMutationBase
- * auto generated base class for the model RosterMutationModel.
+ * UpdateRosterMutationBase
+ * auto generated base class for the model UpdateRosterMutationModel.
  */
-export const RosterMutationModelBase = withTypedRefs<Refs>()(ModelBase
-  .named('RosterMutation')
+export const UpdateRosterMutationModelBase = withTypedRefs<Refs>()(ModelBase
+  .named('UpdateRosterMutation')
   .props({
-    __typename: types.optional(types.literal("RosterMutation"), "RosterMutation"),
+    __typename: types.optional(types.literal("UpdateRosterMutation"), "UpdateRosterMutation"),
     roster: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => RosterTypeModel))),
   })
   .views(self => ({
@@ -31,11 +31,11 @@ export const RosterMutationModelBase = withTypedRefs<Refs>()(ModelBase
     }
   })))
 
-export class RosterMutationModelSelector extends QueryBuilder {
+export class UpdateRosterMutationModelSelector extends QueryBuilder {
   roster(builder?: string | RosterTypeModelSelector | ((selector: RosterTypeModelSelector) => RosterTypeModelSelector)) { return this.__child(`roster`, RosterTypeModelSelector, builder) }
 }
-export function selectFromRosterMutation() {
-  return new RosterMutationModelSelector()
+export function selectFromUpdateRosterMutation() {
+  return new UpdateRosterMutationModelSelector()
 }
 
-export const rosterMutationModelPrimitives = selectFromRosterMutation()
+export const updateRosterMutationModelPrimitives = selectFromUpdateRosterMutation()
