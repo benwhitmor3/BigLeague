@@ -3,17 +3,18 @@ import './index.css';
 // @ts-ignore
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import 'antd/dist/antd.css';
-import { Layout, Menu} from 'antd';
+import {Layout, Menu} from 'antd';
 import './Header.css'
 import {useQuery} from "./models";
 import {observer} from "mobx-react";
 import Franchise from "./refactor_components/Franchise";
 import Stadium from "./refactor_components/Stadium";
+import RosterTable from "./refactor_components/RosterTable";
 // import {AUTH_TOKEN} from "./Constants";
 // import {deleteToken, getToken} from "./components/Forms/token";
 
 
-const { Header, Content, Footer } = Layout;
+const {Header, Content, Footer} = Layout;
 
 const App: React.FunctionComponent = observer(() => {
 
@@ -21,8 +22,8 @@ const App: React.FunctionComponent = observer(() => {
 
     const {store, error, loading, data} = useQuery((store) =>
         store.queryUser(
-              {email: "email@email.com"},
-              `
+            {email: "email@email.com"},
+            `
         id
     email
     username
@@ -222,7 +223,7 @@ const App: React.FunctionComponent = observer(() => {
       }
     }
     `,
-        {fetchPolicy: 'cache-first'}
+            {fetchPolicy: 'cache-first'}
         ))
 
     store.setUser("email@email.com").then(r => console.log("SET USER"));
@@ -234,51 +235,51 @@ const App: React.FunctionComponent = observer(() => {
     if (error) return <div>{error.message}</div>;
     if (loading) return <div>loading</div>;
     else {
-            // console.log(data)
+        // console.log(data)
         return (
-        <div>
-            <Layout className='layout'>
-                <Router>
-                <Header style={{backgroundColor: '#d4380d' }}>
-                    <Menu theme="dark" mode="horizontal"  style={{backgroundColor: 'inherit', color: '#fff2e8'}}>
-                        <Menu.Item key="1" >Home <a href="/Home"/></Menu.Item>
-                        <Menu.Item key="2" ><Link to="/Stadium">Stadium</Link></Menu.Item>
-                        <Menu.Item key="3" ><Link to="/Franchise">Franchise</Link></Menu.Item>
-                        <Menu.Item key="4" >OffSeason<a href="/OffSeason"/></Menu.Item>
-                        <Menu.Item key="5" >Draft<a href="/Draft"/></Menu.Item>
-                        <Menu.Item key="6" >Season<a href="/Season"/></Menu.Item>
-                        <Menu.Item key="7" >League Summary<a href="/League Summary"/></Menu.Item>
-                        {/*<Menu.Item key="8" >Instructions<a href = {file}/></Menu.Item>*/}
-                        {/*{isLoggedIn ? (*/}
-                        {/*    <Menu.Item key="9" style={{float: 'right'}} onClick={() => {deleteToken()}}>Logout*/}
-                        {/*        <a href="/Login"/></Menu.Item>)*/}
-                        {/*    : (<Menu.Item key="9" style={{float: 'right'}}>Login<a href="/Login"/></Menu.Item>)*/}
-                        {/*}*/}
-                        <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
-                    </Menu>
-                </Header>
-                <Content style={{ margin: '16px' }}>
-                    <div className="site-layout-content">
-                            <Switch>
-                                {/*<Route exact path='/Home' component={Home} />*/}
-                                <Route exact path='/Stadium' component={Stadium} />
-                                <Route exact path='/Franchise' component={Franchise} />
-                                {/*<Route exact path='/Draft' component={Draft} />*/}
-                                {/*<Route exact path='/Stadium' component={Stadium} />*/}
-                                {/*<Route exact path='/Season' component={Season} />*/}
-                                {/*<Route exact path='/OffSeason' component={OffSeason} />*/}
-                                {/*<Route exact path='/Login' component={Login} />*/}
-                                {/*<Route exact path='/Register' component={Register} />*/}
-                            </Switch>
-                    </div>
-                </Content>
+            <div>
+                <Layout className='layout'>
+                    <Router>
+                        <Header style={{backgroundColor: '#d4380d'}}>
+                            <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#fff2e8'}}>
+                                <Menu.Item key="1">Home <a href="/Home"/></Menu.Item>
+                                <Menu.Item key="2"><Link to="/Stadium">Stadium</Link></Menu.Item>
+                                <Menu.Item key="3"><Link to="/Franchise">Franchise</Link></Menu.Item>
+                                <Menu.Item key="4">OffSeason<a href="/OffSeason"/></Menu.Item>
+                                <Menu.Item key="5"><Link to="/Draft">Draft</Link></Menu.Item>
+                                <Menu.Item key="6">Season<a href="/Season"/></Menu.Item>
+                                <Menu.Item key="7">League Summary<a href="/League Summary"/></Menu.Item>
+                                {/*<Menu.Item key="8" >Instructions<a href = {file}/></Menu.Item>*/}
+                                {/*{isLoggedIn ? (*/}
+                                {/*    <Menu.Item key="9" style={{float: 'right'}} onClick={() => {deleteToken()}}>Logout*/}
+                                {/*        <a href="/Login"/></Menu.Item>)*/}
+                                {/*    : (<Menu.Item key="9" style={{float: 'right'}}>Login<a href="/Login"/></Menu.Item>)*/}
+                                {/*}*/}
+                                <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
+                            </Menu>
+                        </Header>
+                        <Content style={{margin: '16px'}}>
+                            <div className="site-layout-content">
+                                <Switch>
+                                    {/*<Route exact path='/Home' component={Home} />*/}
+                                    <Route exact path='/Stadium' component={Stadium}/>
+                                    <Route exact path='/Franchise' component={Franchise}/>
+                                    <Route exact path='/Draft' component={RosterTable}/>
+                                    {/*<Route exact path='/Stadium' component={Stadium} />*/}
+                                    {/*<Route exact path='/Season' component={Season} />*/}
+                                    {/*<Route exact path='/OffSeason' component={OffSeason} />*/}
+                                    {/*<Route exact path='/Login' component={Login} />*/}
+                                    {/*<Route exact path='/Register' component={Register} />*/}
+                                </Switch>
+                            </div>
+                        </Content>
 
-                <Footer style={{ textAlign: 'center' }}>The Big League ©2020 Created by Ben Whitmore</Footer>
-            </Router>
-            </Layout>
-        </div>
+                        <Footer style={{textAlign: 'center'}}>The Big League ©2020 Created by Ben Whitmore</Footer>
+                    </Router>
+                </Layout>
+            </div>
         )
-}
+    }
 });
 
 
