@@ -173,6 +173,8 @@ class Player(models.Model):
     salary = models.FloatField(blank=True, null=True)
     grade = models.FloatField(blank=True, null=True)
     trainer = models.BooleanField(default=False)
+    lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
+    franchise = models.ForeignKey(Franchise, on_delete=models.SET_NULL, null=True)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     def __str__(self):

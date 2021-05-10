@@ -24,7 +24,8 @@ const App: React.FunctionComponent = observer(() => {
         store.queryUser(
             {email: "email@email.com"},
             `
-        id
+    __typename
+    id
     email
     username
     franchise{
@@ -52,9 +53,39 @@ const App: React.FunctionComponent = observer(() => {
         maxGrade
         homeFieldAdvantage
         city{
+          __typename
+          id
           city
           cityValue
         }
+        franchise{
+          __typename
+          id
+          franchise
+        }
+      }
+      playerSet{
+        __typename
+        id
+        name
+        suit
+        age
+        pv
+        epv
+        sEpv
+        contract
+        tOption
+        pOption
+        renew
+        salary
+        grade
+        trainer
+        franchise{
+          __typename
+          id
+          franchise
+        }
+        lineup
       }
       action{
         __typename
@@ -107,33 +138,6 @@ const App: React.FunctionComponent = observer(() => {
         revenue
         expenses
       }
-      rosterSet{
-        __typename
-        id
-        player{
-          __typename
-          id
-          name
-          suit
-          age
-          pv
-          epv
-          sEpv
-          contract
-          tOption
-          pOption
-          renew
-          salary
-          grade
-          trainer
-        }
-        franchise{
-          __typename
-          id
-          franchise
-        }
-        lineup
-      }
       league{
         __typename
         id
@@ -154,28 +158,6 @@ const App: React.FunctionComponent = observer(() => {
             attributeOne
             attributeTwo
           }
-          rosterSet{
-            __typename
-            id
-            player{
-              __typename
-              id
-              name
-              suit
-              age
-              pv
-              epv
-              sEpv
-              contract
-              tOption
-              pOption
-              renew
-              salary
-              grade
-              trainer
-            }
-            lineup
-          }
         }
         citySet{
           __typename
@@ -190,9 +172,11 @@ const App: React.FunctionComponent = observer(() => {
             __typename
             id
             city{
+              __typename
               id
             }
             franchise{
+              __typename
               id
             }
             stadiumName
@@ -219,15 +203,12 @@ const App: React.FunctionComponent = observer(() => {
           salary
           grade
           trainer
-          roster{
+          franchise{
             __typename
             id
-            franchise{
-              __typename
-              id
-              franchise
-            }
+            franchise
           }
+          lineup
         }
       }
     }

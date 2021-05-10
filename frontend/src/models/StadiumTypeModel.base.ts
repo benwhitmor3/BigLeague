@@ -33,8 +33,8 @@ export const StadiumTypeModelBase = withTypedRefs<Refs>()(ModelBase
     grade: types.union(types.undefined, types.integer),
     maxGrade: types.union(types.undefined, types.integer),
     homeFieldAdvantage: types.union(types.undefined, types.integer),
-    // city: types.union(types.undefined, MSTGQLRef(types.late((): any => CityTypeModel))),
-    // franchise: types.union(types.undefined, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
+    city: types.union(types.undefined, MSTGQLRef(types.late((): any => CityTypeModel))),
+    franchise: types.union(types.undefined, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
   })
   .views(self => ({
     get store() {

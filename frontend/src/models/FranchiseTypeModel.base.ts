@@ -14,6 +14,8 @@ import { GmTypeModel, GmTypeModelType } from "./GmTypeModel"
 import { GmTypeModelSelector } from "./GmTypeModel.base"
 import { LeagueTypeModel, LeagueTypeModelType } from "./LeagueTypeModel"
 import { LeagueTypeModelSelector } from "./LeagueTypeModel.base"
+import { PlayerTypeModel, PlayerTypeModelType } from "./PlayerTypeModel"
+import { PlayerTypeModelSelector } from "./PlayerTypeModel.base"
 import { RosterTypeModel, RosterTypeModelType } from "./RosterTypeModel"
 import { RosterTypeModelSelector } from "./RosterTypeModel.base"
 import { SeasonTypeModel, SeasonTypeModelType } from "./SeasonTypeModel"
@@ -32,6 +34,7 @@ type Refs = {
   gm: GmTypeModelType;
   coach: CoachTypeModelType;
   stadium: StadiumTypeModelType;
+  playerSet: IObservableArray<PlayerTypeModelType>;
   action: ActionTypeModelType;
   seasonSet: IObservableArray<SeasonTypeModelType>;
   rosterSet: IObservableArray<RosterTypeModelType>;
@@ -52,6 +55,7 @@ export const FranchiseTypeModelBase = withTypedRefs<Refs>()(ModelBase
     gm: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => GmTypeModel))),
     coach: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => CoachTypeModel))),
     stadium: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => StadiumTypeModel))),
+    playerSet: types.union(types.undefined, types.array(MSTGQLRef(types.late((): any => PlayerTypeModel)))),
     action: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => ActionTypeModel))),
     seasonSet: types.union(types.undefined, types.array(MSTGQLRef(types.late((): any => SeasonTypeModel)))),
     rosterSet: types.union(types.undefined, types.array(MSTGQLRef(types.late((): any => RosterTypeModel)))),
@@ -70,6 +74,7 @@ export class FranchiseTypeModelSelector extends QueryBuilder {
   gm(builder?: string | GmTypeModelSelector | ((selector: GmTypeModelSelector) => GmTypeModelSelector)) { return this.__child(`gm`, GmTypeModelSelector, builder) }
   coach(builder?: string | CoachTypeModelSelector | ((selector: CoachTypeModelSelector) => CoachTypeModelSelector)) { return this.__child(`coach`, CoachTypeModelSelector, builder) }
   stadium(builder?: string | StadiumTypeModelSelector | ((selector: StadiumTypeModelSelector) => StadiumTypeModelSelector)) { return this.__child(`stadium`, StadiumTypeModelSelector, builder) }
+  playerSet(builder?: string | PlayerTypeModelSelector | ((selector: PlayerTypeModelSelector) => PlayerTypeModelSelector)) { return this.__child(`playerSet`, PlayerTypeModelSelector, builder) }
   action(builder?: string | ActionTypeModelSelector | ((selector: ActionTypeModelSelector) => ActionTypeModelSelector)) { return this.__child(`action`, ActionTypeModelSelector, builder) }
   seasonSet(builder?: string | SeasonTypeModelSelector | ((selector: SeasonTypeModelSelector) => SeasonTypeModelSelector)) { return this.__child(`seasonSet`, SeasonTypeModelSelector, builder) }
   rosterSet(builder?: string | RosterTypeModelSelector | ((selector: RosterTypeModelSelector) => RosterTypeModelSelector)) { return this.__child(`rosterSet`, RosterTypeModelSelector, builder) }

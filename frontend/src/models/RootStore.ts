@@ -11,15 +11,15 @@ export const RootStore = RootStoreBase
     log() {
       console.log(JSON.stringify(self))
     },
-  draft_mutation(player: any, franchiseId: string) {
-        self.mutateRosterUpdate({
-        "rosterInput": {
-		"playerId": player.id,
-		"franchiseId": franchiseId,
-        "lineup": 'bench'
-	    }
-      })
-    }
+  // draft_mutation(player: any, franchiseId: string) {
+  //       self.mutateRosterUpdate({
+  //       "rosterInput": {
+	// 	"playerId": player.id,
+	// 	"franchiseId": franchiseId,
+  //       "lineup": 'bench'
+	//     }
+  //     })
+  //   }
   }))
   .props({
     User: types.union(
@@ -64,11 +64,37 @@ export const RootStore = RootStoreBase
         city{
           __typename
           id
+          city
+          cityValue
         }
         franchise{
           __typename
           id
+          franchise
         }
+      }
+      playerSet{
+        __typename
+        id
+        name
+        suit
+        age
+        pv
+        epv
+        sEpv
+        contract
+        tOption
+        pOption
+        renew
+        salary
+        grade
+        trainer
+        franchise{
+          __typename
+          id
+          franchise
+        }
+        lineup
       }
       action{
         __typename
@@ -121,33 +147,6 @@ export const RootStore = RootStoreBase
         revenue
         expenses
       }
-      rosterSet{
-        __typename
-        id
-        player{
-          __typename
-          id
-          name
-          suit
-          age
-          pv
-          epv
-          sEpv
-          contract
-          tOption
-          pOption
-          renew
-          salary
-          grade
-          trainer
-        }
-        franchise{
-          __typename
-          id
-          franchise
-        }
-        lineup
-      }
       league{
         __typename
         id
@@ -167,28 +166,6 @@ export const RootStore = RootStoreBase
             name
             attributeOne
             attributeTwo
-          }
-          rosterSet{
-            __typename
-            id
-            player{
-              __typename
-              id
-              name
-              suit
-              age
-              pv
-              epv
-              sEpv
-              contract
-              tOption
-              pOption
-              renew
-              salary
-              grade
-              trainer
-            }
-            lineup
           }
         }
         citySet{
@@ -235,6 +212,12 @@ export const RootStore = RootStoreBase
           salary
           grade
           trainer
+          franchise{
+            __typename
+            id
+            franchise
+          }
+          lineup
         }
       }
     }

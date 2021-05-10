@@ -1,10 +1,10 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space} from 'antd';
-import {StoreContext, PlayerTypeModelType} from "../models";
+import {StoreContext} from "../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon, draft} from './TableFunctions'
-import { toJS } from 'mobx';
+import {colour, suit_icon} from './TableFunctions'
+import {toJS} from 'mobx';
 
 
 export const DraftTable: React.FunctionComponent = observer(() => {
@@ -12,7 +12,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
         const store = useContext(StoreContext)
 
         const non_scouter_columns = [
-{
+            {
                 title: 'Name',
                 dataIndex: 'name',
                 key: 'name',
@@ -68,32 +68,57 @@ export const DraftTable: React.FunctionComponent = observer(() => {
             {
                 title: 'Action',
                 key: 'action',
-                render: (text: string, record: PlayerTypeModelType) => (
+                render: (text: string, record: any) => (
                     <Space size="middle">
                         <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
                              onClick={() =>
-                                 store.mutateRosterUpdate({
-                                         "rosterInput": {
-                                             "playerId": record.id,
+                                 store.mutateCreatePlayer({
+                                         "playerInput": {
+                                             "name": record.name,
+                                             "suit": record.suit,
+                                             "age": record.age,
+                                             "pv": record.pv,
+                                             "epv": record.epv,
+                                             "sEpv": record.sEpv,
+                                             "contract": undefined,
+                                             "tOption": undefined,
+                                             "pOption": undefined,
+                                             "renew": undefined,
+                                             "salary": undefined,
+                                             "grade": undefined,
                                              "franchiseId": store.User.franchise.id,
-                                             "lineup": "bench"
+                                             "trainer": true,
+                                             "leagueId": store.User.franchise.league.id
                                          }
                                      }, `
-                    roster{
-                    __typename
-                    id
-                    player{
-                      __typename
-                      id
-                      name
-                    }
-                    franchise{
-                      __typename
-                      id
-                      franchise
-                    }
-                    lineup
-                  }
+                                    player {
+                                          __typename
+                                          id
+                                          name
+                                          suit
+                                          age
+                                          pv
+                                          epv
+                                          sEpv
+                                          contract
+                                          tOption
+                                          pOption
+                                          renew
+                                          salary
+                                          grade
+                                          trainer
+                                          lineup
+                                          franchise{
+                                            __typename
+                                            id
+                                            franchise
+                                          }
+                                          league{
+                                            __typename
+                                            id
+                                            leagueName
+                                          }
+                                        }
             `,
                                      undefined
                                  )
@@ -164,39 +189,63 @@ export const DraftTable: React.FunctionComponent = observer(() => {
             },
             {
                 title: 'Franchise',
-                dataIndex: ["roster", "franchise", "franchise"],
+                dataIndex: ["franchise", "franchise"],
                 key: "franchise",
             },
             {
                 title: 'Action',
                 key: 'action',
-                render: (text: string, record: PlayerTypeModelType) => (
+                render: (text: string, record: any) => (
                     <Space size="middle">
                         <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-                             onClick={() =>
-                             {
-                                 store.mutateRosterUpdate({
-                                         "rosterInput": {
-                                             "playerId": record.id,
+                             onClick={() => {
+                                 store.mutateCreatePlayer({
+                                         "playerInput": {
+                                             "name": record.name,
+                                             "suit": record.suit,
+                                             "age": record.age,
+                                             "pv": record.pv,
+                                             "epv": record.epv,
+                                             "sEpv": record.sEpv,
+                                             "contract": undefined,
+                                             "tOption": undefined,
+                                             "pOption": undefined,
+                                             "renew": undefined,
+                                             "salary": undefined,
+                                             "grade": undefined,
                                              "franchiseId": store.User.franchise.id,
-                                             "lineup": "starter"
+                                             "trainer": true,
+                                             "leagueId": store.User.franchise.league.id
                                          }
                                      }, `
-                    roster{
-                    __typename
-                    id
-                    player{
-                      __typename
-                      id
-                      name
-                    }
-                    franchise{
-                      __typename
-                      id
-                      franchise
-                    }
-                    lineup
-                  }
+                                    player {
+                                          __typename
+                                          id
+                                          name
+                                          suit
+                                          age
+                                          pv
+                                          epv
+                                          sEpv
+                                          contract
+                                          tOption
+                                          pOption
+                                          renew
+                                          salary
+                                          grade
+                                          trainer
+                                          lineup
+                                          franchise{
+                                            __typename
+                                            id
+                                            franchise
+                                          }
+                                          league{
+                                            __typename
+                                            id
+                                            leagueName
+                                          }
+                                        }
             `,
                                      undefined
                                  );
@@ -217,18 +266,18 @@ export const DraftTable: React.FunctionComponent = observer(() => {
             columns = non_scouter_columns
         }
 
-        if (store.User == undefined || store.User.franchise == undefined) return <div>loading</div>;
+        if (store.User == undefined || store.User.franchise == undefined) return <div> loading</div>;
         else {
             return (
-                <Table<PlayerTypeModelType>
-                       rowKey="id"
-                       columns={columns}
-                       dataSource={toJS(store.User.franchise.league.playerSet)}
-                       pagination={false}
-                       bordered
-                       style={{
-                           boxShadow: "0px 0px 2px 0px #D0D8F3",
-                       }}
+                <Table
+                    rowKey="id"
+                    columns={columns}
+                    dataSource={toJS(store.User.franchise.league.playerSet)}
+                    pagination={false}
+                    bordered
+                    style={{
+                        boxShadow: "0px 0px 2px 0px #D0D8F3",
+                    }}
                 />
             );
         }

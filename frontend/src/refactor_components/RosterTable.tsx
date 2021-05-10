@@ -18,32 +18,57 @@ export const RosterTable: React.FunctionComponent = observer(() => {
 
             const submit_lineup = (updated_lineup: any) => {
                 setSelected(updated_lineup);
-                store.mutateRosterUpdate({
-                        "rosterInput": {
-                            "playerId": record.player.id,
-                            "franchiseId": record.franchise.id,
-                            "lineup": updated_lineup
-                        }
-                    },
-                    `
-                roster{
-                    __typename
-                    id
-                    player{
-                      __typename
-                      id
-                      name
-                    }
-                    franchise{
-                      __typename
-                      id
-                      franchise
-                    }
-                    lineup
-                  }
+                store.mutateCreatePlayer({
+                                         "playerInput": {
+                                             "name": record.name,
+                                             "suit": record.suit,
+                                             "age": record.age,
+                                             "pv": record.pv,
+                                             "epv": record.epv,
+                                             "sEpv": record.sEpv,
+                                             "contract": undefined,
+                                             "tOption": undefined,
+                                             "pOption": undefined,
+                                             "renew": undefined,
+                                             "salary": undefined,
+                                             "grade": undefined,
+                                             "franchiseId": store.User.franchise.id,
+                                             "trainer": true,
+                                             "lineup": updated_lineup,
+                                             "leagueId": store.User.franchise.league.id
+                                         }
+                                     }, `
+                                    player {
+                                          __typename
+                                          id
+                                          name
+                                          suit
+                                          age
+                                          pv
+                                          epv
+                                          sEpv
+                                          contract
+                                          tOption
+                                          pOption
+                                          renew
+                                          salary
+                                          grade
+                                          trainer
+                                          lineup
+                                          franchise{
+                                            __typename
+                                            id
+                                            franchise
+                                          }
+                                          league{
+                                            __typename
+                                            id
+                                            leagueName
+                                          }
+                                        }
             `,
-                    undefined
-                )
+                                     undefined
+                                 )
             }
 
             let other_values = ["starter", "rotation", "bench"].filter(x => ![current_lineup].includes(x));
@@ -72,26 +97,26 @@ export const RosterTable: React.FunctionComponent = observer(() => {
         const non_scouter_columns = [
             {
                 title: 'Name',
-                dataIndex: ['player', 'name'],
+                dataIndex: 'name',
                 key: 'name',
                 // render: (text: string) => <a href="/Home">{text}</a>,
             },
             {
                 title: 'Age',
-                dataIndex: ['player', 'age'],
+                dataIndex: 'age',
                 key: 'age',
                 sorter: (a: any, b: any) => a.age - b.age,
             },
             {
                 title: 'EPV',
-                dataIndex: ['player', 'epv'],
+                dataIndex: 'epv',
                 key: 'epv',
                 sorter: (a: any, b: any) => a.epv - b.epv,
                 render: (epv: number) => <text>{epv.toFixed(1)}</text>,
             },
             {
                 title: 'Suit',
-                dataIndex: ['player', 'suit'],
+                dataIndex: 'suit',
                 key: 'suit',
                 render: (suit: string) => (
                     <Tag icon={suit_icon(suit)} color={colour(suit)} key={suit}>
@@ -120,35 +145,35 @@ export const RosterTable: React.FunctionComponent = observer(() => {
             },
             {
                 title: 'Contract',
-                dataIndex: ['player', 'contract'],
+                dataIndex: 'contract',
                 key: 'contract',
                 sorter: (a: any, b: any) => a.contract - b.contract,
             },
             {
                 title: 'Team Option',
-                dataIndex: ['player', 'tOption'],
+                dataIndex: 'tOption',
                 key: 'tOption',
             },
             {
                 title: 'Player Option',
-                dataIndex: ['player', 'pOption'],
+                dataIndex: 'pOption',
                 key: 'pOption',
             },
             {
                 title: 'Renew',
-                dataIndex: ['player', 'renew'],
+                dataIndex: 'renew',
                 key: 'renew',
             },
             {
                 title: 'Salary',
-                dataIndex: ['player', 'salary'],
+                dataIndex: 'salary',
                 key: 'salary',
                 sorter: (a: any, b: any) => a.salary - b.salary,
                 render: (salary: number) => <text>{_to_fixed(salary)}</text>,
             },
             {
                 title: 'Grade',
-                dataIndex: ['player', 'grade'],
+                dataIndex: 'grade',
                 key: 'grade',
                 sorter: (a: any, b: any) => a.grade - b.grade,
                 render: (grade: number) => <text>{_to_fixed(grade)}</text>,
@@ -166,33 +191,33 @@ export const RosterTable: React.FunctionComponent = observer(() => {
         const scouter_columns = [
             {
                 title: 'Name',
-                dataIndex: ['player', 'name'],
+                dataIndex: 'name',
                 key: 'name',
                 // render: (text: string) => <a href="/Home">{text}</a>,
             },
             {
                 title: 'Age',
-                dataIndex: ['player', 'age'],
+                dataIndex: 'age',
                 key: 'age',
                 sorter: (a: any, b: any) => a.age - b.age,
             },
             {
                 title: 'EPV',
-                dataIndex: ['player', 'epv'],
+                dataIndex: 'epv',
                 key: 'epv',
                 sorter: (a: any, b: any) => a.epv - b.epv,
                 render: (epv: number) => <text>{epv.toFixed(1)}</text>,
             },
             {
                 title: 'S EPV',
-                dataIndex: ['player', 'sEpv'],
+                dataIndex: 'sEpv',
                 key: 'sEpv',
                 sorter: (a: any, b: any) => a.sEpv - b.sEpv,
                 render: (sEpv: number) => <text>{sEpv.toFixed(1)}</text>,
             },
             {
                 title: 'Suit',
-                dataIndex: ['player', 'suit'],
+                dataIndex: 'suit',
                 key: 'suit',
                 render: (suit: string) => (
                     <Tag icon={suit_icon(suit)} color={colour(suit)} key={suit}>
@@ -221,45 +246,39 @@ export const RosterTable: React.FunctionComponent = observer(() => {
             },
             {
                 title: 'Contract',
-                dataIndex: ['player', 'contract'],
+                dataIndex: 'contract',
                 key: 'contract',
                 sorter: (a: any, b: any) => a.contract - b.contract,
             },
             {
                 title: 'Team Option',
-                dataIndex: ['player', 'tOption'],
+                dataIndex: 'tOption',
                 key: 'tOption',
             },
             {
                 title: 'Player Option',
-                dataIndex: ['player', 'pOption'],
+                dataIndex: 'pOption',
                 key: 'pOption',
             },
             {
                 title: 'Renew',
-                dataIndex: ['player', 'renew'],
+                dataIndex: 'renew',
                 key: 'renew',
             },
             {
                 title: 'Salary',
-                dataIndex: ['player', 'salary'],
+                dataIndex: 'salary',
                 key: 'salary',
                 sorter: (a: any, b: any) => a.salary - b.salary,
                 render: (salary: number) => <text>{_to_fixed(salary)}</text>,
             },
             {
                 title: 'Grade',
-                dataIndex: ['player', 'grade'],
+                dataIndex: 'grade',
                 key: 'grade',
                 sorter: (a: any, b: any) => a.grade - b.grade,
                 render: (grade: number) => <text>{_to_fixed(grade)}</text>,
             },
-            // {
-            //     title: 'Franchise',
-            //     dataIndex: ["franchise", "franchise"],
-            //     key: "franchise",
-            //     sorter: (a: any, b: any) => a.franchise.localeCompare(b.franchise),
-            // },
             {
                 title: 'Lineup',
                 dataIndex: 'lineup',
@@ -281,7 +300,7 @@ export const RosterTable: React.FunctionComponent = observer(() => {
         else {
             return (
 
-                <Table columns={columns} dataSource={toJS(store.User.franchise.rosterSet)} pagination={false}
+                <Table columns={columns} dataSource={toJS(store.User.franchise.playerSet)} pagination={false}
                        rowKey="id"
                        bordered
                        style={{

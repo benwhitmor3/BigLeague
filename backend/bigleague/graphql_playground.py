@@ -166,37 +166,43 @@ stadium_input = '''
 }
 '''
 
-
-
 update_player_mutation = '''
 mutation($playerInput: PlayerInput!) {
   createPlayer(playerInput: $playerInput){
-  	player {
+    player {
+      __typename
+      id
       name
       suit
       age
       pv
       epv
       sEpv
-  	  contract
-  	  tOption
-  	  pOption
-  	  renew
-  	  salary
-  	  grade
+      contract
+      tOption
+      pOption
+      renew
+      salary
+      grade
       trainer
+      lineup
+      franchise{
+        __typename
+        id
+        franchise
+      }
       league{
+        __typename
+        id
         leagueName
       }
     }
-  }	
-}
 '''
 
 create_player_variable = '''
 {
   "playerInput": {
-    "name": "Gary Graphene",
+    "name": "Jay Sloan",
     "suit": "heart",
     "age": 22,
     "pv": 21.213,
@@ -208,6 +214,8 @@ create_player_variable = '''
     "renew": null,
     "salary": null,
     "grade": null,
+    "lineup": "starter",
+    "franchiseId": "72",
     "trainer": true,
     "leagueId": 7
   }
@@ -441,4 +449,3 @@ query_all_league = '''
 #     }
 #   }
 # }
-
