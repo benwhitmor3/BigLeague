@@ -240,7 +240,7 @@ export const RootStore = RootStoreBase
     }
     
     `,
-      {},
+      {fetchPolicy: "cache-and-network"},
           ).then((data) => self.User! = self.userTypes!.get(data!.user!.id!))
   return query
       }

@@ -37,6 +37,7 @@ declare global {
         getSnapshot: any;
         token: any;
         data: any
+        toJS: any
     }
 }
 

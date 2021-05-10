@@ -28,7 +28,7 @@ export const RosterTypeModelBase = withTypedRefs<Refs>()(ModelBase
     __typename: types.optional(types.literal("RosterType"), "RosterType"),
     id: types.identifier,
     player: types.union(types.undefined, MSTGQLRef(types.late((): any => PlayerTypeModel))),
-    franchise: types.union(types.undefined, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
+    franchise: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
     lineup: types.union(types.undefined, types.null, types.string),
   })
   .views(self => ({

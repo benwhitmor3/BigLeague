@@ -2,10 +2,10 @@ import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag} from 'antd';
 import {StoreContext} from "../models";
-import {observer, Observer} from "mobx-react";
-import {Switch} from 'antd';
+import {observer} from "mobx-react";
 import {Select} from "./Select";
 import {colour, suit_icon, _to_fixed, _lineup} from './TableFunctions'
+import {toJS} from "mobx";
 
 
 export const RosterTable: React.FunctionComponent = observer(() => {
@@ -17,17 +17,33 @@ export const RosterTable: React.FunctionComponent = observer(() => {
             const [selected, setSelected] = useState(current_lineup);
 
             const submit_lineup = (updated_lineup: any) => {
-
                 setSelected(updated_lineup);
-                console.log(record.player.name)
-                // console.log(updated_lineup)
                 store.mutateRosterUpdate({
-                    "rosterInput": {
-                        "playerId": record.player.id,
-                        "franchiseId": record.franchise.id,
-                        "lineup": updated_lineup
+                        "rosterInput": {
+                            "playerId": record.player.id,
+                            "franchiseId": record.franchise.id,
+                            "lineup": updated_lineup
+                        }
+                    },
+                    `
+                roster{
+                    __typename
+                    id
+                    player{
+                      __typename
+                      id
+                      name
                     }
-                })
+                    franchise{
+                      __typename
+                      id
+                      franchise
+                    }
+                    lineup
+                  }
+            `,
+                    undefined
+                )
             }
 
             let other_values = ["starter", "rotation", "bench"].filter(x => ![current_lineup].includes(x));
@@ -137,12 +153,6 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                 sorter: (a: any, b: any) => a.grade - b.grade,
                 render: (grade: number) => <text>{_to_fixed(grade)}</text>,
             },
-            // {
-            //     title: 'Franchise',
-            //     dataIndex: ["franchise", "franchise"],
-            //     key: "franchise",
-            //     sorter: (a: any, b: any) => a.franchise.localeCompare(b.franchise),
-            // },
             {
                 title: 'Lineup',
                 dataIndex: 'lineup',
@@ -151,7 +161,6 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                     LineupPicker(_lineup(lineup), record)),
             },
         ];
-
 
 
         const scouter_columns = [
@@ -261,20 +270,24 @@ export const RosterTable: React.FunctionComponent = observer(() => {
         ];
 
 
-
         let columns;
-            if (store.User.franchise.gm.trait === "SCOUTER") {
+        if (store.User.franchise.gm.trait === "SCOUTER") {
             columns = scouter_columns
-          } else {
+        } else {
             columns = non_scouter_columns
-          }
+        }
 
         if (store.User == undefined || store.User.franchise == undefined) return <div>loading</div>;
         else {
             return (
 
-                <Table columns={columns} dataSource={store.User.franchise.rosterSet} pagination={false}
-                       rowKey={record => record.id}/>
+                <Table columns={columns} dataSource={toJS(store.User.franchise.rosterSet)} pagination={false}
+                       rowKey="id"
+                       bordered
+                       style={{
+                           boxShadow: "0px 0px 2px 0px #D0D8F3",
+                       }}
+                />
 
             );
         }

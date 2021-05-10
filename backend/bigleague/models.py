@@ -234,7 +234,7 @@ class Season(models.Model):
 
 class Roster(models.Model):
     player = models.OneToOneField(Player, on_delete=models.CASCADE)
-    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE, null=True)
     lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
 
     def __str__(self):

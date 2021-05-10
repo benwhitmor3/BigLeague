@@ -9,7 +9,7 @@ import {useQuery} from "./models";
 import {observer} from "mobx-react";
 import Franchise from "./refactor_components/Franchise";
 import Stadium from "./refactor_components/Stadium";
-import RosterTable from "./refactor_components/RosterTable";
+import Draft from "./refactor_components/Draft";
 // import {AUTH_TOKEN} from "./Constants";
 // import {deleteToken, getToken} from "./components/Forms/token";
 
@@ -219,6 +219,15 @@ const App: React.FunctionComponent = observer(() => {
           salary
           grade
           trainer
+          roster{
+            __typename
+            id
+            franchise{
+              __typename
+              id
+              franchise
+            }
+          }
         }
       }
     }
@@ -258,13 +267,15 @@ const App: React.FunctionComponent = observer(() => {
                                 <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
                             </Menu>
                         </Header>
-                        <Content style={{margin: '16px'}}>
+                        <Content style={{margin: '0px'}}>
                             <div className="site-layout-content">
                                 <Switch>
                                     {/*<Route exact path='/Home' component={Home} />*/}
-                                    <Route exact path='/Stadium' component={Stadium}/>
+                                    <Route exact path='/Stadium'>
+                                        <Stadium/>
+                                    </Route>
                                     <Route exact path='/Franchise' component={Franchise}/>
-                                    <Route exact path='/Draft' component={RosterTable}/>
+                                    <Route exact path='/Draft' component={Draft}/>
                                     {/*<Route exact path='/Stadium' component={Stadium} />*/}
                                     {/*<Route exact path='/Season' component={Season} />*/}
                                     {/*<Route exact path='/OffSeason' component={OffSeason} />*/}

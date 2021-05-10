@@ -168,11 +168,11 @@ class UpdateStadiumMutation(graphene.Mutation):
             stadium.max_grade = stadium_input.max_grade
         if stadium_input.home_field_advantage:
             stadium.home_field_advantage = stadium_input.home_field_advantage
-        if stadium_input.city:
-            city = City.objects.get(pk=stadium_input.city)
+        if stadium_input.city_id:
+            city = City.objects.get(pk=stadium_input.city_id)
             stadium.city = city
-        if stadium_input.franchise:
-            franchise = Franchise.objects.get(pk=stadium_input.franchise)
+        if stadium_input.franchise_id:
+            franchise = Franchise.objects.get(pk=stadium_input.franchise_id)
             stadium.franchise = franchise
         stadium.save()
         # Notice we return an instance of this mutation
@@ -267,25 +267,23 @@ class UpdateFranchiseMutation(graphene.Mutation):
 
     # The class attributes define the response of the mutation
     franchise = graphene.Field(FranchiseType)
-    gm = graphene.Field(GMType)
-    coach = graphene.Field(CoachType)
 
     @staticmethod
     def mutate(self, info, franchise_input=None):
         franchise = Franchise.objects.get(pk=franchise_input.franchise)
-        if franchise_input.gm:
-            gm = GM.objects.get(pk=franchise_input.gm)
+        if franchise_input.gm_id:
+            gm = GM.objects.get(pk=franchise_input.gm_id)
         else:
             gm = None
-        if franchise_input.coach:
-            coach = Coach.objects.get(pk=franchise_input.coach)
+        if franchise_input.coach_id:
+            coach = Coach.objects.get(pk=franchise_input.coach_id)
         else:
             coach = None
         franchise.gm = gm
         franchise.coach = coach
         franchise.save()
         # Notice we return an instance of this mutation
-        return UpdateFranchiseMutation(franchise=franchise, gm=gm, coach=coach)
+        return UpdateFranchiseMutation(franchise=franchise)
 
 
 class ActionType(DjangoObjectType):
@@ -322,10 +320,10 @@ class UpdateRosterMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, roster_input=None):
         # if no franchise given then delete from roster
-        if roster_input.franchise_id is None:
-            roster = Roster.objects.get(player_id=roster_input.player_id)
-            roster.delete()
-        else:
+        # if roster_input.franchise_id is None:
+        #     roster = Roster.objects.get(player_id=roster_input.player_id)
+        #     roster.delete()
+        # else:
             obj, roster = Roster.objects.update_or_create(
                     player_id=roster_input.player_id,
                     defaults={
