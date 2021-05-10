@@ -9,8 +9,6 @@ import { FranchiseTypeModel, FranchiseTypeModelType } from "./FranchiseTypeModel
 import { FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
 import { LeagueTypeModel, LeagueTypeModelType } from "./LeagueTypeModel"
 import { LeagueTypeModelSelector } from "./LeagueTypeModel.base"
-import { RosterTypeModel, RosterTypeModelType } from "./RosterTypeModel"
-import { RosterTypeModelSelector } from "./RosterTypeModel.base"
 import { RootStoreType } from "./index"
 
 
@@ -18,7 +16,6 @@ import { RootStoreType } from "./index"
 type Refs = {
   franchise: FranchiseTypeModelType;
   league: LeagueTypeModelType;
-  roster: RosterTypeModelType;
 }
 
 /**
@@ -46,7 +43,6 @@ export const PlayerTypeModelBase = withTypedRefs<Refs>()(ModelBase
     lineup: types.union(types.undefined, types.null, types.string),
     franchise: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
     league: types.union(types.undefined, MSTGQLRef(types.late((): any => LeagueTypeModel))),
-    roster: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => RosterTypeModel))),
   })
   .views(self => ({
     get store() {
@@ -72,7 +68,6 @@ export class PlayerTypeModelSelector extends QueryBuilder {
   get lineup() { return this.__attr(`lineup`) }
   franchise(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchise`, FranchiseTypeModelSelector, builder) }
   league(builder?: string | LeagueTypeModelSelector | ((selector: LeagueTypeModelSelector) => LeagueTypeModelSelector)) { return this.__child(`league`, LeagueTypeModelSelector, builder) }
-  roster(builder?: string | RosterTypeModelSelector | ((selector: RosterTypeModelSelector) => RosterTypeModelSelector)) { return this.__child(`roster`, RosterTypeModelSelector, builder) }
 }
 export function selectFromPlayerType() {
   return new PlayerTypeModelSelector()

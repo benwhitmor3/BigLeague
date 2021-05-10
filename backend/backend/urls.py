@@ -34,8 +34,6 @@ router.register(r'coaches', views.CoachView, 'coach_view')
 router.register(r'players', views.PlayerView, 'player_view')
 router.register(r'actions', views.ActionView, 'action_view')
 router.register(r'seasons', views.SeasonView, 'season_view')
-router.register(r'roster', views.RosterView, 'roster_view')
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),

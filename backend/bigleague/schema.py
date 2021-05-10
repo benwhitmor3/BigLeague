@@ -2,7 +2,7 @@ import graphene
 import graphql_jwt
 from django.contrib.auth import get_user_model
 from graphene_django.types import DjangoObjectType
-from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Roster
+from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season
 
 
 class UserType(DjangoObjectType):
@@ -298,46 +298,6 @@ class ActionType(DjangoObjectType):
 class SeasonType(DjangoObjectType):
     class Meta:
         model = Season
-
-
-class RosterType(DjangoObjectType):
-    class Meta:
-        model = Roster
-        convert_choices_to_enum = False
-        fields = '__all__'
-
-
-class RosterInput(graphene.InputObjectType):
-    player_id = graphene.ID()
-    franchise_id = graphene.ID()
-    lineup = graphene.String()
-
-
-class UpdateRosterMutation(graphene.Mutation):
-    roster = graphene.Field(RosterType)
-
-    class Arguments:
-        roster_input = RosterInput(required=True)
-
-    roster = graphene.Field(RosterType)
-
-    @staticmethod
-    def mutate(root, info, roster_input=None):
-        # if no franchise given then delete from roster
-        # if roster_input.franchise_id is None:
-        #     roster = Roster.objects.get(player_id=roster_input.player_id)
-        #     roster.delete()
-        # else:
-            obj, roster = Roster.objects.update_or_create(
-                    player_id=roster_input.player_id,
-                    defaults={
-                        'player_id': roster_input.player_id,
-                        'franchise_id': roster_input.franchise_id,
-                        'lineup': roster_input.lineup
-                    }
-                )
-
-            return UpdateRosterMutation(roster=obj)
 
 
 class Mutation(graphene.ObjectType):

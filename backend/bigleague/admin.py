@@ -1,7 +1,7 @@
 from django.contrib import admin
 import sys
 sys.path.append('/Users/buw0017/projects/TheBigLeagueGame/backend')
-from bigleague.models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Roster
+from bigleague.models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season
 
 # Register your models here.
 admin.site.register(User)
@@ -14,4 +14,3 @@ admin.site.register(Coach)
 admin.site.register(Player)
 admin.site.register(Action)
 admin.site.register(Season)
-admin.site.register(Roster)

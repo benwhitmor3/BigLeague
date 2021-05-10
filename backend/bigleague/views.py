@@ -5,8 +5,8 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .generator import gen_city, gen_gm, gen_coach, gen_player
 from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
-    GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer, RosterSerializer
-from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, Roster
+    GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer
+from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season
 
 
 # Create your views here.
@@ -71,9 +71,6 @@ class SeasonView(viewsets.ModelViewSet):
     serializer_class = SeasonSerializer
 
 
-class RosterView(viewsets.ModelViewSet):
-    queryset = Roster.objects.all()
-    serializer_class = RosterSerializer
 
 
 # def league_generation_view(request):
