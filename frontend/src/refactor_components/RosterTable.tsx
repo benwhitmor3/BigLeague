@@ -1,16 +1,20 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Tag} from 'antd';
-import {StoreContext} from "../models";
+import {Table, Tag, Space} from 'antd';
+import {PlayerTypeModelType, StoreContext} from "../models";
 import {observer} from "mobx-react";
 import {Select} from "./Select";
 import {colour, suit_icon, _to_fixed, _lineup} from './TableFunctions'
 import {toJS} from "mobx";
+import SigningModal from "./SigningModal";
 
 
 export const RosterTable: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
+
+        const [visible, setVisible] = useState<boolean>(false)
+        const [selectedplayer, setSelectedPlayer] = useState<any>([]);
 
         const LineupPicker: React.FunctionComponent = (current_lineup: any, record: any) => {
 
@@ -19,25 +23,25 @@ export const RosterTable: React.FunctionComponent = observer(() => {
             const submit_lineup = (updated_lineup: any) => {
                 setSelected(updated_lineup);
                 store.mutateCreatePlayer({
-                                         "playerInput": {
-                                             "name": record.name,
-                                             "suit": record.suit,
-                                             "age": record.age,
-                                             "pv": record.pv,
-                                             "epv": record.epv,
-                                             "sEpv": record.sEpv,
-                                             "contract": undefined,
-                                             "tOption": undefined,
-                                             "pOption": undefined,
-                                             "renew": undefined,
-                                             "salary": undefined,
-                                             "grade": undefined,
-                                             "franchiseId": store.User.franchise.id,
-                                             "trainer": true,
-                                             "lineup": updated_lineup,
-                                             "leagueId": store.User.franchise.league.id
-                                         }
-                                     }, `
+                        "playerInput": {
+                            "name": record.name,
+                            "suit": record.suit,
+                            "age": record.age,
+                            "pv": record.pv,
+                            "epv": record.epv,
+                            "sEpv": record.sEpv,
+                            "contract": undefined,
+                            "tOption": undefined,
+                            "pOption": undefined,
+                            "renew": undefined,
+                            "salary": undefined,
+                            "grade": undefined,
+                            "franchiseId": store.User.franchise.id,
+                            "trainer": false,
+                            "lineup": updated_lineup,
+                            "leagueId": store.User.franchise.league.id
+                        }
+                    }, `
                                     player {
                                           __typename
                                           id
@@ -67,8 +71,8 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                                           }
                                         }
             `,
-                                     undefined
-                                 )
+                    undefined
+                )
             }
 
             let other_values = ["starter", "rotation", "bench"].filter(x => ![current_lineup].includes(x));
@@ -185,6 +189,21 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                 render: (lineup: any, record: any) => (
                     LineupPicker(_lineup(lineup), record)),
             },
+            {
+                title: 'Action',
+                key: 'action',
+                render: (record: PlayerTypeModelType) => (
+                    <Space size="middle">
+                        <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
+                             onClick={() => {
+                                 setSelectedPlayer(record);
+                                 setVisible(true)
+                             }}>
+                            Offer Contract
+                        </Tag>
+                    </Space>
+                ),
+            },
         ];
 
 
@@ -286,6 +305,21 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                 render: (lineup: any, record: any) => (
                     LineupPicker(_lineup(lineup), record)),
             },
+            {
+                title: 'Action',
+                key: 'action',
+                render: (record: PlayerTypeModelType) => (
+                    <Space size="middle">
+                        <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
+                             onClick={() => {
+                                 setSelectedPlayer(record);
+                                 setVisible(true)
+                             }}>
+                            Offer Contract
+                        </Tag>
+                    </Space>
+                ),
+            },
         ];
 
 
@@ -299,14 +333,16 @@ export const RosterTable: React.FunctionComponent = observer(() => {
         if (store.User == undefined || store.User.franchise == undefined) return <div>loading</div>;
         else {
             return (
-
-                <Table columns={columns} dataSource={toJS(store.User.franchise.playerSet)} pagination={false}
-                       rowKey="id"
-                       bordered
-                       style={{
-                           boxShadow: "0px 0px 2px 0px #D0D8F3",
-                       }}
-                />
+                <div>
+                    <SigningModal visible={visible} setVisible={setVisible} selectedplayer={selectedplayer}/>
+                    <Table columns={columns} dataSource={toJS(store.User.franchise.playerSet)} pagination={false}
+                           rowKey="id"
+                           bordered
+                           style={{
+                               boxShadow: "0px 0px 2px 0px #D0D8F3",
+                           }}
+                    />
+                </div>
 
             );
         }
