@@ -193,15 +193,27 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                 title: 'Action',
                 key: 'action',
                 render: (record: PlayerTypeModelType) => (
-                    <Space size="middle">
-                        <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-                             onClick={() => {
-                                 setSelectedPlayer(record);
-                                 setVisible(true)
-                             }}>
-                            Offer Contract
-                        </Tag>
-                    </Space>
+
+                    (record.contract) ? (
+                        <Space size="middle">
+                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝  </span>}
+                                 color={'#98c30d'}>
+                                Signed
+                            </Tag>
+                        </Space>
+                    ) : (
+                        <Space size="middle">
+                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝 </span>}
+                                 color={'#D49E0D'}
+                                 onClick={() => {
+                                     setSelectedPlayer(record);
+                                     setVisible(true)
+                                 }}>
+                                Offer Contract
+                            </Tag>
+                        </Space>
+                    )
+
                 ),
             },
         ];
@@ -309,15 +321,27 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                 title: 'Action',
                 key: 'action',
                 render: (record: PlayerTypeModelType) => (
-                    <Space size="middle">
-                        <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-                             onClick={() => {
-                                 setSelectedPlayer(record);
-                                 setVisible(true)
-                             }}>
-                            Offer Contract
-                        </Tag>
-                    </Space>
+
+                    (record.contract) ? (
+                        <Space size="middle">
+                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝  </span>}
+                                 color={'#98c30d'}>
+                                Signed
+                            </Tag>
+                        </Space>
+                    ) : (
+                        <Space size="middle">
+                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝 </span>}
+                                 color={'#D49E0D'}
+                                 onClick={() => {
+                                     setSelectedPlayer(record);
+                                     setVisible(true)
+                                 }}>
+                                Offer Contract
+                            </Tag>
+                        </Space>
+                    )
+
                 ),
             },
         ];
