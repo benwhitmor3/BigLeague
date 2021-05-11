@@ -62,7 +62,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
             },
             {
                 title: 'Franchise',
-                dataIndex: ["roster", "franchise", "franchise"],
+                dataIndex: ["franchise", "franchise"],
                 key: "franchise",
             },
             {
@@ -71,7 +71,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 render: (text: string, record: any) => (
                     <Space size="middle">
                         <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-                             onClick={() =>
+                             onClick={() => {
                                  store.mutateCreatePlayer({
                                          "playerInput": {
                                              "name": record.name,
@@ -86,6 +86,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                              "renew": undefined,
                                              "salary": undefined,
                                              "grade": undefined,
+                                             "lineup": "bench",
                                              "franchiseId": store.User.franchise.id,
                                              "trainer": true,
                                              "leagueId": store.User.franchise.league.id
@@ -121,7 +122,8 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                         }
             `,
                                      undefined
-                                 )
+                                 );
+                             }
                              }>
                             Draft Prospect
                         </Tag>
@@ -213,6 +215,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                              "renew": undefined,
                                              "salary": undefined,
                                              "grade": undefined,
+                                             "lineup": "bench",
                                              "franchiseId": store.User.franchise.id,
                                              "trainer": true,
                                              "leagueId": store.User.franchise.league.id
