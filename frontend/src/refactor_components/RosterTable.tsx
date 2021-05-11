@@ -1,12 +1,12 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Tag, Space} from 'antd';
+import {Table, Tag, Space, Alert} from 'antd';
 import {PlayerTypeModelType, StoreContext} from "../models";
 import {observer} from "mobx-react";
-import {Select} from "./Select";
 import {colour, suit_icon, _to_fixed, _lineup} from './TableFunctions'
 import {toJS} from "mobx";
 import SigningModal from "./SigningModal";
+import LineupSelect from "./LineupSelect";
 
 
 export const RosterTable: React.FunctionComponent = observer(() => {
@@ -15,87 +15,7 @@ export const RosterTable: React.FunctionComponent = observer(() => {
 
         const [visible, setVisible] = useState<boolean>(false)
         const [selectedplayer, setSelectedPlayer] = useState<any>([]);
-
-        const LineupPicker: React.FunctionComponent = (current_lineup: any, record: any) => {
-
-            const [selected, setSelected] = useState(current_lineup);
-
-            const submit_lineup = (updated_lineup: any) => {
-                setSelected(updated_lineup);
-                store.mutateCreatePlayer({
-                        "playerInput": {
-                            "name": record.name,
-                            "suit": record.suit,
-                            "age": record.age,
-                            "pv": record.pv,
-                            "epv": record.epv,
-                            "sEpv": record.sEpv,
-                            "contract": undefined,
-                            "tOption": undefined,
-                            "pOption": undefined,
-                            "renew": undefined,
-                            "salary": undefined,
-                            "grade": undefined,
-                            "franchiseId": store.User.franchise.id,
-                            "trainer": false,
-                            "lineup": updated_lineup,
-                            "leagueId": store.User.franchise.league.id
-                        }
-                    }, `
-                                    player {
-                                          __typename
-                                          id
-                                          name
-                                          suit
-                                          age
-                                          pv
-                                          epv
-                                          sEpv
-                                          contract
-                                          tOption
-                                          pOption
-                                          renew
-                                          salary
-                                          grade
-                                          trainer
-                                          lineup
-                                          franchise{
-                                            __typename
-                                            id
-                                            franchise
-                                          }
-                                          league{
-                                            __typename
-                                            id
-                                            leagueName
-                                          }
-                                        }
-            `,
-                    undefined
-                )
-            }
-
-            let other_values = ["starter", "rotation", "bench"].filter(x => ![current_lineup].includes(x));
-
-            const options = (other_values: Array<string>) => {
-                if (other_values.length === 2) {
-                    return [{value: current_lineup, label: current_lineup}, {
-                        value: other_values[0],
-                        label: other_values[0]
-                    },
-                        {value: other_values[1], label: other_values[1]}];
-                } else {
-                    return [{value: current_lineup, label: current_lineup}, {
-                        value: other_values[0],
-                        label: other_values[0]
-                    },
-                        {value: other_values[1], label: other_values[1]}, {value: other_values[2], label: other_values[2]}];
-                }
-            }
-
-            return <Select options={options(other_values)} value={selected}
-                           onChange={(updated_lineup: any) => submit_lineup(updated_lineup)}/>
-        }
+        const [rosteralert, setRosterAlert] = useState<boolean>(false)
 
 
         const non_scouter_columns = [
@@ -186,8 +106,10 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                 title: 'Lineup',
                 dataIndex: 'lineup',
                 key: 'lineup',
+                sorter: (a: any, b: any) => a.lineup.localeCompare(b.lineup),
                 render: (lineup: any, record: any) => (
-                    LineupPicker(_lineup(lineup), record)),
+                    <LineupSelect current_lineup={_lineup(lineup)} record={record} setRosterAlert={setRosterAlert}/>
+                ),
             },
             {
                 title: 'Action',
@@ -196,20 +118,16 @@ export const RosterTable: React.FunctionComponent = observer(() => {
 
                     (record.contract) ? (
                         <Space size="middle">
-                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝  </span>}
-                                 color={'#98c30d'}>
-                                Signed
+                            <Tag color={"#89dc0d"} style={{ color: "#000000", border: "3px solid #89dc0d"}}>
+                            Signed
                             </Tag>
                         </Space>
                     ) : (
                         <Space size="middle">
                             <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝 </span>}
-                                 color={'#D49E0D'}
-                                 onClick={() => {
-                                     setSelectedPlayer(record);
-                                     setVisible(true)
-                                 }}>
-                                Offer Contract
+                                 color={"#ffe479"} style={{ color: "#000000", border: "3px solid #ffe479"}}
+                                 onClick={() => {setSelectedPlayer(record); setVisible(true)}}>
+                            Offer Contract
                             </Tag>
                         </Space>
                     )
@@ -314,8 +232,10 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                 title: 'Lineup',
                 dataIndex: 'lineup',
                 key: 'lineup',
+                sorter: (a: any, b: any) => a.lineup.localeCompare(b.lineup),
                 render: (lineup: any, record: any) => (
-                    LineupPicker(_lineup(lineup), record)),
+                    <LineupSelect current_lineup={_lineup(lineup)} record={record} setRosterAlert={setRosterAlert}/>
+                ),
             },
             {
                 title: 'Action',
@@ -324,20 +244,16 @@ export const RosterTable: React.FunctionComponent = observer(() => {
 
                     (record.contract) ? (
                         <Space size="middle">
-                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝  </span>}
-                                 color={'#98c30d'}>
-                                Signed
+                            <Tag color={"#89dc0d"} style={{ color: "#000000", border: "3px solid #89dc0d"}}>
+                            Signed
                             </Tag>
                         </Space>
                     ) : (
                         <Space size="middle">
                             <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝 </span>}
-                                 color={'#D49E0D'}
-                                 onClick={() => {
-                                     setSelectedPlayer(record);
-                                     setVisible(true)
-                                 }}>
-                                Offer Contract
+                                 color={"#ffe479"} style={{ color: "#000000", border: "3px solid #ffe479"}}
+                                 onClick={() => {setSelectedPlayer(record); setVisible(true)}}>
+                            Offer Contract
                             </Tag>
                         </Space>
                     )
@@ -359,6 +275,16 @@ export const RosterTable: React.FunctionComponent = observer(() => {
             return (
                 <div>
                     <SigningModal visible={visible} setVisible={setVisible} selectedplayer={selectedplayer}/>
+                    {rosteralert ?
+                        <Alert
+                            message="Illegal Roster"
+                            description="Maximum Starters: 5 Maximum Rotation: 3"
+                            type="error"
+                            showIcon
+                            closable
+                            onClose={() => setRosterAlert(false)}
+                        />
+                        : null}
                     <Table columns={columns} dataSource={toJS(store.User.franchise.playerSet)} pagination={false}
                            rowKey="id"
                            bordered
