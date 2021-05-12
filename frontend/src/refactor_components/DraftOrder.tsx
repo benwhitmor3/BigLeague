@@ -1,9 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import axios from "axios";
 import 'antd/dist/antd.css';
-import {Card} from 'antd';
+import {Card, Button, Statistic, Tag} from 'antd';
 import {StoreContext} from "../models";
 import {observer} from "mobx-react";
+import {colour, suit_icon} from "./TableFunctions";
 
 
 export const DraftOrder: React.FunctionComponent = observer(() => {
@@ -12,9 +13,8 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
 
         const [bestplayer, setBestPlayer] = useState<string>()
         const [draftorder, setTeamOrder] = useState<Array<string>>()
-        const [selectedfranchise, setSelectedFranchise] = useState<string>()
 
-        useEffect(() => {
+        const draftPicker = () => {
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
             axios.post('http://127.0.0.1:8000/draft_optimize', data)
@@ -25,7 +25,7 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
                 .catch(err => {
                     console.log(err)
                 })
-        }, [])
+        };
 
         useEffect(() => {
             const data = new FormData();
@@ -47,11 +47,35 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
         else {
             return (
                 <div>
-                    {bestplayer}
+                    <Button type="primary" onClick={() => draftPicker()} block>
+                        Draft Picker
+                    </Button>
+
+                    {bestplayer ?
+                        <Statistic
+                            style={{
+                                display: "block", marginLeft: 'auto', marginRight: 'auto', width: '15%',
+                                padding: '10px',
+                                boxShadow: "0px 0px 4px 0px #D0D8F3",
+                                borderRadius: "4px",
+                                marginTop: "15px",
+                            }}
+                            value={store.User.league.player(bestplayer).name}
+                            valueStyle={{color: '#414141'}}
+                            prefix={<Tag icon={suit_icon(store.User.league.player(bestplayer).suit)}
+                                         color={colour(store.User.league.player(bestplayer).suit)}
+                                         key={store.User.league.player(bestplayer).suit}>
+                                {store.User.league.player(bestplayer).suit.toUpperCase()}
+                            </Tag>}
+                        />
+                        : null}
+
+
                     {draftorder ? draftorder.map((name, index) => {
-                        let number = (index + 1)
-                        return <Card title={number + ' ' + name} hoverable onClick={() => store.User.league.setDraftingFranchise(name)}
-                                     key={index} style={{width: '12%', marginBottom: '20px', display: 'inline-flex'}}>
+                            let number = (index + 1)
+                            return <Card title={number + ' ' + name} hoverable
+                                         onClick={() => store.User.league.setDraftingFranchise(name)}
+                                         key={index} style={{width: '12%', marginBottom: '20px', display: 'inline-flex'}}>
                             </Card>
                         }
                         )
