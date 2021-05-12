@@ -1,19 +1,39 @@
-import { Instance } from "mobx-state-tree"
-import { LeagueTypeModelBase } from "./LeagueTypeModel.base"
+import {Instance, types} from "mobx-state-tree"
+import {LeagueTypeModelBase} from "./LeagueTypeModel.base"
+import {FranchiseTypeModel} from "./FranchiseTypeModel";
+import {UserTypeModel} from "./UserTypeModel";
 
 /* The TypeScript type of an instance of LeagueTypeModel */
-export interface LeagueTypeModelType extends Instance<typeof LeagueTypeModel.Type> {}
+export interface LeagueTypeModelType extends Instance<typeof LeagueTypeModel.Type> {
+}
 
 /* A graphql query fragment builders for LeagueTypeModel */
-export { selectFromLeagueType, leagueTypeModelPrimitives, LeagueTypeModelSelector } from "./LeagueTypeModel.base"
+export {selectFromLeagueType, leagueTypeModelPrimitives, LeagueTypeModelSelector} from "./LeagueTypeModel.base"
 
 /**
  * LeagueTypeModel
  */
 export const LeagueTypeModel = LeagueTypeModelBase
-  .actions(self => ({
-    // This is an auto-generated example action.
-    log() {
-      console.log(JSON.stringify(self))
-    }
-  }))
+    .actions(self => ({
+        // This is an auto-generated example action.
+        log() {
+            console.log(JSON.stringify(self))
+        },
+        setDraftingFranchise(franchiseName: string) {
+            // @ts-ignore
+            self.draftingFranchise = self.franchise(franchiseName)
+            console.log(franchiseName)
+        },
+    }))
+    .props({
+        draftingFranchise: types.union(types.undefined, types.reference(types.late(() => FranchiseTypeModel))),
+    })
+    .views(self => ({
+        franchise(franchiseName: string) {
+            let franchise = self.franchiseSet.find(function (franchise, index) {
+                if (franchise.franchise == franchiseName)
+                    return true;
+            });
+            return franchise
+        },
+    }))

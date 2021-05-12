@@ -1,5 +1,5 @@
 import random
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
 from django.shortcuts import render
 from rest_framework import viewsets
@@ -71,19 +71,7 @@ class SeasonView(viewsets.ModelViewSet):
     serializer_class = SeasonSerializer
 
 
-
-
-# def league_generation_view(request):
-#     print('RECEIVED REQUEST: ' + request.method)
-#     if request.method == 'POST':
-#         print('Hello')
-#         print(request.body)
-#         print(request.POST.get('key'))
-#     else:  # GET
-#         print("GoodBye")
-#
-#     return HttpResponse(request)
-
+# r = requests.post('http://127.0.0.1:8000/league_generation', data={'franchise_id': '64', 'num_of_franchises': 8})
 def league_generation_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -106,24 +94,27 @@ def league_generation_view(request):
         if int(len(league.coach_set.all())) > 0:
             print("League already has " + str(len(league.coach_set.all())) + " coaches")
         else:
-            gen_coach(league, num_of_franchises*2)
+            gen_coach(league, num_of_franchises * 2)
 
         if int(len(league.player_set.all())) > 0:
             print("League already has " + str(len(league.player_set.all())) + " players")
         else:
-            gen_player(league, num_of_franchises*7, year=0)
+            gen_player(league, num_of_franchises * 7, year=0)
 
         if int(len(league.franchise_set.all())) > 1:
             print("League already has more than one franchise")
         else:
             # create other franchises (36 names)
-            franchise_names = ["Aces", "All Stars", "Avengers", "Aztecs", "Big Blues", "Big Red", "Champions", "Crimson",
-                               "Dragons", "Devils", "Dream Team", "Elite", "Flames", "Flash", "Force", "Groove", "Heatwave",
-                               "Icons", "Jam", "Legends", "Masters", "Monarchy", "Pioneers", "Pride", "Racers", "Rebels",
+            franchise_names = ["Aces", "All Stars", "Avengers", "Aztecs", "Big Blues", "Big Red", "Champions",
+                               "Crimson",
+                               "Dragons", "Devils", "Dream Team", "Elite", "Flames", "Flash", "Force", "Groove",
+                               "Heatwave",
+                               "Icons", "Jam", "Legends", "Masters", "Monarchy", "Pioneers", "Pride", "Racers",
+                               "Rebels",
                                "Royals", "Saints", "Soul", "Spirit", "Storm", "Titans", "United", "Violets", "Voodoo",
                                "Warriors", "Wild"]
 
-            franchise_list = random.sample(franchise_names, k=(num_of_franchises-1))
+            franchise_list = random.sample(franchise_names, k=(num_of_franchises - 1))
             for franchise_name in franchise_list:
                 Franchise.objects.create(
                     franchise=franchise_name,
@@ -132,4 +123,38 @@ def league_generation_view(request):
         return HttpResponse(request)
 
 
-# r = requests.post('http://127.0.0.1:8000/league_generation', data={'franchise_id': '64', 'num_of_franchises': 8})
+# r = requests.post('http://127.0.0.1:8000/draft_order', data={'franchise_id': '72', 'season': 1})
+def draft_order_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        franchise = Franchise.objects.get(id=franchise_id)
+        league = franchise.league
+        season = request.POST.get('season')
+
+        s = Season.objects.all()
+        # get season for league and season number sorted ascending wins, ppg, franchise_id
+        franchise_order = sorted(s.filter(franchise__league=league, season=season).values('wins', 'ppg', 'franchise_id', 'franchise_id__franchise'),
+                             key=lambda i: (i['wins'], i['ppg'],
+                                            i['franchise_id']))
+
+        draft_order = []
+        for i in franchise_order:
+            draft_order.append(i['franchise_id__franchise'])
+
+        return JsonResponse({'draft_order': draft_order})
+
+
+# r = requests.post('http://127.0.0.1:8000/draft_optimize', data={'franchise_id': '72'})
+def draft_optimize_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        franchise = Franchise.objects.get(id=franchise_id)
+        league = franchise.league
+
+        p = Player.objects.all()
+        # get all players in that league without a franchise sorted descending pv
+        best_player = {"best_player": sorted(p.filter(league=league).exclude(franchise__isnull=False).values(), key=lambda i: (i['pv']), reverse=True)[0]['name']}
+
+        return JsonResponse(best_player)

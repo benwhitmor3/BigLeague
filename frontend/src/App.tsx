@@ -28,6 +28,18 @@ const App: React.FunctionComponent = observer(() => {
     id
     email
     username
+    league{
+      __typename
+      id
+      franchiseSet{
+        __typename
+        id
+        seasonSet{
+          __typename
+          id
+        }
+      }
+    }
     franchise{
       __typename
       id

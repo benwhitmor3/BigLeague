@@ -173,6 +173,7 @@ class Player(models.Model):
     salary = models.FloatField(blank=True, null=True)
     grade = models.FloatField(blank=True, null=True)
     trainer = models.BooleanField(default=False)
+    # year = models.IntegerField(default=1)
     lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
     franchise = models.ForeignKey(Franchise, on_delete=models.SET_NULL, null=True)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
@@ -230,5 +231,8 @@ class Season(models.Model):
     revenue = models.FloatField(default=0)
     expenses = models.FloatField(default=0)
 
+    class Meta:
+        unique_together = ['franchise', 'season']
+
     def __str__(self):
-        return self.franchise
+        return self.franchise.franchise

@@ -33,10 +33,22 @@ export const RootStore = RootStoreBase
       const query = self.queryUser(
               {email: email},
               `
-    __typename
+     __typename
     id
     email
     username
+    league{
+      __typename
+      id
+      franchiseSet{
+        __typename
+        id
+        seasonSet{
+          __typename
+          id
+        }
+      }
+    }
     franchise{
       __typename
       id
@@ -221,7 +233,6 @@ export const RootStore = RootStoreBase
         }
       }
     }
-    
     `,
       {fetchPolicy: "cache-and-network"},
           ).then((data) => self.User! = self.userTypes!.get(data!.user!.id!))

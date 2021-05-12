@@ -1,4 +1,5 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
+import axios from "axios";
 import 'antd/dist/antd.css';
 import {Table, Tag, Space} from 'antd';
 import {StoreContext} from "../models";
@@ -10,6 +11,22 @@ import {toJS} from 'mobx';
 export const DraftTable: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
+
+        const [bestplayer, setBestPlayer] = useState<string>()
+        const [teamorder, setTeamOrder] = useState<Array<string>>()
+
+        // useEffect(() => {
+        //     const data = new FormData();
+        //     data.append("franchise_id", store.User.franchise.id)
+        //     axios.post('http://127.0.0.1:8000/draft_optimize', data)
+        //         .then(res => {
+        //             console.log(res.data)
+        //             setBestPlayer(res.data.best_player)
+        //         })
+        //         .catch(err => {
+        //             console.log(err)
+        //         })
+        // }, [])
 
         const non_scouter_columns = [
             {
@@ -69,29 +86,30 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 title: 'Action',
                 key: 'action',
                 render: (text: string, record: any) => (
-                    <Space size="middle">
-                        <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-                             onClick={() => {
-                                 store.mutateCreatePlayer({
-                                         "playerInput": {
-                                             "name": record.name,
-                                             "suit": record.suit,
-                                             "age": record.age,
-                                             "pv": record.pv,
-                                             "epv": record.epv,
-                                             "sEpv": record.sEpv,
-                                             "contract": undefined,
-                                             "tOption": undefined,
-                                             "pOption": undefined,
-                                             "renew": undefined,
-                                             "salary": undefined,
-                                             "grade": undefined,
-                                             "lineup": "bench",
-                                             "franchiseId": store.User.franchise.id,
-                                             "trainer": true,
-                                             "leagueId": store.User.franchise.league.id
-                                         }
-                                     }, `
+                    (record.franchise) ? (
+                        <Space size="middle">
+                            <Tag color={"#d4380d"} style={{ color: "#ffffff", border: "2px solid #cb2022"}}
+                                 onClick={() => {
+                                     store.mutateCreatePlayer({
+                                             "playerInput": {
+                                                 "name": record.name,
+                                                 "suit": record.suit,
+                                                 "age": record.age,
+                                                 "pv": record.pv,
+                                                 "epv": record.epv,
+                                                 "sEpv": record.sEpv,
+                                                 "contract": undefined,
+                                                 "tOption": undefined,
+                                                 "pOption": undefined,
+                                                 "renew": undefined,
+                                                 "salary": undefined,
+                                                 "grade": undefined,
+                                                 "lineup": "bench",
+                                                 "franchiseId": store.User.franchise.league.draftingFranchise.id,
+                                                 "trainer": true,
+                                                 "leagueId": store.User.franchise.league.id
+                                             }
+                                         }, `
                                     player {
                                           __typename
                                           id
@@ -121,13 +139,76 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                           }
                                         }
             `,
-                                     undefined
-                                 );
-                             }
-                             }>
-                            Draft Prospect
-                        </Tag>
-                    </Space>
+                                         undefined
+                                     );
+                                 }
+                                 }>
+                                Drafted!
+                            </Tag>
+                        </Space>
+                    ) : (
+                        <Space size="middle">
+                            <Tag color={"#ffe479"} icon={<span role="img" aria-label="player"> 📝 </span>}
+                            style={{ color: "#000000", border: "2px solid #ffe479"}}
+                                 onClick={() => {
+                                     store.mutateCreatePlayer({
+                                             "playerInput": {
+                                                 "name": record.name,
+                                                 "suit": record.suit,
+                                                 "age": record.age,
+                                                 "pv": record.pv,
+                                                 "epv": record.epv,
+                                                 "sEpv": record.sEpv,
+                                                 "contract": undefined,
+                                                 "tOption": undefined,
+                                                 "pOption": undefined,
+                                                 "renew": undefined,
+                                                 "salary": undefined,
+                                                 "grade": undefined,
+                                                 "lineup": "bench",
+                                                 "franchiseId": store.User.franchise.league.draftingFranchise.id,
+                                                 "trainer": true,
+                                                 "leagueId": store.User.franchise.league.id
+                                             }
+                                         }, `
+                                    player {
+                                          __typename
+                                          id
+                                          name
+                                          suit
+                                          age
+                                          pv
+                                          epv
+                                          sEpv
+                                          contract
+                                          tOption
+                                          pOption
+                                          renew
+                                          salary
+                                          grade
+                                          trainer
+                                          lineup
+                                          franchise{
+                                            __typename
+                                            id
+                                            franchise
+                                          }
+                                          league{
+                                            __typename
+                                            id
+                                            leagueName
+                                          }
+                                        }
+            `,
+                                         undefined
+                                     );
+                                 }
+                                 }>
+                                Draft Prospect
+                            </Tag>
+                        </Space>
+                    )
+
                 ),
             },
         ];
@@ -198,29 +279,30 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 title: 'Action',
                 key: 'action',
                 render: (text: string, record: any) => (
-                    <Space size="middle">
-                        <Tag icon={<span role="img" aria-label="player"> 📝 </span>} color={'#afafaf'}
-                             onClick={() => {
-                                 store.mutateCreatePlayer({
-                                         "playerInput": {
-                                             "name": record.name,
-                                             "suit": record.suit,
-                                             "age": record.age,
-                                             "pv": record.pv,
-                                             "epv": record.epv,
-                                             "sEpv": record.sEpv,
-                                             "contract": undefined,
-                                             "tOption": undefined,
-                                             "pOption": undefined,
-                                             "renew": undefined,
-                                             "salary": undefined,
-                                             "grade": undefined,
-                                             "lineup": "bench",
-                                             "franchiseId": store.User.franchise.id,
-                                             "trainer": true,
-                                             "leagueId": store.User.franchise.league.id
-                                         }
-                                     }, `
+                    (record.franchise) ? (
+                        <Space size="middle">
+                            <Tag color={"#d4380d"} style={{ color: "#ffffff", border: "2px solid #cb2022"}}
+                                 onClick={() => {
+                                     store.mutateCreatePlayer({
+                                             "playerInput": {
+                                                 "name": record.name,
+                                                 "suit": record.suit,
+                                                 "age": record.age,
+                                                 "pv": record.pv,
+                                                 "epv": record.epv,
+                                                 "sEpv": record.sEpv,
+                                                 "contract": undefined,
+                                                 "tOption": undefined,
+                                                 "pOption": undefined,
+                                                 "renew": undefined,
+                                                 "salary": undefined,
+                                                 "grade": undefined,
+                                                 "lineup": "bench",
+                                                 "franchiseId": store.User.franchise.league.draftingFranchise.id,
+                                                 "trainer": true,
+                                                 "leagueId": store.User.franchise.league.id
+                                             }
+                                         }, `
                                     player {
                                           __typename
                                           id
@@ -250,13 +332,76 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                           }
                                         }
             `,
-                                     undefined
-                                 );
-                             }
-                             }>
-                            Draft Prospect
-                        </Tag>
-                    </Space>
+                                         undefined
+                                     );
+                                 }
+                                 }>
+                                Drafted!
+                            </Tag>
+                        </Space>
+                    ) : (
+                        <Space size="middle">
+                            <Tag color={"#ffe479"} icon={<span role="img" aria-label="player"> 📝 </span>}
+                            style={{ color: "#000000", border: "2px solid #ffe479"}}
+                                 onClick={() => {
+                                     store.mutateCreatePlayer({
+                                             "playerInput": {
+                                                 "name": record.name,
+                                                 "suit": record.suit,
+                                                 "age": record.age,
+                                                 "pv": record.pv,
+                                                 "epv": record.epv,
+                                                 "sEpv": record.sEpv,
+                                                 "contract": undefined,
+                                                 "tOption": undefined,
+                                                 "pOption": undefined,
+                                                 "renew": undefined,
+                                                 "salary": undefined,
+                                                 "grade": undefined,
+                                                 "lineup": "bench",
+                                                 "franchiseId": store.User.franchise.league.draftingFranchise.id,
+                                                 "trainer": true,
+                                                 "leagueId": store.User.franchise.league.id
+                                             }
+                                         }, `
+                                    player {
+                                          __typename
+                                          id
+                                          name
+                                          suit
+                                          age
+                                          pv
+                                          epv
+                                          sEpv
+                                          contract
+                                          tOption
+                                          pOption
+                                          renew
+                                          salary
+                                          grade
+                                          trainer
+                                          lineup
+                                          franchise{
+                                            __typename
+                                            id
+                                            franchise
+                                          }
+                                          league{
+                                            __typename
+                                            id
+                                            leagueName
+                                          }
+                                        }
+            `,
+                                         undefined
+                                     );
+                                 }
+                                 }>
+                                Draft Prospect
+                            </Tag>
+                        </Space>
+                    )
+
                 ),
             },
         ];
