@@ -43,4 +43,11 @@ export const LeagueTypeModel = LeagueTypeModelBase
             });
             return player
         },
+        franchiseplayers(franchiseName: string){
+            let franchiseplayers = self.playerSet.filter(function (player: any, index: any) {
+                if (player.franchise.franchise == franchiseName)
+                    return true;
+            });
+            return franchiseplayers
+        },
     }))

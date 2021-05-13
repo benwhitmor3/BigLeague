@@ -10,6 +10,7 @@ import {observer} from "mobx-react";
 import Franchise from "./refactor_components/Franchise";
 import Stadium from "./refactor_components/Stadium";
 import Draft from "./refactor_components/Draft";
+import League from "./refactor_components/League";
 // import {AUTH_TOKEN} from "./Constants";
 // import {deleteToken, getToken} from "./components/Forms/token";
 
@@ -269,6 +270,9 @@ const App: React.FunctionComponent = observer(() => {
                                     </Route>
                                     <Route exact path='/Franchise' component={Franchise}/>
                                     <Route exact path='/Draft' component={Draft}/>
+                                    <Route exact path='/League Summary'>
+                                        <League/>
+                                    </Route>
                                     {/*<Route exact path='/Stadium' component={Stadium} />*/}
                                     {/*<Route exact path='/Season' component={Season} />*/}
                                     {/*<Route exact path='/OffSeason' component={OffSeason} />*/}

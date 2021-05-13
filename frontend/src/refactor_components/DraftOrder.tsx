@@ -14,6 +14,16 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
         const [bestplayer, setBestPlayer] = useState<string>()
         const [draftorder, setTeamOrder] = useState<Array<string>>()
 
+        const draft_order_border = (name: string) => {
+
+          if (store.User.league.draftingFranchise && store.User.league.draftingFranchise.franchise == name) {
+            return '2px dashed #ffc300'
+          }
+          else
+            return '1px solid #ffffff'
+
+            }
+
         const draftPicker = () => {
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
@@ -54,11 +64,12 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
                     {bestplayer ?
                         <Statistic
                             style={{
-                                display: "block", marginLeft: 'auto', marginRight: 'auto', width: '15%',
+                                display: "block", marginLeft: 'auto', marginRight: 'auto',
                                 padding: '10px',
                                 boxShadow: "0px 0px 4px 0px #D0D8F3",
                                 borderRadius: "4px",
                                 marginTop: "15px",
+                                textAlign: 'center',
                             }}
                             value={store.User.league.player(bestplayer).name}
                             valueStyle={{color: '#414141'}}
@@ -73,9 +84,14 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
 
                     {draftorder ? draftorder.map((name, index) => {
                             let number = (index + 1)
-                            return <Card title={number + ' ' + name} hoverable
-                                         onClick={() => store.User.league.setDraftingFranchise(name)}
-                                         key={index} style={{width: '12%', marginBottom: '20px', display: 'inline-flex'}}>
+                            return <Card hoverable
+                                         onClick={() =>
+                                             store.User.league.setDraftingFranchise(name)
+                                         }
+                                         key={index} style={{width: '12.5%', marginTop: '20px', marginBottom: '20px', display: 'inline-flex',
+                                         border: draft_order_border(name)}}>
+                                <span>{number + ' ' + name}</span>
+                                <span>{" –– Players: " + store.User.league.franchiseplayers(name).length}</span>
                             </Card>
                         }
                         )

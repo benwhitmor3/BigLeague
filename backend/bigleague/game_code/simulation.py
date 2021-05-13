@@ -12,19 +12,19 @@ db = '/Users/buw0017/projects/TheBigLeagueGame/backend/TheBigLeagueGame.sqlite3'
 
 def simulation(games_per_series):
     conn = sqlite3.connect(db)
-    players = pd.read_sql_query("select * from players", conn)
-    franchise = pd.read_sql_query("select * from franchise", conn)
+    players = pd.read_sql_query("select * from bigleague_player", conn)
+    franchise = pd.read_sql_query("select * from bigleague_franchise", conn)
     conn.close()
 
-    team_names = franchise.team.to_list()
-    num_of_teams = len(team_names)
+    franchise_names = franchise.franchise.to_list()
+    num_of_franchises = len(franchise_names)
 
     # everybody plays each other once schedule
     def schedule_creation():
         schedule = []
-        for base in range(0, num_of_teams):
-            for other in range(base + 1, num_of_teams):
-                schedule.append([team_names[base], team_names[other]])
+        for base in range(0, num_of_franchises):
+            for other in range(base + 1, num_of_franchises):
+                schedule.append([franchise_names[base], franchise_names[other]])
         return schedule
 
     league_schedule = schedule_creation()
@@ -59,24 +59,24 @@ def simulation(games_per_series):
         games = games_per_series
         while games > 0:
 
-            '''___________________________________TEAM A____________________________________'''
+            '''___________________________________franchise A____________________________________'''
 
             # focus/guts coach factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].iloc[0] == 'guts' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].iloc[0] == 'guts':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach1'].iloc[0] == 'guts' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach2'].iloc[0] == 'guts':
                 sd = 14
-            elif franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].iloc[0] == 'focus' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].iloc[0] == 'focus':
+            elif franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach1'].iloc[0] == 'focus' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach2'].iloc[0] == 'focus':
                 sd = 7
             else:
                 sd = 9
 
             # once starter, bench, reserve is added to 'roster' column use this players
-            # players.loc[(players['team'] == 'alpha') & (players['roster'] == 'starter')]['pv'].tolist()
-            # players.loc[(players['team'] == 'alpha') & (players['roster'] == 'bench')]['pv'].tolist()
+            # players.loc[(players['franchise'] == 'alpha') & (players['roster'] == 'starter')]['pv'].tolist()
+            # players.loc[(players['franchise'] == 'alpha') & (players['roster'] == 'bench')]['pv'].tolist()
 
             starter_value = players.loc[(players['franchise'] == league_schedule[y][0])]['pv'][0:5].tolist()
-            # sum team pv starter_value (used for underdog coach)
+            # sum franchise pv starter_value (used for underdog coach)
             a_starter_value = sum(starter_value)
             suit_list = players.loc[(players['franchise'] == league_schedule[y][0])]['suit'][0:5].tolist()
 
@@ -99,8 +99,8 @@ def simulation(games_per_series):
             bench_points.sort()  # this is done so can max bench points is the first substitutions
 
             # substitution coach factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].iloc[0] == 'substitution' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].iloc[0] == 'substitution':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach1'].iloc[0] == 'substitution' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach2'].iloc[0] == 'substitution':
                 substitution = 1
             else:
                 substitution = 2
@@ -131,25 +131,25 @@ def simulation(games_per_series):
                     del bench_points[-1]
 
             # suitor GM factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['gm'].iloc[0] == 'suitor':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['gm'].iloc[0] == 'suitor':
                 a = sum(starter_points)
             else:
                 a = sum(starter_points) + suit_bonus()
 
-            '''___________________________________TEAM B____________________________________'''
+            '''___________________________________franchise B____________________________________'''
 
             # focus/guts coach factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].iloc[0] == 'guts' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].iloc[0] == 'guts':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach1'].iloc[0] == 'guts' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach2'].iloc[0] == 'guts':
                 sd = 14
-            elif franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].iloc[0] == 'focus' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].iloc[0] == 'focus':
+            elif franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach1'].iloc[0] == 'focus' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach2'].iloc[0] == 'focus':
                 sd = 7
             else:
                 sd = 9
 
             starter_value = players.loc[(players['franchise'] == league_schedule[y][1])]['pv'][0:5].tolist()
-            # sum team pv starter_value (used for underdog coach)
+            # sum franchise pv starter_value (used for underdog coach)
             b_starter_value = sum(starter_value)
             suit_list = players.loc[(players['franchise'] == league_schedule[y][1])]['suit'][0:5].tolist()
 
@@ -172,8 +172,8 @@ def simulation(games_per_series):
             bench_points.sort()  # this is done so can max bench points is the first substitutions
 
             # substitution coach factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].iloc[0] == 'substitution' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].iloc[0] == 'substitution':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach1'].iloc[0] == 'substitution' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach2'].iloc[0] == 'substitution':
                 substitution = 1
             else:
                 substitution = 2
@@ -204,37 +204,37 @@ def simulation(games_per_series):
                     del bench_points[-1]
 
             # suitor GM factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['gm'].iloc[0] == 'suitor':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['gm'].iloc[0] == 'suitor':
                 b = sum(starter_points)
             else:
                 b = sum(starter_points) + suit_bonus()
 
             '''__________________________more post_points coaching factors applied_______________________'''
             # underdog coach factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].iloc[0] == 'underdog' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].iloc[0] == 'underdog':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach1'].iloc[0] == 'underdog' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach2'].iloc[0] == 'underdog':
                 if a_starter_value < b_starter_value:
                     a = a + 0.4 * (b_starter_value - a_starter_value)
-            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].iloc[0] == 'underdog' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].iloc[0] == 'underdog':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach1'].iloc[0] == 'underdog' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach2'].iloc[0] == 'underdog':
                 if b_starter_value < a_starter_value:
                     b = b + 0.4 * (a_starter_value - b_starter_value)
 
-            # teamwork coach factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].iloc[0] == 'teamwork' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].iloc[0] == 'teamwork':
+            # franchisework coach factor
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach1'].iloc[0] == 'franchisework' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach2'].iloc[0] == 'franchisework':
                 a = a + 3
-            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].iloc[0] == 'teamwork' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].iloc[0] == 'teamwork':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach1'].iloc[0] == 'franchisework' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach2'].iloc[0] == 'franchisework':
                 b = b + 3
 
             # clutch coach factor
-            if franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach1'].iloc[0] == 'clutch' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][0])]['coach2'].iloc[0] == 'clutch':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach1'].iloc[0] == 'clutch' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][0])]['coach2'].iloc[0] == 'clutch':
                 if a < b:
                     a = a + 6
-            if franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach1'].iloc[0] == 'clutch' \
-                    or franchise.loc[(franchise['team'] == league_schedule[y][1])]['coach2'].iloc[0] == 'clutch':
+            if franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach1'].iloc[0] == 'clutch' \
+                    or franchise.loc[(franchise['franchise'] == league_schedule[y][1])]['coach2'].iloc[0] == 'clutch':
                 if b < a:
                     b = b + 6
 
@@ -255,12 +255,12 @@ def simulation(games_per_series):
     games_played = season.count(axis=1)[0]
     # get wins and create wins column
     winner = season.idxmax().to_list()
-    team_wins = []
-    for team in team_names:
-        team_wins.append(winner.count(team))
-    season_summary['wins'] = team_wins
+    franchise_wins = []
+    for franchise in franchise_names:
+        franchise_wins.append(winner.count(franchise))
+    season_summary['wins'] = franchise_wins
     # gets losses and create losses column
-    season_summary['losses'] = games_played - team_wins
+    season_summary['losses'] = games_played - franchise_wins
     # get ppg and create ppg column
     season_summary['ppg'] = season.mean(axis=1)
     # get std

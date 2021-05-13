@@ -17,7 +17,6 @@ export const RosterTable: React.FunctionComponent = observer(() => {
         const [selectedplayer, setSelectedPlayer] = useState<any>([]);
         const [rosteralert, setRosterAlert] = useState<boolean>(false)
 
-
         const non_scouter_columns = [
             {
                 title: 'Name',
@@ -285,7 +284,7 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                             onClose={() => setRosterAlert(false)}
                         />
                         : null}
-                    <Table columns={columns} dataSource={toJS(store.User.franchise.playerSet)} pagination={false}
+                    <Table columns={columns} dataSource={toJS(store.User.league.franchiseplayers("franchise"))} pagination={false}
                            rowKey="id"
                            bordered
                            style={{
