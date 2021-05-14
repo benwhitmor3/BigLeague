@@ -163,11 +163,52 @@ def draft_optimize_view(request):
         return JsonResponse(best_player)
 
 
+# r = requests.post('http://127.0.0.1:8000/set_lineup', data={'franchise_id': '72'})
+def set_lineup_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        franchise = Franchise.objects.get(id=franchise_id)
+        league = franchise.league
+
+        franchises = Franchise.objects.filter(league=league)
+        # for every franchise not mine, get players and assign lineup based on pv
+        for f in franchises:
+            if f == franchise:
+                print("DON'T EDIT MY FRANCHISE PLEASE")
+            else:
+                for player in Player.objects.filter(franchise=f).order_by('-pv')[:5]:
+                    print(player)
+                    player.lineup = "starter"
+                    print(player.lineup)
+                    player.contract = 5
+                    print(player.contract)
+                    player.save()
+                for player in Player.objects.filter(franchise=f).order_by('-pv')[5:8]:
+                    print(player)
+                    player.lineup = "rotation"
+                    print(player.lineup)
+                    player.contract = 3
+                    print(player.contract)
+                    player.save()
+                for player in Player.objects.filter(franchise=f).order_by('-pv')[8:]:
+                    print(player)
+                    player.lineup = "bench"
+                    print(player.lineup)
+                    player.contract = 1
+                    print(player.contract)
+                    player.save()
+
+        return HttpResponse(request)
+
+
+# r = requests.post('http://127.0.0.1:8000/season_sim', data={'league_id': '7', 'season': 1})
 def season_simulation_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
         league_id = request.POST.get('league_id')
         franchises = Franchise.objects.filter(league_id=league_id)
+        season = request.POST.get('season')
 
         league_schedule = schedule_creation(franchises)
 
@@ -175,7 +216,7 @@ def season_simulation_view(request):
 
         for y in range(len(league_schedule)):
             # games per series
-            games = 3
+            games = 7
             while games > 0:
 
                 '''___________________________________franchise A____________________________________'''
@@ -324,21 +365,28 @@ def season_simulation_view(request):
 
                 games -= 1
 
-        season = pd.DataFrame(results)
+        results_df = pd.DataFrame(results)
         # create season_summary df
-        season_summary = season[[]].copy()
+        season_summary = results_df[[]].copy()
         # get games played
-        games_played = season.count(axis=1)[0]
+        games_played = results_df.count(axis=1)[0]
         # get wins and create wins column
-        winner = season.idxmax().to_list()
-        franchise_wins = []
+        winner = results_df.idxmax().to_list()
         for franchise in franchises:
-            franchise_wins.append(winner.count(franchise.franchise))
-        season_summary['wins'] = franchise_wins
-        # gets losses and create losses column
-        season_summary['losses'] = games_played - franchise_wins
-        # get ppg and create ppg column
-        season_summary['ppg'] = season.mean(axis=1)
-        # get std
-        season_summary['std'] = season.std(axis=1)
+            s = Season.objects.get(franchise__franchise=franchise, season=season)
+            # get wins
+            s.wins = winner.count(franchise.franchise)
+            # get losses
+            s.losses = games_played - s.wins
+            # get ppg
+            s.ppg = results_df.mean(axis=1)[franchise.franchise]
+            # get std
+            s.std = results_df.std(axis=1)[franchise.franchise]
+            s.save()
+            # get champion
+            if franchise == Season.objects.filter(season=1).order_by('-wins', '-ppg')[0].franchise:
+                print(franchise)
+                s.championships += 1
+            s.save()
         print(season_summary)
+

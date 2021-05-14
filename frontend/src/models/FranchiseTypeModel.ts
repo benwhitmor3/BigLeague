@@ -1,19 +1,78 @@
-import { Instance } from "mobx-state-tree"
-import { FranchiseTypeModelBase } from "./FranchiseTypeModel.base"
+import {Instance} from "mobx-state-tree"
+import {FranchiseTypeModelBase} from "./FranchiseTypeModel.base"
 
 /* The TypeScript type of an instance of FranchiseTypeModel */
-export interface FranchiseTypeModelType extends Instance<typeof FranchiseTypeModel.Type> {}
+export interface FranchiseTypeModelType extends Instance<typeof FranchiseTypeModel.Type> {
+}
 
 /* A graphql query fragment builders for FranchiseTypeModel */
-export { selectFromFranchiseType, franchiseTypeModelPrimitives, FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
+export {
+    selectFromFranchiseType, franchiseTypeModelPrimitives, FranchiseTypeModelSelector
+}from "./FranchiseTypeModel.base"
 
 /**
  * FranchiseTypeModel
  */
 export const FranchiseTypeModel = FranchiseTypeModelBase
-  .actions(self => ({
-    // This is an auto-generated example action.
-    log() {
-      console.log(JSON.stringify(self))
-    }
-  }))
+    .actions(self => ({
+        // This is an auto-generated example action.
+        log() {
+            console.log(JSON.stringify(self))
+        }
+    }))
+    .views(self => ({
+        get suitBonus() {
+            let suitList = self.playerSet.map(function (player, index) {
+                if (player.lineup == "starter")
+                return player.suit;
+            });
+            console.log(suitList)
+            let spades = suitList.filter(x => x == "spade").length
+            let hearts = suitList.filter(x => x == "heart").length
+            let diamonds = suitList.filter(x => x == "diamond").length
+            let clubs = suitList.filter(x => x == "club").length
+
+            let suitBonus = 0
+
+            // spade adjustment
+            if (spades <= 1) {
+                suitBonus += 0
+            } else {
+                suitBonus -= spades * (spades - 1)
+            }
+            // heart adjustment
+            suitBonus += hearts * (5 - hearts)
+            // diamond adjustment
+            if (diamonds > 0) {
+                suitBonus += 2 - (diamonds - 1)
+            }
+            // club adjustment
+            suitBonus += (spades * clubs)
+
+            return suitBonus
+        },
+        get epv() {
+            let epv = self.playerSet.map(function (player) {
+                if (player.lineup == "starter")
+                return player.epv;
+            });
+
+            return epv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)))
+        },
+        get meanAge() {
+            let ages: any = self.playerSet.map(function (player) {
+                return player.age;
+            });
+
+            let meanAge = ages.reduce((accumulator: any, currentValue: any) => ((accumulator || 0) + (currentValue || 0)))/(ages.length)
+
+            return meanAge
+        },
+        get salaries() {
+            let salaries = self.playerSet.map(function (player) {
+                return player.salary;
+            });
+
+            return salaries.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)))
+        },
+    }))

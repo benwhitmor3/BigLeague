@@ -106,7 +106,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "grade": undefined,
                                                  "lineup": "bench",
                                                  "franchiseId": store.User.franchise.league.draftingFranchise.id,
-                                                 "trainer": true,
+                                                 "trainer": false,
                                                  "leagueId": store.User.franchise.league.id
                                              }
                                          }, `
@@ -167,7 +167,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "grade": undefined,
                                                  "lineup": "bench",
                                                  "franchiseId": store.User.franchise.league.draftingFranchise.id,
-                                                 "trainer": true,
+                                                 "trainer": false,
                                                  "leagueId": store.User.franchise.league.id
                                              }
                                          }, `
@@ -299,7 +299,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "grade": undefined,
                                                  "lineup": "bench",
                                                  "franchiseId": store.User.franchise.league.draftingFranchise.id,
-                                                 "trainer": true,
+                                                 "trainer": false,
                                                  "leagueId": store.User.franchise.league.id
                                              }
                                          }, `
@@ -360,7 +360,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "grade": undefined,
                                                  "lineup": "bench",
                                                  "franchiseId": store.User.franchise.league.draftingFranchise.id,
-                                                 "trainer": true,
+                                                 "trainer": false,
                                                  "leagueId": store.User.franchise.league.id
                                              }
                                          }, `
