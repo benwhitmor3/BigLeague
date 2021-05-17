@@ -100,7 +100,7 @@ def league_generation_view(request):
         if int(len(league.player_set.all())) > 0:
             print("League already has " + str(len(league.player_set.all())) + " players")
         else:
-            gen_player(league, num_of_franchises * 7, year=0)
+            gen_player(league, num_of_franchises * 8, year=0)
 
         if int(len(league.franchise_set.all())) > 1:
             print("League already has more than one franchise")
@@ -123,6 +123,28 @@ def league_generation_view(request):
                 )
         return HttpResponse(request)
 
+
+# r = requests.post('http://127.0.0.1:8000/stadium_generation', data={'league_id': '7'})
+def stadium_generation_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        league_id = request.POST.get('league_id')
+        league = League.objects.get(id=league_id)
+        cities = City.objects.filter(league=league)
+
+        for franchise in Franchise.objects.filter(league=league, stadium__stadium_name__isnull=True):
+            Stadium.objects.create(
+                stadium_name=franchise.franchise + ' stadium',
+                seats=random.randint(20000, 60000),
+                boxes=random.randint(50, 250),
+                grade=20,
+                max_grade=20,
+                home_field_advantage=0,
+                city=random.choice(cities),
+                franchise=franchise
+            )
+
+        return HttpResponse(request)
 
 # r = requests.post('http://127.0.0.1:8000/draft_order', data={'franchise_id': '72', 'season': 1})
 def draft_order_view(request):
@@ -216,7 +238,7 @@ def season_simulation_view(request):
 
         for y in range(len(league_schedule)):
             # games per series
-            games = 7
+            games = 14
             while games > 0:
 
                 '''___________________________________franchise A____________________________________'''
@@ -366,8 +388,6 @@ def season_simulation_view(request):
                 games -= 1
 
         results_df = pd.DataFrame(results)
-        # create season_summary df
-        season_summary = results_df[[]].copy()
         # get games played
         games_played = results_df.count(axis=1)[0]
         # get wins and create wins column
@@ -388,5 +408,5 @@ def season_simulation_view(request):
                 print(franchise)
                 s.championships += 1
             s.save()
-        print(season_summary)
 
+    return HttpResponse(request)

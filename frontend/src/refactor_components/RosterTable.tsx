@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space, Alert} from 'antd';
-import {PlayerTypeModelType, StoreContext} from "../models";
+import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../models";
 import {observer} from "mobx-react";
 import {colour, suit_icon, _to_fixed, _lineup} from './TableFunctions'
 import {toJS} from "mobx";
@@ -9,7 +9,12 @@ import SigningModal from "./SigningModal";
 import LineupSelect from "./LineupSelect";
 
 
-export const RosterTable: React.FunctionComponent = observer(() => {
+interface IFranchise {
+    franchise: FranchiseTypeModelType;
+}
+
+
+export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franchise} : IFranchise) => {
 
         const store = useContext(StoreContext)
 
@@ -262,11 +267,12 @@ export const RosterTable: React.FunctionComponent = observer(() => {
         ];
 
 
-        let columns;
-        if (store.User.franchise.gm.trait === "SCOUTER") {
-            columns = scouter_columns
-        } else {
-            columns = non_scouter_columns
+        const columns = () => {
+            if (store.User.franchise.gm.trait === "SCOUTER") {
+                return scouter_columns
+            } else {
+                return non_scouter_columns
+            }
         }
 
         if (store.User == undefined || store.User.franchise == undefined) return <div>loading</div>;
@@ -284,7 +290,7 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                             onClose={() => setRosterAlert(false)}
                         />
                         : null}
-                    <Table columns={columns} dataSource={toJS(store.User.league.franchiseplayers("franchise"))} pagination={false}
+                    <Table columns={columns()} dataSource={toJS(franchise.playerSet)} pagination={false}
                            rowKey="id"
                            bordered
                            style={{
@@ -292,7 +298,6 @@ export const RosterTable: React.FunctionComponent = observer(() => {
                            }}
                     />
                 </div>
-
             );
         }
     }

@@ -3,7 +3,7 @@ import './index.css';
 // @ts-ignore
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import 'antd/dist/antd.css';
-import {Layout, Menu} from 'antd';
+import {Layout, Menu, Spin} from 'antd';
 import './Header.css'
 import {useQuery} from "./models";
 import {observer} from "mobx-react";
@@ -11,6 +11,7 @@ import Franchise from "./refactor_components/Franchise";
 import Stadium from "./refactor_components/Stadium";
 import Draft from "./refactor_components/Draft";
 import League from "./refactor_components/League";
+import Season from "./refactor_components/Season";
 // import {AUTH_TOKEN} from "./Constants";
 // import {deleteToken, getToken} from "./components/Forms/token";
 
@@ -25,21 +26,13 @@ const App: React.FunctionComponent = observer(() => {
         store.queryUser(
             {email: "email@email.com"},
             `
-    __typename
+__typename
     id
     email
     username
     league{
       __typename
       id
-      franchiseSet{
-        __typename
-        id
-        seasonSet{
-          __typename
-          id
-        }
-      }
     }
     franchise{
       __typename
@@ -129,6 +122,24 @@ const App: React.FunctionComponent = observer(() => {
         namingRights
         eventPlanning
       }
+      stadium{
+        __typename
+        id
+        city{
+          __typename
+          id
+        }
+        franchise{
+          __typename
+          id
+        }
+        stadiumName
+        seats
+        boxes
+        grade
+        maxGrade
+        homeFieldAdvantage
+      }
       seasonSet{
         __typename
         id
@@ -170,6 +181,66 @@ const App: React.FunctionComponent = observer(() => {
             name
             attributeOne
             attributeTwo
+          }
+          playerSet{
+            __typename
+            id
+            name
+          suit
+          age
+          pv
+          epv
+          sEpv
+          contract
+          tOption
+          pOption
+          renew
+          salary
+          grade
+          trainer
+          franchise{
+            __typename
+            id
+          }
+          lineup
+          }
+        seasonSet{
+          __typename
+          id
+          franchise{
+            __typename
+            id
+          }
+          season
+          ready
+          wins
+          losses
+          ppg
+          std
+          championships
+          bonuses
+          penalties
+          fanBase
+          fanIndex
+          advertising
+          revenue
+          expenses
+        }
+        stadium{
+          __typename
+          id
+          stadiumName
+          seats
+          boxes
+          grade
+          maxGrade
+          homeFieldAdvantage
+          city{
+            __typename
+            id
+            city
+            cityValue
+            }
           }
         }
         citySet{
@@ -223,6 +294,7 @@ const App: React.FunctionComponent = observer(() => {
           }
           lineup
         }
+        
       }
     }
     `,
@@ -236,7 +308,7 @@ const App: React.FunctionComponent = observer(() => {
 
     // const authToken = localStorage.getItem(AUTH_TOKEN)
     if (error) return <div>{error.message}</div>;
-    if (loading) return <div>loading</div>;
+    if (loading) return <div><Spin size="large"/></div>;
     else {
         // console.log(data)
         return (
@@ -274,7 +346,9 @@ const App: React.FunctionComponent = observer(() => {
                                         <League/>
                                     </Route>
                                     {/*<Route exact path='/Stadium' component={Stadium} />*/}
-                                    {/*<Route exact path='/Season' component={Season} />*/}
+                                    <Route exact path='/Season'>
+                                        <Season/>
+                                    </Route>
                                     {/*<Route exact path='/OffSeason' component={OffSeason} />*/}
                                     {/*<Route exact path='/Login' component={Login} />*/}
                                     {/*<Route exact path='/Register' component={Register} />*/}

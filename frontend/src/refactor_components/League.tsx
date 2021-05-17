@@ -1,99 +1,161 @@
 import React, {useContext} from 'react';
-import {observer} from 'mobx-react'
+import 'antd/dist/antd.css';
+import {Table, Tag, Spin} from 'antd';
 import {StoreContext} from "../models";
-import {Statistic, Row, Col, Card} from 'antd';
-import RosterTable from "./RosterTable";
+import {observer} from "mobx-react";
+import {colour, suit_icon} from './TableFunctions'
+import {toJS} from 'mobx';
 
 
-export const League: React.FunctionComponent = observer(() => {
+export const LeaguePlayers: React.FunctionComponent = observer(() => {
 
-    const store = useContext(StoreContext)
+        const store = useContext(StoreContext)
 
-    if (store.User == undefined) return <div>loading</div>;
-    else {
-        return (
-                <div className="site-card-wrapper">
-                    <Row gutter={[24, 0]}>
-                        <Col span={12}>
-                            <Card bordered={false}
-                                  key={store.User.franchise.id}
-                                  style={{
-                                      borderRadius: "8px",
-                                      width: "100%",
-                                      marginBottom: "20px",
-                                      boxShadow: "0px 0px 4px 0px #D0D8F3",
-                                  }}
-                            >
-                                <Row gutter={[0, 24]}>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Franchise" value={store.User.franchise.franchise}/>
-                                    </Col>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="City" value={store.User.franchise.stadium.city.city}/>
-                                    </Col>
-                                </Row>
-                                <Row gutter={[0, 24]}>
-                                    <Col span={24} offset={0}>
-                                        <Statistic title="General Manager"
-                                                   value={store.User.franchise.gm.trait.toLowerCase()}/>
-                                    </Col>
-                                </Row>
-                                <Row gutter={[0, 0]}>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Coach" value={store.User.franchise.coach.name}/>
-                                    </Col>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Attribute One"
-                                                   value={store.User.franchise.coach.attributeOne.toLowerCase()}/>
-                                    </Col>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Attribute Two"
-                                                   value={store.User.franchise.coach.attributeTwo.toLowerCase()}/>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                        <Col span={12}>
-                            <Card bordered={false}
-                                  key={store.User.franchise.id}
-                                  style={{
-                                      borderRadius: "8px",
-                                      width: "100%",
-                                      marginBottom: "20px",
-                                      boxShadow: "0px 0px 4px 0px #D0D8F3",
-                                  }}
-                            >
-                                <Row gutter={[0, 24]}>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Stadium" value={store.User.franchise.stadium.stadiumName}/>
-                                    </Col>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Seats" value={store.User.franchise.stadium.seats}/>
-                                    </Col>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Boxes" value={store.User.franchise.stadium.boxes}/>
-                                    </Col>
-                                </Row>
-                                <Row gutter={[0, 86]}>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Grade" value={store.User.franchise.stadium.grade}/>
-                                    </Col>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Max Grade" value={store.User.franchise.stadium.maxGrade}/>
-                                    </Col>
-                                    <Col span={8} offset={0}>
-                                        <Statistic title="Home Field Advantage"
-                                                   value={store.User.franchise.stadium.homeFieldAdvantage}/>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                    </Row>
-                <RosterTable/>
-            </div>
-        );
+        const non_scouter_columns = [
+            {
+                title: 'Name',
+                dataIndex: 'name',
+                key: 'name',
+                // render: (text: string) => <a href="/Home">{text}</a>,
+            },
+            {
+                title: 'Age',
+                dataIndex: 'age',
+                key: 'age',
+                sorter: (a: any, b: any) => a.age - b.age,
+            },
+            {
+                title: 'EPV',
+                dataIndex: 'epv',
+                key: 'epv',
+                sorter: (a: any, b: any) => a.epv - b.epv,
+                render: (epv: number) => <text>{epv.toFixed(1)}</text>,
+            },
+            {
+                title: 'Suit',
+                dataIndex: 'suit',
+                key: 'suit',
+                render: (suit: string) => (
+                    <Tag icon={suit_icon(suit)} color={colour(suit)} key={suit}>
+                        {suit.toUpperCase()}
+                    </Tag>
+                ),
+                filters: [
+                    {
+                        text: 'Diamond',
+                        value: 'diamond',
+                    },
+                    {
+                        text: 'Spade',
+                        value: 'spade',
+                    },
+                    {
+                        text: 'Heart',
+                        value: 'heart',
+                    },
+                    {
+                        text: 'Club',
+                        value: 'club',
+                    },
+                ],
+                onFilter: (value: any, record: any) => record.suit.indexOf(value) === 0,
+            },
+            {
+                title: 'Franchise',
+                dataIndex: ["franchise", "franchise"],
+                key: "franchise",
+            },
+        ];
+
+
+        const scouter_columns = [
+            {
+                title: 'Name',
+                dataIndex: 'name',
+                key: 'name',
+                // render: (text: string) => <a href="/Home">{text}</a>,
+            },
+            {
+                title: 'Age',
+                dataIndex: 'age',
+                key: 'age',
+                sorter: (a: any, b: any) => a.age - b.age,
+            },
+            {
+                title: 'EPV',
+                dataIndex: 'epv',
+                key: 'epv',
+                sorter: (a: any, b: any) => a.epv - b.epv,
+                render: (epv: number) => <text>{epv.toFixed(1)}</text>,
+            },
+            {
+                title: 'S EPV',
+                dataIndex: 'sEpv',
+                key: 'sEpv',
+                sorter: (a: any, b: any) => a.sEpv - b.sEpv,
+                render: (sEpv: number) => <text>{sEpv.toFixed(1)}</text>,
+            },
+            {
+                title: 'Suit',
+                dataIndex: 'suit',
+                key: 'suit',
+                render: (suit: string) => (
+                    <Tag icon={suit_icon(suit)} color={colour(suit)} key={suit}>
+                        {suit.toUpperCase()}
+                    </Tag>
+                ),
+                filters: [
+                    {
+                        text: 'Diamond',
+                        value: 'diamond',
+                    },
+                    {
+                        text: 'Spade',
+                        value: 'spade',
+                    },
+                    {
+                        text: 'Heart',
+                        value: 'heart',
+                    },
+                    {
+                        text: 'Club',
+                        value: 'club',
+                    },
+                ],
+                onFilter: (value: any, record: any) => record.suit.indexOf(value) === 0,
+            },
+            {
+                title: 'Franchise',
+                dataIndex: ["franchise", "franchise"],
+                key: "franchise",
+            },
+        ];
+
+
+        const columns = () => {
+            if (store.User.franchise.gm.trait === "SCOUTER") {
+                return scouter_columns
+            } else {
+                return non_scouter_columns
+            }
+        }
+
+        if (store.User == undefined || store.User.franchise == undefined) return <div><Spin size="large"/></div>;
+        else {
+            return (
+                <Table
+                    rowKey="id"
+                    columns={columns()}
+                    dataSource={toJS(store.User.franchise.league.playerSet)}
+                    pagination={false}
+                    bordered
+                    style={{
+                        boxShadow: "0px 0px 2px 0px #D0D8F3",
+                    }}
+                />
+            );
+        }
     }
-})
+)
 
-export default League;
-
+export default LeaguePlayers;

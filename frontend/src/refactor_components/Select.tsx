@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import CSS from "csstype";
 
 export type OptionValue = string | number;

@@ -33,21 +33,13 @@ export const RootStore = RootStoreBase
       const query = self.queryUser(
               {email: email},
               `
-     __typename
+__typename
     id
     email
     username
     league{
       __typename
       id
-      franchiseSet{
-        __typename
-        id
-        seasonSet{
-          __typename
-          id
-        }
-      }
     }
     franchise{
       __typename
@@ -137,6 +129,24 @@ export const RootStore = RootStoreBase
         namingRights
         eventPlanning
       }
+      stadium{
+        __typename
+        id
+        city{
+          __typename
+          id
+        }
+        franchise{
+          __typename
+          id
+        }
+        stadiumName
+        seats
+        boxes
+        grade
+        maxGrade
+        homeFieldAdvantage
+      }
       seasonSet{
         __typename
         id
@@ -178,6 +188,66 @@ export const RootStore = RootStoreBase
             name
             attributeOne
             attributeTwo
+          }
+          playerSet{
+            __typename
+            id
+            name
+          suit
+          age
+          pv
+          epv
+          sEpv
+          contract
+          tOption
+          pOption
+          renew
+          salary
+          grade
+          trainer
+          franchise{
+            __typename
+            id
+          }
+          lineup
+          }
+        seasonSet{
+          __typename
+          id
+          franchise{
+            __typename
+            id
+          }
+          season
+          ready
+          wins
+          losses
+          ppg
+          std
+          championships
+          bonuses
+          penalties
+          fanBase
+          fanIndex
+          advertising
+          revenue
+          expenses
+        }
+        stadium{
+          __typename
+          id
+          stadiumName
+          seats
+          boxes
+          grade
+          maxGrade
+          homeFieldAdvantage
+          city{
+            __typename
+            id
+            city
+            cityValue
+            }
           }
         }
         citySet{
@@ -231,6 +301,7 @@ export const RootStore = RootStoreBase
           }
           lineup
         }
+        
       }
     }
     `,

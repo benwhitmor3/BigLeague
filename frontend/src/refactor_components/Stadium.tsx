@@ -5,6 +5,7 @@ import {useForm} from "react-hook-form";
 import {Select} from "./Select";
 import {Alert} from "antd";
 import CSS from "csstype";
+import StadiumCard from "./StadiumCard";
 
 type stadiumConfig = {
     stadium_name: string;
@@ -23,18 +24,18 @@ export const Stadium: React.FunctionComponent = observer(() => {
         const onSubmit = handleSubmit(({stadium_name, seats, boxes, city, total, franchise}: stadiumConfig) => {
             console.log(stadium_name, seats, boxes, city, total, franchise);
             store.mutateUpdateStadium({
-                "stadiumInput": {
-                    "stadiumName": stadium_name,
-                    "seats": seats,
-                    "boxes": boxes,
-                    "grade": 20,
-                    "maxGrade": 20,
-                    "homeFieldAdvantage": 0,
-                    "cityId": city,
-                    "franchiseId": franchise
+                    "stadiumInput": {
+                        "stadiumName": stadium_name,
+                        "seats": seats,
+                        "boxes": boxes,
+                        "grade": 20,
+                        "maxGrade": 20,
+                        "homeFieldAdvantage": 0,
+                        "cityId": city,
+                        "franchiseId": franchise
+                    },
                 },
-            },
-            `
+                `
     stadium{
       __typename
       id
@@ -56,18 +57,14 @@ export const Stadium: React.FunctionComponent = observer(() => {
       }
     }
             `,
-        undefined
+                undefined
             )
         });
 
         const [seats, setSeats] = useState<number>(0);
         const [boxes, setBoxes] = useState<number>(0);
         const [total, setTotal] = useState<number>(0);
-        const [city, setCity] = useState<string>(store.User.franchise.league.citySet[0].id);
-        let options = store.User.franchise.league.citySet.map((city: any) => {
-                return {value: city.id, label: city.city}
-            }
-        )
+        const [city, setCity] = useState<string>(store.User ? store.User.franchise.league.citySet[0].id : null);
 
 
         useEffect(() => {
@@ -99,6 +96,8 @@ export const Stadium: React.FunctionComponent = observer(() => {
         };
 
         if (store.User == undefined) return <div>loading</div>;
+        if (store.User.franchise.stadium != null)
+            return <StadiumCard/>
         else {
             return (
                 <form onSubmit={onSubmit}>
@@ -144,8 +143,9 @@ export const Stadium: React.FunctionComponent = observer(() => {
 
                     <label style={{marginRight: '10px'}}>City</label>
                     <input name="city" style={{display: "none"}} value={city} ref={register({})}/>
-                    <Select options={options} value={city}
-                           onChange={(city: string) => setCity(city)}/>
+                    <Select options={store.User.franchise.league.citySet.map((city: any) => {
+                            return {value: city.id, label: city.city}})}
+                            value={city} onChange={(city: string) => setCity(city)}/>
 
                     <input name="total" type="number" style={{display: "none"}} value={total} ref={register({})}/>
                     <h4 style={{marginTop: '10px'}}>{total ? 'Construction Cost: $' + +total / 1000000 + ' million' : ''}</h4>

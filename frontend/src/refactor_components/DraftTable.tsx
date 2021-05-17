@@ -1,5 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
-import axios from "axios";
+import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space} from 'antd';
 import {StoreContext} from "../models";
@@ -11,22 +10,6 @@ import {toJS} from 'mobx';
 export const DraftTable: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
-
-        const [bestplayer, setBestPlayer] = useState<string>()
-        const [teamorder, setTeamOrder] = useState<Array<string>>()
-
-        // useEffect(() => {
-        //     const data = new FormData();
-        //     data.append("franchise_id", store.User.franchise.id)
-        //     axios.post('http://127.0.0.1:8000/draft_optimize', data)
-        //         .then(res => {
-        //             console.log(res.data)
-        //             setBestPlayer(res.data.best_player)
-        //         })
-        //         .catch(err => {
-        //             console.log(err)
-        //         })
-        // }, [])
 
         const non_scouter_columns = [
             {
@@ -407,11 +390,12 @@ export const DraftTable: React.FunctionComponent = observer(() => {
         ];
 
 
-        let columns;
-        if (store.User.franchise.gm.trait === "SCOUTER") {
-            columns = scouter_columns
-        } else {
-            columns = non_scouter_columns
+        const columns = () => {
+            if (store.User.franchise.gm.trait === "SCOUTER") {
+                return scouter_columns
+            } else {
+                return non_scouter_columns
+            }
         }
 
         if (store.User == undefined || store.User.franchise == undefined) return <div> loading</div>;
@@ -419,7 +403,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
             return (
                 <Table
                     rowKey="id"
-                    columns={columns}
+                    columns={columns()}
                     dataSource={toJS(store.User.franchise.league.playerSet)}
                     pagination={false}
                     bordered
