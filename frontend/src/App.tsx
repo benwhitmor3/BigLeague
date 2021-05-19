@@ -12,6 +12,7 @@ import Stadium from "./refactor_components/Stadium";
 import Draft from "./refactor_components/Draft";
 import League from "./refactor_components/League";
 import Season from "./refactor_components/Season";
+import Home from "./refactor_components/Home";
 // import {AUTH_TOKEN} from "./Constants";
 // import {deleteToken, getToken} from "./components/Forms/token";
 
@@ -33,6 +34,7 @@ __typename
     league{
       __typename
       id
+      leagueName
     }
     franchise{
       __typename
@@ -336,7 +338,7 @@ __typename
                         <Content style={{margin: '0px'}}>
                             <div className="site-layout-content">
                                 <Switch>
-                                    {/*<Route exact path='/Home' component={Home} />*/}
+                                    <Route exact path='/Home' component={Home} />
                                     <Route exact path='/Stadium'>
                                         <Stadium/>
                                     </Route>

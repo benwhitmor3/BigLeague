@@ -152,15 +152,17 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                     grade = -999.99
                 }
 
-               if (store.User.franchise.gm.trait == "RECRUITER") {
-               // set grade after all adjustments + 2 for recruiter bonus
-                    setOfferGrade(grade + 2)
+               if (store.User.franchise.gm !== null)
+                   if (store.User.franchise.gm.trait == "RECRUITER") {
+                   // set grade after all adjustments + 2 for recruiter bonus
+                        setOfferGrade(grade + 2)
+                    }
+                    else {
+                   // set grade after all adjustments
+                        setOfferGrade(grade)
+                    }
+                else setOfferGrade(grade)
                 }
-                else {
-               // set grade after all adjustments
-                    setOfferGrade(grade)
-                }
-            }
 
             if (grade >= selectedplayer.grade && grade >= 5) {
                 setGradeColour('#73d13d')

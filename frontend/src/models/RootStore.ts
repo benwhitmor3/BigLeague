@@ -40,6 +40,7 @@ __typename
     league{
       __typename
       id
+      leagueName
     }
     franchise{
       __typename

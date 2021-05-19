@@ -57,14 +57,14 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
                 return player.epv;
             });
 
-            return epv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)))
+            return epv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
         },
         get meanAge() {
             let ages: any = self.playerSet.map(function (player) {
                 return player.age;
             });
 
-            let meanAge = ages.reduce((accumulator: any, currentValue: any) => ((accumulator || 0) + (currentValue || 0)))/(ages.length)
+            let meanAge = ages.reduce((accumulator: any, currentValue: any) => ((accumulator || 0) + (currentValue || 0)), 0)/(ages.length)
 
             return meanAge
         },
@@ -73,6 +73,6 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
                 return player.salary;
             });
 
-            return salaries.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)))
+            return salaries.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
         },
     }))

@@ -74,7 +74,7 @@ class CreateFranchiseMutation(graphene.Mutation):
             coach_id=franchise_input.coach_id
         )
         franchise.save()
-        return CreateFranchiseMutation(franchise=franchise)
+        return CreateFranchiseMutation(franchise=franchise, user=user)
 
 
 class LeagueType(DjangoObjectType):

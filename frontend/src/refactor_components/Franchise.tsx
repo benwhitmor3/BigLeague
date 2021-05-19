@@ -3,6 +3,7 @@ import {observer} from 'mobx-react'
 import {StoreContext} from "../models";
 import {Statistic, Row, Col, Card, Select, Spin} from 'antd';
 import RosterTable from "./RosterTable";
+import CreateFranchise from "./CreateFranchise";
 
 const {Option} = Select;
 
@@ -21,13 +22,7 @@ export const Franchise: React.FunctionComponent = observer(() => {
     if (store.User == undefined)
         return <div><Spin size="large" /></div>;
     if (franchise == null)
-        return <div><Spin size="large" /></div>;
-    if (franchise.gm == null)
-        return <span>Missing GM</span>
-    if (franchise.stadium == null)
-        return <span>Missing Stadium</span>
-    if (franchise.coach == null)
-        return <span>Missing Coach</span>
+        return <CreateFranchise setFranchise={setFranchise}/>;
     else {
         return (
             <div className="site-card-wrapper">
@@ -62,26 +57,26 @@ export const Franchise: React.FunctionComponent = observer(() => {
                                     </Select>
                                 </Col>
                                 <Col span={8} offset={0}>
-                                    <Statistic title="City" value={franchise.stadium.city.city}/>
+                                    <Statistic title="City" value={franchise.stadium ? franchise.stadium.city.city : "None"}/>
                                 </Col>
                             </Row>
                             <Row gutter={[0, 24]}>
                                 <Col span={24} offset={0}>
                                     <Statistic title="General Manager"
-                                               value={franchise.gm.trait.toLowerCase()}/>
+                                               value={franchise.gm ? franchise.gm.trait.toLowerCase() : "None"}/>
                                 </Col>
                             </Row>
                             <Row gutter={[0, 0]}>
                                 <Col span={8} offset={0}>
-                                    <Statistic title="Coach" value={franchise.coach.name}/>
+                                    <Statistic title="Coach" value={franchise.coach ? franchise.coach.name : "None"}/>
                                 </Col>
                                 <Col span={8} offset={0}>
                                     <Statistic title="Attribute One"
-                                               value={franchise.coach.attributeOne.toLowerCase()}/>
+                                               value={franchise.coach ? franchise.coach.attributeOne.toLowerCase() : "None"}/>
                                 </Col>
                                 <Col span={8} offset={0}>
                                     <Statistic title="Attribute Two"
-                                               value={franchise.coach.attributeTwo.toLowerCase()}/>
+                                               value={franchise.coach ? franchise.coach.attributeTwo.toLowerCase() : "None"}/>
                                 </Col>
                             </Row>
                         </Card>
@@ -98,25 +93,25 @@ export const Franchise: React.FunctionComponent = observer(() => {
                         >
                             <Row gutter={[0, 24]}>
                                 <Col span={8} offset={0}>
-                                    <Statistic title="Stadium" value={franchise.stadium.stadiumName}/>
+                                    <Statistic title="Stadium" value={franchise.stadium ? franchise.stadium.stadiumName : "None"}/>
                                 </Col>
                                 <Col span={8} offset={0}>
-                                    <Statistic title="Seats" value={franchise.stadium.seats}/>
+                                    <Statistic title="Seats" value={franchise.stadium ? franchise.stadium.seats : "None"}/>
                                 </Col>
                                 <Col span={8} offset={0}>
-                                    <Statistic title="Boxes" value={franchise.stadium.boxes}/>
+                                    <Statistic title="Boxes" value={franchise.stadium ? franchise.stadium.boxes : "None"}/>
                                 </Col>
                             </Row>
                             <Row gutter={[0, 86]}>
                                 <Col span={8} offset={0}>
-                                    <Statistic title="Grade" value={franchise.stadium.grade}/>
+                                    <Statistic title="Grade" value={franchise.stadium ? franchise.stadium.grade : "None"}/>
                                 </Col>
                                 <Col span={8} offset={0}>
-                                    <Statistic title="Max Grade" value={franchise.stadium.maxGrade}/>
+                                    <Statistic title="Max Grade" value={franchise.stadium ? franchise.stadium.maxGrade : "None"}/>
                                 </Col>
                                 <Col span={8} offset={0}>
                                     <Statistic title="Home Field Advantage"
-                                               value={franchise.stadium.homeFieldAdvantage}/>
+                                               value={franchise.stadium ? franchise.stadium.homeFieldAdvantage : "None"}/>
                                 </Col>
                             </Row>
                         </Card>
