@@ -86,7 +86,7 @@ export const CreateFranchise: React.FunctionComponent<ICreate> = observer(({setF
             padding: '8px',
         };
 
-        if (store.User == undefined) return <div>loading</div>;
+        if (store.User == undefined) return <div>Missing User</div>;
         else {
             return (
                 <form onSubmit={onSubmit}>

@@ -121,6 +121,7 @@ def league_generation_view(request):
                     franchise=franchise_name,
                     league=league
                 )
+
         return HttpResponse(request)
 
 

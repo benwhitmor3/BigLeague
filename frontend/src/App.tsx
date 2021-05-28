@@ -13,6 +13,7 @@ import Draft from "./refactor_components/Draft";
 import League from "./refactor_components/League";
 import Season from "./refactor_components/Season";
 import Home from "./refactor_components/Home";
+import OffSeason from "./refactor_components/OffSeason";
 // import {AUTH_TOKEN} from "./Constants";
 // import {deleteToken, getToken} from "./components/Forms/token";
 
@@ -296,7 +297,18 @@ __typename
           }
           lineup
         }
-        
+        gmSet{
+          __typename
+          id
+          trait
+        }
+        coachSet{
+          __typename
+          id
+          name
+          attributeOne
+          attributeTwo
+        }
       }
     }
     `,
@@ -351,7 +363,7 @@ __typename
                                     <Route exact path='/Season'>
                                         <Season/>
                                     </Route>
-                                    {/*<Route exact path='/OffSeason' component={OffSeason} />*/}
+                                    <Route exact path='/OffSeason' component={OffSeason} />
                                     {/*<Route exact path='/Login' component={Login} />*/}
                                     {/*<Route exact path='/Register' component={Register} />*/}
                                 </Switch>

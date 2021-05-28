@@ -302,7 +302,18 @@ __typename
           }
           lineup
         }
-        
+        gmSet{
+          __typename
+          id
+          trait
+        }
+        coachSet{
+          __typename
+          id
+          name
+          attributeOne
+          attributeTwo
+        }
       }
     }
     `,

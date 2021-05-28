@@ -1,9 +1,10 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {observer} from "mobx-react";
 import {StoreContext} from "../models";
 import {useForm} from "react-hook-form";
-import {Alert} from "antd";
+import {Alert, Button, Card} from "antd";
 import CSS from "csstype";
+import axios from "axios";
 
 type leagueConfig = {
     leagueName: string;
@@ -18,9 +19,9 @@ export const Home: React.FunctionComponent = observer(() => {
         const onSubmit = handleSubmit(({leagueName, email}: leagueConfig) => {
             console.log(leagueName, email);
             store.mutateCreateLeague({
-                        "leagueName": leagueName,
-                        "email": email
-                    },
+                    "leagueName": leagueName,
+                    "email": email
+                },
                 `
     __typename
     leagueName
@@ -33,6 +34,20 @@ export const Home: React.FunctionComponent = observer(() => {
                 undefined
             )
         });
+
+
+        const generateLeagueBots = () => {
+            const data = new FormData();
+            data.append("franchise_id", store.User.franchise.id)
+            data.append("num_of_franchises", "8")
+            axios.post('http://127.0.0.1:8000/league_generation', data)
+                .then(res => {
+                    console.log(res.data)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        };
 
 
         const formStyles: CSS.Properties = {
@@ -59,7 +74,34 @@ export const Home: React.FunctionComponent = observer(() => {
         };
 
         if (store.User == undefined) return <div>loading</div>;
-        if (store.User.league) return <h1>Welcome to, {store.User.league.leagueName}!</h1>
+        if (store.User.league.franchiseSet.length > 1) return (
+            <div>
+                <h1>Welcome to, {store.User.league.leagueName}!</h1>
+                <h1>Good luck this season, {store.User.franchise.franchise}!</h1>
+                <p>Please read the instructions to guide you on your way to victory</p>
+            </div>
+        )
+        if (store.User.franchise) return (
+            <div>
+                <h1>Welcome to, {store.User.league.leagueName}!</h1>
+                <Card bordered={false}
+                      key={store.User.franchise.id}
+                      style={{
+                          borderRadius: "24px",
+                          backgroundColor: '#d4380d',
+                          boxShadow: "0px 0px 4px 0px #D0D8F3",
+                      }}
+                >
+                    <Button style={{backgroundColor: '#d4380d', fontSize: '16px', color: '#fff2e8', border: '0px'}}
+                            onClick={() => generateLeagueBots()} block>
+                        Generate League Bots
+                    </Button>
+                </Card>
+            </div>
+        )
+        if (store.User.league) return (
+            <h1>Welcome to, {store.User.league.leagueName}!</h1>
+        )
         else {
             return (
                 <form onSubmit={onSubmit}>
@@ -79,7 +121,7 @@ export const Home: React.FunctionComponent = observer(() => {
 
                     <input type="submit" style={buttonStyles} value="Create League"/>
 
-                <br/> {errors.leagueName && <Alert message={errors.leagueName.message} type="error" closable/>}
+                    <br/> {errors.leagueName && <Alert message={errors.leagueName.message} type="error" closable/>}
                     <br/>
 
                 </form>

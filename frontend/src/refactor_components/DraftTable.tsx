@@ -391,11 +391,13 @@ export const DraftTable: React.FunctionComponent = observer(() => {
 
 
         const columns = () => {
-            if (store.User.franchise.gm.trait === "SCOUTER") {
-                return scouter_columns
-            } else {
-                return non_scouter_columns
-            }
+            if (store.User.franchise.gm !== null)
+                if (store.User.franchise.gm.trait === "SCOUTER") {
+                    return scouter_columns
+                } else {
+                    return non_scouter_columns
+                }
+            else return non_scouter_columns
         }
 
         if (store.User == undefined || store.User.franchise == undefined) return <div> loading</div>;

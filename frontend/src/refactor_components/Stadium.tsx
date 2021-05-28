@@ -23,7 +23,7 @@ export const Stadium: React.FunctionComponent = observer(() => {
         const {register, handleSubmit, errors} = useForm<stadiumConfig>();
         const onSubmit = handleSubmit(({stadium_name, seats, boxes, city, total, franchise}: stadiumConfig) => {
             console.log(stadium_name, seats, boxes, city, total, franchise);
-            store.mutateUpdateStadium({
+            store.mutateCreateStadium({
                     "stadiumInput": {
                         "stadiumName": stadium_name,
                         "seats": seats,
@@ -64,8 +64,7 @@ export const Stadium: React.FunctionComponent = observer(() => {
         const [seats, setSeats] = useState<number>(0);
         const [boxes, setBoxes] = useState<number>(0);
         const [total, setTotal] = useState<number>(0);
-        const [city, setCity] = useState<string>(store.User ? store.User.franchise.league.citySet[0].id : null);
-
+        const [city, setCity] = useState<string>("");
 
         useEffect(() => {
             setTotal((seats * 15000) + (boxes * 500000));
@@ -95,10 +94,10 @@ export const Stadium: React.FunctionComponent = observer(() => {
             padding: '8px',
         };
 
-        if (store.User == undefined) return <div>loading</div>;
+        if (store.User === undefined) return <div>loading</div>;
         if (store.User.franchise.stadium != null)
             return <StadiumCard/>
-        else {
+        if (store.User.franchise)
             return (
                 <form onSubmit={onSubmit}>
                     <label>Stadium Name</label>
@@ -142,7 +141,7 @@ export const Stadium: React.FunctionComponent = observer(() => {
                     })}/>
 
                     <label style={{marginRight: '10px'}}>City</label>
-                    <input name="city" style={{display: "none"}} value={city} ref={register({})}/>
+                    <input name="city" style={{display: "none"}} value={city ? city : store.User.franchise.league.citySet[0].id} ref={register({})}/>
                     <Select options={store.User.franchise.league.citySet.map((city: any) => {
                             return {value: city.id, label: city.city}})}
                             value={city} onChange={(city: string) => setCity(city)}/>
@@ -162,7 +161,9 @@ export const Stadium: React.FunctionComponent = observer(() => {
                     <br/>
 
                 </form>
-            );
+            )
+        else {
+           return <p></p>
         }
     }
 )

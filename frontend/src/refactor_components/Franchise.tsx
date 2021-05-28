@@ -19,8 +19,6 @@ export const Franchise: React.FunctionComponent = observer(() => {
         }
     }, [store.User])
 
-    if (store.User == undefined)
-        return <div><Spin size="large" /></div>;
     if (franchise == null)
         return <CreateFranchise setFranchise={setFranchise}/>;
     else {
