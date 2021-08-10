@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Button, Spin, Table} from 'antd';
+import {Button, Spin, Table, Progress} from 'antd';
 import {StoreContext} from "../models";
 import {observer} from "mobx-react";
 import {toJS} from 'mobx';
@@ -12,16 +12,17 @@ export const Season: React.FunctionComponent = observer(() => {
         const store = useContext(StoreContext)
 
         const [loading, setLoading] = useState<boolean>(false)
+        const [percent, setPercent] = useState<number>(0)
 
         const simSeason = () => {
             const data = new FormData();
             data.append("league_id", store.User.franchise.league.id)
             data.append("season", '1')
             setLoading(true)
+            setPercent(50)
             axios.post('http://127.0.0.1:8000/season_sim', data)
                 .then(res => {
                     console.log(res.data)
-                    setLoading(false)
                     store.queryAllLeague({},
                         `__typename
                     id
@@ -48,7 +49,7 @@ export const Season: React.FunctionComponent = observer(() => {
                       }
                     }`
                     )
-
+                    setLoading(false)
                 })
                 .catch(err => {
                     console.log(err)
@@ -95,7 +96,13 @@ export const Season: React.FunctionComponent = observer(() => {
         ];
 
     if (store.User == undefined || store.User.franchise == undefined) return <div><Spin size="large"/></div>;
-    if (loading) return <div><Spin size="large"/></div>
+    // if (loading) return <div><Spin size="large"/></div>
+    if (loading) return (
+        <div>
+        <h3>Simulating Season</h3>
+        <Progress strokeColor={{'0%': '#108ee9', '100%': '#87d068',}} percent={percent} />
+        </div>
+    )
         else {
             return (
                 <div>

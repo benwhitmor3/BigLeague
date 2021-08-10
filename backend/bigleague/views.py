@@ -1,5 +1,5 @@
 import random
-from random import gauss
+from random import gauss, sample
 import pandas as pd
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
@@ -232,8 +232,42 @@ def season_simulation_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
         league_id = request.POST.get('league_id')
+        league = League.objects.get(id=league_id)
         franchises = Franchise.objects.filter(league_id=league_id)
         season = request.POST.get('season')
+
+        for f in franchises:
+            if f == Franchise.objects.get(franchise="Bonus Time Bandits"):
+                print("DON'T EDIT MY FRANCHISE PLEASE")
+            else:
+                for player in Player.objects.filter(franchise=f).order_by('-pv')[:5]:
+                    print(player)
+                    player.lineup = "starter"
+                    print(player.lineup)
+                    player.contract = 5
+                    print(player.contract)
+                    player.save()
+                for player in Player.objects.filter(franchise=f).order_by('-pv')[5:8]:
+                    print(player)
+                    player.lineup = "rotation"
+                    print(player.lineup)
+                    player.contract = 3
+                    print(player.contract)
+                    player.save()
+                for player in Player.objects.filter(franchise=f).order_by('-pv')[8:]:
+                    print(player)
+                    player.lineup = "bench"
+                    print(player.lineup)
+                    player.contract = 1
+                    print(player.contract)
+                    player.save()
+
+        for franchise in franchises:
+            if franchise.gm is None:
+                franchise.gm = sample(set(GM.objects.filter(league=league)), 1)[0]
+            if franchise.coach is None:
+                franchise.coach = sample(set(Coach.objects.filter(league=league, franchise=None)), 1)[0]
+            franchise.save()
 
         league_schedule = schedule_creation(franchises)
 
@@ -407,7 +441,7 @@ def season_simulation_view(request):
             s.std = results_df.std(axis=1)[franchise.franchise]
             s.save()
             # get champion
-            if franchise == Season.objects.filter(season=1).order_by('-wins', '-ppg')[0].franchise:
+            if franchise == Season.objects.filter(season=season).order_by('-wins', '-ppg')[0].franchise:
                 print(franchise)
                 s.championships += 1
             s.save()
