@@ -44,6 +44,7 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
             axios.post('http://127.0.0.1:8000/draft_order', data)
                 .then(res => {
                     console.log(res.data)
+                    console.log('drafting order')
                     setTeamOrder(res.data.draft_order)
                     store.User.franchise.league.setDraftingFranchise(res.data.draft_order[0])
                 })

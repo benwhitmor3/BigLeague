@@ -8,7 +8,7 @@ import CSS from "csstype";
 import StadiumCard from "./StadiumCard";
 
 type stadiumConfig = {
-    stadium_name: string;
+    stadiumName: string;
     seats: number;
     boxes: number;
     city: string;
@@ -21,11 +21,11 @@ export const Stadium: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
         const {register, handleSubmit, errors} = useForm<stadiumConfig>();
-        const onSubmit = handleSubmit(({stadium_name, seats, boxes, city, total, franchise}: stadiumConfig) => {
-            console.log(stadium_name, seats, boxes, city, total, franchise);
+        const onSubmit = handleSubmit(({stadiumName, seats, boxes, city, total, franchise}: stadiumConfig) => {
+            console.log(stadiumName, seats, boxes, city, total, franchise);
             store.mutateCreateStadium({
                     "stadiumInput": {
-                        "stadiumName": stadium_name,
+                        "stadiumName": stadiumName,
                         "seats": seats,
                         "boxes": boxes,
                         "grade": 20,
@@ -36,27 +36,38 @@ export const Stadium: React.FunctionComponent = observer(() => {
                     },
                 },
                 `
-    stadium{
-      __typename
-      id
-      stadiumName
-      seats
-      boxes
-      grade
-      maxGrade
-      homeFieldAdvantage
-      city{
-        __typename
-        id
-        city
-      }
-      franchise{
-        __typename
-        id
-        franchise
-      }
-    }
-            `,
+                stadium{
+                    __typename
+                    id
+                    stadiumName
+                    seats
+                    boxes
+                    grade
+                    maxGrade
+                    homeFieldAdvantage
+                    city{
+                        __typename
+                        id
+                        city
+                    }
+                    franchise{
+                        __typename
+                        id
+                        league{
+                            __typename
+                            id
+                            franchiseSet{
+                                __typename
+                                id
+                                stadium{
+                                    __typename
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+                `,
                 undefined
             )
         });
@@ -95,13 +106,13 @@ export const Stadium: React.FunctionComponent = observer(() => {
         };
 
         if (store.User === undefined) return <div>loading</div>;
-        if (store.User.franchise.stadium != null)
+        if (store.User.franchise?.stadium != null)
             return <StadiumCard/>
         if (store.User.franchise)
             return (
                 <form onSubmit={onSubmit}>
                     <label>Stadium Name</label>
-                    <input name="stadium_name" style={formStyles} ref={register({
+                    <input name="stadiumName" style={formStyles} ref={register({
                         required: {
                             value: true,
                             message: "Stadium name is a required field",
@@ -153,7 +164,7 @@ export const Stadium: React.FunctionComponent = observer(() => {
 
                     <input type="submit" style={buttonStyles} value="Build Stadium"/>
 
-                    <br/> {errors.stadium_name && <Alert message={errors.stadium_name.message} type="error" closable/>}
+                    <br/> {errors.stadiumName && <Alert message={errors.stadiumName.message} type="error" closable/>}
                     <br/>
                     <br/> {errors.seats && <Alert message={errors.seats.message} type="error" closable/>}
                     <br/>
