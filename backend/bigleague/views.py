@@ -121,6 +121,8 @@ def league_generation_view(request):
                     franchise=franchise_name,
                     league=league
                 )
+            for franchise in Franchise.objects.all():
+                Season.objects.create(franchise=franchise)
 
         return HttpResponse(request)
 
