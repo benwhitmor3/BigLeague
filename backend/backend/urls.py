@@ -44,6 +44,7 @@ urlpatterns = [
     path('draft_optimize', csrf_exempt(views.draft_optimize_view), name='draft_optimize'),
     path('season_sim', csrf_exempt(views.season_simulation_view), name='season_sim'),
     path('set_lineup', csrf_exempt(views.set_lineup_view), name='set_lineup'),
+    path('sign_players', csrf_exempt(views.sign_players_view), name='sign_players'),
     path('graphql/', csrf_exempt(GraphQLView.as_view(
         graphiql=True,
         schema=schema

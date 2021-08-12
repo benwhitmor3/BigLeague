@@ -11,6 +11,9 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
+
+        const [sortedInfo, setSortedInfo] = useState({order: 'descend', columnKey: 'age',})
+
         const columns = [
             {
                 title: 'Franchise',
@@ -22,6 +25,7 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'wins',
                 key: 'wins',
                 sorter: (a: any, b: any) => a.wins - b.wins,
+                defaultSortOrder: 'descend',
             },
             {
                 title: 'Losses',
@@ -53,7 +57,7 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
         const [season, setSeason] = useState<any>(store.User.franchise.league.franchiseSet.map((franchise: any) => franchise.seasonSet[0]));
 
 
-        return (
+    return (
             <div>
                 <Select
                     defaultValue={store.User.franchise.seasonSet[0].season}
@@ -76,6 +80,7 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 </Select>
                 <Table
                     rowKey="id"
+                    // @ts-ignore (need this to add defaultSorter for Wins)
                     columns={columns}
                     dataSource={toJS(season)}
                     pagination={false}

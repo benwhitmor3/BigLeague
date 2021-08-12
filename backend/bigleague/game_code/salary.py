@@ -35,7 +35,8 @@ def gen_salary(contract, epv, renew, t_option, p_option, age):
         salary = None
 
     print(salary)
-    
+    return salary
+
 def gen_grade(salary, contract, epv, renew, t_option, p_option, age):
 
     if contract != 0:

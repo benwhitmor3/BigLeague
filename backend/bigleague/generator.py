@@ -185,3 +185,60 @@ def gen_coach(league, num_of_coaches=10):
             attribute_two=attribute_two,
             league=league,
         )
+
+# identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
+# shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
+# "renew non-repeat" is 1 not 2 now.
+def gen_salary(contract, epv, renew, t_option, p_option, age):
+    salary = 0
+    grade = 5
+    if contract != 0:
+        salary = grade * (epv / (contract + 1))
+        if renew == "repeat":
+            salary += 2 * (epv / (contract + 1))
+        elif renew == "non-repeat":
+            salary += 1 * (epv / (contract + 1))
+        # need to edit this for now null options
+        if t_option != 0:
+            salary += (contract - t_option) * (epv / (contract + 1))
+        if p_option != 0:
+            salary -= 0.5 * (contract - p_option) * (epv / (contract + 1))
+
+        if age >= 27:
+            salary -= (age - 26) * (epv / (contract + 1))
+        # this makes options with a zero that are generated as 0 = none, need to keep zero beforehand
+        # for salary calculation
+        if t_option == 0:
+            t_option = None
+        if p_option == 0:
+            p_option = None
+    else:
+        salary = None
+
+    print(salary)
+    return salary
+
+
+# identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
+# shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
+# "renew non-repeat" is 1 not 2 now.
+def gen_grade(salary, contract, epv, renew, t_option, p_option, age):
+    if contract != 0:
+        grade = (salary * (contract + 1)) / epv
+        if renew == "repeat":
+            grade -= 2
+        elif renew == "non-repeat":
+            grade -= 1
+
+        if t_option != 0:
+            grade -= (contract - t_option)
+        if p_option != 0:
+            grade += 0.5 * (contract - p_option)
+
+        if age >= 27:
+            grade += age - 26
+    else:
+        grade = None
+
+    print(grade)
+    return grade

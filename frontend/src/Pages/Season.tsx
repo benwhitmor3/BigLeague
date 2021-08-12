@@ -5,6 +5,8 @@ import {StoreContext} from "../models";
 import {observer} from "mobx-react";
 import SeasonSimButton from "./Molecules/SeasonSimButton";
 import SeasonTable from "./Organisms/SeasonTable";
+import SetLineupsButton from "./Molecules/SetLineupsButton";
+import SignPlayersButton from "./Molecules/SignPlayersButton";
 
 
 export const Season: React.FunctionComponent = observer(() => {
@@ -14,6 +16,8 @@ export const Season: React.FunctionComponent = observer(() => {
         if (store.User == undefined || store.User.franchise == undefined) return <Spin size="large"/>;
         return (
             <div>
+                <SignPlayersButton/>
+                <SetLineupsButton/>
                 <SeasonSimButton/>
                 <SeasonTable/>
             </div>

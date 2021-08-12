@@ -3,8 +3,9 @@ from random import gauss, sample
 import pandas as pd
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
+
 from .simulation import schedule_creation, suit_bonus
-from .generator import gen_city, gen_gm, gen_coach, gen_player
+from .generator import gen_city, gen_gm, gen_coach, gen_player, gen_salary, gen_grade
 from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
     GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer
 from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season
@@ -210,22 +211,79 @@ def set_lineup_view(request):
                     print(player)
                     player.lineup = "starter"
                     print(player.lineup)
-                    player.contract = 5
-                    print(player.contract)
+                    # player.contract = 5
+                    # print(player.contract)
                     player.save()
                 for player in Player.objects.filter(franchise=f).order_by('-pv')[5:8]:
                     print(player)
                     player.lineup = "rotation"
                     print(player.lineup)
-                    player.contract = 3
-                    print(player.contract)
+                    # player.contract = 3
+                    # print(player.contract)
                     player.save()
                 for player in Player.objects.filter(franchise=f).order_by('-pv')[8:]:
                     print(player)
                     player.lineup = "bench"
                     print(player.lineup)
-                    player.contract = 1
-                    print(player.contract)
+                    # player.contract = 1
+                    # print(player.contract)
+                    player.save()
+
+        return HttpResponse(request)
+
+
+def sign_players_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        my_franchise = Franchise.objects.get(id=franchise_id)
+        league = my_franchise.league
+
+        franchises = Franchise.objects.filter(league=league)
+        # for every franchise not mine, get players assigned to a team and give contract
+        for franchise in franchises:
+            if franchise == my_franchise:
+                print("DON'T EDIT MY FRANCHISE PLEASE")
+            else:
+                for player in Player.objects.filter(franchise=franchise, contract__isnull=True):
+                    print(player)
+                    # set contract
+                    player.contract = random.randint(1, 5)
+                    # set t_option
+                    if player.contract == 5:
+                        player.t_option = random.randint(0, 4)
+                    elif player.contract == 4:
+                        player.t_option = random.randint(0, 3)
+                    elif player.contract == 3:
+                        player.t_option = random.randint(0, 2)
+                    elif player.contract == 2:
+                        player.t_option = random.randint(0, 1)
+                    elif player.contract == 1:
+                        player.t_option = 0
+                    elif player.contract == 0:
+                        player.t_option = 0
+                    # set p_option
+                    if player.t_option == 0:
+                        if player.contract == 5:
+                            player.p_option = random.randint(0, 4)
+                        elif player.contract == 4:
+                            player.p_option = random.randint(0, 3)
+                        elif player.contract == 3:
+                            player.p_option = random.randint(0, 2)
+                        elif player.contract == 2:
+                            player.p_option = random.randint(0, 1)
+                        elif player.contract == 1:
+                            player.p_option = 0
+                        elif player.contract == 0:
+                            player.p_option = 0
+                    else:
+                        player.p_option = 0
+                    # set renew
+                    renew_weight = ["no"] * 7 + ["non-repeat"] * 1 + ["repeat"] * 2
+                    player.renew = random.choice(renew_weight)
+
+                    player.salary = gen_salary(player.contract, player.epv, player.renew, player.t_option, player.p_option, player.age)
+                    player.grade = gen_grade(player.salary, player.contract, player.epv, player.renew, player.t_option, player.p_option, player.age)
                     player.save()
 
         return HttpResponse(request)
