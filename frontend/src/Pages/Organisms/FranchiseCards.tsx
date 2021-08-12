@@ -1,6 +1,6 @@
 import React from 'react';
 import {observer} from 'mobx-react'
-import {Row, Col, Spin} from 'antd';
+import {Row, Col} from 'antd';
 import RosterTable from "./RosterTable";
 import StaffCard from "../Molecules/StaffCard";
 import StadiumCard from "../Molecules/StadiumCard";
@@ -13,10 +13,7 @@ interface IFranchise {
 
 export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({franchise, setFranchise} : IFranchise) => {
 
-    if (franchise == null)
-        return <Spin/>;
-    else
-        return (
+    return (
         <div className="site-card-wrapper">
             <Row gutter={[24, 0]}>
                 <Col span={12}>

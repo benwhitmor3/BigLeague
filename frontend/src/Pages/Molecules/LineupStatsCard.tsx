@@ -19,7 +19,7 @@ export const LineupStatsCard: React.FunctionComponent<IFranchise> = observer(({f
               }}>
             <Row gutter={[0, 0]}>
                 <Col span={4} offset={0}>
-                    {(franchise.gm.trait === 'SUITOR')
+                    {(franchise.gm?.trait === 'SUITOR')
                             ?
                             <Statistic title="Suit bonus" value={franchise.suitBonus + ' (zero)'}/>
                             :
@@ -27,7 +27,7 @@ export const LineupStatsCard: React.FunctionComponent<IFranchise> = observer(({f
                     }
                 </Col>
                 <Col span={4} offset={0}>
-                    {(franchise.gm.trait === 'SCOUTER')
+                    {(franchise.gm?.trait === 'SCOUTER')
                             ?
                             <Statistic title="Starting S EPV" precision={2} value={franchise.sEpv}/>
                             :

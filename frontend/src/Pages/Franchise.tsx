@@ -19,7 +19,8 @@ export const Franchise: React.FunctionComponent = observer(() => {
 
     if (franchise == null)
         return <CreateFranchise setFranchise={setFranchise}/>;
-    if (store.User.franchise.league.franchiseSet.length <= 1) return <GenerateLeagueOpponents/>;
+    if (store.User.franchise.league.franchiseSet.length <= 1)
+        return <GenerateLeagueOpponents/>;
     else {
         return <FranchiseCards franchise={franchise} setFranchise={setFranchise}/>;
     }

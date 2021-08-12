@@ -79,9 +79,9 @@ def league_generation_view(request):
         franchise_id = request.POST.get('franchise_id')
         franchise = Franchise.objects.get(id=franchise_id)
         league = franchise.league
+        num_of_franchises = int(request.POST.get('num_of_franchises'))
 
         # create cities, gms, and coaches
-        num_of_franchises = int(request.POST.get('num_of_franchises'))
         if int(len(league.city_set.all())) > 0:
             print("League already has " + str(len(league.city_set.all())) + " cities")
         else:
@@ -116,12 +116,14 @@ def league_generation_view(request):
                                "Warriors", "Wild"]
 
             franchise_list = random.sample(franchise_names, k=(num_of_franchises - 1))
+
+        # create other franchises
         for franchise_name in franchise_list:
             Franchise.objects.create(
                 franchise=franchise_name,
                 league=league
             )
-
+        # create season 1 for each franchise
         for franchise in Franchise.objects.all():
             s = Season.objects.create(franchise=franchise, season=1)
             s.save()

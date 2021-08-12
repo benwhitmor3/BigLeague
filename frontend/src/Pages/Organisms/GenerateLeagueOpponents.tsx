@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {observer} from 'mobx-react'
 import {StoreContext} from "../../models";
 import {Card, Button} from 'antd';
@@ -20,7 +20,7 @@ export const GenerateLeagueOpponents: React.FunctionComponent = observer(() => {
                 store.queryUser(
                     {email: "email@email.com"},
                     userQuery,
-                    {fetchPolicy: 'cache-first'}
+                    {}
                 )
             })
             .catch(err => {
