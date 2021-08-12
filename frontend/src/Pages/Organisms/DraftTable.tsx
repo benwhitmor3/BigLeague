@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import {Table, Tag, Space} from 'antd';
 import {StoreContext} from "../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon} from '../Utils/TableFunctions'
+import {colour, suit_icon, insertArray} from '../Utils/TableFunctions'
 import {toJS} from 'mobx';
 import {mutateCreatePlayerQuery} from "../Utils/queries";
 
@@ -139,143 +139,21 @@ export const DraftTable: React.FunctionComponent = observer(() => {
         ];
 
 
-        const scouter_columns = [
-            {
-                title: 'Name',
-                dataIndex: 'name',
-                key: 'name',
-            },
-            {
-                title: 'Age',
-                dataIndex: 'age',
-                key: 'age',
-                sorter: (a: any, b: any) => a.age - b.age,
-            },
-            {
-                title: 'EPV',
-                dataIndex: 'epv',
-                key: 'epv',
-                sorter: (a: any, b: any) => a.epv - b.epv,
-                render: (epv: number) => <text>{epv.toFixed(1)}</text>,
-            },
+        let sEPV_column =
             {
                 title: 'S EPV',
                 dataIndex: 'sEpv',
                 key: 'sEpv',
                 sorter: (a: any, b: any) => a.sEpv - b.sEpv,
                 render: (sEpv: number) => <text>{sEpv.toFixed(1)}</text>,
-            },
-            {
-                title: 'Suit',
-                dataIndex: 'suit',
-                key: 'suit',
-                render: (suit: string) => (
-                    <Tag icon={suit_icon(suit)} color={colour(suit)} key={suit}>
-                        {suit.toUpperCase()}
-                    </Tag>
-                ),
-                filters: [
-                    {
-                        text: 'Diamond',
-                        value: 'diamond',
-                    },
-                    {
-                        text: 'Spade',
-                        value: 'spade',
-                    },
-                    {
-                        text: 'Heart',
-                        value: 'heart',
-                    },
-                    {
-                        text: 'Club',
-                        value: 'club',
-                    },
-                ],
-                onFilter: (value: any, record: any) => record.suit.indexOf(value) === 0,
-            },
-            {
-                title: 'Franchise',
-                dataIndex: ["franchise", "franchise"],
-                key: "franchise",
-            },
-            {
-                title: 'Action',
-                key: 'action',
-                render: (text: string, record: any) => (
-                    (record.franchise) ? (
-                        <Space size="middle">
-                            <Tag color={"#d4380d"} style={{color: "#ffffff", border: "2px solid #000000"}}
-                                 onClick={() => {
-                                     store.mutateCreatePlayer({
-                                             "playerInput": {
-                                                 "name": record.name,
-                                                 "suit": record.suit,
-                                                 "age": record.age,
-                                                 "pv": record.pv,
-                                                 "epv": record.epv,
-                                                 "sEpv": record.sEpv,
-                                                 "contract": undefined,
-                                                 "tOption": undefined,
-                                                 "pOption": undefined,
-                                                 "renew": undefined,
-                                                 "salary": undefined,
-                                                 "grade": undefined,
-                                                 "lineup": "bench",
-                                                 "franchiseId": store.User.franchise.league.draftingFranchise.id,
-                                                 "trainer": false,
-                                                 "leagueId": store.User.franchise.league.id
-                                             }
-                                         }, mutateCreatePlayerQuery,
-                                         undefined
-                                     );
-                                 }
-                                 }>
-                                Drafted!
-                            </Tag>
-                        </Space>
-                    ) : (
-                        <Space size="middle">
-                            <Tag color={"#ffe479"} icon={<span role="img" aria-label="player"> 📝 </span>}
-                                 style={{color: "#000000", border: "2px solid #ffe479"}}
-                                 onClick={() => {
-                                     store.mutateCreatePlayer({
-                                             "playerInput": {
-                                                 "name": record.name,
-                                                 "suit": record.suit,
-                                                 "age": record.age,
-                                                 "pv": record.pv,
-                                                 "epv": record.epv,
-                                                 "sEpv": record.sEpv,
-                                                 "contract": undefined,
-                                                 "tOption": undefined,
-                                                 "pOption": undefined,
-                                                 "renew": undefined,
-                                                 "salary": undefined,
-                                                 "grade": undefined,
-                                                 "lineup": "bench",
-                                                 "franchiseId": store.User.franchise.league.draftingFranchise.id,
-                                                 "trainer": false,
-                                                 "leagueId": store.User.franchise.league.id
-                                             }
-                                         }, mutateCreatePlayerQuery,
-                                         undefined
-                                     );
-                                 }
-                                 }>
-                                Draft Prospect
-                            </Tag>
-                        </Space>
-                    )
-
-                ),
-            },
-        ];
+            }
 
 
         const columns = () => {
             if (store.User.franchise.gm !== null)
                 if (store.User.franchise.gm.trait === "SCOUTER") {
+                    let scouter_columns = non_scouter_columns
+                    insertArray(non_scouter_columns, 3, sEPV_column)
                     return scouter_columns
                 } else {
                     return non_scouter_columns

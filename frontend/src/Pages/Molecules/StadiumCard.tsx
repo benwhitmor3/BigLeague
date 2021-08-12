@@ -3,8 +3,6 @@ import {observer} from 'mobx-react'
 import {StoreContext} from "../../models";
 import {Statistic, Row, Col, Card} from 'antd';
 
-
-
 interface IFranchise {
     franchise: any;
 }

@@ -462,5 +462,4 @@ def season_simulation_view(request):
 
             current_season.save()
 
-
     return HttpResponse(request)

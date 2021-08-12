@@ -59,12 +59,12 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             return epv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
         },
         get sEpv() {
-            let epv = self.playerSet.map(function (player) {
+            let sEpv = self.playerSet.map(function (player) {
                 if (player.lineup === "starter")
                     return player.sEpv;
             });
 
-            return epv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
+            return sEpv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
         },
         get meanAge() {
             let ages: any = self.playerSet.map(function (player) {

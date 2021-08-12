@@ -1,6 +1,11 @@
 import React, {useContext} from "react";
 import {PlayerTypeModelType, StoreContext} from "../../models";
+import {Space, Tag} from "antd";
+import {mutateCreatePlayerQuery} from "./queries";
 
+export const insertArray = ( array: any, index: number, item: any ) => {
+    array.splice( index, 0, item );
+};
 
 export const colour = (suit: string) => {
       if (suit === 'diamond') {
