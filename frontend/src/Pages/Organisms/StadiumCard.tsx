@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {observer} from 'mobx-react'
-import {StoreContext} from "../models";
+import {StoreContext} from "../../models";
 import {Statistic, Row, Col, Card, Spin} from 'antd';
 
 export const StadiumCard: React.FunctionComponent = observer(() => {

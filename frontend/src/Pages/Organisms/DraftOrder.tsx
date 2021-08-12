@@ -2,9 +2,9 @@ import React, {useContext, useEffect, useState} from 'react';
 import axios from "axios";
 import 'antd/dist/antd.css';
 import {Card, Button, Statistic, Tag} from 'antd';
-import {StoreContext} from "../models";
+import {StoreContext} from "../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon} from "./TableFunctions";
+import {colour, suit_icon} from "../Utils/TableFunctions";
 
 
 export const DraftOrder: React.FunctionComponent = observer(() => {

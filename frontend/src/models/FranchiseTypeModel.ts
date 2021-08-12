@@ -26,7 +26,6 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
                 if (player.lineup == "starter")
                 return player.suit;
             });
-            console.log(suitList)
             let spades = suitList.filter(x => x == "spade").length
             let hearts = suitList.filter(x => x == "heart").length
             let diamonds = suitList.filter(x => x == "diamond").length
@@ -53,8 +52,16 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
         },
         get epv() {
             let epv = self.playerSet.map(function (player) {
-                if (player.lineup == "starter")
-                return player.epv;
+                if (player.lineup === "starter")
+                    return player.epv;
+            });
+
+            return epv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
+        },
+        get sEpv() {
+            let epv = self.playerSet.map(function (player) {
+                if (player.lineup === "starter")
+                    return player.sEpv;
             });
 
             return epv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)

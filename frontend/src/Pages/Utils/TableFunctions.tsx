@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {PlayerTypeModelType, StoreContext} from "../models";
+import {PlayerTypeModelType, StoreContext} from "../../models";
 
 
 export const colour = (suit: string) => {

@@ -116,13 +116,15 @@ def league_generation_view(request):
                                "Warriors", "Wild"]
 
             franchise_list = random.sample(franchise_names, k=(num_of_franchises - 1))
-            for franchise_name in franchise_list:
-                Franchise.objects.create(
-                    franchise=franchise_name,
-                    league=league
-                )
-            for franchise in Franchise.objects.all():
-                Season.objects.create(franchise=franchise)
+        for franchise_name in franchise_list:
+            Franchise.objects.create(
+                franchise=franchise_name,
+                league=league
+            )
+
+        for franchise in Franchise.objects.all():
+            s = Season.objects.create(franchise=franchise, season=1)
+            s.save()
 
         return HttpResponse(request)
 
@@ -440,10 +442,25 @@ def season_simulation_view(request):
             # get std
             s.std = results_df.std(axis=1)[franchise.franchise]
             s.save()
+            # create next season object
+            s = Season.objects.create(franchise=franchise, season=int(season)+1)
+            s.save()
+
+        # this loop needs to be after so that all the teams have season stats set
+        for franchise in franchises:
+            current_season = Season.objects.get(franchise__franchise=franchise, season=season)
+            if season == '1':
+                prev_season = current_season
+            else:
+                prev_season = Season.objects.get(franchise__franchise=franchise, season=int(season) - 1)
+
+            current_season.championships = prev_season.championships
             # get champion
             if franchise == Season.objects.filter(season=season).order_by('-wins', '-ppg')[0].franchise:
                 print(franchise)
-                s.championships += 1
-            s.save()
+                current_season.championships = prev_season.championships + 1
+
+            current_season.save()
+
 
     return HttpResponse(request)

@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import {Tag, Input, Modal, Select} from 'antd';
 import {observer} from "mobx-react";
 import CSS from "csstype";
-import {StoreContext} from "../models";
+import {StoreContext} from "../../models";
 
 interface IVisible {
     visible: boolean;

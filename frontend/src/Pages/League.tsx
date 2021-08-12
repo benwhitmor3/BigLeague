@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import {Table, Tag, Spin} from 'antd';
 import {StoreContext} from "../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon} from './TableFunctions'
+import {colour, suit_icon} from './Utils/TableFunctions'
 import {toJS} from 'mobx';
 
 
@@ -64,6 +64,7 @@ export const LeaguePlayers: React.FunctionComponent = observer(() => {
                 title: 'Franchise',
                 dataIndex: ["franchise", "franchise"],
                 key: "franchise",
+                sorter: (a: any, b: any) => a?.franchise?.franchise.localeCompare(b?.franchise?.franchise),
             },
         ];
 
@@ -128,6 +129,7 @@ export const LeaguePlayers: React.FunctionComponent = observer(() => {
                 title: 'Franchise',
                 dataIndex: ["franchise", "franchise"],
                 key: "franchise",
+                sorter: (a: any, b: any) => a?.franchise?.franchise.localeCompare(b?.franchise?.franchise),
             },
         ];
 

@@ -7,13 +7,14 @@ import {Layout, Menu, Spin} from 'antd';
 import './Header.css'
 import {useQuery} from "./models";
 import {observer} from "mobx-react";
-import Franchise from "./refactor_components/Franchise";
-import Stadium from "./refactor_components/Stadium";
-import Draft from "./refactor_components/Draft";
-import League from "./refactor_components/League";
-import Season from "./refactor_components/Season";
-import Home from "./refactor_components/Home";
-import OffSeason from "./refactor_components/OffSeason";
+import Franchise from "./Pages/Franchise";
+import Stadium from "./Pages/Stadium";
+import Draft from "./Pages/Draft";
+import League from "./Pages/League";
+import Season from "./Pages/Season";
+import Home from "./Pages/Home";
+import OffSeason from "./Pages/OffSeason";
+import {userQuery} from "./Pages/Utils/queries";
 // import {AUTH_TOKEN} from "./Constants";
 // import {deleteToken, getToken} from "./components/Forms/token";
 
@@ -26,305 +27,17 @@ const App: React.FunctionComponent = observer(() => {
 
     const {store, error, loading, data} = useQuery((store) =>
         store.queryUser(
-            {email: "email@email.com"},
-            `
-__typename
-    id
-    email
-    username
-    league{
-      __typename
-      id
-      leagueName
-    }
-    franchise{
-      __typename
-      id
-      gm{
-        __typename
-        id
-        trait
-      }
-      coach{
-        __typename
-        id
-        name
-        attributeOne
-        attributeTwo
-      }
-      stadium{
-        __typename
-        id
-        stadiumName
-        seats
-        boxes
-        grade
-        maxGrade
-        homeFieldAdvantage
-        city{
-          __typename
-          id
-          city
-          cityValue
-        }
-        franchise{
-          __typename
-          id
-          franchise
-        }
-      }
-      playerSet{
-        __typename
-        id
-        name
-        suit
-        age
-        pv
-        epv
-        sEpv
-        contract
-        tOption
-        pOption
-        renew
-        salary
-        grade
-        trainer
-        franchise{
-          __typename
-          id
-          franchise
-        }
-        lineup
-      }
-      action{
-        __typename
-        id
-        numberOfActions
-        improvedBathrooms
-        improvedConcessions
-        jumbotron
-        upscaleBar
-        hallOfFame
-        improvedSeating
-        improvedSound
-        partyDeck
-        wiFi
-        fanNight
-        familyGame
-        doorPrizes
-        mvpNight
-        paradeOfChampions
-        bribeTheRefs
-        easyRuns
-        fanFactor
-        trainPlayer
-        farmSystem
-        fanFavourites
-        gourmetRestaurant
-        beerGarden
-        namingRights
-        eventPlanning
-      }
-      stadium{
-        __typename
-        id
-        city{
-          __typename
-          id
-        }
-        franchise{
-          __typename
-          id
-        }
-        stadiumName
-        seats
-        boxes
-        grade
-        maxGrade
-        homeFieldAdvantage
-      }
-      seasonSet{
-        __typename
-        id
-        franchise{
-          __typename
-          id
-        }
-        season
-        ready
-        wins
-        losses
-        ppg
-        std
-        championships
-        bonuses
-        penalties
-        fanBase
-        fanIndex
-        advertising
-        revenue
-        expenses
-      }
-      league{
-        __typename
-        id
-        leagueName
-        franchiseSet{
-          __typename
-          id
-          franchise
-          gm{
-            __typename
-            id
-            trait
-          }
-          coach{
-            __typename
-            id
-            name
-            attributeOne
-            attributeTwo
-          }
-          playerSet{
-            __typename
-            id
-            name
-          suit
-          age
-          pv
-          epv
-          sEpv
-          contract
-          tOption
-          pOption
-          renew
-          salary
-          grade
-          trainer
-          franchise{
-            __typename
-            id
-          }
-          lineup
-          }
-        seasonSet{
-          __typename
-          id
-          franchise{
-            __typename
-            id
-          }
-          season
-          ready
-          wins
-          losses
-          ppg
-          std
-          championships
-          bonuses
-          penalties
-          fanBase
-          fanIndex
-          advertising
-          revenue
-          expenses
-        }
-        stadium{
-          __typename
-          id
-          stadiumName
-          seats
-          boxes
-          grade
-          maxGrade
-          homeFieldAdvantage
-          city{
-            __typename
-            id
-            city
-            cityValue
-            }
-          }
-        }
-        citySet{
-          __typename
-          id
-          city
-          cityValue
-          league{
-            __typename
-            id
-          }
-          stadiumSet{
-            __typename
-            id
-            city{
-              __typename
-              id
-            }
-            franchise{
-              __typename
-              id
-            }
-            stadiumName
-            seats
-            boxes
-            grade
-            maxGrade
-            homeFieldAdvantage
-          }
-        }
-        playerSet{
-          __typename
-          id
-          name
-          suit
-          age
-          pv
-          epv
-          sEpv
-          contract
-          tOption
-          pOption
-          renew
-          salary
-          grade
-          trainer
-          franchise{
-            __typename
-            id
-            franchise
-          }
-          lineup
-        }
-        gmSet{
-          __typename
-          id
-          trait
-        }
-        coachSet{
-          __typename
-          id
-          name
-          attributeOne
-          attributeTwo
-        }
-      }
-    }
-    `,
-            {fetchPolicy: 'cache-first'}
+                    {email: "email@email.com"},
+                    userQuery,
+                    {fetchPolicy: 'cache-first'}
         ))
 
     store.setUser("email@email.com").then(r => console.log("SET USER"));
-
-    // window.data = data
-    // window.rootStore = store;
 
     // const authToken = localStorage.getItem(AUTH_TOKEN)
     if (error) return <div>{error.message}</div>;
     if (loading) return <div><Spin size="large"/></div>;
     else {
-        // console.log(data)
         return (
             <div>
                 <Layout className='layout'>
@@ -334,10 +47,10 @@ __typename
                                 <Menu.Item key="1">Home <a href="/Home"/></Menu.Item>
                                 <Menu.Item key="2"><Link to="/Stadium">Stadium</Link></Menu.Item>
                                 <Menu.Item key="3"><Link to="/Franchise">Franchise</Link></Menu.Item>
-                                <Menu.Item key="4">OffSeason<a href="/OffSeason"/></Menu.Item>
+                                <Menu.Item key="4"><Link to="/OffSeason">OffSeason</Link></Menu.Item>
                                 <Menu.Item key="5"><Link to="/Draft">Draft</Link></Menu.Item>
-                                <Menu.Item key="6">Season<a href="/Season"/></Menu.Item>
-                                <Menu.Item key="7">League Summary<a href="/League Summary"/></Menu.Item>
+                                <Menu.Item key="6"><Link to="/Season">Season</Link></Menu.Item>
+                                <Menu.Item key="7"><Link to="/LeagueSummary">League Summary</Link></Menu.Item>
                                 {/*<Menu.Item key="8" >Instructions<a href = {file}/></Menu.Item>*/}
                                 {/*{isLoggedIn ? (*/}
                                 {/*    <Menu.Item key="9" style={{float: 'right'}} onClick={() => {deleteToken()}}>Logout*/}
@@ -351,18 +64,11 @@ __typename
                             <div className="site-layout-content">
                                 <Switch>
                                     <Route exact path='/Home' component={Home} />
-                                    <Route exact path='/Stadium'>
-                                        <Stadium/>
-                                    </Route>
+                                    <Route exact path='/Stadium' component={Stadium} />
                                     <Route exact path='/Franchise' component={Franchise}/>
                                     <Route exact path='/Draft' component={Draft}/>
-                                    <Route exact path='/League Summary'>
-                                        <League/>
-                                    </Route>
-                                    {/*<Route exact path='/Stadium' component={Stadium} />*/}
-                                    <Route exact path='/Season'>
-                                        <Season/>
-                                    </Route>
+                                    <Route exact path='/LeagueSummary' component={League}/>
+                                    <Route exact path='/Season' component={Season} />
                                     <Route exact path='/OffSeason' component={OffSeason} />
                                     {/*<Route exact path='/Login' component={Login} />*/}
                                     {/*<Route exact path='/Register' component={Register} />*/}

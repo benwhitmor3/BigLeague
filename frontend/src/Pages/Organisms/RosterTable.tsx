@@ -1,12 +1,12 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space, Alert} from 'antd';
-import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../models";
+import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon, _to_fixed, _lineup} from './TableFunctions'
+import {colour, suit_icon, _to_fixed, _lineup} from '../Utils/TableFunctions'
 import {toJS} from "mobx";
-import SigningModal from "./SigningModal";
-import LineupSelect from "./LineupSelect";
+import SigningModal from "../Molecules/SigningModal";
+import LineupSelect from "../Molecules/LineupSelect";
 
 
 interface IFranchise {

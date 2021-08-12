@@ -1,11 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {observer} from "mobx-react";
-import {StoreContext} from "../models";
+import {StoreContext} from "../../models";
 import {useForm} from "react-hook-form";
-import {Select} from "./Select";
 import {Alert} from "antd";
 import CSS from "csstype";
-import StadiumCard from "./StadiumCard";
+import {Select} from "../Atoms/Select";
 
 type stadiumConfig = {
     stadiumName: string;
@@ -17,7 +16,7 @@ type stadiumConfig = {
 };
 
 
-export const Stadium: React.FunctionComponent = observer(() => {
+export const CreateStadium: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
         const {register, handleSubmit, errors} = useForm<stadiumConfig>();
@@ -82,11 +81,15 @@ export const Stadium: React.FunctionComponent = observer(() => {
         }, [seats, boxes]);
 
 
+        const labelStyles: CSS.Properties = {
+            marginRight: '5px',
+            marginLeft: '5px',
+        };
+
         const formStyles: CSS.Properties = {
             backgroundColor: '#d4380d',
-            display: "block",
             border: '0px',
-            margin: '10px',
+            display: 'inline',
             borderRadius: '4px',
             padding: '0.5rem',
             fontSize: '14px',
@@ -96,22 +99,19 @@ export const Stadium: React.FunctionComponent = observer(() => {
         const buttonStyles: CSS.Properties = {
             backgroundColor: '#ad2102',
             margin: '5px',
-            marginLeft: '10px',
             border: '0px',
+            display: 'inline',
             borderRadius: '12px',
             fontSize: '14px',
             color: '#fff2e8',
-            width: '20vh',
             padding: '8px',
         };
 
-        if (store.User === undefined) return <div>loading</div>;
-        if (store.User.franchise?.stadium != null)
-            return <StadiumCard/>
-        if (store.User.franchise)
+        if (store.User == undefined) return <div>Missing User</div>;
+        else {
             return (
                 <form onSubmit={onSubmit}>
-                    <label>Stadium Name</label>
+                    <label style={labelStyles}>Stadium Name:</label>
                     <input name="stadiumName" style={formStyles} ref={register({
                         required: {
                             value: true,
@@ -123,7 +123,7 @@ export const Stadium: React.FunctionComponent = observer(() => {
                         },
                     })}/>
 
-                    <label>Seats</label>
+                    <label style={labelStyles}>Seats:</label>
                     <input name="seats" type="number" style={formStyles} onChange={event => {
                         setSeats(event.target.valueAsNumber)
                     }} ref={register({
@@ -137,7 +137,7 @@ export const Stadium: React.FunctionComponent = observer(() => {
                         },
                     })}/>
 
-                    <label>Boxes</label>
+                    <label style={labelStyles}>Boxes:</label>
                     <input name="boxes" type="number" style={formStyles} onChange={event => {
                         setBoxes(event.target.valueAsNumber)
                     }} ref={register({
@@ -151,18 +151,19 @@ export const Stadium: React.FunctionComponent = observer(() => {
                         },
                     })}/>
 
-                    <label style={{marginRight: '10px'}}>City</label>
-                    <input name="city" style={{display: "none"}} value={city ? city : store.User.franchise.league.citySet[0].id} ref={register({})}/>
+                    <label style={labelStyles}>City</label>
+                    <input name="city" style={{display: "none"}}
+                           value={city ? city : store.User.franchise.league.citySet[0].id} ref={register({})}/>
                     <Select options={store.User.franchise.league.citySet.map((city: any) => {
-                            return {value: city.id, label: city.city}})}
+                        return {value: city.id, label: city.city}
+                    })}
                             value={city} onChange={(city: string) => setCity(city)}/>
-
+                    <input type="submit" style={buttonStyles} value="Build Stadium"/>
                     <input name="total" type="number" style={{display: "none"}} value={total} ref={register({})}/>
-                    <h4 style={{marginTop: '10px'}}>{total ? 'Construction Cost: $' + +total / 1000000 + ' million' : ''}</h4>
+
+                    <h1 style={{marginTop: '10px'}}>{total ? 'Construction Cost: $' + +total / 1000000 + ' million' : ''}</h1>
 
                     <input name="franchise" style={{display: "none"}} value={store.User.franchise.id} ref={register({})}/>
-
-                    <input type="submit" style={buttonStyles} value="Build Stadium"/>
 
                     <br/> {errors.stadiumName && <Alert message={errors.stadiumName.message} type="error" closable/>}
                     <br/>
@@ -172,11 +173,9 @@ export const Stadium: React.FunctionComponent = observer(() => {
                     <br/>
 
                 </form>
-            )
-        else {
-           return <p></p>
+            );
         }
     }
 )
 
-export default Stadium;
+export default CreateStadium;

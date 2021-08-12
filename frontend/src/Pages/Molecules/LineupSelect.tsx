@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
-import {PlayerTypeModelType, StoreContext} from "../models";
-import {Select} from "./Select";
+import {PlayerTypeModelType, StoreContext} from "../../models";
+import {Select} from "../Atoms/Select";
 import {observer} from "mobx-react";
 
 
@@ -9,7 +9,6 @@ interface ILineup {
     record: any;
     setRosterAlert: (rosteralert:boolean) => void;
 }
-
 
 const LineupSelect: React.FunctionComponent<ILineup> = observer(({current_lineup, record, setRosterAlert} : ILineup) => {
 

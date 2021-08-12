@@ -1,10 +1,11 @@
 import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space} from 'antd';
-import {StoreContext} from "../models";
+import {StoreContext} from "../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon} from './TableFunctions'
+import {colour, suit_icon} from '../Utils/TableFunctions'
 import {toJS} from 'mobx';
+import {mutateCreatePlayerQuery} from "../Utils/queries";
 
 
 export const DraftTable: React.FunctionComponent = observer(() => {
@@ -16,7 +17,6 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 title: 'Name',
                 dataIndex: 'name',
                 key: 'name',
-                // render: (text: string) => <a href="/Home">{text}</a>,
             },
             {
                 title: 'Age',
@@ -71,7 +71,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 render: (text: string, record: any) => (
                     (record.franchise) ? (
                         <Space size="middle">
-                            <Tag color={"#d4380d"} style={{ color: "#ffffff", border: "2px solid #cb2022"}}
+                            <Tag color={"#d4380d"} style={{color: "#ffffff", border: "2px solid #cb2022"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -92,36 +92,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "trainer": false,
                                                  "leagueId": store.User.franchise.league.id
                                              }
-                                         }, `
-                                    player {
-                                          __typename
-                                          id
-                                          name
-                                          suit
-                                          age
-                                          pv
-                                          epv
-                                          sEpv
-                                          contract
-                                          tOption
-                                          pOption
-                                          renew
-                                          salary
-                                          grade
-                                          trainer
-                                          lineup
-                                          franchise{
-                                            __typename
-                                            id
-                                            franchise
-                                          }
-                                          league{
-                                            __typename
-                                            id
-                                            leagueName
-                                          }
-                                        }
-            `,
+                                         }, mutateCreatePlayerQuery,
                                          undefined
                                      );
                                  }
@@ -132,7 +103,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                     ) : (
                         <Space size="middle">
                             <Tag color={"#ffe479"} icon={<span role="img" aria-label="player"> 📝 </span>}
-                            style={{ color: "#000000", border: "2px solid #ffe479"}}
+                                 style={{color: "#000000", border: "2px solid #ffe479"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -153,36 +124,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "trainer": false,
                                                  "leagueId": store.User.franchise.league.id
                                              }
-                                         }, `
-                                    player {
-                                          __typename
-                                          id
-                                          name
-                                          suit
-                                          age
-                                          pv
-                                          epv
-                                          sEpv
-                                          contract
-                                          tOption
-                                          pOption
-                                          renew
-                                          salary
-                                          grade
-                                          trainer
-                                          lineup
-                                          franchise{
-                                            __typename
-                                            id
-                                            franchise
-                                          }
-                                          league{
-                                            __typename
-                                            id
-                                            leagueName
-                                          }
-                                        }
-            `,
+                                         }, mutateCreatePlayerQuery,
                                          undefined
                                      );
                                  }
@@ -202,7 +144,6 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 title: 'Name',
                 dataIndex: 'name',
                 key: 'name',
-                // render: (text: string) => <a href="/Home">{text}</a>,
             },
             {
                 title: 'Age',
@@ -264,7 +205,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 render: (text: string, record: any) => (
                     (record.franchise) ? (
                         <Space size="middle">
-                            <Tag color={"#d4380d"} style={{ color: "#ffffff", border: "2px solid #cb2022"}}
+                            <Tag color={"#d4380d"} style={{color: "#ffffff", border: "2px solid #000000"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -285,36 +226,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "trainer": false,
                                                  "leagueId": store.User.franchise.league.id
                                              }
-                                         }, `
-                                    player {
-                                          __typename
-                                          id
-                                          name
-                                          suit
-                                          age
-                                          pv
-                                          epv
-                                          sEpv
-                                          contract
-                                          tOption
-                                          pOption
-                                          renew
-                                          salary
-                                          grade
-                                          trainer
-                                          lineup
-                                          franchise{
-                                            __typename
-                                            id
-                                            franchise
-                                          }
-                                          league{
-                                            __typename
-                                            id
-                                            leagueName
-                                          }
-                                        }
-            `,
+                                         }, mutateCreatePlayerQuery,
                                          undefined
                                      );
                                  }
@@ -325,7 +237,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                     ) : (
                         <Space size="middle">
                             <Tag color={"#ffe479"} icon={<span role="img" aria-label="player"> 📝 </span>}
-                            style={{ color: "#000000", border: "2px solid #ffe479"}}
+                                 style={{color: "#000000", border: "2px solid #ffe479"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -346,36 +258,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "trainer": false,
                                                  "leagueId": store.User.franchise.league.id
                                              }
-                                         }, `
-                                    player {
-                                          __typename
-                                          id
-                                          name
-                                          suit
-                                          age
-                                          pv
-                                          epv
-                                          sEpv
-                                          contract
-                                          tOption
-                                          pOption
-                                          renew
-                                          salary
-                                          grade
-                                          trainer
-                                          lineup
-                                          franchise{
-                                            __typename
-                                            id
-                                            franchise
-                                          }
-                                          league{
-                                            __typename
-                                            id
-                                            leagueName
-                                          }
-                                        }
-            `,
+                                         }, mutateCreatePlayerQuery,
                                          undefined
                                      );
                                  }
