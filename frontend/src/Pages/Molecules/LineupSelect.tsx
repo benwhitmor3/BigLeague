@@ -2,6 +2,7 @@ import React, {useContext, useState} from "react";
 import {PlayerTypeModelType, StoreContext} from "../../models";
 import {Select} from "../Atoms/Select";
 import {observer} from "mobx-react";
+import {mutateCreatePlayerQuery} from "../Utils/queries";
 
 
 interface ILineup {
@@ -26,6 +27,8 @@ const LineupSelect: React.FunctionComponent<ILineup> = observer(({current_lineup
                 // if legal lineup run mutation
                 if (lineupArray.filter(x => x == "starter").length <= 5 && lineupArray.filter(x => x == "rotation").length <= 3) {
                     setSelected(updated_lineup);
+                    console.log(updated_lineup)
+                    console.log(record)
                     store.mutateCreatePlayer({
                             "playerInput": {
                                 "name": record.name,
@@ -42,39 +45,11 @@ const LineupSelect: React.FunctionComponent<ILineup> = observer(({current_lineup
                                 "grade": record.grade,
                                 "franchiseId": store.User.franchise.id,
                                 "trainer": false,
+                                "year": record.year,
                                 "lineup": updated_lineup,
                                 "leagueId": store.User.franchise.league.id
                             }
-                        }, `
-                                    player {
-                                          __typename
-                                          id
-                                          name
-                                          suit
-                                          age
-                                          pv
-                                          epv
-                                          sEpv
-                                          contract
-                                          tOption
-                                          pOption
-                                          renew
-                                          salary
-                                          grade
-                                          trainer
-                                          lineup
-                                          franchise{
-                                            __typename
-                                            id
-                                            franchise
-                                          }
-                                          league{
-                                            __typename
-                                            id
-                                            leagueName
-                                          }
-                                        }
-            `,
+                        }, mutateCreatePlayerQuery,
                         undefined
                     )
                 }

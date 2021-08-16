@@ -1,10 +1,46 @@
-from bigleague.models import *
+from .models import *
 import random
 from random import gauss
 import faker
 
 
-# manually create user, franchise, and league
+def gen_franchise(league, num_of_franchises=7):
+    # create other franchises (36 names)
+    franchise_names = ["Aces", "All Stars", "Avengers", "Aztecs", "Big Blues", "Big Red", "Champions",
+                       "Crimson",
+                       "Dragons", "Devils", "Dream Team", "Elite", "Flames", "Flash", "Force", "Groove",
+                       "Heatwave",
+                       "Icons", "Jam", "Legends", "Masters", "Monarchy", "Pioneers", "Pride", "Racers",
+                       "Rebels",
+                       "Royals", "Saints", "Soul", "Spirit", "Storm", "Titans", "United", "Violets", "Voodoo",
+                       "Warriors", "Wild"]
+
+    franchise_list = random.sample(franchise_names, k=num_of_franchises)
+    cities = City.objects.filter(league=league)
+    # create other franchises
+    for franchise_name in franchise_list:
+        franchise = Franchise.objects.create(
+            franchise=franchise_name,
+            league=league
+        )
+        franchise.save()
+        # create stadium for other franchises
+        Stadium.objects.create(
+            stadium_name=franchise_name + ' stadium',
+            seats=random.randint(20000, 60000),
+            boxes=random.randint(50, 250),
+            grade=20,
+            max_grade=20,
+            home_field_advantage=0,
+            city=random.choice(cities),
+            franchise=franchise
+        )
+
+    # create season 1 for ALL franchises
+    for franchise in Franchise.objects.all():
+        Season.objects.create(franchise=franchise, season=1)
+
+    return "Successfully created " + str(num_of_franchises) + " franchises"
 
 
 def gen_city(league, num_of_cities=8):
@@ -12,8 +48,6 @@ def gen_city(league, num_of_cities=8):
               "San Antonio", "Denver", "Boston", "Las Vegas", "Seattle", "Atalanta", "San Diego"]
     values = [5, 6, 7, 8, 9, 10, 11, 12]
     cities_list = random.sample(cities, k=num_of_cities)
-
-    # City.objects.all().delete()
 
     # for city in cities_list:
     #     City.objects.update_or_create(
@@ -33,12 +67,11 @@ def gen_city(league, num_of_cities=8):
         )
 
 
-def gen_player(league, num_of_players=50, year=0):
-    # Player.objects.all().delete()
+def gen_player(league, num_of_players=50, rookies=True):
 
     for players in range(num_of_players):
 
-        if year < 1:
+        if rookies is False:
             age = random.randint(18, 30)
         else:
             age = random.randint(18, 22)
@@ -152,12 +185,12 @@ def gen_player(league, num_of_players=50, year=0):
             # salary=salary,
             # grade=grade,
             # trainer=0,
+            year=1,
             league=league,
         )
 
 
 def gen_gm(league):
-    # GM.objects.all().delete()
 
     gms = ['facilitator', 'promoter', 'recruiter', 'scouter', 'suitor', 'trainer']
 
@@ -169,20 +202,17 @@ def gen_gm(league):
 
 
 def gen_coach(league, num_of_coaches=10):
-    # Coach.objects.all().delete()
 
     for coach in range(num_of_coaches):
-        attribute_one = \
-            random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'],
-                           k=1)[0]
-        attribute_two = \
-            random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'],
-                           k=1)[0]
+        # coaches can have double teamwork trait
+        attributes = \
+            random.sample(['teamwork', 'teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'],
+                           k=2)
 
         Coach.objects.create(
             name=faker.Faker().name(),
-            attribute_one=attribute_one,
-            attribute_two=attribute_two,
+            attribute_one=attributes[0],
+            attribute_two=attributes[1],
             league=league,
         )
 
@@ -200,18 +230,13 @@ def gen_salary(contract, epv, renew, t_option, p_option, age):
             salary += 1 * (epv / (contract + 1))
         # need to edit this for now null options
         if t_option != 0:
-            salary += (contract - t_option) * (epv / (contract + 1))
+            salary += (contract - (t_option if t_option is not None else 0)) * (epv / (contract + 1))
         if p_option != 0:
-            salary -= 0.5 * (contract - p_option) * (epv / (contract + 1))
+            salary -= 0.5 * (contract - (p_option if p_option is not None else 0)) * (epv / (contract + 1))
 
         if age >= 27:
             salary -= (age - 26) * (epv / (contract + 1))
-        # this makes options with a zero that are generated as 0 = none, need to keep zero beforehand
-        # for salary calculation
-        if t_option == 0:
-            t_option = None
-        if p_option == 0:
-            p_option = None
+
     else:
         salary = None
 
@@ -231,9 +256,9 @@ def gen_grade(salary, contract, epv, renew, t_option, p_option, age):
             grade -= 1
 
         if t_option != 0:
-            grade -= (contract - t_option)
+            grade -= (contract - (t_option if t_option is not None else 0))
         if p_option != 0:
-            grade += 0.5 * (contract - p_option)
+            grade += 0.5 * (contract - (p_option if p_option is not None else 0))
 
         if age >= 27:
             grade += age - 26

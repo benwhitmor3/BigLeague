@@ -4,6 +4,7 @@ import {Tag, Input, Modal, Select} from 'antd';
 import {observer} from "mobx-react";
 import CSS from "csstype";
 import {StoreContext} from "../../models";
+import {mutateCreatePlayerQuery} from "../Utils/queries";
 
 interface IVisible {
     visible: boolean;
@@ -70,39 +71,12 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                             "grade": offergrade,
                             "franchiseId": store.User.franchise.id,
                             "trainer": false,
-                            "lineup": selectedplayer.lineup,
+                            "year": selectedplayer.year,
+                            "lineup": "bench",
                             "leagueId": store.User.franchise.league.id
                         }
-                    }, `
-                                    player {
-                                          __typename
-                                          id
-                                          name
-                                          suit
-                                          age
-                                          pv
-                                          epv
-                                          sEpv
-                                          contract
-                                          tOption
-                                          pOption
-                                          renew
-                                          salary
-                                          grade
-                                          trainer
-                                          lineup
-                                          franchise{
-                                            __typename
-                                            id
-                                            franchise
-                                          }
-                                          league{
-                                            __typename
-                                            id
-                                            leagueName
-                                          }
-                                        }
-            `,
+                    },
+                    mutateCreatePlayerQuery,
                     undefined
                 )
                 setVisible(false);
@@ -155,7 +129,8 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                if (store.User.franchise.gm !== null)
                    if (store.User.franchise.gm.trait == "RECRUITER") {
                    // set grade after all adjustments + 2 for recruiter bonus
-                        setOfferGrade(grade + 2)
+                       grade = grade + 2
+                       setOfferGrade(grade )
                     }
                     else {
                    // set grade after all adjustments

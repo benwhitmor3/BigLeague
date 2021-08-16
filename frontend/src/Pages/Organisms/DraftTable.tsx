@@ -1,10 +1,10 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space} from 'antd';
-import {StoreContext} from "../../models";
+import {PlayerTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon, insertArray} from '../Utils/TableFunctions'
-import {toJS} from 'mobx';
+import {colour, suit_icon, insertArray, draft} from '../Utils/TableFunctions'
+import {IObservableArray, observable, toJS} from 'mobx';
 import {mutateCreatePlayerQuery} from "../Utils/queries";
 
 
@@ -90,6 +90,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "lineup": "bench",
                                                  "franchiseId": store.User.franchise.league.draftingFranchise.id,
                                                  "trainer": false,
+                                                 "year": record.year,
                                                  "leagueId": store.User.franchise.league.id
                                              }
                                          }, mutateCreatePlayerQuery,
@@ -122,6 +123,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                                  "lineup": "bench",
                                                  "franchiseId": store.User.franchise.league.draftingFranchise.id,
                                                  "trainer": false,
+                                                 "year": record.year,
                                                  "leagueId": store.User.franchise.league.id
                                              }
                                          }, mutateCreatePlayerQuery,
@@ -161,13 +163,16 @@ export const DraftTable: React.FunctionComponent = observer(() => {
             else return non_scouter_columns
         }
 
+        // need to make observable to update table (draftClass not being observed by ant d table)
+        let draftClass: IObservableArray<PlayerTypeModelType> = observable(store.User.franchise.league.draftClass)
+
         if (store.User == undefined || store.User.franchise == undefined) return <div> loading</div>;
         else {
             return (
                 <Table
                     rowKey="id"
                     columns={columns()}
-                    dataSource={toJS(store.User.franchise.league.playerSet)}
+                    dataSource={toJS(draftClass)}
                     pagination={false}
                     bordered
                     style={{

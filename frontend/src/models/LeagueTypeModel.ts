@@ -2,6 +2,7 @@ import {Instance, types} from "mobx-state-tree"
 import {LeagueTypeModelBase} from "./LeagueTypeModel.base"
 import {FranchiseTypeModel} from "./FranchiseTypeModel";
 import {UserTypeModel} from "./UserTypeModel";
+import {PlayerTypeModelType} from "./PlayerTypeModel";
 
 /* The TypeScript type of an instance of LeagueTypeModel */
 export interface LeagueTypeModelType extends Instance<typeof LeagueTypeModel.Type> {
@@ -43,7 +44,7 @@ export const LeagueTypeModel = LeagueTypeModelBase
             });
             return player
         },
-        franchiseplayers(franchiseName: string){
+        franchiseplayers(franchiseName: string) {
             let franchiseplayers = self.playerSet.filter(function (player: any, index: any) {
                 if (player.franchise)
                     if (player.franchise.franchise == franchiseName)
@@ -51,4 +52,18 @@ export const LeagueTypeModel = LeagueTypeModelBase
             });
             return franchiseplayers
         },
+        get draftClass() {
+            let draftClass = self.playerSet.filter((player: PlayerTypeModelType) => {
+                if (player.year == 1)
+                    return player
+            })
+            return draftClass
+        },
+        get freeAgentClass() {
+            let freeAgentClass = self.playerSet.filter((player: PlayerTypeModelType) => {
+                if (player.year != 1 && player.contract == null)
+                    return player
+            })
+            return freeAgentClass
+        }
     }))

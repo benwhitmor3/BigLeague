@@ -39,12 +39,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('league_generation', csrf_exempt(views.league_generation_view), name='league_generation'),
-    path('stadium_generation', csrf_exempt(views.stadium_generation_view), name='stadium_generation'),
     path('draft_order', csrf_exempt(views.draft_order_view), name='draft_order'),
     path('draft_optimize', csrf_exempt(views.draft_optimize_view), name='draft_optimize'),
     path('season_sim', csrf_exempt(views.season_simulation_view), name='season_sim'),
     path('set_lineup', csrf_exempt(views.set_lineup_view), name='set_lineup'),
     path('sign_players', csrf_exempt(views.sign_players_view), name='sign_players'),
+    path('offseason', csrf_exempt(views.offseason_view), name='offseason'),
+    path('free_agency', csrf_exempt(views.free_agency_view), name='free_agency'),
     path('graphql/', csrf_exempt(GraphQLView.as_view(
         graphiql=True,
         schema=schema

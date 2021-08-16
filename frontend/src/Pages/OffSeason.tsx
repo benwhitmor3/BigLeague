@@ -3,6 +3,7 @@ import {observer} from 'mobx-react'
 import {StoreContext} from "../models";
 import {Statistic, Row, Col, Card, Select, Spin, Button} from 'antd';
 import CSS from "csstype";
+import FreeAgentTable from "./Organisms/FreeAgentTable";
 
 
 const buttonStyles: CSS.Properties = {

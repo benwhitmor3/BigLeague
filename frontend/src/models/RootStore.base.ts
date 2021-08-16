@@ -72,6 +72,7 @@ export type PlayerInput = {
   salary?: number
   grade?: number
   trainer?: boolean
+  year?: number
   lineup?: string
   franchiseId?: string
   leagueId: string

@@ -209,6 +209,7 @@ class PlayerInput(graphene.InputObjectType):
     salary = graphene.Float(default=None)
     grade = graphene.Float(default=None)
     trainer = graphene.Boolean(default=False)
+    year = graphene.Int(default=1)
     lineup = graphene.String()
     franchise_id = graphene.String()
     league_id = graphene.ID(required=True)
@@ -222,6 +223,10 @@ class UpdatePlayerMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(self, info, player_input=None):
+        if player_input.t_option == 0:
+            player_input.t_option = None
+        if player_input.p_option == 0:
+            player_input.p_option = None
         obj, player = Player.objects.update_or_create(
             name=player_input.name,
             defaults={
@@ -237,6 +242,7 @@ class UpdatePlayerMutation(graphene.Mutation):
                 'renew': player_input.renew,
                 'salary': player_input.salary,
                 'grade': player_input.grade,
+                'year': player_input.year,
                 'trainer': player_input.trainer,
                 'lineup': player_input.lineup,
                 'franchise_id': player_input.franchise_id,

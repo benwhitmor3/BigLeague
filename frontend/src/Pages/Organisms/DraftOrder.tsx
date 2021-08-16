@@ -40,7 +40,7 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
         useEffect(() => {
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
-            data.append("season", '1')
+            data.append("season", store.User.franchise.seasonSet.length)
             axios.post('http://127.0.0.1:8000/draft_order', data)
                 .then(res => {
                     console.log(res.data)

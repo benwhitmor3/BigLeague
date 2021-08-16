@@ -40,6 +40,7 @@ export const PlayerTypeModelBase = withTypedRefs<Refs>()(ModelBase
     salary: types.union(types.undefined, types.null, types.number),
     grade: types.union(types.undefined, types.null, types.number),
     trainer: types.union(types.undefined, types.boolean),
+    year: types.union(types.undefined, types.integer),
     lineup: types.union(types.undefined, types.null, types.string),
     franchise: types.union(types.undefined, types.null, MSTGQLRef(types.late((): any => FranchiseTypeModel))),
     league: types.union(types.undefined, MSTGQLRef(types.late((): any => LeagueTypeModel))),
@@ -65,6 +66,7 @@ export class PlayerTypeModelSelector extends QueryBuilder {
   get salary() { return this.__attr(`salary`) }
   get grade() { return this.__attr(`grade`) }
   get trainer() { return this.__attr(`trainer`) }
+  get year() { return this.__attr(`year`) }
   get lineup() { return this.__attr(`lineup`) }
   franchise(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchise`, FranchiseTypeModelSelector, builder) }
   league(builder?: string | LeagueTypeModelSelector | ((selector: LeagueTypeModelSelector) => LeagueTypeModelSelector)) { return this.__child(`league`, LeagueTypeModelSelector, builder) }
@@ -73,4 +75,4 @@ export function selectFromPlayerType() {
   return new PlayerTypeModelSelector()
 }
 
-export const playerTypeModelPrimitives = selectFromPlayerType().name.suit.age.pv.epv.sEpv.contract.tOption.pOption.renew.salary.grade.trainer.lineup
+export const playerTypeModelPrimitives = selectFromPlayerType().name.suit.age.pv.epv.sEpv.contract.tOption.pOption.renew.salary.grade.trainer.year.lineup

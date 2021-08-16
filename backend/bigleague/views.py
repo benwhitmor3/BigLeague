@@ -1,11 +1,13 @@
 import random
 from random import gauss, sample
 import pandas as pd
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
 
+from .league_functions import sign_players
 from .simulation import schedule_creation, suit_bonus
-from .generator import gen_city, gen_gm, gen_coach, gen_player, gen_salary, gen_grade
+from .generator import gen_city, gen_gm, gen_coach, gen_player, gen_salary, gen_grade, gen_franchise
 from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
     GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer
 from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season
@@ -82,77 +84,35 @@ def league_generation_view(request):
         league = franchise.league
         num_of_franchises = int(request.POST.get('num_of_franchises'))
 
-        # create cities, gms, and coaches
-        if int(len(league.city_set.all())) > 0:
-            print("League already has " + str(len(league.city_set.all())) + " cities")
-        else:
-            gen_city(league, 10)
+        with transaction.atomic():
+            # create cities, gms, and coaches
+            if int(len(league.city_set.all())) > 0:
+                print("League already has " + str(len(league.city_set.all())) + " cities")
+            else:
+                gen_city(league, 10)
 
-        if int(len(league.gm_set.all())) > 0:
-            print("League already has " + str(len(league.gm_set.all())) + " gms")
-        else:
-            gen_gm(league)
+            if int(len(league.gm_set.all())) > 0:
+                print("League already has " + str(len(league.gm_set.all())) + " gms")
+            else:
+                gen_gm(league)
 
-        if int(len(league.coach_set.all())) > 0:
-            print("League already has " + str(len(league.coach_set.all())) + " coaches")
-        else:
-            gen_coach(league, num_of_franchises * 2)
+            if int(len(league.coach_set.all())) > 0:
+                print("League already has " + str(len(league.coach_set.all())) + " coaches")
+            else:
+                gen_coach(league, num_of_franchises * 2)
 
-        if int(len(league.player_set.all())) > 0:
-            print("League already has " + str(len(league.player_set.all())) + " players")
-        else:
-            gen_player(league, num_of_franchises * 8, year=0)
+            if int(len(league.player_set.all())) > 0:
+                print("League already has " + str(len(league.player_set.all())) + " players")
+            else:
+                gen_player(league, num_of_franchises * 8, rookies=False)
 
-        if int(len(league.franchise_set.all())) > 1:
-            print("League already has more than one franchise")
-        else:
-            # create other franchises (36 names)
-            franchise_names = ["Aces", "All Stars", "Avengers", "Aztecs", "Big Blues", "Big Red", "Champions",
-                               "Crimson",
-                               "Dragons", "Devils", "Dream Team", "Elite", "Flames", "Flash", "Force", "Groove",
-                               "Heatwave",
-                               "Icons", "Jam", "Legends", "Masters", "Monarchy", "Pioneers", "Pride", "Racers",
-                               "Rebels",
-                               "Royals", "Saints", "Soul", "Spirit", "Storm", "Titans", "United", "Violets", "Voodoo",
-                               "Warriors", "Wild"]
-
-            franchise_list = random.sample(franchise_names, k=(num_of_franchises - 1))
-
-        # create other franchises
-        for franchise_name in franchise_list:
-            Franchise.objects.create(
-                franchise=franchise_name,
-                league=league
-            )
-        # create season 1 for each franchise
-        for franchise in Franchise.objects.all():
-            s = Season.objects.create(franchise=franchise, season=1)
-            s.save()
+            if int(len(league.franchise_set.all())) > 1:
+                print("League already has more than one franchise")
+            else:
+                gen_franchise(league, num_of_franchises-1)
 
         return HttpResponse(request)
 
-
-# r = requests.post('http://127.0.0.1:8000/stadium_generation', data={'league_id': '7'})
-def stadium_generation_view(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    if request.method == 'POST':
-        league_id = request.POST.get('league_id')
-        league = League.objects.get(id=league_id)
-        cities = City.objects.filter(league=league)
-
-        for franchise in Franchise.objects.filter(league=league, stadium__stadium_name__isnull=True):
-            Stadium.objects.create(
-                stadium_name=franchise.franchise + ' stadium',
-                seats=random.randint(20000, 60000),
-                boxes=random.randint(50, 250),
-                grade=20,
-                max_grade=20,
-                home_field_advantage=0,
-                city=random.choice(cities),
-                franchise=franchise
-            )
-
-        return HttpResponse(request)
 
 # r = requests.post('http://127.0.0.1:8000/draft_order', data={'franchise_id': '72', 'season': 1})
 def draft_order_view(request):
@@ -164,11 +124,18 @@ def draft_order_view(request):
         season = request.POST.get('season')
 
         s = Season.objects.all()
-        # get season for league and season number sorted ascending wins, ppg, franchise_id
-        franchise_order = sorted(s.filter(franchise__league=league, season=season).values('wins', 'ppg', 'franchise_id',
-                                                                                          'franchise_id__franchise'),
-                                 key=lambda i: (i['wins'], i['ppg'],
-                                                i['franchise_id']))
+        if season == '1':
+            # get season for league and season number sorted ascending wins, ppg, franchise_id for inaugural season
+            franchise_order = sorted(
+                s.filter(franchise__league=league, season=season).values('wins', 'ppg', 'franchise_id',
+                                                                         'franchise_id__franchise'),
+                key=lambda i: (i['wins'], i['ppg'], i['franchise_id']))
+        else:
+            # get season for league and season number sorted ascending wins, ppg, franchise_id
+            franchise_order = sorted(
+                s.filter(franchise__league=league, season=int(season) - 1).values('wins', 'ppg', 'franchise_id',
+                                                                                  'franchise_id__franchise'),
+                key=lambda i: (i['wins'], i['ppg'], i['franchise_id']))
 
         draft_order = []
         for i in franchise_order:
@@ -187,7 +154,7 @@ def draft_optimize_view(request):
 
         p = Player.objects.all()
         # get all players in that league without a franchise sorted descending pv
-        best_player = {"best_player": sorted(p.filter(league=league).exclude(franchise__isnull=False).values(),
+        best_player = {"best_player": sorted(p.filter(league=league, year=1).exclude(franchise__isnull=False).values(),
                                              key=lambda i: (i['pv']), reverse=True)[0]['name']}
 
         return JsonResponse(best_player)
@@ -208,25 +175,13 @@ def set_lineup_view(request):
                 print("DON'T EDIT MY FRANCHISE PLEASE")
             else:
                 for player in Player.objects.filter(franchise=f).order_by('-pv')[:5]:
-                    print(player)
                     player.lineup = "starter"
-                    print(player.lineup)
-                    # player.contract = 5
-                    # print(player.contract)
                     player.save()
                 for player in Player.objects.filter(franchise=f).order_by('-pv')[5:8]:
-                    print(player)
                     player.lineup = "rotation"
                     print(player.lineup)
-                    # player.contract = 3
-                    # print(player.contract)
-                    player.save()
                 for player in Player.objects.filter(franchise=f).order_by('-pv')[8:]:
-                    print(player)
                     player.lineup = "bench"
-                    print(player.lineup)
-                    # player.contract = 1
-                    # print(player.contract)
                     player.save()
 
         return HttpResponse(request)
@@ -239,52 +194,136 @@ def sign_players_view(request):
         my_franchise = Franchise.objects.get(id=franchise_id)
         league = my_franchise.league
 
-        franchises = Franchise.objects.filter(league=league)
-        # for every franchise not mine, get players assigned to a team and give contract
-        for franchise in franchises:
-            if franchise == my_franchise:
-                print("DON'T EDIT MY FRANCHISE PLEASE")
-            else:
-                for player in Player.objects.filter(franchise=franchise, contract__isnull=True):
-                    print(player)
-                    # set contract
-                    player.contract = random.randint(1, 5)
-                    # set t_option
-                    if player.contract == 5:
-                        player.t_option = random.randint(0, 4)
-                    elif player.contract == 4:
-                        player.t_option = random.randint(0, 3)
-                    elif player.contract == 3:
-                        player.t_option = random.randint(0, 2)
-                    elif player.contract == 2:
-                        player.t_option = random.randint(0, 1)
-                    elif player.contract == 1:
-                        player.t_option = 0
-                    elif player.contract == 0:
-                        player.t_option = 0
-                    # set p_option
-                    if player.t_option == 0:
-                        if player.contract == 5:
-                            player.p_option = random.randint(0, 4)
-                        elif player.contract == 4:
-                            player.p_option = random.randint(0, 3)
-                        elif player.contract == 3:
-                            player.p_option = random.randint(0, 2)
-                        elif player.contract == 2:
-                            player.p_option = random.randint(0, 1)
-                        elif player.contract == 1:
-                            player.p_option = 0
-                        elif player.contract == 0:
-                            player.p_option = 0
-                    else:
-                        player.p_option = 0
-                    # set renew
-                    renew_weight = ["no"] * 7 + ["non-repeat"] * 1 + ["repeat"] * 2
-                    player.renew = random.choice(renew_weight)
+        franchises = Franchise.objects.filter(league=league, user=None)
+        with transaction.atomic():
+            # for every franchise not mine, get players assigned to a team and give contract
+            for franchise in franchises:
+                sign_players(franchise)
 
-                    player.salary = gen_salary(player.contract, player.epv, player.renew, player.t_option, player.p_option, player.age)
-                    player.grade = gen_grade(player.salary, player.contract, player.epv, player.renew, player.t_option, player.p_option, player.age)
-                    player.save()
+        return HttpResponse(request)
+
+
+def offseason_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        franchise = Franchise.objects.get(id=franchise_id)
+        league = franchise.league
+
+        # apply to all players in the league
+        for player in Player.objects.filter(league=league):
+            # add one year to age
+            player.age += 1
+            # add one year to year
+            player.year += 1
+            # adds 1 with s.d. 1 for players 20 or younger
+            if player.age <= 20:
+                player.pv = player.pv + gauss(1, 1)
+            # adds 0 with s.d. 1 for players 21 to 23
+            elif 21 <= player.age <= 23:
+                player.pv = player.pv + gauss(0, 1)
+            # subtracts 1 with s.d. 1 for players 24 to 26
+            elif 24 <= player.age <= 26:
+                player.pv = player.pv + gauss(-1, 1)
+            # subtracts 2 with s.d. 1 for players 27 to 30
+            else:
+                player.pv = player.pv + gauss(-2, 1)
+
+            if player.trainer:
+                player.pv += 1
+
+            # updating epv based on new pv
+            player.epv = player.pv + gauss(0, 3)
+            # updating s_epv based on new pv
+            player.s_epv = player.pv + gauss(0, 2)
+
+            player.save()
+
+            # if player is over 30 years old they retire or if player pv is below 8 they retire
+            if player.age > 30 or player.pv < 8:
+                player.delete()
+
+        # for all signed players
+        for signed_player in Player.objects.filter(league=league, contract__isnull=False):
+            # updating contract years and option years left (once option is zero can be activated)
+            if signed_player.contract > 0:
+                signed_player.contract -= 1
+            if signed_player.t_option is not None:
+                if signed_player.t_option > 0:
+                    signed_player.t_option -= 1
+            if signed_player.p_option is not None:
+                if signed_player.p_option > 0:
+                    signed_player.p_option -= 1
+            # if contract expires release player from team
+            if signed_player.contract == 0:
+                signed_player.contract = None
+                signed_player.p_option = None
+                signed_player.t_option = None
+                signed_player.renew = None
+                signed_player.grade = None
+                signed_player.salary = None
+                signed_player.franchise = None
+            signed_player.save()
+
+        # degrade my stadium by 1
+        for franchise in Franchise.objects.filter(franchise=franchise):
+            franchise.stadium.grade -= 1
+            franchise.stadium.save()
+
+        # remove coaches and gms
+        for franchise in Franchise.objects.filter(league=league):
+            franchise.gm = None
+            franchise.coach = None
+            franchise.save()
+
+        gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
+
+        return HttpResponse(request)
+
+
+def free_agency_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        season = request.POST.get('season')
+        franchise = Franchise.objects.get(id=franchise_id)
+        league = franchise.league
+
+        p = Player.objects.all()
+        # need season in the filter otherwise it will include multiple seasons
+        for franchise in Franchise.objects.filter(user=None, league=league, season__season=int(season)-1).order_by('season__wins'):
+            # if franchise has less than 5 players definitely sign a player
+            while franchise.player_set.count() < 5:
+                # get all players in that league, not rookies, without contracts, and no franchise sorted descending pv
+                free_agent_one = \
+                p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[0]
+                free_agent_one.franchise = franchise
+                free_agent_one.lineup = "bench"
+                free_agent_one.save()
+            # now that franchises have 5 players pick free agents
+            chance = random.randint(0, 100)
+            if chance >= 90:
+                free_agent_one = \
+                    p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
+                        0]
+                free_agent_one.franchise = franchise
+                free_agent_one.lineup = "bench"
+                free_agent_one.save()
+                free_agent_two = \
+                    p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
+                        0]
+                free_agent_two.franchise = franchise
+                free_agent_two.lineup = "bench"
+                free_agent_two.save()
+            elif chance >= 70:
+                free_agent_one = \
+                    p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
+                        0]
+                free_agent_one.franchise = franchise
+                free_agent_one.lineup = "bench"
+                free_agent_one.save()
+            else:
+                print('franchise ' + franchise.franchise + ' signed nobody')
 
         return HttpResponse(request)
 
@@ -297,32 +336,6 @@ def season_simulation_view(request):
         league = League.objects.get(id=league_id)
         franchises = Franchise.objects.filter(league_id=league_id)
         season = request.POST.get('season')
-
-        for f in franchises:
-            if f == Franchise.objects.get(franchise="Bonus Time Bandits"):
-                print("DON'T EDIT MY FRANCHISE PLEASE")
-            else:
-                for player in Player.objects.filter(franchise=f).order_by('-pv')[:5]:
-                    print(player)
-                    player.lineup = "starter"
-                    print(player.lineup)
-                    player.contract = 5
-                    print(player.contract)
-                    player.save()
-                for player in Player.objects.filter(franchise=f).order_by('-pv')[5:8]:
-                    print(player)
-                    player.lineup = "rotation"
-                    print(player.lineup)
-                    player.contract = 3
-                    print(player.contract)
-                    player.save()
-                for player in Player.objects.filter(franchise=f).order_by('-pv')[8:]:
-                    print(player)
-                    player.lineup = "bench"
-                    print(player.lineup)
-                    player.contract = 1
-                    print(player.contract)
-                    player.save()
 
         for franchise in franchises:
             if franchise.gm is None:
@@ -450,7 +463,6 @@ def season_simulation_view(request):
                     # needs list as passes queryset
                     b = sum(starter_points) + suit_bonus(list(suit_list))
 
-
                 '''__________________________more post_points coaching factors applied_______________________'''
 
                 # underdog coach factor
@@ -465,8 +477,14 @@ def season_simulation_view(request):
 
                 # teamwork coach factor
                 if league_schedule[y][0].coach.attribute_one == 'teamwork' \
+                        and league_schedule[y][0].coach.attribute_two == 'teamwork':
+                    a = a + 6
+                if league_schedule[y][0].coach.attribute_one == 'teamwork' \
                         or league_schedule[y][0].coach.attribute_two == 'teamwork':
                     a = a + 3
+                if league_schedule[y][0].coach.attribute_one == 'teamwork' \
+                        and league_schedule[y][0].coach.attribute_two == 'teamwork':
+                    b = b + 6
                 if league_schedule[y][1].coach.attribute_one == 'teamwork' \
                         or league_schedule[y][1].coach.attribute_two == 'teamwork':
                     b = b + 3
@@ -503,7 +521,7 @@ def season_simulation_view(request):
             s.std = results_df.std(axis=1)[franchise.franchise]
             s.save()
             # create next season object
-            s = Season.objects.create(franchise=franchise, season=int(season)+1)
+            s = Season.objects.create(franchise=franchise, season=int(season) + 1)
             s.save()
 
         # this loop needs to be after so that all the teams have season stats set
