@@ -61,8 +61,21 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
                                               renew
                                               salary
                                               grade
+                                              year
                                               trainer
                                               lineup
+                                            }
+                                            gm{
+                                                __typename
+                                                id
+                                                trait
+                                            }
+                                            coach{
+                                                __typename
+                                                id
+                                                name
+                                                attributeOne
+                                                attributeTwo
                                             }
                                           }
                                         }

@@ -5,7 +5,7 @@ from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
 
-from .league_functions import sign_players
+from .league_functions import sign_players, set_lineup, offseason, simulate_season
 from .simulation import schedule_creation, suit_bonus
 from .generator import gen_city, gen_gm, gen_coach, gen_player, gen_salary, gen_grade, gen_franchise
 from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
@@ -160,33 +160,7 @@ def draft_optimize_view(request):
         return JsonResponse(best_player)
 
 
-# r = requests.post('http://127.0.0.1:8000/set_lineup', data={'franchise_id': '72'})
-def set_lineup_view(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    if request.method == 'POST':
-        franchise_id = request.POST.get('franchise_id')
-        franchise = Franchise.objects.get(id=franchise_id)
-        league = franchise.league
-
-        franchises = Franchise.objects.filter(league=league)
-        # for every franchise not mine, get players and assign lineup based on pv
-        for f in franchises:
-            if f == franchise:
-                print("DON'T EDIT MY FRANCHISE PLEASE")
-            else:
-                for player in Player.objects.filter(franchise=f).order_by('-pv')[:5]:
-                    player.lineup = "starter"
-                    player.save()
-                for player in Player.objects.filter(franchise=f).order_by('-pv')[5:8]:
-                    player.lineup = "rotation"
-                    print(player.lineup)
-                for player in Player.objects.filter(franchise=f).order_by('-pv')[8:]:
-                    player.lineup = "bench"
-                    player.save()
-
-        return HttpResponse(request)
-
-
+# r = requests.post('http://127.0.0.1:8000/sign_players', data={'franchise_id': '72'})
 def sign_players_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -203,80 +177,18 @@ def sign_players_view(request):
         return HttpResponse(request)
 
 
-def offseason_view(request):
+# r = requests.post('http://127.0.0.1:8000/set_lineup', data={'franchise_id': '72'})
+def set_lineup_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
         franchise_id = request.POST.get('franchise_id')
-        franchise = Franchise.objects.get(id=franchise_id)
-        league = franchise.league
+        my_franchise = Franchise.objects.get(id=franchise_id)
+        league = my_franchise.league
 
-        # apply to all players in the league
-        for player in Player.objects.filter(league=league):
-            # add one year to age
-            player.age += 1
-            # add one year to year
-            player.year += 1
-            # adds 1 with s.d. 1 for players 20 or younger
-            if player.age <= 20:
-                player.pv = player.pv + gauss(1, 1)
-            # adds 0 with s.d. 1 for players 21 to 23
-            elif 21 <= player.age <= 23:
-                player.pv = player.pv + gauss(0, 1)
-            # subtracts 1 with s.d. 1 for players 24 to 26
-            elif 24 <= player.age <= 26:
-                player.pv = player.pv + gauss(-1, 1)
-            # subtracts 2 with s.d. 1 for players 27 to 30
-            else:
-                player.pv = player.pv + gauss(-2, 1)
-
-            if player.trainer:
-                player.pv += 1
-
-            # updating epv based on new pv
-            player.epv = player.pv + gauss(0, 3)
-            # updating s_epv based on new pv
-            player.s_epv = player.pv + gauss(0, 2)
-
-            player.save()
-
-            # if player is over 30 years old they retire or if player pv is below 8 they retire
-            if player.age > 30 or player.pv < 8:
-                player.delete()
-
-        # for all signed players
-        for signed_player in Player.objects.filter(league=league, contract__isnull=False):
-            # updating contract years and option years left (once option is zero can be activated)
-            if signed_player.contract > 0:
-                signed_player.contract -= 1
-            if signed_player.t_option is not None:
-                if signed_player.t_option > 0:
-                    signed_player.t_option -= 1
-            if signed_player.p_option is not None:
-                if signed_player.p_option > 0:
-                    signed_player.p_option -= 1
-            # if contract expires release player from team
-            if signed_player.contract == 0:
-                signed_player.contract = None
-                signed_player.p_option = None
-                signed_player.t_option = None
-                signed_player.renew = None
-                signed_player.grade = None
-                signed_player.salary = None
-                signed_player.franchise = None
-            signed_player.save()
-
-        # degrade my stadium by 1
-        for franchise in Franchise.objects.filter(franchise=franchise):
-            franchise.stadium.grade -= 1
-            franchise.stadium.save()
-
-        # remove coaches and gms
-        for franchise in Franchise.objects.filter(league=league):
-            franchise.gm = None
-            franchise.coach = None
-            franchise.save()
-
-        gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
+        franchises = Franchise.objects.filter(league=league, user=None)
+        # for every franchise not mine, get players and assign lineup based on pv
+        for franchise in franchises:
+            set_lineup(league, franchise)
 
         return HttpResponse(request)
 
@@ -296,7 +208,7 @@ def free_agency_view(request):
             while franchise.player_set.count() < 5:
                 # get all players in that league, not rookies, without contracts, and no franchise sorted descending pv
                 free_agent_one = \
-                p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[0]
+                    p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[0]
                 free_agent_one.franchise = franchise
                 free_agent_one.lineup = "bench"
                 free_agent_one.save()
@@ -337,207 +249,22 @@ def season_simulation_view(request):
         franchises = Franchise.objects.filter(league_id=league_id)
         season = request.POST.get('season')
 
-        for franchise in franchises:
-            if franchise.gm is None:
-                franchise.gm = sample(set(GM.objects.filter(league=league)), 1)[0]
-            if franchise.coach is None:
-                franchise.coach = sample(set(Coach.objects.filter(league=league, franchise=None)), 1)[0]
-            franchise.save()
+        with transaction.atomic():
+            simulate_season(league, int(season))
 
-        league_schedule = schedule_creation(franchises)
+    return HttpResponse(request)
 
-        results = {}
 
-        for y in range(len(league_schedule)):
-            # games per series
-            games = 14
-            while games > 0:
+def offseason_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        franchise = Franchise.objects.get(id=franchise_id)
+        league = franchise.league
 
-                '''___________________________________franchise A____________________________________'''
+        with transaction.atomic():
+            offseason(league)
 
-                # focus/guts coach factor
-                if league_schedule[y][0].coach.attribute_one == 'guts' \
-                        or league_schedule[y][0].coach.attribute_two == 'guts':
-                    sd = 14
-                elif league_schedule[y][0].coach.attribute_one == 'focus' \
-                        or league_schedule[y][0].coach.attribute_two == 'focus':
-                    sd = 7
-                else:
-                    sd = 9
-
-                starters = Player.objects.filter(franchise=league_schedule[y][0], lineup='starter')
-                rotation = Player.objects.filter(franchise=league_schedule[y][0], lineup='rotation')
-
-                # sum franchise pv starter_value (used for underdog coach)
-                a_starters_pv = sum(
-                    Player.objects.filter(franchise=league_schedule[y][0], lineup='starter').values_list('pv',
-                                                                                                         flat=True))
-                suit_list = Player.objects.filter(franchise=league_schedule[y][0], lineup='starter').values_list('suit',
-                                                                                                                 flat=True)
-
-                # Starters
-                starter_points = []
-                for starter in starters:
-                    starter_points.append(gauss(starter.pv, sd))
-
-                # Rotation
-                rotation_points = []
-                for r in rotation:
-                    rotation_points.append(gauss(r.pv, sd))
-                rotation_points.sort()  # this is done so can get max rotation points with the first substitution
-
-                # substitution coach factor
-                if league_schedule[y][0].coach.attribute_one == 'substitution' \
-                        or league_schedule[y][0].coach.attribute_two == 'substitution':
-                    substitution = 1
-                else:
-                    substitution = 2
-
-                # if rotation points available, if starter is below sd threshold and lower than rotation option,
-                # then replace relevant starter_points
-                for idx, player in enumerate(zip(starter_points, starters)):
-                    if rotation_points:
-                        if player[0] < (player[1].pv - (substitution * sd)) and player[0] < rotation_points[-1]:
-                            starter_points[idx] = rotation_points[-1]
-                            del rotation_points[-1]
-
-                # suitor GM factor
-                if league_schedule[y][0].gm.trait == 'suitor':
-                    a = sum(starter_points)
-                else:
-                    # needs list as passes queryset
-                    a = sum(starter_points) + suit_bonus(list(suit_list))
-
-                '''___________________________________franchise B____________________________________'''
-
-                # focus/guts coach factor
-                if league_schedule[y][1].coach.attribute_one == 'guts' \
-                        or league_schedule[y][1].coach.attribute_two == 'guts':
-                    sd = 14
-                elif league_schedule[y][1].coach.attribute_one == 'focus' \
-                        or league_schedule[y][1].coach.attribute_two == 'focus':
-                    sd = 7
-                else:
-                    sd = 9
-
-                starters = Player.objects.filter(franchise=league_schedule[y][0], lineup='starter')
-                rotation = Player.objects.filter(franchise=league_schedule[y][0], lineup='rotation')
-
-                # sum franchise pv starter_value (used for underdog coach)
-                b_starters_pv = sum(
-                    Player.objects.filter(franchise=league_schedule[y][1], lineup='starter').values_list('pv',
-                                                                                                         flat=True))
-                suit_list = Player.objects.filter(franchise=league_schedule[y][1], lineup='starter').values_list('suit',
-                                                                                                                 flat=True)
-
-                # Starters
-                starter_points = []
-                for starter in starters:
-                    starter_points.append(gauss(starter.pv, sd))
-
-                # Rotation
-                rotation_points = []
-                for r in rotation:
-                    rotation_points.append(gauss(r.pv, sd))
-                rotation_points.sort()  # this is done so can get max rotation points with the first substitution
-
-                # substitution coach factor
-                if league_schedule[y][1].coach.attribute_one == 'substitution' \
-                        or league_schedule[y][1].coach.attribute_two == 'substitution':
-                    substitution = 1
-                else:
-                    substitution = 2
-
-                # if rotation points available, if starter is below sd threshold and lower than rotation option,
-                # then replace relevant starter_points
-                for idx, player in enumerate(zip(starter_points, starters)):
-                    if rotation_points:
-                        if player[0] < (player[1].pv - (substitution * sd)) and player[0] < rotation_points[-1]:
-                            starter_points[idx] = rotation_points[-1]
-                            del rotation_points[-1]
-
-                # suitor GM factor
-                if league_schedule[y][1].gm.trait == 'suitor':
-                    b = sum(starter_points)
-                else:
-                    # needs list as passes queryset
-                    b = sum(starter_points) + suit_bonus(list(suit_list))
-
-                '''__________________________more post_points coaching factors applied_______________________'''
-
-                # underdog coach factor
-                if league_schedule[y][0].coach.attribute_one == 'underdog' \
-                        or league_schedule[y][0].coach.attribute_two == 'underdog':
-                    if a_starters_pv < b_starters_pv:
-                        a = a + 0.4 * (b_starters_pv - a_starters_pv)
-                if league_schedule[y][1].coach.attribute_one == 'underdog' \
-                        or league_schedule[y][1].coach.attribute_two == 'underdog':
-                    if b_starters_pv < a_starters_pv:
-                        b = b + 0.4 * (a_starters_pv - b_starters_pv)
-
-                # teamwork coach factor
-                if league_schedule[y][0].coach.attribute_one == 'teamwork' \
-                        and league_schedule[y][0].coach.attribute_two == 'teamwork':
-                    a = a + 6
-                if league_schedule[y][0].coach.attribute_one == 'teamwork' \
-                        or league_schedule[y][0].coach.attribute_two == 'teamwork':
-                    a = a + 3
-                if league_schedule[y][0].coach.attribute_one == 'teamwork' \
-                        and league_schedule[y][0].coach.attribute_two == 'teamwork':
-                    b = b + 6
-                if league_schedule[y][1].coach.attribute_one == 'teamwork' \
-                        or league_schedule[y][1].coach.attribute_two == 'teamwork':
-                    b = b + 3
-
-                # clutch coach factor
-                if league_schedule[y][0].coach.attribute_one == 'clutch' \
-                        or league_schedule[y][0].coach.attribute_two == 'clutch':
-                    if a < b:
-                        a = a + 6
-                if league_schedule[y][1].coach.attribute_one == 'clutch' \
-                        or league_schedule[y][1].coach.attribute_two == 'clutch':
-                    if b < a:
-                        b = b + 6
-
-                results["game" + str(len(results) + 1)] = (
-                    {str(league_schedule[y][0]): a, str(league_schedule[y][1]): b})
-
-                games -= 1
-
-        results_df = pd.DataFrame(results)
-        # get games played
-        games_played = results_df.count(axis=1)[0]
-        # get wins and create wins column
-        winner = results_df.idxmax().to_list()
-        for franchise in franchises:
-            s = Season.objects.get(franchise__franchise=franchise, season=season)
-            # get wins
-            s.wins = winner.count(franchise.franchise)
-            # get losses
-            s.losses = games_played - s.wins
-            # get ppg
-            s.ppg = results_df.mean(axis=1)[franchise.franchise]
-            # get std
-            s.std = results_df.std(axis=1)[franchise.franchise]
-            s.save()
-            # create next season object
-            s = Season.objects.create(franchise=franchise, season=int(season) + 1)
-            s.save()
-
-        # this loop needs to be after so that all the teams have season stats set
-        for franchise in franchises:
-            current_season = Season.objects.get(franchise__franchise=franchise, season=season)
-            if season == '1':
-                prev_season = current_season
-            else:
-                prev_season = Season.objects.get(franchise__franchise=franchise, season=int(season) - 1)
-
-            current_season.championships = prev_season.championships
-            # get champion
-            if franchise == Season.objects.filter(season=season).order_by('-wins', '-ppg')[0].franchise:
-                print(franchise)
-                current_season.championships = prev_season.championships + 1
-
-            current_season.save()
+            gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
 
     return HttpResponse(request)

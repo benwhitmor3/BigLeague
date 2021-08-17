@@ -1,6 +1,4 @@
 from bigleague.models import *
-import random
-from random import gauss
 
 
 def schedule_creation(franchises):
