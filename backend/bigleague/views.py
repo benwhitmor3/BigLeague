@@ -1,12 +1,7 @@
-import random
-from random import gauss, sample
-import pandas as pd
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
-
-from .league_functions import sign_players, set_lineup, offseason, simulate_season
-from .simulation import schedule_creation, suit_bonus
+from .league_functions import sign_players, set_lineup, off_season, simulate_season, free_agency
 from .generator import gen_city, gen_gm, gen_coach, gen_player, gen_salary, gen_grade, gen_franchise
 from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
     GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer
@@ -186,9 +181,10 @@ def set_lineup_view(request):
         league = my_franchise.league
 
         franchises = Franchise.objects.filter(league=league, user=None)
-        # for every franchise not mine, get players and assign lineup based on pv
-        for franchise in franchises:
-            set_lineup(league, franchise)
+        with transaction.atomic():
+            # for every franchise not mine, get players and assign lineup based on pv
+            for franchise in franchises:
+                set_lineup(league, franchise)
 
         return HttpResponse(request)
 
@@ -201,41 +197,8 @@ def free_agency_view(request):
         franchise = Franchise.objects.get(id=franchise_id)
         league = franchise.league
 
-        p = Player.objects.all()
-        # need season in the filter otherwise it will include multiple seasons
-        for franchise in Franchise.objects.filter(user=None, league=league, season__season=int(season)-1).order_by('season__wins'):
-            # if franchise has less than 5 players definitely sign a player
-            while franchise.player_set.count() < 5:
-                # get all players in that league, not rookies, without contracts, and no franchise sorted descending pv
-                free_agent_one = \
-                    p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[0]
-                free_agent_one.franchise = franchise
-                free_agent_one.lineup = "bench"
-                free_agent_one.save()
-            # now that franchises have 5 players pick free agents
-            chance = random.randint(0, 100)
-            if chance >= 90:
-                free_agent_one = \
-                    p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
-                        0]
-                free_agent_one.franchise = franchise
-                free_agent_one.lineup = "bench"
-                free_agent_one.save()
-                free_agent_two = \
-                    p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
-                        0]
-                free_agent_two.franchise = franchise
-                free_agent_two.lineup = "bench"
-                free_agent_two.save()
-            elif chance >= 70:
-                free_agent_one = \
-                    p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
-                        0]
-                free_agent_one.franchise = franchise
-                free_agent_one.lineup = "bench"
-                free_agent_one.save()
-            else:
-                print('franchise ' + franchise.franchise + ' signed nobody')
+        with transaction.atomic():
+            free_agency(league, int(season))
 
         return HttpResponse(request)
 
@@ -252,7 +215,7 @@ def season_simulation_view(request):
         with transaction.atomic():
             simulate_season(league, int(season))
 
-    return HttpResponse(request)
+        return HttpResponse(request)
 
 
 def offseason_view(request):
@@ -263,8 +226,8 @@ def offseason_view(request):
         league = franchise.league
 
         with transaction.atomic():
-            offseason(league)
+            off_season(league)
 
             gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
 
-    return HttpResponse(request)
+        return HttpResponse(request)

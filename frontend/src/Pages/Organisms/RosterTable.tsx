@@ -7,6 +7,7 @@ import {colour, suit_icon, _to_fixed, _lineup, insertArray} from '../Utils/Table
 import {toJS} from "mobx";
 import SigningModal from "../Molecules/SigningModal";
 import LineupSelect from "../Molecules/LineupSelect";
+import {mutateCreatePlayerQuery} from "../Utils/queries";
 
 
 interface IFranchise {
@@ -80,11 +81,61 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 title: 'Team Option',
                 dataIndex: 'tOption',
                 key: 'tOption',
+                render: (tOption: number, record: any) => (
+                    (record.tOption == 0) ? (
+                        <Space size="middle">
+                            <Tag color={"#ff7064"} style={{color: "#ffffff", border: "2px solid #ff7064"}}
+                                 onClick={() => {
+                                     store.mutateCreatePlayer({
+                                             "playerInput": {
+                                                 "name": record.name,
+                                                 "suit": record.suit,
+                                                 "age": record.age,
+                                                 "pv": record.pv,
+                                                 "epv": record.epv,
+                                                 "sEpv": record.sEpv,
+                                                 "contract": undefined,
+                                                 "tOption": undefined,
+                                                 "pOption": undefined,
+                                                 "renew": undefined,
+                                                 "salary": undefined,
+                                                 "grade": undefined,
+                                                 "lineup": undefined,
+                                                 "franchiseId": undefined,
+                                                 "trainer": false,
+                                                 "year": record.year,
+                                                 "leagueId": store.User.franchise.league.id
+                                             }
+                                         }, mutateCreatePlayerQuery,
+                                         undefined
+                                     );
+                                 }
+                                 }>
+                                Release Player
+                            </Tag>
+                        </Space>
+                    ) : (
+                        <text>{tOption}</text>
+                    )
+
+                ),
             },
             {
                 title: 'Player Option',
                 dataIndex: 'pOption',
                 key: 'pOption',
+                render: (pOption: number, record: any) => (
+                    (record.pOption == 0) ? (
+                        <Space size="middle">
+                            <Tag color={"#ff7064"} style={{color: "#ffffff", border: "2px solid #ff7064"}}>
+                                Active
+                            </Tag>
+                        </Space>
+                    ) : (
+                        <text>{pOption}</text>
+                    )
+
+                ),
             },
             {
                 title: 'Renew',

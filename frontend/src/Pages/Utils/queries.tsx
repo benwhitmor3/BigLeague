@@ -6,7 +6,6 @@ export const userQuery = `
     league{
       __typename
       id
-      leagueName
     }
     franchise{
       __typename
@@ -60,7 +59,6 @@ export const userQuery = `
         salary
         grade
         trainer
-        year
         franchise{
           __typename
           id
@@ -157,6 +155,35 @@ export const userQuery = `
             attributeOne
             attributeTwo
           }
+          action{
+            __typename
+            id
+            numberOfActions
+            improvedBathrooms
+            improvedConcessions
+            jumbotron
+            upscaleBar
+            hallOfFame
+            improvedSeating
+            improvedSound
+            partyDeck
+            wiFi
+            fanNight
+            familyGame
+            doorPrizes
+            mvpNight
+            paradeOfChampions
+            bribeTheRefs
+            easyRuns
+            fanFactor
+            trainPlayer
+            farmSystem
+            fanFavourites
+            gourmetRestaurant
+            beerGarden
+            namingRights
+            eventPlanning
+          }
           playerSet{
             __typename
             id
@@ -173,7 +200,6 @@ export const userQuery = `
           salary
           grade
           trainer
-          year
           franchise{
             __typename
             id
@@ -186,6 +212,7 @@ export const userQuery = `
           franchise{
             __typename
             id
+            franchise
           }
           season
           ready
@@ -263,7 +290,6 @@ export const userQuery = `
           salary
           grade
           trainer
-          year
           franchise{
             __typename
             id
@@ -284,7 +310,7 @@ export const userQuery = `
           attributeTwo
         }
       }
-  }`;
+    }`;
 
 export const mutateCreatePlayerQuery = `
 player {

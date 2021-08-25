@@ -38,7 +38,7 @@ def gen_franchise(league, num_of_franchises=7):
 
     # create season 1 for ALL franchises
     for franchise in Franchise.objects.all():
-        Season.objects.create(franchise=franchise, season=1)
+        Season.objects.create(franchise=franchise, season=1, fan_index=70)
 
     return "Successfully created " + str(num_of_franchises) + " franchises"
 
@@ -206,7 +206,7 @@ def gen_coach(league, num_of_coaches=10):
     for coach in range(num_of_coaches):
         # coaches can have double teamwork trait
         attributes = \
-            random.sample(['teamwork', 'teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'],
+            random.sample(['teamwork', 'teamwork', 'clutch', 'fame', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard', 'road'],
                            k=2)
 
         Coach.objects.create(

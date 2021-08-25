@@ -11,9 +11,6 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-
-        const [sortedInfo, setSortedInfo] = useState({order: 'descend', columnKey: 'age',})
-
         const columns = [
             {
                 title: 'Franchise',
@@ -52,12 +49,55 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'championships',
                 key: 'championships',
             },
+            {
+                title: 'Bonuses',
+                dataIndex: 'bonuses',
+                key: 'bonuses',
+            },
+            {
+                title: 'Penalties',
+                dataIndex: 'penalties',
+                key: 'penalties',
+            },
+            {
+                title: 'Fan Base',
+                dataIndex: 'fanBase',
+                key: 'fanBase',
+                sorter: (a: any, b: any) => a.fanBase - b.fanBase,
+                render: (fanBase: number) => <text>{fanBase.toFixed(1)}</text>,
+            },
+            {
+                title: 'Fan Index',
+                dataIndex: 'fanIndex',
+                key: 'fanIndex',
+                sorter: (a: any, b: any) => a.fanIndex - b.fanIndex,
+                render: (fanIndex: number) => <text>{fanIndex.toFixed(1)}</text>,
+            },
+            {
+                title: 'Advertising',
+                dataIndex: 'advertising',
+                key: 'advertising',
+            },
+            {
+                title: 'Revenue',
+                dataIndex: 'revenue',
+                key: 'revenue',
+                sorter: (a: any, b: any) => a.revenue - b.revenue,
+                render: (revenue: number) => <text>{(revenue/1000000).toFixed(2)} million</text>,
+            },
+            {
+                title: 'Expenses',
+                dataIndex: 'expenses',
+                key: 'expenses',
+                sorter: (a: any, b: any) => a.expenses - b.expenses,
+                render: (expenses: number) => <text>{(expenses/1000000).toFixed(2)} million</text>,
+            },
         ];
 
         const [season, setSeason] = useState<any>(store.User.franchise.league.franchiseSet.map((franchise: any) => franchise.seasonSet[0]));
 
 
-    return (
+        return (
             <div>
                 <Select
                     defaultValue={store.User.franchise.seasonSet[0].season}

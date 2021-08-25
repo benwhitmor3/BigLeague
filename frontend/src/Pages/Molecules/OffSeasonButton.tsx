@@ -81,6 +81,18 @@ export const OffSeasonButton: React.FunctionComponent = observer(() => {
                             trainer
                             year
                           }
+                          gm{
+                            __typename
+                            id
+                            trait
+                          }
+                          coach{
+                            __typename
+                            id
+                            name
+                            attributeOne
+                            attributeTwo
+                          }
                         }
                       }
                     }`,

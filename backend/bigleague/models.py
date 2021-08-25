@@ -127,6 +127,7 @@ class Attribute(models.TextChoices):
     SUBSTITUTION = 'substitution', 'substitution'
     UNDERDOG = 'underdog', 'underdog'
     WILDCARD = 'wildcard', 'wildcard'
+    ROAD = 'road', 'road'
 
 
 class Coach(models.Model):
@@ -159,7 +160,6 @@ class Lineup(models.TextChoices):
 
 
 class Player(models.Model):
-
     name = models.CharField(max_length=50, unique=True)
     suit = models.CharField(max_length=10, choices=Suit.choices)
     age = models.IntegerField(default=20)
@@ -183,6 +183,8 @@ class Player(models.Model):
 
 
 class Action(models.Model):
+    # need this for graphQL MST
+    id = models.AutoField(primary_key=True)
     franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
     number_of_actions = models.IntegerField(default=2, validators=[MaxValueValidator(5), MinValueValidator(0)])
     improved_bathrooms = models.BooleanField(default=False)

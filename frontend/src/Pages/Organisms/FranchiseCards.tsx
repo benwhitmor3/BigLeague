@@ -5,6 +5,7 @@ import RosterTable from "./RosterTable";
 import StaffCard from "../Molecules/StaffCard";
 import StadiumCard from "../Molecules/StadiumCard";
 import LineupStatsCard from "../Molecules/LineupStatsCard";
+import ActionTable from "./ActionTable";
 
 interface IFranchise {
     franchise: any;
@@ -29,6 +30,7 @@ export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({fr
                 </Col>
             </Row>
             <RosterTable franchise={franchise}/>
+            <ActionTable franchise={franchise}/>
         </div>
     );
 })

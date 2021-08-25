@@ -1,5 +1,8 @@
 import random
 import pandas as pd
+from django.db.models import Sum
+from .finance import ticket_revenue_per_season, box_revenue_per_season, merchandise_revenue, tv_revenue, \
+    stadium_construction, stadium_upkeep, operating_cost, advertising_cost, salary_cost
 from .generator import gen_salary, gen_grade
 from .models import *
 
@@ -56,7 +59,6 @@ def sign_players(franchise):
 
 
 def set_lineup(league, franchise):
-
     for player in Player.objects.filter(franchise=franchise).order_by('-pv')[:5]:
         player.lineup = "starter"
         player.save()
@@ -77,7 +79,6 @@ def set_lineup(league, franchise):
 
 
 def simulate_season(league, season):
-
     # everybody plays each other once schedule
     def schedule_creation():
         franchises = Franchise.objects.filter(league=league)
@@ -108,6 +109,12 @@ def simulate_season(league, season):
         suit_bonus += (spades * clubs)
 
         return suit_bonus
+
+    def fan_base(city_value, ppg, wins, losses, championships, bonuses, penalties):
+        return (2 * city_value) + ppg + wins - losses + (3 * championships) + bonuses - penalties
+
+    def fan_index(curr_fan_base, prev_fan_index):
+        return (0.7 * curr_fan_base) + (0.4 * prev_fan_index)
 
     def simulate_game(home, away):
 
@@ -228,6 +235,12 @@ def simulate_season(league, season):
             if away.coach.attribute_one == 'teamwork' and away.coach.attribute_two == 'teamwork':
                 away_points += 3
 
+        # home field advantage
+        home_points += home.stadium.home_field_advantage
+        # road coach factor for away team
+        if away.coach.attribute_one == 'road' or away.coach.attribute_two == 'road':
+            home_points -= home.stadium.home_field_advantage
+
         # clutch coach factor
         if home.coach.attribute_one == 'clutch' or home.coach.attribute_two == 'clutch':
             if home_points < away_points:
@@ -281,12 +294,38 @@ def simulate_season(league, season):
             print(franchise)
             current_season.championships = prev_season.championships + 1
 
+        current_season.fan_base = fan_base(franchise.stadium.city.city_value, current_season.ppg, current_season.wins,
+                                           current_season.losses, current_season.championships, current_season.bonuses,
+                                           current_season.penalties)
+        current_season.fan_index = fan_index(current_season.fan_base, prev_season.fan_index)
+        # apply fame coaching boost
+        if franchise.coach.attribute_one == 'fame' or franchise.coach.attribute_two == 'fame':
+            current_season.fan_index += 5
+            if franchise.coach.attribute_one == 'fame' and franchise.coach.attribute_two == 'fame':
+                current_season.fan_index += 5
+
+        ticket_price = 150
+        box_price = 50000
+        print(str(franchise))
+        current_season.revenue += prev_season.revenue + ticket_revenue_per_season(ticket_price, games_played,
+                                                                                  current_season.advertising,
+                                                                                  current_season.fan_index,
+                                                                                  franchise.stadium) \
+                                  + box_revenue_per_season(box_price, current_season.advertising, prev_season.fan_index,
+                                                           franchise.stadium) \
+                                  + merchandise_revenue(current_season.advertising, current_season.fan_index) \
+                                  + tv_revenue(league, season, games_played)
+
+        current_season.expenses += prev_season.expenses + stadium_construction(franchise, season) + \
+                                   stadium_upkeep(franchise, season) + operating_cost() + \
+                                   advertising_cost(current_season.advertising) + salary_cost(franchise)
+
         current_season.save()
 
     return "Simulated season for " + str(league) + ' season' + str(season)
 
 
-def offseason(league):
+def development(league):
     # apply to all players in the league
     for player in Player.objects.filter(league=league):
         # add one year to age
@@ -320,6 +359,8 @@ def offseason(league):
         if player.age > 30 or player.pv < 8:
             player.delete()
 
+
+def contract_progression(league):
     # for all signed players
     for signed_player in Player.objects.filter(league=league, contract__isnull=False):
         # updating contract years and option years left (once option is zero can be activated)
@@ -343,6 +384,31 @@ def offseason(league):
             signed_player.franchise = None
         signed_player.save()
 
+
+def player_option_true(league):
+    total_salary = Player.objects.filter(league=league, franchise__isnull=False).aggregate(Sum('salary'))[
+        'salary__sum']
+    total_epv = Player.objects.filter(league=league, franchise__isnull=False).aggregate(Sum('epv'))['epv__sum']
+    salary_per_epv = total_salary / total_epv
+    # COULD MAKE THIS POSITION BASED. WOULD BE KIND OF COOL.
+    for player in Player.objects.filter(league=league, p_option=0):
+        # makes player option TRUE if salary is less than 75% of average for their EPV
+        if player.salary/player.epv < salary_per_epv * 0.75:
+            print(str(player) + " chose to leave")
+            player.contract = None
+            player.p_option = None
+            player.t_option = None
+            player.renew = None
+            player.grade = None
+            player.salary = None
+            player.lineup = None
+            player.franchise = None
+            player.save()
+        else:
+            print(str(player) + " chose to stay")
+
+
+def franchise_progression(league):
     # degrade stadium by 1, remove gm, remove coach
     for franchise in Franchise.objects.filter(league=league):
         franchise.stadium.grade -= 1
@@ -351,4 +417,131 @@ def offseason(league):
         franchise.coach = None
         franchise.save()
 
+
+def actions():
+    conn = sqlite3.connect(db)
+    franchise = pd.read_sql_query("select * from franchise", conn)
+    conn.close()
+
+    league_actions = ['improved bathrooms', 'improved concessions', 'jumbotron', 'upscale bar',
+                      'hall of fame', 'improved seating', 'improved sound', 'party deck', 'wi-fi',
+                      'fan night', 'family game', 'door prizes', 'mvp night', 'parade of championships',
+                      'bribe the refs', 'easy runs', 'fan factor', 'train player', 'farm system',
+                      'fan favourites', 'gourmet restaurant', 'beer garden', 'naming rights',
+                      'event planning']
+
+    teams = franchise.team.to_list()
+    d = dict.fromkeys(teams, None)
+    for team in teams:
+        d[team] = random.sample(league_actions, k=3)
+
+    # teams = franchise.team.to_list()
+    # actions = franchise.actions.to_list()
+    # d = dict(zip(teams, actions))
+
+    # handle requirements on the front end (i.e. promoter GM or trainer GM needed), may need to add column in DB
+    # for things like championships and beer garden etc.
+    for team in teams:
+        print(team)
+        if 'improved bathrooms' in d[team]:
+            print('+1 SS')
+        if 'improved concessions' in d[team]:
+            print('+1 SS')
+        if 'jumbotron' in d[team]:
+            print('+1 SS')
+        if 'upscale bar' in d[team]:
+            print('+1 SS')
+
+        if 'hall of fame' in d[team]:
+            print('+2 SS')
+        if 'improved seating' in d[team]:
+            print('+2 SS')
+        if 'improved sound' in d[team]:
+            print('+2 SS')
+        if 'party deck' in d[team]:
+            print('+2 SS')
+        if 'wi-fi' in d[team]:
+            print('+2 SS')
+
+        if 'fan night' in d[team]:
+            print('+6 FI')
+        if 'family game' in d[team]:
+            print('+6 FI')
+        if 'door prizes' in d[team]:
+            print('+6 FI')
+        if 'mvp night' in d[team]:
+            print('+10 FI')
+        if 'parade of champions' in d[team]:
+            print('+10 FI')
+
+        if 'bribe the refs' in d[team]:
+            print('+1 HF')
+        if 'easy runs' in d[team]:
+            print('+1 HF')
+        if 'fan factor' in d[team]:
+            print('+1 HF')
+
+        if 'train player' in d[team]:
+            print('train player')
+
+        if 'fan favourites' in d[team]:
+            print('+1 SS and +1 FI')
+        if 'gourmet restaurant' in d[team]:
+            print('10 mill with 5 mill s.d.')
+        if 'beer garden' in d[team]:
+            print('+2 FI and +1 HF')
+        if 'naming rights' in d[team]:
+            print('75 mill with 25 mill s.d.?')
+        if 'event planning' in d[team]:
+            print('5*SS*CV*Seats')
+
+
+def off_season(league):
+
+    development(league)
+    contract_progression(league)
+    player_option_true(league)
+    franchise_progression(league)
+
     return "Successful Offseason for " + league.league_name
+
+
+def free_agency(league, season):
+    p = Player.objects.all()
+    # need season in the filter otherwise it will include multiple seasons. Worst team gets first pick
+    for franchise in Franchise.objects.filter(user=None, league=league, season__season=(season - 1)).order_by(
+            'season__wins'):
+        # if franchise has less than 5 players definitely sign a player
+        while franchise.player_set.count() < 5:
+            # get all players in that league, not rookies, without contracts, and no franchise sorted descending pv
+            free_agent_one = \
+                p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[0]
+            free_agent_one.franchise = franchise
+            free_agent_one.grade = random.randint(500, 1000) / 100
+            free_agent_one.save()
+        # now that franchises have 5 players pick free agents
+        chance = random.randint(0, 100)
+        if chance >= 90:
+            free_agent_one = \
+                p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
+                    0]
+            free_agent_one.franchise = franchise
+            free_agent_one.grade = random.randint(500, 1000) / 100
+            free_agent_one.save()
+            free_agent_two = \
+                p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
+                    0]
+            free_agent_two.franchise = franchise
+            free_agent_one.grade = random.randint(500, 1000) / 100
+            free_agent_two.save()
+        elif chance >= 70:
+            free_agent_one = \
+                p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
+                    0]
+            free_agent_one.franchise = franchise
+            free_agent_one.grade = random.randint(500, 1000) / 100
+            free_agent_one.save()
+        else:
+            print('franchise ' + franchise.franchise + ' signed nobody')
+
+    return "Successfully signed FA"
