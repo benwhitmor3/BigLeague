@@ -301,13 +301,83 @@ class ActionType(DjangoObjectType):
         model = Action
 
 
+class ActionInput(graphene.InputObjectType):
+    number_of_actions = graphene.Int(default=2)
+    improved_bathrooms = graphene.Boolean(default=False)
+    improved_concessions = graphene.Boolean(default=False)
+    jumbotron = graphene.Boolean(default=False)
+    upscale_bar = graphene.Boolean(default=False)
+    hall_of_fame = graphene.Boolean(default=False)
+    improved_seating = graphene.Boolean(default=False)
+    improved_sound = graphene.Boolean(default=False)
+    party_deck = graphene.Boolean(default=False)
+    wi_fi = graphene.Boolean(default=False)
+    fan_night = graphene.Boolean(default=False)
+    family_game = graphene.Boolean(default=False)
+    door_prizes = graphene.Boolean(default=False)
+    mvp_night = graphene.Boolean(default=False)
+    parade_of_champions = graphene.Boolean(default=False)
+    bribe_the_refs = graphene.Boolean(default=False)
+    easy_runs = graphene.Boolean(default=False)
+    fan_factor = graphene.Boolean(default=False)
+    train_player = graphene.Int(default=0)
+    farm_system = graphene.Boolean(default=False)
+    fan_favourites = graphene.Boolean(default=False)
+    gourmet_restaurant = graphene.Boolean(default=False)
+    beer_garden = graphene.Boolean(default=False)
+    naming_rights = graphene.Boolean(default=False)
+    event_planning = graphene.Boolean(default=False)
+    franchise_id = graphene.String()
+
+
+class UpdateActionMutation(graphene.Mutation):
+    class Arguments:
+        action_input = ActionInput(required=True)
+
+    action = graphene.Field(ActionType)
+
+    @staticmethod
+    def mutate(self, info, action_input=None):
+        obj, action = Action.objects.update_or_create(
+            franchise=action_input.franchise_id,
+            defaults={
+                'number_of_actions': action_input.number_of_actions,
+                'improved_bathrooms': action_input.improved_bathrooms,
+                'improved_concessions': action_input.improved_concessions,
+                'jumbotron': action_input.jumbotron,
+                'upscale_bar': action_input.upscale_bar,
+                'hall_of_fame': action_input.hall_of_fame,
+                'improved_seating': action_input.improved_seating,
+                'improved_sound': action_input.improved_sound,
+                'party_deck': action_input.party_deck,
+                'wi_fi': action_input.wi_fi,
+                'fan_night': action_input.fan_night,
+                'family_game': action_input.family_game,
+                'door_prizes': action_input.door_prizes,
+                'mvp_night': action_input.mvp_night,
+                'parade_of_champions': action_input.parade_of_champions,
+                'bribe_the_refs': action_input.bribe_the_refs,
+                'easy_runs': action_input.easy_runs,
+                'fan_factor': action_input.fan_factor,
+                'train_player': action_input.train_player,
+                'farm_system': action_input.farm_system,
+                'fan_favourites': action_input.fan_favourites,
+                'gourmet_restaurant': action_input.gourmet_restaurant,
+                'beer_garden': action_input.beer_garden,
+                'naming_rights': action_input.naming_rights,
+                'event_planning': action_input.event_planning,
+                'franchise_id': action_input.franchise_id,
+            }
+        )
+        return UpdateActionMutation(action=obj)
+
+
 class SeasonType(DjangoObjectType):
     class Meta:
         model = Season
 
 
 class Mutation(graphene.ObjectType):
-
     create_user = CreateUser.Field()
     delete_user = DeleteUser.Field()
 
@@ -321,6 +391,8 @@ class Mutation(graphene.ObjectType):
     update_franchise = UpdateFranchiseMutation.Field()
 
     create_player = UpdatePlayerMutation.Field()
+
+    update_action = UpdateActionMutation.Field()
 
     # roster_update = UpdateRosterMutation.Field()
 

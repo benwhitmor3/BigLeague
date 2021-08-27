@@ -222,6 +222,80 @@ create_player_variable = '''
 }
 '''
 
+update_action_mutation = '''
+mutation($actionInput: ActionInput!) {
+  updateAction(actionInput: $actionInput){
+  	__typename
+    action{
+      __typename
+      id
+      franchise{
+        __typename
+        id
+      }
+      numberOfActions
+      improvedBathrooms
+      improvedConcessions
+      jumbotron
+      upscaleBar
+      hallOfFame
+      improvedSeating
+      improvedSound
+      partyDeck
+      wiFi
+      fanNight
+      familyGame
+      doorPrizes
+      mvpNight
+      paradeOfChampions
+      bribeTheRefs
+      easyRuns
+      fanFactor
+      trainPlayer
+      farmSystem
+      fanFavourites
+      gourmetRestaurant
+      beerGarden
+      namingRights
+      eventPlanning
+    }
+  }
+}
+'''
+
+action_update_variable = '''
+{
+  "actionInput": {
+    "numberOfActions" : 2,
+    "improvedBathrooms": true,
+    "improvedConcessions": false,
+    "jumbotron": true,
+    "upscaleBar": false,
+   	"hallOfFame": false,
+   	"improvedSeating": false,
+    "improvedSound": false,
+   	"partyDeck": false,
+    "wiFi": false,
+    "fanNight": false,
+    "familyGame": false,
+    "doorPrizes": false,
+    "mvpNight": true,
+   	"paradeOfChampions": false,
+    "bribeTheRefs": false,
+   	"easyRuns": false,
+   	"fanFactor": false,
+   	"trainPlayer": 2,
+   	"farmSystem": false,
+   	"fanFavourites": false,
+    "gourmetRestaurant": false,
+   	"beerGarden": false,
+   	"namingRights": false,
+    "eventPlanning": false,
+    "franchiseId": "543"
+	}
+}
+'''
+
 roster_create_update_mutation = '''
 mutation($rosterInput: RosterInput!) {
   rosterUpdate(rosterInput: $rosterInput){

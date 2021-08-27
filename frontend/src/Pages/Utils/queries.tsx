@@ -59,6 +59,7 @@ export const userQuery = `
         salary
         grade
         trainer
+        year
         franchise{
           __typename
           id
@@ -200,6 +201,7 @@ export const userQuery = `
           salary
           grade
           trainer
+          year
           franchise{
             __typename
             id
@@ -290,6 +292,7 @@ export const userQuery = `
           salary
           grade
           trainer
+          year
           franchise{
             __typename
             id

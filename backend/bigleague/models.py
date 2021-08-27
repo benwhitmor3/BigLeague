@@ -183,7 +183,7 @@ class Player(models.Model):
 
 
 class Action(models.Model):
-    # need this for graphQL MST
+    # need this id for graphQL MST
     id = models.AutoField(primary_key=True)
     franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
     number_of_actions = models.IntegerField(default=2, validators=[MaxValueValidator(5), MinValueValidator(0)])

@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Tag, Space, Alert} from 'antd';
+import {Table, Tag, Space, Alert, Checkbox} from 'antd';
 import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
 import {colour, suit_icon, _to_fixed, _lineup, insertArray} from '../Utils/TableFunctions'
@@ -200,6 +200,39 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 render: (sEpv: number) => <text>{sEpv.toFixed(1)}</text>,
             }
 
+        let trainer_column =
+            {
+                title: 'Trainer',
+                dataIndex: 'trainer',
+                key: 'trainer',
+                render: (trainer: boolean, record: any) => (
+                     <Checkbox defaultChecked={trainer}
+                              onChange={() => {
+                                     store.mutateCreatePlayer({
+                                             "playerInput": {
+                                                 "name": record.name,
+                                                 "suit": record.suit,
+                                                 "age": record.age,
+                                                 "pv": record.pv,
+                                                 "epv": record.epv,
+                                                 "sEpv": record.sEpv,
+                                                 "contract": record.contract,
+                                                 "tOption": record.tOption,
+                                                 "pOption": record.pOption,
+                                                 "renew": record.renew,
+                                                 "salary": record.salary,
+                                                 "grade": record.grade,
+                                                 "lineup": record.lineup,
+                                                 "franchiseId": record.franchiseId,
+                                                 "trainer": !trainer,
+                                                 "year": record.year,
+                                                 "leagueId": store.User.franchise.league.id
+                                             }
+                                         }, mutateCreatePlayerQuery,
+                                         undefined
+                                     )}}>Trainer</Checkbox>
+                ),
+            }
 
         const columns = () => {
             if (store.User.franchise.gm !== null)

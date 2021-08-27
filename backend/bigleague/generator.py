@@ -36,9 +36,10 @@ def gen_franchise(league, num_of_franchises=7):
             franchise=franchise
         )
 
-    # create season 1 for ALL franchises
+    # create actions and season 1 for ALL franchises
     for franchise in Franchise.objects.all():
         Season.objects.create(franchise=franchise, season=1, fan_index=70)
+        Action.objects.create(franchise=franchise)
 
     return "Successfully created " + str(num_of_franchises) + " franchises"
 
