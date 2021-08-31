@@ -29,8 +29,16 @@ export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({fr
                     <LineupStatsCard franchise={franchise}/>
                 </Col>
             </Row>
-            <RosterTable franchise={franchise}/>
-            <ActionTable franchise={franchise}/>
+            <Row gutter={[0, 24]}>
+                <Col span={24}>
+                <RosterTable franchise={franchise}/>
+                </Col>
+            </Row>
+            <Row gutter={[24, 0]}>
+                <Col span={24}>
+                <ActionTable franchise={franchise}/>
+                </Col>
+            </Row>
         </div>
     );
 })

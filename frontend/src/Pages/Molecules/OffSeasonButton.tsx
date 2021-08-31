@@ -53,6 +53,7 @@ export const OffSeasonButton: React.FunctionComponent = observer(() => {
                             salary
                             grade
                             trainer
+                            lineup
                             year
                             franchise{
                                 __typename
@@ -79,6 +80,7 @@ export const OffSeasonButton: React.FunctionComponent = observer(() => {
                             salary
                             grade
                             trainer
+                            lineup
                             year
                           }
                           gm{

@@ -338,8 +338,9 @@ class UpdateActionMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(self, info, action_input=None):
+        franchise = Franchise.objects.get(pk=action_input.franchise_id)
         obj, action = Action.objects.update_or_create(
-            franchise=action_input.franchise_id,
+            franchise=franchise,
             defaults={
                 'number_of_actions': action_input.number_of_actions,
                 'improved_bathrooms': action_input.improved_bathrooms,
@@ -366,7 +367,7 @@ class UpdateActionMutation(graphene.Mutation):
                 'beer_garden': action_input.beer_garden,
                 'naming_rights': action_input.naming_rights,
                 'event_planning': action_input.event_planning,
-                'franchise_id': action_input.franchise_id,
+                'franchiseId': action_input.franchise_id,
             }
         )
         return UpdateActionMutation(action=obj)

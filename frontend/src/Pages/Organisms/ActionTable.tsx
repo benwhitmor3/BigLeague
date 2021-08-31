@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Checkbox, Button} from 'antd';
 import {ActionTypeModelType, FranchiseTypeModelType, StoreContext} from "../../models";
@@ -35,8 +35,6 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         const [beerGarden, setBeerGarden] = useState<boolean | undefined>(franchise.action.beerGarden)
         const [namingRights, setNamingRights] = useState<boolean | undefined>(franchise.action.namingRights)
         const [eventPlanning, setEventPlanning] = useState<boolean | undefined>(franchise.action.eventPlanning)
-        // @ts-ignore
-        const [championships, setChampionships] = useState<number>(franchise.seasonSet[franchise.seasonSet.length - 1].championships)
 
 
         const submitActions = () => {
@@ -279,8 +277,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "improvedBathrooms",
                 key: "improvedBathrooms",
                 render: (improvedBathrooms: boolean) => (
-                    <Checkbox defaultChecked={improvedBathrooms}
-                              onChange={(e) => setImprovedBathrooms(e.target.checked)}></Checkbox>
+                    ((franchise.action.improvedBathrooms == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={improvedBathrooms}
+                                      onChange={(e) => setImprovedBathrooms(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {
@@ -288,8 +290,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "improvedConcessions",
                 key: "improvedConcessions",
                 render: (improvedConcessions: boolean) => (
-                    <Checkbox defaultChecked={improvedConcessions}
-                              onChange={(e) => setImprovedConcessions(e.target.checked)}></Checkbox>
+                    ((franchise.action.improvedConcessions == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={improvedConcessions}
+                                      onChange={(e) => setImprovedConcessions(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {
@@ -297,7 +303,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "jumbotron",
                 key: "jumbotron",
                 render: (jumbotron: boolean) => (
-                    <Checkbox defaultChecked={jumbotron} onChange={(e) => setJumbotron(e.target.checked)}></Checkbox>
+                    ((franchise.action.jumbotron == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={jumbotron}
+                                      onChange={(e) => setJumbotron(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {
@@ -305,7 +316,16 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "upscaleBar",
                 key: "upscaleBar",
                 render: (upscaleBar: boolean) => (
-                    <Checkbox defaultChecked={upscaleBar} onChange={(e) => setUpscaleBar(e.target.checked)}></Checkbox>
+                    ((franchise.action.upscaleBar == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            ((franchise.action.improvedConcessions == true) ?
+                                    <Checkbox defaultChecked={upscaleBar}
+                                              onChange={(e) => setUpscaleBar(e.target.checked)}></Checkbox>
+                                    :
+                                    <Checkbox disabled></Checkbox>
+                            )
+                    )
                 ),
             },
             {
@@ -313,7 +333,17 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "hallOfFame",
                 key: "hallOfFame",
                 render: (hallOfFame: boolean) => (
-                    <Checkbox defaultChecked={hallOfFame} onChange={(e) => setHallOfFame(e.target.checked)}></Checkbox>
+                    ((franchise.action.hallOfFame == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            // @ts-ignore
+                            ((franchise.championships > 0) ?
+                                    <Checkbox defaultChecked={hallOfFame}
+                                              onChange={(e) => setHallOfFame(e.target.checked)}></Checkbox>
+                                    :
+                                    <Checkbox disabled></Checkbox>
+                            )
+                    )
                 ),
             },
             {
@@ -321,8 +351,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "improvedSeating",
                 key: "improvedSeating",
                 render: (improvedSeating: boolean) => (
-                    <Checkbox defaultChecked={improvedSeating}
-                              onChange={(e) => setImprovedSeating(e.target.checked)}></Checkbox>
+                    ((franchise.action.improvedSeating == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={improvedSeating}
+                                      onChange={(e) => setImprovedSeating(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {
@@ -330,8 +364,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "improvedSound",
                 key: "improvedSound",
                 render: (improvedSound: boolean) => (
-                    <Checkbox defaultChecked={improvedSound}
-                              onChange={(e) => setImprovedSound(e.target.checked)}></Checkbox>
+                    ((franchise.action.improvedSound == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={improvedSound}
+                                      onChange={(e) => setImprovedSound(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {
@@ -339,7 +377,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "partyDeck",
                 key: "partyDeck",
                 render: (partyDeck: boolean) => (
-                    <Checkbox defaultChecked={partyDeck} onChange={(e) => setPartyDeck(e.target.checked)}></Checkbox>
+                    ((franchise.action.partyDeck == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={partyDeck}
+                                      onChange={(e) => setPartyDeck(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {
@@ -347,7 +390,11 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "wiFi",
                 key: "wiFi",
                 render: (wiFi: boolean) => (
-                    <Checkbox defaultChecked={wiFi} onChange={(e) => setWiFi(e.target.checked)}></Checkbox>
+                    ((franchise.action.wiFi == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={wiFi} onChange={(e) => setWiFi(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {
@@ -393,7 +440,8 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "mvpNight",
                 key: "mvpNight",
                 render: (mvpNight: boolean) => (
-                    ((franchise.gm?.trait == "PROMOTER" && championships > 0) ?
+                    // @ts-ignore
+                    ((franchise.gm?.trait == "PROMOTER" && franchise.championships > 0) ?
                             <Checkbox defaultChecked={mvpNight} onChange={(e) => setMvpNight(e.target.checked)}></Checkbox>
                             :
                             <Checkbox disabled></Checkbox>
@@ -405,7 +453,8 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "paradeOfChampions",
                 key: "paradeOfChampions",
                 render: (paradeOfChampions: boolean) => (
-                    ((franchise.gm?.trait == "PROMOTER" && championships > 0) ?
+                    // @ts-ignore
+                    ((franchise.gm?.trait == "PROMOTER" && franchise.championships > 0) ?
                             <Checkbox defaultChecked={paradeOfChampions}
                                       onChange={(e) => setParadeOfChampions(e.target.checked)}></Checkbox>
                             :
@@ -413,30 +462,30 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                     )
                 ),
             },
-            {
-                title: 'Bribe The Refs',
-                dataIndex: "bribeTheRefs",
-                key: "bribeTheRefs",
-                render: (bribeTheRefs: boolean) => (
-                    <Checkbox defaultChecked={bribeTheRefs} onChange={(e) => setBribeTheRefs(e.target.checked)}></Checkbox>
-                ),
-            },
-            {
-                title: 'Easy Runs',
-                dataIndex: "easyRuns",
-                key: "easyRuns",
-                render: (easyRuns: boolean) => (
-                    <Checkbox defaultChecked={easyRuns} onChange={(e) => setEasyRuns(e.target.checked)}></Checkbox>
-                ),
-            },
-            {
-                title: 'Fan Factor',
-                dataIndex: "fanFactor",
-                key: "fanFactor",
-                render: (fanFactor: boolean) => (
-                    <Checkbox defaultChecked={fanFactor} onChange={(e) => setFanFactor(e.target.checked)}></Checkbox>
-                ),
-            },
+            // {
+            //     title: 'Bribe The Refs',
+            //     dataIndex: "bribeTheRefs",
+            //     key: "bribeTheRefs",
+            //     render: (bribeTheRefs: boolean) => (
+            //         <Checkbox defaultChecked={bribeTheRefs} onChange={(e) => setBribeTheRefs(e.target.checked)}></Checkbox>
+            //     ),
+            // },
+            // {
+            //     title: 'Easy Runs',
+            //     dataIndex: "easyRuns",
+            //     key: "easyRuns",
+            //     render: (easyRuns: boolean) => (
+            //         <Checkbox defaultChecked={easyRuns} onChange={(e) => setEasyRuns(e.target.checked)}></Checkbox>
+            //     ),
+            // },
+            // {
+            //     title: 'Fan Factor',
+            //     dataIndex: "fanFactor",
+            //     key: "fanFactor",
+            //     render: (fanFactor: boolean) => (
+            //         <Checkbox defaultChecked={fanFactor} onChange={(e) => setFanFactor(e.target.checked)}></Checkbox>
+            //     ),
+            // },
             // {
             //     title: 'Train Player',
             //     dataIndex: "trainPlayer",
@@ -452,8 +501,16 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "fanFavourites",
                 key: "fanFavourites",
                 render: (fanFavourites: boolean) => (
-                    <Checkbox defaultChecked={fanFavourites}
-                              onChange={(e) => setFanFavourites(e.target.checked)}></Checkbox>
+                    ((franchise.action.fanFavourites == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            ((franchise.action.improvedConcessions == true) ?
+                                    <Checkbox defaultChecked={fanFavourites}
+                                              onChange={(e) => setFanFavourites(e.target.checked)}></Checkbox>
+                                    :
+                                    <Checkbox disabled></Checkbox>
+                            )
+                    )
                 ),
             },
             {
@@ -461,8 +518,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "gourmetRestaurant",
                 key: "gourmetRestaurant",
                 render: (gourmetRestaurant: boolean) => (
-                    <Checkbox defaultChecked={gourmetRestaurant}
-                              onChange={(e) => setGourmetRestaurant(e.target.checked)}></Checkbox>
+                    ((franchise.action.gourmetRestaurant == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={gourmetRestaurant}
+                                      onChange={(e) => setGourmetRestaurant(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {
@@ -470,7 +531,11 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "beerGarden",
                 key: "beerGarden",
                 render: (beerGarden: boolean) => (
-                    <Checkbox defaultChecked={beerGarden} onChange={(e) => setBeerGarden(e.target.checked)}></Checkbox>
+                    ((franchise.action.upscaleBar == true) ?
+                                    <Checkbox defaultChecked={beerGarden} onChange={(e) => setBeerGarden(e.target.checked)}></Checkbox>
+                                    :
+                                    <Checkbox disabled></Checkbox>
+                            )
                 ),
             },
             {
@@ -478,7 +543,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "namingRights",
                 key: "namingRights",
                 render: (namingRights: boolean) => (
-                    <Checkbox defaultChecked={namingRights} onChange={(e) => setNamingRights(e.target.checked)}></Checkbox>
+                    ((franchise.action.namingRights == true) ?
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                            :
+                            <Checkbox defaultChecked={namingRights}
+                                      onChange={(e) => setNamingRights(e.target.checked)}></Checkbox>
+                    )
                 ),
             },
             {

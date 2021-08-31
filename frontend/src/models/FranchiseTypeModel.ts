@@ -82,4 +82,9 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
 
             return salaries.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
         },
+        get championships() {
+
+            return (self.seasonSet.length === 1) ? self.seasonSet[self.seasonSet.length - 1].championships
+            : self.seasonSet[self.seasonSet.length - 2].championships
+        },
     }))

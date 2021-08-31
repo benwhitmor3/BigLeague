@@ -251,6 +251,9 @@ def simulate_season(league, season):
 
         return {str(home): home_points, str(away): away_points}
 
+    # run actions chosen throughout league
+    actions(league, season)
+
     league_schedule = schedule_creation()
     results = {}
     for series in league_schedule:
@@ -418,82 +421,99 @@ def franchise_progression(league):
         franchise.save()
 
 
-def actions():
-    conn = sqlite3.connect(db)
-    franchise = pd.read_sql_query("select * from franchise", conn)
-    conn.close()
+def actions(league, season_num):
+    # need to add these actions still
+    # if 'bribe the refs' in d[team]:
+    #     print('+1 HF')
+    # if 'easy runs' in d[team]:
+    #     print('+1 HF')
+    # if 'fan factor' in d[team]:
+    #     print('+1 HF')
+    for franchise in Franchise.objects.filter(league=league):
+        season = Season.objects.get(franchise__franchise=franchise, season=season_num)
+        stadium = Stadium.objects.get(franchise=franchise)
+        # stadium improvement actions (permanent)
+        if franchise.action.improved_bathrooms:
+            stadium.grade += 1
+            stadium.max_grade += 1
+            season.expenses += 5000000
+        if franchise.action.improved_concessions:
+            stadium.grade += 1
+            stadium.max_grade += 1
+            season.expenses += 5000000
+        if franchise.action.jumbotron:
+            stadium.grade += 1
+            stadium.max_grade += 1
+            season.expenses += 5000000
+        if franchise.action.upscale_bar:
+            stadium.grade += 1
+            stadium.max_grade += 1
+            season.expenses += 5000000
+        if franchise.action.hall_of_fame:
+            stadium.grade += 2
+            stadium.max_grade += 2
+            season.expenses += 10000000
+        if franchise.action.improved_seating:
+            stadium.grade += 2
+            stadium.max_grade += 2
+            season.expenses += 10000000
+        if franchise.action.improved_sound:
+            stadium.grade += 2
+            stadium.max_grade += 2
+            season.expenses += 10000000
+        if franchise.action.party_deck:
+            stadium.grade += 2
+            stadium.max_grade += 2
+            season.expenses += 10000000
+        if franchise.action.wi_fi:
+            stadium.grade += 2
+            stadium.max_grade += 2
+            season.expenses += 10000000
 
-    league_actions = ['improved bathrooms', 'improved concessions', 'jumbotron', 'upscale bar',
-                      'hall of fame', 'improved seating', 'improved sound', 'party deck', 'wi-fi',
-                      'fan night', 'family game', 'door prizes', 'mvp night', 'parade of championships',
-                      'bribe the refs', 'easy runs', 'fan factor', 'train player', 'farm system',
-                      'fan favourites', 'gourmet restaurant', 'beer garden', 'naming rights',
-                      'event planning']
+        if franchise.action.fan_night:
+            season.fan_index += 6
+            season.expenses += 2000000
+            franchise.action.fan_night = False
+        if franchise.action.family_game:
+            season.fan_index += 6
+            season.expenses += 2000000
+            franchise.action.family_game = False
+        if franchise.action.door_prizes:
+            season.fan_index += 6
+            season.expenses += 2000000
+            franchise.action.door_prizes = False
+        if franchise.action.mvp_night:
+            season.fan_index += 10
+            season.expenses += 5000000
+            franchise.action.mvp_night = False
+        if franchise.action.parade_of_champions:
+            season.fan_index += 10
+            season.expenses += 5000000
+            franchise.action.parade_of_champions = False
 
-    teams = franchise.team.to_list()
-    d = dict.fromkeys(teams, None)
-    for team in teams:
-        d[team] = random.sample(league_actions, k=3)
+        if franchise.action.fan_favourites:
+            stadium.grade += 1
+            stadium.max_grade += 1
+            season.fan_index += 1
+            season.expenses += 10000000
+            franchise.action.fan_favourites = False
+        if franchise.action.gourmet_restaurant:
+            season.revenue += int(random.gauss(10000000, 5000000))
+            season.expenses += 10000000
+        if franchise.action.beer_garden:
+            season.fan_index += 2
+            stadium.home_field_advantage += 1
+            season.expenses += 6000000
+            franchise.action.beer_garden = False
+        if franchise.action.naming_rights:
+            season.revenue += int(random.gauss(50000000, 25000000))
+        if franchise.action.event_planning:
+            season.revenue += 5 * stadium.grade * stadium.city.city_value * stadium.seats
+            franchise.action.event_planning = False
 
-    # teams = franchise.team.to_list()
-    # actions = franchise.actions.to_list()
-    # d = dict(zip(teams, actions))
-
-    # handle requirements on the front end (i.e. promoter GM or trainer GM needed), may need to add column in DB
-    # for things like championships and beer garden etc.
-    for team in teams:
-        print(team)
-        if 'improved bathrooms' in d[team]:
-            print('+1 SS')
-        if 'improved concessions' in d[team]:
-            print('+1 SS')
-        if 'jumbotron' in d[team]:
-            print('+1 SS')
-        if 'upscale bar' in d[team]:
-            print('+1 SS')
-
-        if 'hall of fame' in d[team]:
-            print('+2 SS')
-        if 'improved seating' in d[team]:
-            print('+2 SS')
-        if 'improved sound' in d[team]:
-            print('+2 SS')
-        if 'party deck' in d[team]:
-            print('+2 SS')
-        if 'wi-fi' in d[team]:
-            print('+2 SS')
-
-        if 'fan night' in d[team]:
-            print('+6 FI')
-        if 'family game' in d[team]:
-            print('+6 FI')
-        if 'door prizes' in d[team]:
-            print('+6 FI')
-        if 'mvp night' in d[team]:
-            print('+10 FI')
-        if 'parade of champions' in d[team]:
-            print('+10 FI')
-
-        if 'bribe the refs' in d[team]:
-            print('+1 HF')
-        if 'easy runs' in d[team]:
-            print('+1 HF')
-        if 'fan factor' in d[team]:
-            print('+1 HF')
-
-        if 'train player' in d[team]:
-            print('train player')
-
-        if 'fan favourites' in d[team]:
-            print('+1 SS and +1 FI')
-        if 'gourmet restaurant' in d[team]:
-            print('10 mill with 5 mill s.d.')
-        if 'beer garden' in d[team]:
-            print('+2 FI and +1 HF')
-        if 'naming rights' in d[team]:
-            print('75 mill with 25 mill s.d.?')
-        if 'event planning' in d[team]:
-            print('5*SS*CV*Seats')
+        franchise.save()
+        stadium.save()
+        season.save()
 
 
 def off_season(league):
@@ -532,7 +552,7 @@ def free_agency(league, season):
                 p.filter(league=league, year__gt=1, contract__isnull=True, franchise__isnull=True).order_by("-pv")[
                     0]
             free_agent_two.franchise = franchise
-            free_agent_one.grade = random.randint(500, 1000) / 100
+            free_agent_two.grade = random.randint(500, 1000) / 100
             free_agent_two.save()
         elif chance >= 70:
             free_agent_one = \
