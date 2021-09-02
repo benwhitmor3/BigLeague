@@ -87,4 +87,8 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             return (self.seasonSet.length === 1) ? self.seasonSet[self.seasonSet.length - 1].championships
             : self.seasonSet[self.seasonSet.length - 2].championships
         },
+        get wins() {
+            return (self.seasonSet.length === 1) ? self.seasonSet[self.seasonSet.length - 1].wins
+            : self.seasonSet[self.seasonSet.length - 2].wins
+        }
     }))

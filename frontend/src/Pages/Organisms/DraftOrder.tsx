@@ -11,8 +11,8 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-        const [bestplayer, setBestPlayer] = useState<string>()
-        const [draftorder, setTeamOrder] = useState<Array<string>>()
+        const [showBestPlayer, setShowBestPlayer] = useState<boolean>(false)
+        // const [draftorder, setTeamOrder] = useState<Array<string>>()
 
         const draft_order_border = (name: string) => {
 
@@ -21,36 +21,37 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
           }
           else
             return '1px solid #ffffff'
-
             }
 
         const draftPicker = () => {
-            const data = new FormData();
-            data.append("franchise_id", store.User.franchise.id)
-            axios.post('http://127.0.0.1:8000/draft_optimize', data)
-                .then(res => {
-                    console.log(res.data)
-                    setBestPlayer(res.data.best_player)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            setShowBestPlayer(!showBestPlayer)
+            // const data = new FormData();
+            // data.append("franchise_id", store.User.franchise.id)
+            // axios.post('http://127.0.0.1:8000/draft_optimize', data)
+            //     .then(res => {
+            //         console.log(res.data)
+            //         setBestPlayer(res.data.best_player)
+            //     })
+            //     .catch(err => {
+            //         console.log(err)
+            //     })
         };
 
         useEffect(() => {
-            const data = new FormData();
-            data.append("franchise_id", store.User.franchise.id)
-            data.append("season", store.User.franchise.seasonSet.length)
-            axios.post('http://127.0.0.1:8000/draft_order', data)
-                .then(res => {
-                    console.log(res.data)
-                    console.log('drafting order')
-                    setTeamOrder(res.data.draft_order)
-                    store.User.franchise.league.setDraftingFranchise(res.data.draft_order[0])
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            store.User.franchise.league.setDraftingFranchise(store.User.league.draftOrder[0])
+            // const data = new FormData();
+            // data.append("franchise_id", store.User.franchise.id)
+            // data.append("season", store.User.franchise.seasonSet.length)
+            // axios.post('http://127.0.0.1:8000/draft_order', data)
+            //     .then(res => {
+            //         console.log(res.data)
+            //         console.log('drafting order')
+            //         setTeamOrder(res.data.draft_order)
+            //         store.User.franchise.league.setDraftingFranchise(res.data.draft_order[0])
+            //     })
+            //     .catch(err => {
+            //         console.log(err)
+            //     })
         }, [])
 
 
@@ -62,7 +63,7 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
                         Draft Picker
                     </Button>
 
-                    {bestplayer ?
+                    {(store.User.league.bestDraftPlayer && showBestPlayer) ?
                         <Statistic
                             style={{
                                 display: "block", marginLeft: 'auto', marginRight: 'auto',
@@ -72,18 +73,18 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
                                 marginTop: "15px",
                                 textAlign: 'center',
                             }}
-                            value={store.User.league.player(bestplayer).name}
+                            value={store.User.league.bestDraftPlayer.name}
                             valueStyle={{color: '#414141'}}
-                            prefix={<Tag icon={suit_icon(store.User.league.player(bestplayer).suit)}
-                                         color={colour(store.User.league.player(bestplayer).suit)}
-                                         key={store.User.league.player(bestplayer).suit}>
-                                {store.User.league.player(bestplayer).suit.toUpperCase()}
+                            prefix={<Tag icon={suit_icon(store.User.league.bestDraftPlayer.suit)}
+                                         color={colour(store.User.league.bestDraftPlayer.suit)}
+                                         key={store.User.league.bestDraftPlayer.suit}>
+                                {store.User.league.bestDraftPlayer.suit.toUpperCase()}
                             </Tag>}
                         />
                         : null}
 
 
-                    {draftorder ? draftorder.map((name, index) => {
+                    {store.User.league.draftOrder ? store.User.league.draftOrder.map((name: string, index: number) => {
                             let number = (index + 1)
                             return <Card hoverable
                                          onClick={() =>

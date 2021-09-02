@@ -59,11 +59,29 @@ export const LeagueTypeModel = LeagueTypeModelBase
             })
             return draftClass
         },
+        get bestDraftPlayer() {
+            let draftClass = self.playerSet.filter((player: PlayerTypeModelType) => {
+                if (player.year == 1 && player.franchise == null)
+                    return player
+            })
+            let bestDraftPlayer = draftClass.sort(function (a, b) {
+                // @ts-ignore
+                return b.pv - a.pv;
+            })
+            return bestDraftPlayer[0]
+        },
         get freeAgentClass() {
             let freeAgentClass = self.playerSet.filter((player: PlayerTypeModelType) => {
                 if (player.year != 1 && player.contract == null)
                     return player
             })
             return freeAgentClass
-        }
+        },
+        get draftOrder() {
+            let draftOrder = self.franchiseSet.sort(function (a, b) {
+                // @ts-ignore
+                return a.wins - b.wins;
+            }).map(franchise => franchise.franchise)
+            return draftOrder
+        },
     }))
