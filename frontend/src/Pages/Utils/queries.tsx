@@ -276,6 +276,22 @@ export const userQuery = `
             homeFieldAdvantage
           }
         }
+        playerhistorySet{
+          __typename
+          id
+          season
+          name
+           suit
+          age
+          pv
+          epv
+          sEpv
+          league{
+            __typename
+            id
+            leagueName
+          }
+        }
         playerSet{
           __typename
           id

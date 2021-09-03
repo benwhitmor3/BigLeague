@@ -8,16 +8,16 @@ export const insertArray = ( array: any, index: number, item: any ) => {
 };
 
 export const colour = (suit: string) => {
-      if (suit === 'diamond') {
+      if (suit.toLowerCase() === 'diamond') {
         return '#40a9ff';
       }
-      else if (suit === 'spade') {
+      else if (suit.toLowerCase() === 'spade' ) {
         return '#ffc53d';
       }
-      else if (suit === 'heart') {
+      else if (suit.toLowerCase() === 'heart') {
         return '#ff4d4f';
       }
-      else if (suit === 'club') {
+      else if (suit.toLowerCase() === 'club') {
         return '#73d13d';
       }
 }

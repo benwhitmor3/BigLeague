@@ -21,6 +21,8 @@ import { CoachTypeModel, CoachTypeModelType } from "./CoachTypeModel"
 import { coachTypeModelPrimitives, CoachTypeModelSelector } from "./CoachTypeModel.base"
 import { PlayerTypeModel, PlayerTypeModelType } from "./PlayerTypeModel"
 import { playerTypeModelPrimitives, PlayerTypeModelSelector } from "./PlayerTypeModel.base"
+import { PlayerHistoryTypeModel, PlayerHistoryTypeModelType } from "./PlayerHistoryTypeModel"
+import { playerHistoryTypeModelPrimitives, PlayerHistoryTypeModelSelector } from "./PlayerHistoryTypeModel.base"
 import { ActionTypeModel, ActionTypeModelType } from "./ActionTypeModel"
 import { actionTypeModelPrimitives, ActionTypeModelSelector } from "./ActionTypeModel.base"
 import { SeasonTypeModel, SeasonTypeModelType } from "./SeasonTypeModel"
@@ -54,6 +56,7 @@ import { updateStadiumMutationModelPrimitives, UpdateStadiumMutationModelSelecto
 import { GmTrait } from "./GmTraitEnum"
 import { CoachAttributeOne } from "./CoachAttributeOneEnum"
 import { CoachAttributeTwo } from "./CoachAttributeTwoEnum"
+import { PlayerHistorySuit } from "./PlayerHistorySuitEnum"
 
 export type FranchiseInput = {
   franchise: string
@@ -127,6 +130,7 @@ type Refs = {
   gmTypes: ObservableMap<string, GmTypeModelType>,
   coachTypes: ObservableMap<string, CoachTypeModelType>,
   playerTypes: ObservableMap<string, PlayerTypeModelType>,
+  playerHistoryTypes: ObservableMap<string, PlayerHistoryTypeModelType>,
   actionTypes: ObservableMap<string, ActionTypeModelType>,
   seasonTypes: ObservableMap<string, SeasonTypeModelType>
 }
@@ -170,7 +174,7 @@ mutateUpdateStadium="mutateUpdateStadium"
 */
 export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
   .named("RootStore")
-  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['CityType', () => CityTypeModel], ['StadiumType', () => StadiumTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['PlayerType', () => PlayerTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['CreateUser', () => CreateUserModel], ['DeleteUser', () => DeleteUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel], ['CreateLeagueMutation', () => CreateLeagueMutationModel], ['CreateFranchiseMutation', () => CreateFranchiseMutationModel], ['UpdateFranchiseMutation', () => UpdateFranchiseMutationModel], ['UpdatePlayerMutation', () => UpdatePlayerMutationModel], ['UpdateActionMutation', () => UpdateActionMutationModel], ['CreateStadiumMutation', () => CreateStadiumMutationModel], ['UpdateStadiumMutation', () => UpdateStadiumMutationModel]], ['UserType', 'FranchiseType', 'LeagueType', 'CityType', 'StadiumType', 'GMType', 'CoachType', 'PlayerType', 'ActionType', 'SeasonType'], "js"))
+  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['CityType', () => CityTypeModel], ['StadiumType', () => StadiumTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['PlayerType', () => PlayerTypeModel], ['PlayerHistoryType', () => PlayerHistoryTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['CreateUser', () => CreateUserModel], ['DeleteUser', () => DeleteUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel], ['CreateLeagueMutation', () => CreateLeagueMutationModel], ['CreateFranchiseMutation', () => CreateFranchiseMutationModel], ['UpdateFranchiseMutation', () => UpdateFranchiseMutationModel], ['UpdatePlayerMutation', () => UpdatePlayerMutationModel], ['UpdateActionMutation', () => UpdateActionMutationModel], ['CreateStadiumMutation', () => CreateStadiumMutationModel], ['UpdateStadiumMutation', () => UpdateStadiumMutationModel]], ['UserType', 'FranchiseType', 'LeagueType', 'CityType', 'StadiumType', 'GMType', 'CoachType', 'PlayerType', 'PlayerHistoryType', 'ActionType', 'SeasonType'], "js"))
   .props({
     userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {}),
     franchiseTypes: types.optional(types.map(types.late((): any => FranchiseTypeModel)), {}),
@@ -180,6 +184,7 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
     gmTypes: types.optional(types.map(types.late((): any => GmTypeModel)), {}),
     coachTypes: types.optional(types.map(types.late((): any => CoachTypeModel)), {}),
     playerTypes: types.optional(types.map(types.late((): any => PlayerTypeModel)), {}),
+    playerHistoryTypes: types.optional(types.map(types.late((): any => PlayerHistoryTypeModel)), {}),
     actionTypes: types.optional(types.map(types.late((): any => ActionTypeModel)), {}),
     seasonTypes: types.optional(types.map(types.late((): any => SeasonTypeModel)), {})
   })

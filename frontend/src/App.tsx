@@ -16,6 +16,7 @@ import Home from "./Pages/Home";
 import OffSeason from "./Pages/OffSeason";
 import {userQuery} from "./Pages/Utils/queries";
 import FreeAgency from "./Pages/FreeAgency";
+import Staff from "./Pages/Staff";
 // import {AUTH_TOKEN} from "./Constants";
 // import {deleteToken, getToken} from "./components/Forms/token";
 
@@ -48,11 +49,12 @@ const App: React.FunctionComponent = observer(() => {
                                 <Menu.Item key="1">Home <a href="/Home"/></Menu.Item>
                                 <Menu.Item key="2"><Link to="/Stadium">Stadium</Link></Menu.Item>
                                 <Menu.Item key="3"><Link to="/Franchise">Franchise</Link></Menu.Item>
-                                <Menu.Item key="4"><Link to="/OffSeason">OffSeason</Link></Menu.Item>
-                                <Menu.Item key="5"><Link to="/Draft">Draft</Link></Menu.Item>
-                                <Menu.Item key="5"><Link to="/FreeAgency">Free Agency</Link></Menu.Item>
-                                <Menu.Item key="6"><Link to="/Season">Season</Link></Menu.Item>
-                                <Menu.Item key="7"><Link to="/LeagueSummary">League Summary</Link></Menu.Item>
+                                <Menu.Item key="4"><Link to="/Staff">Staff</Link></Menu.Item>
+                                <Menu.Item key="5"><Link to="/OffSeason">OffSeason</Link></Menu.Item>
+                                <Menu.Item key="6"><Link to="/Draft">Draft</Link></Menu.Item>
+                                <Menu.Item key="7"><Link to="/FreeAgency">Free Agency</Link></Menu.Item>
+                                <Menu.Item key="8"><Link to="/Season">Season</Link></Menu.Item>
+                                <Menu.Item key="9"><Link to="/LeagueSummary">League Summary</Link></Menu.Item>
                                 {/*<Menu.Item key="8" >Instructions<a href = {file}/></Menu.Item>*/}
                                 {/*{isLoggedIn ? (*/}
                                 {/*    <Menu.Item key="9" style={{float: 'right'}} onClick={() => {deleteToken()}}>Logout*/}
@@ -68,6 +70,7 @@ const App: React.FunctionComponent = observer(() => {
                                     <Route exact path='/Home' component={Home} />
                                     <Route exact path='/Stadium' component={Stadium} />
                                     <Route exact path='/Franchise' component={Franchise}/>
+                                    <Route exact path='/Staff' component={Staff}/>
                                     <Route exact path='/Draft' component={Draft}/>
                                     <Route exact path='/FreeAgency' component={FreeAgency}/>
                                     <Route exact path='/LeagueSummary' component={League}/>

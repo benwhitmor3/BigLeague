@@ -61,20 +61,34 @@ create_franchise_mutation = '''
 mutation($franchiseInput: FranchiseInput!){
   createFranchise(franchiseInput: $franchiseInput, email: "email@email.com"){
     franchise{
+      __typename
       id
       franchise
       gm{
+        __typename
         id
         trait
       }
       coach{
+        __typename
         id
         name
       }
     }
     user{
+      __typename
+      id
       password
       email
+      franchise{
+        __typename
+        id
+        franchise
+        user{
+          __typename
+          id
+        }
+      }
     } 
   }
 }
@@ -232,32 +246,85 @@ mutation($actionInput: ActionInput!) {
       franchise{
         __typename
         id
+        user{
+          __typename
+          id
+          franchise{
+            __typename
+            id
+            action{
+          __typename
+          id
+          numberOfActions
+          improvedBathrooms
+          improvedConcessions
+          jumbotron
+          upscaleBar
+          hallOfFame
+          improvedSeating
+          improvedSound
+          partyDeck
+          wiFi
+          fanNight
+          familyGame
+          doorPrizes
+          mvpNight
+          paradeOfChampions
+          bribeTheRefs
+          easyRuns
+          fanFactor
+          trainPlayer
+          farmSystem
+          fanFavourites
+          gourmetRestaurant
+          beerGarden
+          namingRights
+          eventPlanning
+        	}
+         league{
+          __typename
+          id
+          franchiseSet{
+            __typename
+            id
+            action{
+              __typename
+              id
+              numberOfActions
+              improvedBathrooms
+              improvedConcessions
+              jumbotron
+              upscaleBar
+              hallOfFame
+              improvedSeating
+              improvedSound
+              partyDeck
+              wiFi
+              fanNight
+              familyGame
+              doorPrizes
+              mvpNight
+              paradeOfChampions
+              bribeTheRefs
+              easyRuns
+              fanFactor
+              trainPlayer
+              farmSystem
+              fanFavourites
+              gourmetRestaurant
+              beerGarden
+              namingRights
+              eventPlanning
+              franchise{
+                __typename
+                id
+              }
+            }
+          }
+        }
+          }
+        }
       }
-      numberOfActions
-      improvedBathrooms
-      improvedConcessions
-      jumbotron
-      upscaleBar
-      hallOfFame
-      improvedSeating
-      improvedSound
-      partyDeck
-      wiFi
-      fanNight
-      familyGame
-      doorPrizes
-      mvpNight
-      paradeOfChampions
-      bribeTheRefs
-      easyRuns
-      fanFactor
-      trainPlayer
-      farmSystem
-      fanFavourites
-      gourmetRestaurant
-      beerGarden
-      namingRights
-      eventPlanning
     }
   }
 }
@@ -269,7 +336,7 @@ action_update_variable = '''
     "numberOfActions" : 2,
     "improvedBathrooms": true,
     "improvedConcessions": false,
-    "jumbotron": true,
+    "jumbotron": false,
     "upscaleBar": false,
    	"hallOfFame": false,
    	"improvedSeating": false,
@@ -279,7 +346,7 @@ action_update_variable = '''
     "fanNight": false,
     "familyGame": false,
     "doorPrizes": false,
-    "mvpNight": true,
+    "mvpNight": false,
    	"paradeOfChampions": false,
     "bribeTheRefs": false,
    	"easyRuns": false,
@@ -291,7 +358,7 @@ action_update_variable = '''
    	"beerGarden": false,
    	"namingRights": false,
     "eventPlanning": false,
-    "franchiseId": "543"
+    "franchiseId": "576"
 	}
 }
 '''

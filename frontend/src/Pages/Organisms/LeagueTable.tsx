@@ -11,12 +11,26 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-        const non_scouter_columns = [
+    const non_scouter_columns = [
             {
                 title: 'Name',
                 dataIndex: 'name',
                 key: 'name',
-                // render: (text: string) => <a href="/Home">{text}</a>,
+                sorter: (a: any, b: any) => a.name.localeCompare(b.name),
+                // @ts-ignore
+                filters: [...new Map(store.User.league.playerhistorySet.map(item =>
+                [item['name'], {text: item.name, value: item.name}])).values()],
+                onFilter: (value: any, record: any) => record.name.indexOf(value) === 0,
+            },
+            {
+                title: 'Season',
+                dataIndex: 'season',
+                key: 'season',
+                sorter: (a: any, b: any) => a.season - b.season,
+                // @ts-ignore
+                filters: [...new Map(store.User.league.playerhistorySet.map(item =>
+                [item['season'], {text: item.season, value: item.season}])).values()],
+                onFilter: (value: any, record: any) => record.season.indexOf(value) === 0,
             },
             {
                 title: 'Age',
@@ -60,12 +74,12 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
                 ],
                 onFilter: (value: any, record: any) => record.suit.indexOf(value) === 0,
             },
-            {
-                title: 'Franchise',
-                dataIndex: ["franchise", "franchise"],
-                key: "franchise",
-                sorter: (a: any, b: any) => a?.franchise?.franchise.localeCompare(b?.franchise?.franchise),
-            },
+            // {
+            //     title: 'Franchise',
+            //     dataIndex: ["franchise", "franchise"],
+            //     key: "franchise",
+            //     sorter: (a: any, b: any) => a?.franchise?.franchise.localeCompare(b?.franchise?.franchise),
+            // },
         ];
 
 
@@ -83,7 +97,7 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
             if (store.User.franchise.gm !== null)
                 if (store.User.franchise.gm.trait === "SCOUTER") {
                     let scouter_columns = non_scouter_columns
-                    insertArray(non_scouter_columns, 3, sEPV_column)
+                    insertArray(non_scouter_columns, 4, sEPV_column)
                     return scouter_columns
                 } else {
                     return non_scouter_columns
@@ -98,7 +112,7 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
                 <Table
                     rowKey="id"
                     columns={columns()}
-                    dataSource={toJS(store.User.franchise.league.playerSet)}
+                    dataSource={toJS(store.User.league.playerhistorySet)}
                     pagination={false}
                     bordered
                     style={{

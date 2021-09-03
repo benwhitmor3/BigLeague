@@ -2,7 +2,7 @@ import graphene
 import graphql_jwt
 from django.contrib.auth import get_user_model
 from graphene_django.types import DjangoObjectType
-from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season
+from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, PlayerHistory
 
 
 class UserType(DjangoObjectType):
@@ -193,6 +193,11 @@ class PlayerType(DjangoObjectType):
     class Meta:
         model = Player
         convert_choices_to_enum = False
+
+
+class PlayerHistoryType(DjangoObjectType):
+    class Meta:
+        model = PlayerHistory
 
 
 class PlayerInput(graphene.InputObjectType):
@@ -412,6 +417,7 @@ class Query(graphene.ObjectType):
     all_player = graphene.List(PlayerType)
     all_action = graphene.List(ActionType)
     all_season = graphene.List(SeasonType)
+
     # all_roster = graphene.List(RosterType)
     player = graphene.Field(PlayerType)
     # roster = graphene.Field(RosterType)

@@ -325,6 +325,19 @@ def simulate_season(league, season):
 
         current_season.save()
 
+    # make player historical player values
+    for player in Player.objects.filter(league=league):
+        PlayerHistory.objects.create(
+            season=season,
+            name=player.name,
+            suit=player.suit,
+            age=player.age,
+            pv=player.pv,
+            epv=player.epv,
+            s_epv=player.s_epv,
+            league=league
+        )
+
     return "Simulated season for " + str(league) + ' season' + str(season)
 
 

@@ -1,12 +1,8 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {observer} from 'mobx-react'
-import {StoreContext} from "../models";
-import {Statistic, Row, Col, Card, Select, Spin, Button} from 'antd';
+import {StoreContext} from "../../models";
+import {Spin, Select, Button} from 'antd';
 import CSS from "csstype";
-import FreeAgentTable from "./Organisms/FreeAgentTable";
-import OffSeasonButton from "./Molecules/OffSeasonButton";
-import SignPlayersButton from "./Molecules/SignPlayersButton";
-import SetLineupsButton from "./Molecules/SetLineupsButton";
 
 
 const buttonStyles: CSS.Properties = {
@@ -18,13 +14,13 @@ const buttonStyles: CSS.Properties = {
     width: '20vh',
 };
 
-export const OffSeason: React.FunctionComponent = observer(() => {
+export const GmCoachSelect: React.FunctionComponent = observer(() => {
 
     const store = useContext(StoreContext)
 
     const [franchise, setFranchise] = useState<any>(store.User ? store.User.franchise : null);
-    const [gmId, setGmId] = useState<string>('');
-    const [coachId, setCoachId] = useState<string>('');
+    const [gmId, setGmId] = useState<string>(store.User.franchise.gm ? store.User.franchise.gm.id : '');
+    const [coachId, setCoachId] = useState<string>(store.User.franchise.coach ? store.User.franchise.coach.id : '');
 
     const onSubmit = (franchise: any, gmId: string, coachId: string) => {
             store.mutateUpdateFranchise({
@@ -55,24 +51,23 @@ export const OffSeason: React.FunctionComponent = observer(() => {
             )
         };
 
-    useEffect(() => {
-        if (store.User) {
-            setFranchise(store.User.franchise)
-        }
-    }, [store.User])
-
     if (franchise == null)
         return <Spin/>
     else {
         return (
             <div>
-                <OffSeasonButton/>
-                <SignPlayersButton/>
-                <SetLineupsButton/>
+                <Select style={{width: '30%'}} options={store.User.league.gmSet.map((gm: any) => {
+                            return {value: gm.id, label: gm.trait}})}
+                            value={gmId} onChange={(gm: any) => setGmId(gm)}/>
+                <Select style={{width: '30%'}} options={store.User.league.coachSet.map((coach: any) => {
+                            return {value: coach.id, label: [coach.name + " " + coach.attributeOne + " " + coach.attributeTwo]}})}
+                            value={coachId} onChange={(coach: any) => setCoachId(coach)}/>
+
+                <Button type="primary" style={buttonStyles} onClick={() => onSubmit(franchise, gmId, coachId)}>Sign</Button>
             </div>
         );
     }
 })
 
-export default OffSeason;
+export default GmCoachSelect;
 

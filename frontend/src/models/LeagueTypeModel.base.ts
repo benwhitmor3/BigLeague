@@ -14,6 +14,8 @@ import { FranchiseTypeModel, FranchiseTypeModelType } from "./FranchiseTypeModel
 import { FranchiseTypeModelSelector } from "./FranchiseTypeModel.base"
 import { GmTypeModel, GmTypeModelType } from "./GmTypeModel"
 import { GmTypeModelSelector } from "./GmTypeModel.base"
+import { PlayerHistoryTypeModel, PlayerHistoryTypeModelType } from "./PlayerHistoryTypeModel"
+import { PlayerHistoryTypeModelSelector } from "./PlayerHistoryTypeModel.base"
 import { PlayerTypeModel, PlayerTypeModelType } from "./PlayerTypeModel"
 import { PlayerTypeModelSelector } from "./PlayerTypeModel.base"
 import { UserTypeModel, UserTypeModelType } from "./UserTypeModel"
@@ -29,6 +31,7 @@ type Refs = {
   gmSet: IObservableArray<GmTypeModelType>;
   coachSet: IObservableArray<CoachTypeModelType>;
   playerSet: IObservableArray<PlayerTypeModelType>;
+  playerhistorySet: IObservableArray<PlayerHistoryTypeModelType>;
 }
 
 /**
@@ -47,6 +50,7 @@ export const LeagueTypeModelBase = withTypedRefs<Refs>()(ModelBase
     gmSet: types.union(types.undefined, types.array(MSTGQLRef(types.late((): any => GmTypeModel)))),
     coachSet: types.union(types.undefined, types.array(MSTGQLRef(types.late((): any => CoachTypeModel)))),
     playerSet: types.union(types.undefined, types.array(MSTGQLRef(types.late((): any => PlayerTypeModel)))),
+    playerhistorySet: types.union(types.undefined, types.array(MSTGQLRef(types.late((): any => PlayerHistoryTypeModel)))),
   })
   .views(self => ({
     get store() {
@@ -63,6 +67,7 @@ export class LeagueTypeModelSelector extends QueryBuilder {
   gmSet(builder?: string | GmTypeModelSelector | ((selector: GmTypeModelSelector) => GmTypeModelSelector)) { return this.__child(`gmSet`, GmTypeModelSelector, builder) }
   coachSet(builder?: string | CoachTypeModelSelector | ((selector: CoachTypeModelSelector) => CoachTypeModelSelector)) { return this.__child(`coachSet`, CoachTypeModelSelector, builder) }
   playerSet(builder?: string | PlayerTypeModelSelector | ((selector: PlayerTypeModelSelector) => PlayerTypeModelSelector)) { return this.__child(`playerSet`, PlayerTypeModelSelector, builder) }
+  playerhistorySet(builder?: string | PlayerHistoryTypeModelSelector | ((selector: PlayerHistoryTypeModelSelector) => PlayerHistoryTypeModelSelector)) { return this.__child(`playerhistorySet`, PlayerHistoryTypeModelSelector, builder) }
 }
 export function selectFromLeagueType() {
   return new LeagueTypeModelSelector()

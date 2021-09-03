@@ -182,6 +182,23 @@ class Player(models.Model):
         return self.name
 
 
+class PlayerHistory(models.Model):
+    season = models.IntegerField(default=1)
+    name = models.CharField(max_length=50)
+    suit = models.CharField(max_length=10, choices=Suit.choices)
+    age = models.IntegerField(default=20)
+    pv = models.FloatField(default=20)
+    epv = models.FloatField(default=20)
+    s_epv = models.FloatField(default=20)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('season', 'name',)
+
+    def __str__(self):
+        return self.name
+
+
 class Action(models.Model):
     # need this id for graphQL MST
     id = models.AutoField(primary_key=True)

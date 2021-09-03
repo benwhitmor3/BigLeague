@@ -4,6 +4,7 @@ import {Button, Progress, notification} from 'antd';
 import {observer} from "mobx-react";
 import axios from "axios";
 import {StoreContext} from "../../models";
+import {userQuery} from "../Utils/queries";
 
 
 export const rosterError = (franchise: string) => {
@@ -65,6 +66,10 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
                         expenses
                       }
                     }`
+                    )
+                    store.queryUser(
+                    {email: "email@email.com"},
+                    userQuery
                     )
                     setLoading(false)
                 })

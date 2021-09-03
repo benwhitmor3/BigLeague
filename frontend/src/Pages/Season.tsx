@@ -17,9 +17,6 @@ export const Season: React.FunctionComponent = observer(() => {
         if (store.User == undefined || store.User.franchise == undefined) return <Spin size="large"/>;
         return (
             <div>
-                <OffSeasonButton/>
-                <SignPlayersButton/>
-                <SetLineupsButton/>
                 <SeasonSimButton/>
                 <SeasonTable/>
             </div>
