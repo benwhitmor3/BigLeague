@@ -63,34 +63,34 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                 ],
                 onFilter: (value: any, record: any) => record.suit.indexOf(value) === 0,
             },
-                        {
-                title: 'Contract',
-                dataIndex: 'contract',
-                key: 'contract',
-                sorter: (a: any, b: any) => a.contract - b.contract,
-            },
-            {
-                title: 'Team Option',
-                dataIndex: 'tOption',
-                key: 'tOption',
-            },
-            {
-                title: 'Player Option',
-                dataIndex: 'pOption',
-                key: 'pOption',
-            },
-            {
-                title: 'Renew',
-                dataIndex: 'renew',
-                key: 'renew',
-            },
-            {
-                title: 'Salary',
-                dataIndex: 'salary',
-                key: 'salary',
-                sorter: (a: any, b: any) => a.salary - b.salary,
-                render: (salary: number) => <text>{_to_fixed(salary)}</text>,
-            },
+            //             {
+            //     title: 'Contract',
+            //     dataIndex: 'contract',
+            //     key: 'contract',
+            //     sorter: (a: any, b: any) => a.contract - b.contract,
+            // },
+            // {
+            //     title: 'Team Option',
+            //     dataIndex: 'tOption',
+            //     key: 'tOption',
+            // },
+            // {
+            //     title: 'Player Option',
+            //     dataIndex: 'pOption',
+            //     key: 'pOption',
+            // },
+            // {
+            //     title: 'Renew',
+            //     dataIndex: 'renew',
+            //     key: 'renew',
+            // },
+            // {
+            //     title: 'Salary',
+            //     dataIndex: 'salary',
+            //     key: 'salary',
+            //     sorter: (a: any, b: any) => a.salary - b.salary,
+            //     render: (salary: number) => <text>{_to_fixed(salary)}</text>,
+            // },
             {
                 title: 'Grade',
                 dataIndex: 'grade',

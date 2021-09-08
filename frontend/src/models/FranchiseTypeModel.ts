@@ -24,7 +24,7 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
         get suitBonus() {
             let suitList = self.playerSet.map(function (player, index) {
                 if (player.lineup == "starter")
-                return player.suit;
+                    return player.suit;
             });
             let spades = suitList.filter(x => x == "spade").length
             let hearts = suitList.filter(x => x == "heart").length
@@ -71,7 +71,7 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
                 return player.age;
             });
 
-            let meanAge = ages.reduce((accumulator: any, currentValue: any) => ((accumulator || 0) + (currentValue || 0)), 0)/(ages.length)
+            let meanAge = ages.reduce((accumulator: any, currentValue: any) => ((accumulator || 0) + (currentValue || 0)), 0) / (ages.length)
 
             return meanAge
         },
@@ -85,10 +85,29 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
         get championships() {
 
             return (self.seasonSet.length === 1) ? self.seasonSet[self.seasonSet.length - 1].championships
-            : self.seasonSet[self.seasonSet.length - 2].championships
+                : self.seasonSet[self.seasonSet.length - 2].championships
         },
         get wins() {
             return (self.seasonSet.length === 1) ? self.seasonSet[self.seasonSet.length - 1].wins
-            : self.seasonSet[self.seasonSet.length - 2].wins
-        }
+                : self.seasonSet[self.seasonSet.length - 2].wins
+        },
+        get lineup() {
+            let lineup = self.playerSet.map(function (player) {
+                    return player.lineup;
+            });
+            return lineup
+        },
+        get contracts() {
+            let contracts = self.playerSet.map(function (player) {
+                return player.contract
+            });
+            return contracts
+        },
+        get starters() {
+            let starters = self.playerSet.filter(function (player) {
+                if (player.lineup === "starter")
+                    return player;
+            });
+            return starters
+        },
     }))

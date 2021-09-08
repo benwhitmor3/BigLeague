@@ -3,17 +3,9 @@ import 'antd/dist/antd.css';
 import {Button, Progress, notification} from 'antd';
 import {observer} from "mobx-react";
 import axios from "axios";
-import {StoreContext} from "../../models";
+import {FranchiseTypeModelType, StoreContext} from "../../models";
 import {userQuery} from "../Utils/queries";
-
-
-export const rosterError = (franchise: string) => {
-    notification.error({
-        message: 'Roster Error',
-        description: franchise + ' does not have enough players',
-        duration: 3,
-    });
-};
+import {simSeasonChecker} from "./SeasonSimChecker";
 
 
 export const SeasonSimButton: React.FunctionComponent = observer(() => {
@@ -24,10 +16,10 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
         const [percent, setPercent] = useState<number>(0)
 
         const simSeason = () => {
-            for (let franchise in store.User.franchise.league.franchiseSet) {
-                if (store.User.franchise.league.franchiseplayers(store.User.franchise.league.franchiseSet[franchise].franchise).length < 5)
-                    return rosterError(store.User.franchise.league.franchiseSet[franchise].franchise);
-            }
+
+            store.User.franchise.league.franchiseSet.forEach((franchise: FranchiseTypeModelType) =>
+                simSeasonChecker(franchise))
+
             const data = new FormData();
             data.append("league_id", store.User.franchise.league.id)
             data.append("season", store.User.franchise.seasonSet.length)

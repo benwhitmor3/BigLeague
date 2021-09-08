@@ -13,9 +13,7 @@ export const League: React.FunctionComponent = observer(() => {
         if (store.User == undefined || store.User.franchise == undefined) return <div><Spin size="large"/></div>;
         else {
             return (
-                <Col span={12}>
                 <LeagueTable/>
-                </Col>
             );
         }
     }

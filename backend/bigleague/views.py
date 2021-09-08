@@ -214,6 +214,8 @@ def season_simulation_view(request):
 
         with transaction.atomic():
             simulate_season(league, int(season))
+            off_season(league)
+            gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
 
         return HttpResponse(request)
 

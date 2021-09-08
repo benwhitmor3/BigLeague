@@ -1,19 +1,20 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Button, Progress, notification} from 'antd';
+import {Button, Progress} from 'antd';
 import {observer} from "mobx-react";
 import axios from "axios";
 import {StoreContext} from "../../models";
+import CSS from "csstype";
 
 
-export const rosterError = (franchise: string) => {
-    notification.error({
-        message: 'Roster Error',
-        description: franchise + ' does not have enough players',
-        duration: 3,
-    });
+const buttonStyles: CSS.Properties = {
+    backgroundColor: '#ad2102',
+    border: '0px',
+    borderRadius: '12px',
+    marginBottom: '8px',
+    fontSize: '14px',
+    color: '#fff2e8',
 };
-
 
 export const SetLineupsButton: React.FunctionComponent = observer(() => {
 
@@ -23,10 +24,6 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
         const [percent, setPercent] = useState<number>(0)
 
         const setLineups = () => {
-            for (let franchise in store.User.franchise.league.franchiseSet) {
-                if (store.User.franchise.league.franchiseplayers(store.User.franchise.league.franchiseSet[franchise].franchise).length < 5)
-                    return rosterError(store.User.franchise.league.franchiseSet[franchise].franchise);
-            }
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
             setLoading(true)
@@ -99,7 +96,7 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
         else {
             return (
                 <div>
-                    <Button type="primary" onClick={() => setLineups()} block>
+                    <Button type="primary" style={buttonStyles} onClick={() => setLineups()} block>
                         Set Lineups
                     </Button>
                 </div>

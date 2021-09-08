@@ -327,6 +327,10 @@ export const userQuery = `
           name
           attributeOne
           attributeTwo
+          franchise{
+            __typename
+            id
+          }
         }
       }
     }`;

@@ -66,7 +66,7 @@ export const OffSeason: React.FunctionComponent = observer(() => {
     else {
         return (
             <div>
-                <OffSeasonButton/>
+                {/*<OffSeasonButton/>*/}
                 <SignPlayersButton/>
                 <SetLineupsButton/>
             </div>

@@ -74,12 +74,6 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
                 ],
                 onFilter: (value: any, record: any) => record.suit.indexOf(value) === 0,
             },
-            // {
-            //     title: 'Franchise',
-            //     dataIndex: ["franchise", "franchise"],
-            //     key: "franchise",
-            //     sorter: (a: any, b: any) => a?.franchise?.franchise.localeCompare(b?.franchise?.franchise),
-            // },
         ];
 
 
