@@ -8,9 +8,21 @@ from .models import *
 
 
 def sign_players(franchise):
+    # get top 20% add 40% of epv cutoff to make contract more realistic
+    total_players = Player.objects.filter(league=franchise.league).count()
+    first_epv_cutoff = Player.objects.filter(league=franchise.league).order_by('-epv')[0.2*total_players]
+    second_epv_cutoff = Player.objects.filter(league=franchise.league).order_by('-epv')[0.4*total_players]
+
     for player in Player.objects.filter(franchise=franchise, contract__isnull=True):
         # set contract
-        player.contract = random.randint(1, 5)
+        if player.epv > first_epv_cutoff:
+            options = [3, 4, 4, 5, 5, 5, 5]
+            player.contract = random.sample(options, k=1)[0]
+        elif player.epv > second_epv_cutoff:
+            options = [3, 4, 5]
+            player.contract = random.sample(options, k=1)[0]
+        else:
+            player.contract = random.randint(1, 5)
         # set t_option
         if player.contract == 5:
             options = [None, None, None, 1, 2, 3, 4]

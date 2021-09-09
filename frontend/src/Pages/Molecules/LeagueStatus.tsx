@@ -24,7 +24,9 @@ export const unsignedPlayerColor = (franchise: FranchiseTypeModelType) => {
 export const unsetPlayers = (franchise: FranchiseTypeModelType) => {
     if (franchise.unsetPlayers.length > 0)
         return "Unset Players " + franchise.unsetPlayers.length
-    else {
+    else if (franchise.starters.length !== 5) {
+        return "Missing " + (5 - franchise.starters.length) + " Starters"
+    } else {
         return "All Set"
     }
 };
@@ -32,7 +34,9 @@ export const unsetPlayers = (franchise: FranchiseTypeModelType) => {
 export const unsetPlayerColor = (franchise: FranchiseTypeModelType) => {
     if (franchise.unsetPlayers.length > 0)
         return "red"
-    else {
+    else if (franchise.starters.length !== 5) {
+        return "red"
+    } else {
         return "green"
     }
 };
@@ -41,21 +45,20 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-
         return (
-            <div>
+            <Col span={24}>
                 {store.User.league.franchiseSet.map((franchise: FranchiseTypeModelType) => {
                         return (
                             <div>
                                 <Divider/>
-                                <Row gutter={[0, 24]}>
+                                <Row>
                                     <Col span={7} offset={0}>
                                         <Card bordered={false}
                                               key={franchise.id}
                                               style={{
                                                   borderRadius: "8px",
                                                   width: "100%",
-                                                  marginBottom: "20px",
+                                                  marginBottom: "10px",
                                                   boxShadow: "0px 0px 4px 0px #D0D8F3",
                                               }}
                                         >
@@ -65,34 +68,34 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
                                     </Col>
                                     <Col span={7} offset={1}>
                                         <Badge.Ribbon color={unsignedPlayerColor(franchise)} text={unsignedPlayer(franchise)}>
-                                                                                    <Card bordered={false}
-                                              key={franchise.id}
-                                              style={{
-                                                  borderRadius: "8px",
-                                                  width: "100%",
-                                                  marginBottom: "20px",
-                                                  boxShadow: "0px 0px 4px 0px #D0D8F3",
-                                              }}
-                                        >
-                                            <Statistic title="General Manager"
-                                                       value={franchise.gm ? franchise?.gm?.trait?.toLowerCase() : "None"}/>
-                                                                                    </Card>
+                                            <Card bordered={false}
+                                                  key={franchise.id}
+                                                  style={{
+                                                      borderRadius: "8px",
+                                                      width: "100%",
+                                                      marginBottom: "10px",
+                                                      boxShadow: "0px 0px 4px 0px #D0D8F3",
+                                                  }}
+                                            >
+                                                <Statistic title="General Manager"
+                                                           value={franchise.gm ? franchise?.gm?.trait?.toLowerCase() : "None"}/>
+                                            </Card>
                                         </Badge.Ribbon>
                                     </Col>
                                     <Col span={7} offset={1}>
                                         <Badge.Ribbon color={unsetPlayerColor(franchise)} text={unsetPlayers(franchise)}>
-                                                                                    <Card bordered={false}
-                                              key={franchise.id}
-                                              style={{
-                                                  borderRadius: "8px",
-                                                  width: "100%",
-                                                  marginBottom: "20px",
-                                                  boxShadow: "0px 0px 4px 0px #D0D8F3",
-                                              }}
-                                        >
-                                            <Statistic title="Coach"
-                                                       value={franchise.coach ? franchise.coach?.name?.toLowerCase() : "None"}/>
-                                                                                    </Card>
+                                            <Card bordered={false}
+                                                  key={franchise.id}
+                                                  style={{
+                                                      borderRadius: "8px",
+                                                      width: "100%",
+                                                      marginBottom: "10px",
+                                                      boxShadow: "0px 0px 4px 0px #D0D8F3",
+                                                  }}
+                                            >
+                                                <Statistic title="Coach"
+                                                           value={franchise.coach ? franchise.coach?.name?.toLowerCase() : "None"}/>
+                                            </Card>
                                         </Badge.Ribbon>
                                     </Col>
                                 </Row>
@@ -101,7 +104,7 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
                     }
                 )
                 }
-            </div>
+            </Col>
         )
     }
 )
