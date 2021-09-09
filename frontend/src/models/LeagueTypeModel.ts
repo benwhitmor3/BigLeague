@@ -3,6 +3,7 @@ import {LeagueTypeModelBase} from "./LeagueTypeModel.base"
 import {FranchiseTypeModel} from "./FranchiseTypeModel";
 import {UserTypeModel} from "./UserTypeModel";
 import {PlayerTypeModelType} from "./PlayerTypeModel";
+import {draft} from "../Pages/Utils/TableFunctions";
 
 /* The TypeScript type of an instance of LeagueTypeModel */
 export interface LeagueTypeModelType extends Instance<typeof LeagueTypeModel.Type> {

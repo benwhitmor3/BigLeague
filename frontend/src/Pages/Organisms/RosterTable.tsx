@@ -253,6 +253,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                     <SigningModal visible={visible} setVisible={setVisible} selectedplayer={selectedPlayer}/>
                     {rosterAlert ?
                         <Alert
+                            style={{marginBottom: '10px'}}
                             message="Illegal Roster"
                             description="Maximum Starters: 5 Maximum Rotation: 3"
                             type="error"

@@ -93,7 +93,7 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
         },
         get lineup() {
             let lineup = self.playerSet.map(function (player) {
-                    return player.lineup;
+                return player.lineup;
             });
             return lineup
         },
@@ -109,5 +109,19 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
                     return player;
             });
             return starters
+        },
+        get unsignedPlayers() {
+            let unsignedPlayers = self.playerSet.filter(function (player) {
+                if (player.contract === null)
+                    return player;
+            });
+            return unsignedPlayers
+        },
+        get unsetPlayers() {
+            let unsetPlayers = self.playerSet.filter(function (player) {
+                if (player.lineup === null)
+                    return player;
+            });
+            return unsetPlayers
         },
     }))

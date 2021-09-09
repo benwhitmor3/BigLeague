@@ -13,6 +13,7 @@
     "axios": "^0.20.0",
     "create-react-class": "^15.6.3",
     "graphql-request": "^3.0.0",
+    "javascript-lp-solver": "^0.4.24",
     "mobx": "^5.15.6",
     "mobx-react": "^6.2.5",
     "mobx-state-tree": "^3.17.2",

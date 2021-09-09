@@ -12,8 +12,8 @@ export const StadiumCard: React.FunctionComponent = observer(() => {
         return <div><Spin size="large" /></div>;
     else {
         return (
-            <div className="site-card-wrapper">
-                <Row gutter={[0, 0]}>
+            <div>
+                <Row gutter={[0, 24]}>
                     <Col span={24}>
                         <Card bordered={false}
                               key={store.User.franchise.id}
@@ -50,8 +50,6 @@ export const StadiumCard: React.FunctionComponent = observer(() => {
                         </Card>
                     </Col>
                 </Row>
-
-
             </div>
         );
     }

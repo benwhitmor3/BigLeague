@@ -70,7 +70,6 @@ class SeasonView(viewsets.ModelViewSet):
     serializer_class = SeasonSerializer
 
 
-# r = requests.post('http://127.0.0.1:8000/league_generation', data={'franchise_id': '64', 'num_of_franchises': 8})
 def league_generation_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -109,7 +108,6 @@ def league_generation_view(request):
         return HttpResponse(request)
 
 
-# r = requests.post('http://127.0.0.1:8000/draft_order', data={'franchise_id': '72', 'season': 1})
 def draft_order_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -139,7 +137,6 @@ def draft_order_view(request):
         return JsonResponse({'draft_order': draft_order})
 
 
-# r = requests.post('http://127.0.0.1:8000/draft_optimize', data={'franchise_id': '72'})
 def draft_optimize_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -155,7 +152,6 @@ def draft_optimize_view(request):
         return JsonResponse(best_player)
 
 
-# r = requests.post('http://127.0.0.1:8000/sign_players', data={'franchise_id': '72'})
 def sign_players_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -172,7 +168,6 @@ def sign_players_view(request):
         return HttpResponse(request)
 
 
-# r = requests.post('http://127.0.0.1:8000/set_lineup', data={'franchise_id': '72'})
 def set_lineup_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -203,7 +198,6 @@ def free_agency_view(request):
         return HttpResponse(request)
 
 
-# r = requests.post('http://127.0.0.1:8000/season_sim', data={'league_id': '7', 'season': 1})
 def season_simulation_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -215,21 +209,6 @@ def season_simulation_view(request):
         with transaction.atomic():
             simulate_season(league, int(season))
             off_season(league)
-            gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
-
-        return HttpResponse(request)
-
-
-def offseason_view(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    if request.method == 'POST':
-        franchise_id = request.POST.get('franchise_id')
-        franchise = Franchise.objects.get(id=franchise_id)
-        league = franchise.league
-
-        with transaction.atomic():
-            off_season(league)
-
             gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
 
         return HttpResponse(request)
