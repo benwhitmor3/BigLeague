@@ -220,23 +220,26 @@ def gen_coach(league, num_of_coaches=10):
 # identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
 # shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
 # "renew non-repeat" is 1 not 2 now.
-def gen_salary(contract, epv, renew, t_option, p_option, age):
+def gen_salary(franchise, player):
     salary = 0
-    grade = 5
-    if contract != 0:
-        salary = grade * (epv / (contract + 1))
-        if renew == "repeat":
-            salary += 2 * (epv / (contract + 1))
-        elif renew == "non-repeat":
-            salary += 1 * (epv / (contract + 1))
+    if franchise.gm.trait == "recruiter":
+        grade = 3
+    else:
+        grade = 5
+    if player.contract != 0:
+        salary = grade * (player.epv / (player.contract + 1))
+        if player.renew == "repeat":
+            salary += 2 * (player.epv / (player.contract + 1))
+        elif player.renew == "non-repeat":
+            salary += 1 * (player.epv / (player.contract + 1))
         # need to edit this for now null options
-        if t_option != 0:
-            salary += (contract - (t_option if t_option is not None else 0)) * (epv / (contract + 1))
-        if p_option != 0:
-            salary -= 0.5 * (contract - (p_option if p_option is not None else 0)) * (epv / (contract + 1))
+        if player.t_option != 0:
+            salary += (player.contract - (player.t_option if player.t_option is not None else 0)) * (player.epv / (player.contract + 1))
+        if player.p_option != 0:
+            salary -= 0.5 * (player.contract - (player.p_option if player.p_option is not None else 0)) * (player.epv / (player.contract + 1))
 
-        if age >= 27:
-            salary -= (age - 26) * (epv / (contract + 1))
+        if player.age >= 27:
+            salary -= (player.age - 26) * (player.epv / (player.contract + 1))
 
     else:
         salary = None
@@ -248,23 +251,28 @@ def gen_salary(contract, epv, renew, t_option, p_option, age):
 # identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
 # shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
 # "renew non-repeat" is 1 not 2 now.
-def gen_grade(salary, contract, epv, renew, t_option, p_option, age):
-    if contract != 0:
-        grade = (salary * (contract + 1)) / epv
-        if renew == "repeat":
+def gen_grade(franchise, player):
+    if player.contract != 0:
+        grade = (player.salary * (player.contract + 1)) / player.epv
+        if player.renew == "repeat":
             grade -= 2
-        elif renew == "non-repeat":
+        elif player.renew == "non-repeat":
             grade -= 1
 
-        if t_option != 0:
-            grade -= (contract - (t_option if t_option is not None else 0))
-        if p_option != 0:
-            grade += 0.5 * (contract - (p_option if p_option is not None else 0))
+        if player.t_option:
+            if player.t_option > 0:
+                grade -= (player.contract - player.t_option)
+        if player.p_option:
+            if player.p_option > 0:
+                grade += 0.5 * (player.contract - player.p_option)
 
-        if age >= 27:
-            grade += age - 26
+        if player.age >= 27:
+            grade += player.age - 26
     else:
         grade = None
+
+    if franchise.gm.trait == "recruiter":
+        grade += 2
 
     print(grade)
     return grade

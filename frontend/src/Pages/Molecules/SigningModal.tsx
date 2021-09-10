@@ -12,7 +12,6 @@ interface IVisible {
     selectedplayer: any;
 }
 
-
 export const SigningModal: React.FunctionComponent<IVisible> = observer(({visible, setVisible, selectedplayer} : IVisible) => {
 
         const store = useContext(StoreContext)
@@ -35,8 +34,6 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
         };
 
 
-        // const [visible, setVisible] = useState<boolean>(false)
-        // const [selectedplayer, setselectedplayer] = useState<any>([]);
         const [salary, setSalary] = useState<number>(0);
         const [renewal, setRenewal] = useState<string>("no");
         const [contractlength, setContractLength] = useState<number>(1);
@@ -44,11 +41,6 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
         const [teamoption, setTeamOption] = useState<number>(0);
         const [offergrade, setOfferGrade] = useState<number>(0);
         const [gradecolour, setGradeColour] = useState<string>('#ff4d4f');
-
-        // const player_modal = (player: PlayerTypeModelType) => {
-            // setselectedplayer(player);
-            // setVisible(true);
-        // }
 
 
         const sign_player = () => {
@@ -149,8 +141,6 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
 
         return (
             <div>
-
-
                 <Modal
                     title="Contract Portal"
                     centered

@@ -10,8 +10,8 @@ from .models import *
 def sign_players(franchise):
     # get top 20% add 40% of epv cutoff to make contract more realistic
     total_players = Player.objects.filter(league=franchise.league).count()
-    first_epv_cutoff = Player.objects.filter(league=franchise.league).order_by('-epv')[0.2*total_players]
-    second_epv_cutoff = Player.objects.filter(league=franchise.league).order_by('-epv')[0.4*total_players]
+    first_epv_cutoff = Player.objects.filter(league=franchise.league).order_by('-epv')[int(0.2*total_players)].epv
+    second_epv_cutoff = Player.objects.filter(league=franchise.league).order_by('-epv')[int(0.4*total_players)].epv
 
     for player in Player.objects.filter(franchise=franchise, contract__isnull=True):
         # set contract
@@ -60,10 +60,8 @@ def sign_players(franchise):
         renew_weight = ["no"] * 7 + ["non-repeat"] * 1 + ["repeat"] * 2
         player.renew = random.choice(renew_weight)
 
-        player.salary = gen_salary(player.contract, player.epv, player.renew, player.t_option, player.p_option,
-                                   player.age)
-        player.grade = gen_grade(player.salary, player.contract, player.epv, player.renew, player.t_option,
-                                 player.p_option, player.age)
+        player.salary = gen_salary(franchise, player)
+        player.grade = gen_grade(franchise, player)
 
         player.save()
 
@@ -436,6 +434,29 @@ def player_option_true(league):
             print(str(player) + " chose to stay")
 
 
+def team_option_true(league):
+    total_salary = Player.objects.filter(league=league, franchise__isnull=False).aggregate(Sum('salary'))[
+        'salary__sum']
+    total_epv = Player.objects.filter(league=league, franchise__isnull=False).aggregate(Sum('epv'))['epv__sum']
+    salary_per_epv = total_salary / total_epv
+    # COULD MAKE THIS POSITION BASED. WOULD BE KIND OF COOL.
+    for player in Player.objects.filter(league=league, t_option=0):
+        # makes team option TRUE if salary is greater than 125% of average for their EPV
+        if player.salary/player.epv > salary_per_epv * 1.25:
+            print(str(player) + " was released")
+            player.contract = None
+            player.p_option = None
+            player.t_option = None
+            player.renew = None
+            player.grade = None
+            player.salary = None
+            player.lineup = None
+            player.franchise = None
+            player.save()
+        else:
+            print(str(player) + " was not released")
+
+
 def franchise_progression(league):
     # degrade stadium by 1, remove gm, remove coach
     for franchise in Franchise.objects.filter(league=league):
@@ -546,6 +567,7 @@ def off_season(league):
     development(league)
     contract_progression(league)
     player_option_true(league)
+    team_option_true(league)
     franchise_progression(league)
 
     return "Successful Offseason for " + league.league_name
