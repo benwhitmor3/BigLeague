@@ -1,44 +1,62 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import axios from "axios";
 import 'antd/dist/antd.css';
 import {Card, Button, Statistic, Tag} from 'antd';
-import {StoreContext} from "../../models";
+import {FranchiseTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
 import {colour, suit_icon} from "../Utils/TableFunctions";
+import {mutateCreatePlayerQuery} from "../Utils/queries";
 
 
 export const DraftOrder: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-        const [showBestPlayer, setShowBestPlayer] = useState<boolean>(false)
-        // const [draftorder, setTeamOrder] = useState<Array<string>>()
+        const draft_order_border = (name: string | undefined) => {
 
-        const draft_order_border = (name: string) => {
+            if (store.User.league.draftingFranchise && store.User.league.draftingFranchise.franchise == name) {
+                return '2px dashed #ffc300'
+            } else
+                return '1px solid #ffffff'
+        }
 
-          if (store.User.league.draftingFranchise && store.User.league.draftingFranchise.franchise == name) {
-            return '2px dashed #ffc300'
-          }
-          else
-            return '1px solid #ffffff'
+        const draftSim = (franchise: FranchiseTypeModelType, player: any) => {
+            store.mutateCreatePlayer({
+                    "playerInput": {
+                        "name": player.name,
+                        "suit": player.suit,
+                        "age": player.age,
+                        "pv": player.pv,
+                        "epv": player.epv,
+                        "sEpv": player.sEpv,
+                        "contract": undefined,
+                        "tOption": undefined,
+                        "pOption": undefined,
+                        "renew": undefined,
+                        "salary": undefined,
+                        "grade": undefined,
+                        "lineup": "bench",
+                        "franchiseId": store.User.franchise.league.draftingFranchise.id,
+                        "trainer": false,
+                        "year": player.year,
+                        "leagueId": store.User.franchise.league.id
+                    }
+                }, mutateCreatePlayerQuery,
+                undefined
+            );
+            try {
+                // make next franchise in draft order draftingFranchise
+                store.User.league.setDraftingFranchise(store.User.league.draftOrder[store.User.league.draftOrder.indexOf(franchise) + 1])
+            } catch (exception_var) {
+                // if at the end of draft order reset to beginning
+                store.User.league.setDraftingFranchise(store.User.league.draftOrder[0])
             }
-
-        const draftPicker = () => {
-            setShowBestPlayer(!showBestPlayer)
-            // const data = new FormData();
-            // data.append("franchise_id", store.User.franchise.id)
-            // axios.post('http://127.0.0.1:8000/draft_optimize', data)
-            //     .then(res => {
-            //         console.log(res.data)
-            //         setBestPlayer(res.data.best_player)
-            //     })
-            //     .catch(err => {
-            //         console.log(err)
-            //     })
-        };
+        }
 
         useEffect(() => {
-            store.User.franchise.league.setDraftingFranchise(store.User.league.draftOrder[0])
+            if (!store.User.franchise.league.draftingFranchise) {
+                store.User.franchise.league.setDraftingFranchise(store.User.league.draftOrder[0])
+            }
             // const data = new FormData();
             // data.append("franchise_id", store.User.franchise.id)
             // data.append("season", store.User.franchise.seasonSet.length)
@@ -59,11 +77,13 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
         else {
             return (
                 <div>
-                    <Button type="primary" onClick={() => draftPicker()} block>
-                        Draft Picker
-                    </Button>
+                    {store.User.league.bestDraftPlayer ?
+                    <Button type="primary" onClick={() => draftSim(store.User.league.draftingFranchise, store.User.league.bestDraftPlayer)} block>
+                        Draft Sim
+                    </Button> :
+                        null}
 
-                    {(store.User.league.bestDraftPlayer && showBestPlayer) ?
+                    {(store.User.league.bestDraftPlayer && store.User.league.draftingFranchise !== store.User.franchise) ?
                         <Statistic
                             style={{
                                 display: "block", marginLeft: 'auto', marginRight: 'auto',
@@ -84,16 +104,18 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
                         : null}
 
 
-                    {store.User.league.draftOrder ? store.User.league.draftOrder.map((name: string, index: number) => {
+                    {store.User.league.draftOrder ? store.User.league.draftOrder.map((franchise: FranchiseTypeModelType, index: number) => {
                             let number = (index + 1)
                             return <Card hoverable
                                          onClick={() =>
-                                             store.User.league.setDraftingFranchise(name)
+                                             store.User.league.setDraftingFranchise(franchise)
                                          }
-                                         key={index} style={{width: '12.5%', marginTop: '20px', marginBottom: '20px', display: 'inline-flex',
-                                         border: draft_order_border(name)}}>
-                                <span>{number + ' ' + name}</span>
-                                <span>{" –– Players: " + store.User.league.franchiseplayers(name).length}</span>
+                                         key={index} style={{
+                                width: '12.5%', marginTop: '20px', marginBottom: '20px', display: 'inline-flex',
+                                border: draft_order_border(franchise.franchise)
+                            }}>
+                                <span>{number + ' ' + franchise.franchise}</span>
+                                <span>{" –– Players: " + store.User.league.franchiseplayers(franchise.franchise).length}</span>
                             </Card>
                         }
                         )

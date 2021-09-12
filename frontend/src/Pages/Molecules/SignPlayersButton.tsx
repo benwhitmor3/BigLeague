@@ -30,7 +30,8 @@ export const SignPlayersButton: React.FunctionComponent = observer(() => {
             axios.post('http://127.0.0.1:8000/sign_players', data)
                 .then(res => {
                     console.log(res.data)
-                    store.queryAllUser({},
+                    store.queryUser(
+                    {email: "email@email.com"},
                         `__typename
                                       id
                                       franchise{
@@ -83,7 +84,7 @@ export const SignPlayersButton: React.FunctionComponent = observer(() => {
             return (
                 <div>
                     <Button type="primary" style={buttonStyles} onClick={() => signPlayers()} block>
-                        Sign Players
+                        Sign Bots Players
                     </Button>
                 </div>
             );

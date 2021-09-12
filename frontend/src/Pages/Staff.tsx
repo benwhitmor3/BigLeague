@@ -5,6 +5,7 @@ import {GmCoachCard} from "./Molecules/GmCoachCard";
 import {Spin} from 'antd';
 import GmCoachInfo from "./Molecules/GmCoachInfo";
 import GmCoachSelect from "./Molecules/GmCoachSelect";
+import SetStaffButton from "./Molecules/SetStaffButton";
 
 export const Staff: React.FunctionComponent = observer(() => {
 
@@ -16,6 +17,7 @@ export const Staff: React.FunctionComponent = observer(() => {
         return (
             <div>
                 <GmCoachInfo/>
+                <SetStaffButton/>
                 <GmCoachCard/>
                 <GmCoachSelect/>
             </div>

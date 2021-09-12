@@ -16,7 +16,7 @@ const buttonStyles: CSS.Properties = {
     color: '#fff2e8',
 };
 
-export const SetLineupsButton: React.FunctionComponent = observer(() => {
+export const SetStaffButton: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
@@ -28,7 +28,7 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
             data.append("franchise_id", store.User.franchise.id)
             setLoading(true)
             setPercent(50)
-            axios.post('http://127.0.0.1:8000/set_lineup', data)
+            axios.post('http://127.0.0.1:8000/set_staff', data)
                 .then(res => {
                     console.log(res.data)
                     store.queryUser(
@@ -90,7 +90,7 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
 
         if (loading) return (
             <div>
-                <h3>Setting Lineups</h3>
+                <h3>Setting Staff</h3>
                 <Progress strokeColor={{'0%': '#108ee9', '100%': '#87d068',}} percent={percent}/>
             </div>
         )
@@ -98,7 +98,7 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
             return (
                 <div>
                     <Button type="primary" style={buttonStyles} onClick={() => setLineups()} block>
-                        Set Bots Lineups
+                        Set Bots Staff
                     </Button>
                 </div>
             );
@@ -106,4 +106,4 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
     }
 )
 
-export default SetLineupsButton;
+export default SetStaffButton;

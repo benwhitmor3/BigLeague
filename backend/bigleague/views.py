@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
-from .league_functions import sign_players, set_lineup, off_season, simulate_season, free_agency
+from .league_functions import sign_players, set_lineup, off_season, simulate_season, free_agency, set_staff
 from .generator import gen_city, gen_gm, gen_coach, gen_player, gen_salary, gen_grade, gen_franchise
 from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
     GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer
@@ -180,6 +180,22 @@ def set_lineup_view(request):
             # for every franchise not mine, get players and assign lineup based on pv
             for franchise in franchises:
                 set_lineup(league, franchise)
+
+        return HttpResponse(request)
+
+
+def set_staff_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        my_franchise = Franchise.objects.get(id=franchise_id)
+        league = my_franchise.league
+
+        franchises = Franchise.objects.filter(league=league, user=None)
+        with transaction.atomic():
+            # for every franchise not mine, assign staff
+            for franchise in franchises:
+                set_staff(league, franchise)
 
         return HttpResponse(request)
 

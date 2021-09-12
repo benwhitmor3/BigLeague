@@ -1,6 +1,6 @@
 import {Instance, types} from "mobx-state-tree"
 import {LeagueTypeModelBase} from "./LeagueTypeModel.base"
-import {FranchiseTypeModel} from "./FranchiseTypeModel";
+import {FranchiseTypeModel, FranchiseTypeModelSelector, FranchiseTypeModelType} from "./FranchiseTypeModel";
 import {UserTypeModel} from "./UserTypeModel";
 import {PlayerTypeModelType} from "./PlayerTypeModel";
 import {draft} from "../Pages/Utils/TableFunctions";
@@ -21,10 +21,9 @@ export const LeagueTypeModel = LeagueTypeModelBase
         log() {
             console.log(JSON.stringify(self))
         },
-        setDraftingFranchise(franchiseName: string) {
+        setDraftingFranchise(franchise: FranchiseTypeModelType) {
             // @ts-ignore
-            self.draftingFranchise = self.franchise(franchiseName)
-            console.log(franchiseName)
+            self.draftingFranchise = self.franchise(franchise.franchise)
         },
     }))
     .props({
@@ -82,7 +81,7 @@ export const LeagueTypeModel = LeagueTypeModelBase
             let draftOrder = self.franchiseSet.sort(function (a, b) {
                 // @ts-ignore
                 return a.wins - b.wins;
-            }).map(franchise => franchise.franchise)
+            })
             return draftOrder
         },
     }))

@@ -79,13 +79,17 @@ def set_lineup(league, franchise):
         player.lineup = "bench"
         player.save()
 
+    return "Set Lineup for " + franchise.franchise
+
+
+def set_staff(league, franchise):
     if franchise.gm is None:
         franchise.gm = random.sample(set(GM.objects.filter(league=league)), 1)[0]
     if franchise.coach is None:
         franchise.coach = random.sample(set(Coach.objects.filter(league=league, franchise=None)), 1)[0]
     franchise.save()
 
-    return "Set Lineup for " + franchise.franchise
+    return "Set Staff for " + franchise.franchise
 
 
 def simulate_season(league, season):
