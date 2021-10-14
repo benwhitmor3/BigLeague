@@ -483,85 +483,127 @@ def actions(league, season_num):
         season = Season.objects.get(franchise__franchise=franchise, season=season_num)
         stadium = Stadium.objects.get(franchise=franchise)
         # stadium improvement actions (permanent)
-        if franchise.action.improved_bathrooms:
+        if franchise.action.improved_bathrooms and franchise.action.improved_bathrooms_complete is False:
             stadium.grade += 1
             stadium.max_grade += 1
+            stadium.save()
             season.expenses += 5000000
-        if franchise.action.improved_concessions:
+            season.save()
+            franchise.action.improved_bathrooms_complete = True
+        if franchise.action.improved_concessions and franchise.action.improved_concessions_complete is False:
             stadium.grade += 1
             stadium.max_grade += 1
+            stadium.save()
             season.expenses += 5000000
-        if franchise.action.jumbotron:
+            season.save()
+            franchise.action.improved_concessions_complete = True
+        if franchise.action.jumbotron and franchise.action.jumbotron_complete is False:
             stadium.grade += 1
             stadium.max_grade += 1
+            stadium.save()
             season.expenses += 5000000
-        if franchise.action.upscale_bar:
+            season.save()
+            franchise.action.jumbotron_complete = True
+        if franchise.action.upscale_bar and franchise.action.upscale_bar_complete is False:
             stadium.grade += 1
             stadium.max_grade += 1
+            stadium.save()
             season.expenses += 5000000
-        if franchise.action.hall_of_fame:
+            season.save()
+            franchise.action.upscale_bar_complete = True
+        if franchise.action.hall_of_fame and franchise.action.hall_of_fame_complete is False:
             stadium.grade += 2
             stadium.max_grade += 2
+            stadium.save()
             season.expenses += 10000000
-        if franchise.action.improved_seating:
+            season.save()
+            franchise.action.hall_of_fame_complete = True
+        if franchise.action.improved_seating and franchise.action.improved_seating_complete is False:
             stadium.grade += 2
             stadium.max_grade += 2
+            stadium.save()
             season.expenses += 10000000
-        if franchise.action.improved_sound:
+            season.save()
+            franchise.action.improved_seating_complete = True
+        if franchise.action.improved_sound and franchise.action.improved_sound_complete is False:
             stadium.grade += 2
             stadium.max_grade += 2
+            stadium.save()
             season.expenses += 10000000
-        if franchise.action.party_deck:
+            season.save()
+            franchise.action.improved_sound_complete = True
+        if franchise.action.party_deck and franchise.action.party_deck_complete is False:
             stadium.grade += 2
             stadium.max_grade += 2
+            stadium.save()
             season.expenses += 10000000
-        if franchise.action.wi_fi:
+            season.save()
+            franchise.action.party_deck_complete = True
+        if franchise.action.wi_fi and franchise.action.wi_fi_complete is False:
             stadium.grade += 2
             stadium.max_grade += 2
+            stadium.save()
             season.expenses += 10000000
-
+            season.save()
+            franchise.action.wi_fi_complete = True
+        # promotions
         if franchise.action.fan_night:
             season.fan_index += 6
             season.expenses += 2000000
+            season.save()
             franchise.action.fan_night = False
         if franchise.action.family_game:
             season.fan_index += 6
             season.expenses += 2000000
+            season.save()
             franchise.action.family_game = False
         if franchise.action.door_prizes:
             season.fan_index += 6
             season.expenses += 2000000
+            season.save()
             franchise.action.door_prizes = False
         if franchise.action.mvp_night:
             season.fan_index += 10
             season.expenses += 5000000
+            season.save()
             franchise.action.mvp_night = False
         if franchise.action.parade_of_champions:
             season.fan_index += 10
             season.expenses += 5000000
+            season.save()
             franchise.action.parade_of_champions = False
-
+        # Concessions and Revenue
         if franchise.action.fan_favourites:
             stadium.grade += 1
             stadium.max_grade += 1
+            stadium.save()
             season.fan_index += 1
             season.expenses += 10000000
+            season.save()
             franchise.action.fan_favourites = False
-        if franchise.action.gourmet_restaurant:
+        if franchise.action.gourmet_restaurant and franchise.action.gourmet_restaurant_complete is False:
             season.revenue += int(random.gauss(10000000, 5000000))
             season.expenses += 10000000
+            season.save()
+            franchise.action.gourmet_restaurant_complete = True
         if franchise.action.beer_garden:
             season.fan_index += 2
             stadium.home_field_advantage += 1
+            stadium.save()
             season.expenses += 6000000
+            season.save()
             franchise.action.beer_garden = False
-        if franchise.action.naming_rights:
+        if franchise.action.naming_rights and franchise.action.naming_rights_complete is False:
             season.revenue += int(random.gauss(50000000, 25000000))
+            season.save()
+            franchise.action.naming_rights_complete = True
         if franchise.action.event_planning:
             season.revenue += 5 * stadium.grade * stadium.city.city_value * stadium.seats
+            season.save()
             franchise.action.event_planning = False
 
         franchise.save()
+        franchise.action.save()
         stadium.save()
         season.save()
 

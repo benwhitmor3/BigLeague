@@ -21,6 +21,10 @@ export const userQuery = `
         name
         attributeOne
         attributeTwo
+        franchise{
+            __typename
+            id
+          }
       }
       stadium{
         __typename
@@ -72,14 +76,23 @@ export const userQuery = `
         id
         numberOfActions
         improvedBathrooms
+        improvedBathroomsComplete
         improvedConcessions
+        improvedConcessionsComplete
         jumbotron
+        jumbotronComplete
         upscaleBar
+        upscaleBarComplete
         hallOfFame
+        hallOfFameComplete
         improvedSeating
+        improvedSeatingComplete
+        improvedSound
         improvedSound
         partyDeck
+        partyDeckComplete
         wiFi
+        wiFiComplete
         fanNight
         familyGame
         doorPrizes
@@ -87,13 +100,17 @@ export const userQuery = `
         paradeOfChampions
         bribeTheRefs
         easyRuns
+        easyRunsComplete
         fanFactor
+        fanFactorComplete
         trainPlayer
         farmSystem
         fanFavourites
         gourmetRestaurant
+        gourmetRestaurantComplete
         beerGarden
         namingRights
+        namingRightsComplete
         eventPlanning
       }
       stadium{
@@ -155,20 +172,33 @@ export const userQuery = `
             name
             attributeOne
             attributeTwo
+            franchise{
+            __typename
+            id
+            }
           }
           action{
             __typename
             id
             numberOfActions
             improvedBathrooms
+            improvedBathroomsComplete
             improvedConcessions
+            improvedConcessionsComplete
             jumbotron
+            jumbotronComplete
             upscaleBar
+            upscaleBarComplete
             hallOfFame
+            hallOfFameComplete
             improvedSeating
+            improvedSeatingComplete
+            improvedSound
             improvedSound
             partyDeck
+            partyDeckComplete
             wiFi
+            wiFiComplete
             fanNight
             familyGame
             doorPrizes
@@ -176,13 +206,17 @@ export const userQuery = `
             paradeOfChampions
             bribeTheRefs
             easyRuns
+            easyRunsComplete
             fanFactor
+            fanFactorComplete
             trainPlayer
             farmSystem
             fanFavourites
             gourmetRestaurant
+            gourmetRestaurantComplete
             beerGarden
             namingRights
+            namingRightsComplete
             eventPlanning
           }
           playerSet{

@@ -124,4 +124,8 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             });
             return unsetPlayers
         },
+        // get numberOfActions() {
+        //     if (self.gm?.trait == "FACILITATOR")
+        //     return unsetPlayers
+        // },
     }))

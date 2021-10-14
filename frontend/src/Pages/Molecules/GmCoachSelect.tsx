@@ -70,7 +70,8 @@ export const GmCoachSelect: React.FunctionComponent = observer(() => {
                             return coachLabel(coach)})}
                             value={coachId} onChange={(coach: any) => setCoachId(coach)}/>
 
-                <Button type="primary" style={buttonStyles} onClick={() => onSubmit(franchise, gmId, coachId)}>Sign</Button>
+                {store.User.franchise.gm && store.User.franchise.coach ? null : <Button type="primary" style={buttonStyles} onClick={() => onSubmit(franchise, gmId, coachId)}>Sign</Button>}
+
             </div>
         );
     }

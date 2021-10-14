@@ -74,6 +74,10 @@ export const SetStaffButton: React.FunctionComponent = observer(() => {
                                                 name
                                                 attributeOne
                                                 attributeTwo
+                                                franchise{
+                                                    __typename
+                                                    id
+                                                }
                                             }
                                           }
                                         }

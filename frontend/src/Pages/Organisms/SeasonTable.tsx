@@ -94,13 +94,14 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
             },
         ];
 
-        const [season, setSeason] = useState<any>(store.User.franchise.league.franchiseSet.map((franchise: any) => franchise.seasonSet[0]));
+        // get most recent season (franchise.seasonSet.length - 1) and map each franchise in that season
+        const [season, setSeason] = useState<any>(store.User.franchise.league.franchiseSet.map((franchise: any) => franchise.seasonSet[franchise.seasonSet.length - 1]));
 
 
         return (
             <div>
                 <Select
-                    defaultValue={store.User.franchise.seasonSet[0].season}
+                    defaultValue={store.User.franchise.seasonSet[store.User.franchise.seasonSet.length - 1].season}
                     bordered={false}
                     style={{
                         width: "100%",

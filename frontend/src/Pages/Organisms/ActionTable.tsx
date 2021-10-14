@@ -1,9 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Checkbox, Button} from 'antd';
+import {Table, Checkbox, Button, notification} from 'antd';
 import {ActionTypeModelType, FranchiseTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
 import {IObservableArray, observable} from "mobx";
+import {lineupError, rosterError, staffError, starterError, unsignedError} from "../Molecules/SeasonSimChecker";
 
 interface IFranchise {
     franchise: FranchiseTypeModelType;
@@ -12,6 +13,8 @@ interface IFranchise {
 export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franchise}: IFranchise) => {
 
         const store = useContext(StoreContext)
+
+        let facilitatorBonus = 2
 
         const [improvedBathrooms, setImprovedBathrooms] = useState<boolean | undefined>(franchise.action.improvedBathrooms)
         const [improvedConcessions, setImprovedConcessions] = useState<boolean | undefined>(franchise.action.improvedConcessions)
@@ -37,12 +40,53 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         const [eventPlanning, setEventPlanning] = useState<boolean | undefined>(franchise.action.eventPlanning)
 
 
-        const submitActions = () => {
+        const staffError = (franchise: string | undefined) => {
+        notification.error({
+            message: 'Action Error',
+            description: franchise + ' does not have enough actions',
+            duration: 10,
+        });
+        };
+
+        const actionChecker = () => {
+            let oldActions = [franchise.action.improvedBathrooms, franchise.action.improvedConcessions, franchise.action.jumbotron,
+                franchise.action.upscaleBar, franchise.action.hallOfFame, franchise.action.improvedSeating, franchise.action.improvedSound,
+                franchise.action.partyDeck, franchise.action.wiFi, franchise.action.fanNight, franchise.action.familyGame,
+                franchise.action.doorPrizes, franchise.action.mvpNight, franchise.action.paradeOfChampions, franchise.action.bribeTheRefs,
+                franchise.action.easyRuns, franchise.action.fanFactor, franchise.action.fanFavourites, franchise.action.gourmetRestaurant,
+                franchise.action.beerGarden, franchise.action.namingRights, franchise.action.eventPlanning]
+            let newActions = [improvedBathrooms, improvedConcessions, jumbotron, upscaleBar,
+                hallOfFame, improvedSeating, improvedSound, partyDeck, wiFi, fanNight, familyGame, doorPrizes, mvpNight,
+                paradeOfChampions, bribeTheRefs, easyRuns, fanFactor, fanFavourites, gourmetRestaurant, beerGarden,
+                namingRights, eventPlanning]
+
+            let oldTrue = oldActions.filter(x => x===true).length
+            let newTrue = newActions.filter(x => x===true).length
+
+            let numberOfActions = franchise.action.numberOfActions
+            if (franchise.gm?.trait === "FACILITATOR") {
+                // @ts-ignore
+                numberOfActions += facilitatorBonus
+            }
+
+
+            let actionsSelected = newTrue - oldTrue
+            // @ts-ignore
+            if (actionsSelected > numberOfActions)
+                return staffError(franchise.franchise);
+            else {
+                // @ts-ignore
+                submitActions(actionsSelected)
+            }
+        }
+
+
+        const submitActions = (actionsSelected: number) => {
 
             store.mutateUpdateAction({
                     "actionInput": {
                         // @ts-ignore
-                        "numberOfActions": franchise.action.numberOfActions,
+                        "numberOfActions": (franchise.action.numberOfActions - actionsSelected),
                         "improvedBathrooms": improvedBathrooms,
                         "improvedConcessions": improvedConcessions,
                         "jumbotron": jumbotron,
@@ -70,52 +114,19 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                         "franchiseId": franchise.id
                     }
                 }, `__typename
-                                action{
-                                  __typename
-                                  id
-                                  franchise{
-                                    __typename
-                                    id
                                     action{
                                       __typename
                                       id
-                                      numberOfActions
-                                      improvedBathrooms
-                                      improvedConcessions
-                                      jumbotron
-                                      upscaleBar
-                                      hallOfFame
-                                      improvedSeating
-                                      improvedSound
-                                      partyDeck
-                                      wiFi
-                                      fanNight
-                                      familyGame
-                                      doorPrizes
-                                      mvpNight
-                                      paradeOfChampions
-                                      bribeTheRefs
-                                      easyRuns
-                                      fanFactor
-                                      trainPlayer
-                                      farmSystem
-                                      fanFavourites
-                                      gourmetRestaurant
-                                      beerGarden
-                                      namingRights
-                                      eventPlanning
                                       franchise{
-                                            __typename
-                                            id
-                                          }
-                                    }
-                                    league{
-                                      __typename
-                                      id
-                                      franchiseSet{
                                         __typename
                                         id
-                                        action{
+                                        user{
+                                          __typename
+                                          id
+                                          franchise{
+                                            __typename
+                                            id
+                                            action{
                                           __typename
                                           id
                                           numberOfActions
@@ -143,126 +154,55 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                                           beerGarden
                                           namingRights
                                           eventPlanning
-                                          franchise{
+                                        \t}
+                                         league{
+                                          __typename
+                                          id
+                                          franchiseSet{
                                             __typename
                                             id
+                                            action{
+                                              __typename
+                                              id
+                                              numberOfActions
+                                              improvedBathrooms
+                                              improvedConcessions
+                                              jumbotron
+                                              upscaleBar
+                                              hallOfFame
+                                              improvedSeating
+                                              improvedSound
+                                              partyDeck
+                                              wiFi
+                                              fanNight
+                                              familyGame
+                                              doorPrizes
+                                              mvpNight
+                                              paradeOfChampions
+                                              bribeTheRefs
+                                              easyRuns
+                                              fanFactor
+                                              trainPlayer
+                                              farmSystem
+                                              fanFavourites
+                                              gourmetRestaurant
+                                              beerGarden
+                                              namingRights
+                                              eventPlanning
+                                              franchise{
+                                                __typename
+                                                id
+                                              }
+                                            }
                                           }
                                         }
-                                      }
-                                    }
+                                          }
+                                        }
                                   }
                                 }
                                 `,
                 undefined
             );
-
-            store.queryUser(
-                {email: "email@email.com"},
-                ` __typename
-                                id
-                                email
-                                username
-                                league{
-                                  __typename
-                                  id
-                                }
-                                franchise{
-                                  __typename
-                                  id
-                                  action{
-                                    __typename
-                                    id
-                                    numberOfActions
-                                    improvedBathrooms
-                                    improvedConcessions
-                                    jumbotron
-                                    upscaleBar
-                                    hallOfFame
-                                    improvedSeating
-                                    improvedSound
-                                    partyDeck
-                                    wiFi
-                                    fanNight
-                                    familyGame
-                                    doorPrizes
-                                    mvpNight
-                                    paradeOfChampions
-                                    bribeTheRefs
-                                    easyRuns
-                                    fanFactor
-                                    trainPlayer
-                                    farmSystem
-                                    fanFavourites
-                                    gourmetRestaurant
-                                    beerGarden
-                                    namingRights
-                                    eventPlanning
-                                  }
-                                  league{
-                                    __typename
-                                    id
-                                    leagueName
-                                    franchiseSet{
-                                      __typename
-                                      id
-                                      franchise
-                                      action{
-                                        __typename
-                                        id
-                                        numberOfActions
-                                        improvedBathrooms
-                                        improvedConcessions
-                                        jumbotron
-                                        upscaleBar
-                                        hallOfFame
-                                        improvedSeating
-                                        improvedSound
-                                        partyDeck
-                                        wiFi
-                                        fanNight
-                                        familyGame
-                                        doorPrizes
-                                        mvpNight
-                                        paradeOfChampions
-                                        bribeTheRefs
-                                        easyRuns
-                                        fanFactor
-                                        trainPlayer
-                                        farmSystem
-                                        fanFavourites
-                                        gourmetRestaurant
-                                        beerGarden
-                                        namingRights
-                                        eventPlanning
-                                      }
-                                    seasonSet{
-                                      __typename
-                                      id
-                                      franchise{
-                                        __typename
-                                        id
-                                        franchise
-                                      }
-                                      season
-                                      ready
-                                      wins
-                                      losses
-                                      ppg
-                                      std
-                                      championships
-                                      bonuses
-                                      penalties
-                                      fanBase
-                                      fanIndex
-                                      advertising
-                                      revenue
-                                      expenses
-                                    }
-                                    }
-                                  }
-                                }`,
-                undefined
-            )
 
         }
 
@@ -271,6 +211,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 title: '# of Actions',
                 dataIndex: "numberOfActions",
                 key: "numberOfActions",
+                render: (numberOfActions: number) => (
+                    ((franchise.gm?.trait === "FACILITATOR") ?
+                    <text>{numberOfActions + facilitatorBonus}</text> :
+                    <text>{numberOfActions}</text>
+                    )
+                )
             },
             {
                 title: 'Improved Bathrooms',
@@ -278,7 +224,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "improvedBathrooms",
                 render: (improvedBathrooms: boolean) => (
                     ((franchise.action.improvedBathrooms == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={improvedBathrooms}
                                       onChange={(e) => setImprovedBathrooms(e.target.checked)}></Checkbox>
@@ -291,7 +240,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "improvedConcessions",
                 render: (improvedConcessions: boolean) => (
                     ((franchise.action.improvedConcessions == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={improvedConcessions}
                                       onChange={(e) => setImprovedConcessions(e.target.checked)}></Checkbox>
@@ -304,7 +256,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "jumbotron",
                 render: (jumbotron: boolean) => (
                     ((franchise.action.jumbotron == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={jumbotron}
                                       onChange={(e) => setJumbotron(e.target.checked)}></Checkbox>
@@ -317,7 +272,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "upscaleBar",
                 render: (upscaleBar: boolean) => (
                     ((franchise.action.upscaleBar == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             ((franchise.action.improvedConcessions == true) ?
                                     <Checkbox defaultChecked={upscaleBar}
@@ -334,7 +292,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "hallOfFame",
                 render: (hallOfFame: boolean) => (
                     ((franchise.action.hallOfFame == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             // @ts-ignore
                             ((franchise.championships > 0) ?
@@ -352,7 +313,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "improvedSeating",
                 render: (improvedSeating: boolean) => (
                     ((franchise.action.improvedSeating == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={improvedSeating}
                                       onChange={(e) => setImprovedSeating(e.target.checked)}></Checkbox>
@@ -365,7 +329,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "improvedSound",
                 render: (improvedSound: boolean) => (
                     ((franchise.action.improvedSound == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={improvedSound}
                                       onChange={(e) => setImprovedSound(e.target.checked)}></Checkbox>
@@ -378,7 +345,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "partyDeck",
                 render: (partyDeck: boolean) => (
                     ((franchise.action.partyDeck == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={partyDeck}
                                       onChange={(e) => setPartyDeck(e.target.checked)}></Checkbox>
@@ -391,7 +361,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "wiFi",
                 render: (wiFi: boolean) => (
                     ((franchise.action.wiFi == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={wiFi} onChange={(e) => setWiFi(e.target.checked)}></Checkbox>
                     )
@@ -519,7 +492,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "gourmetRestaurant",
                 render: (gourmetRestaurant: boolean) => (
                     ((franchise.action.gourmetRestaurant == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={gourmetRestaurant}
                                       onChange={(e) => setGourmetRestaurant(e.target.checked)}></Checkbox>
@@ -544,7 +520,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "namingRights",
                 render: (namingRights: boolean) => (
                     ((franchise.action.namingRights == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
                             <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
                             :
                             <Checkbox defaultChecked={namingRights}
                                       onChange={(e) => setNamingRights(e.target.checked)}></Checkbox>
@@ -564,7 +543,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 title: 'Submit',
                 key: "submit",
                 render: () => (
-                    <Button onClick={submitActions}>
+                    <Button onClick={actionChecker}>
                         Confirm
                     </Button>
                 ),

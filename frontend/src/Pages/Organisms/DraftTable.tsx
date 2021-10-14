@@ -129,6 +129,13 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                                          }, mutateCreatePlayerQuery,
                                          undefined
                                      );
+                                     try {
+                                         // make next franchise in draft order draftingFranchise
+                                         store.User.league.setDraftingFranchise(store.User.league.draftOrder[store.User.league.draftOrder.indexOf(store.User.franchise.league.draftingFranchise) + 1])
+                                     } catch (exception_var) {
+                                         // if at the end of draft order reset to beginning
+                                         store.User.league.setDraftingFranchise(store.User.league.draftOrder[0])
+                                     }
                                  }
                                  }>
                                 Draft Prospect
