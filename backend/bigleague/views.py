@@ -71,6 +71,7 @@ class SeasonView(viewsets.ModelViewSet):
 
 
 def league_generation_view(request):
+    """this creates all of the bots for a league"""
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
         franchise_id = request.POST.get('franchise_id')
@@ -103,12 +104,13 @@ def league_generation_view(request):
             if int(len(league.franchise_set.all())) > 1:
                 print("League already has more than one franchise")
             else:
-                gen_franchise(league, num_of_franchises-1)
+                gen_franchise(league, num_of_franchises - 1)
 
         return HttpResponse(request)
 
 
 def draft_order_view(request):
+    """this sets the order for the draft based on the previous season results"""
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
         franchise_id = request.POST.get('franchise_id')
@@ -135,21 +137,6 @@ def draft_order_view(request):
             draft_order.append(i['franchise_id__franchise'])
 
         return JsonResponse({'draft_order': draft_order})
-
-
-def draft_optimize_view(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    if request.method == 'POST':
-        franchise_id = request.POST.get('franchise_id')
-        franchise = Franchise.objects.get(id=franchise_id)
-        league = franchise.league
-
-        p = Player.objects.all()
-        # get all players in that league without a franchise sorted descending pv
-        best_player = {"best_player": sorted(p.filter(league=league, year=1).exclude(franchise__isnull=False).values(),
-                                             key=lambda i: (i['pv']), reverse=True)[0]['name']}
-
-        return JsonResponse(best_player)
 
 
 def sign_players_view(request):

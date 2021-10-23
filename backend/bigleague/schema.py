@@ -1,6 +1,5 @@
 import graphene
 import graphql_jwt
-from django.contrib.auth import get_user_model
 from graphene_django.types import DjangoObjectType
 from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season, PlayerHistory
 
@@ -400,8 +399,6 @@ class Mutation(graphene.ObjectType):
 
     update_action = UpdateActionMutation.Field()
 
-    # roster_update = UpdateRosterMutation.Field()
-
     create_stadium = CreateStadiumMutation.Field()
     update_stadium = UpdateStadiumMutation.Field()
 
@@ -418,9 +415,7 @@ class Query(graphene.ObjectType):
     all_action = graphene.List(ActionType)
     all_season = graphene.List(SeasonType)
 
-    # all_roster = graphene.List(RosterType)
     player = graphene.Field(PlayerType)
-    # roster = graphene.Field(RosterType)
     user = graphene.Field(UserType, email=graphene.String())
     league = graphene.Field(LeagueType, league_name=graphene.String())
 
@@ -451,9 +446,6 @@ class Query(graphene.ObjectType):
     def resolve_all_action(self, info, **kwargs):
         return Action.objects.all()
 
-    # def resolve_all_roster(self, info, **kwargs):
-    #     return Roster.objects.all()
-
     def resolve_all_season(self, info, **kwargs):
         return Season.objects.all()
 
@@ -464,14 +456,6 @@ class Query(graphene.ObjectType):
             return Player.objects.get(pk=name)
 
         return None
-
-    # def resolve_roster(self, info, **kwargs):
-    #     name = kwargs.get('name')
-    #
-    #     if name is not None:
-    #         return Roster.objects.get(pk=name)
-    #
-    #     return None
 
     def resolve_user(self, info, **kwargs):
         email = kwargs.get('email')

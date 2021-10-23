@@ -1,5 +1,4 @@
 import React, {useContext, useEffect} from 'react';
-import axios from "axios";
 import 'antd/dist/antd.css';
 import {Card, Button, Statistic, Tag} from 'antd';
 import {FranchiseTypeModelType, StoreContext} from "../../models";
@@ -57,19 +56,6 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
             if (!store.User.franchise.league.draftingFranchise) {
                 store.User.franchise.league.setDraftingFranchise(store.User.league.draftOrder[0])
             }
-            // const data = new FormData();
-            // data.append("franchise_id", store.User.franchise.id)
-            // data.append("season", store.User.franchise.seasonSet.length)
-            // axios.post('http://127.0.0.1:8000/draft_order', data)
-            //     .then(res => {
-            //         console.log(res.data)
-            //         console.log('drafting order')
-            //         setTeamOrder(res.data.draft_order)
-            //         store.User.franchise.league.setDraftingFranchise(res.data.draft_order[0])
-            //     })
-            //     .catch(err => {
-            //         console.log(err)
-            //     })
         }, [])
 
 

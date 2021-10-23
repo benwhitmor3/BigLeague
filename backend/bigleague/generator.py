@@ -50,16 +50,6 @@ def gen_city(league, num_of_cities=8):
     values = [5, 6, 7, 8, 9, 10, 11, 12]
     cities_list = random.sample(cities, k=num_of_cities)
 
-    # for city in cities_list:
-    #     City.objects.update_or_create(
-    #         city=city,
-    #         defaults={
-    #             'city': city,
-    #             'city_value': random.choice(values),
-    #             'league': league
-    #         }
-    #     )
-
     for city in cities_list:
         City.objects.create(
             city=city,

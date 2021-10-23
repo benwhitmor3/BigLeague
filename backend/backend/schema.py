@@ -12,21 +12,21 @@ class Mutation(Mutation):
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
 
-schema.execute(
-    '''
-    mutation myFirstMutation {
-    createPlayer(playerData: {name: "Gary Graphene", suit: "Diamond", age: 25, pv: 23.34567, epv: 23.34567, 
-    sEpv: 23.34567})
-     {
-        player {
-        name,
-        suit,
-        age,
-        pv,
-        epv,
-        sEpv
-        }
-    }
-}
-'''
-)
+# schema.execute(
+#     '''
+#     mutation myFirstMutation {
+#     createPlayer(playerData: {name: "Gary Graphene", suit: "Diamond", age: 25, pv: 23.34567, epv: 23.34567,
+#     sEpv: 23.34567})
+#      {
+#         player {
+#         name,
+#         suit,
+#         age,
+#         pv,
+#         epv,
+#         sEpv
+#         }
+#     }
+# }
+# '''
+# )

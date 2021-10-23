@@ -602,6 +602,9 @@ def actions(league, season_num):
             season.save()
             franchise.action.event_planning = False
 
+        # reset number of actions to 2
+        franchise.action.number_of_actions = 2
+
         franchise.save()
         franchise.action.save()
         stadium.save()
