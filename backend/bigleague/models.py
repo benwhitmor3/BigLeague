@@ -57,31 +57,35 @@ class User(AbstractBaseUser):
 
 
 class Franchise(models.Model):
-    franchise = models.CharField(max_length=25, primary_key=True)
+    franchise = models.CharField(max_length=25, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
+    league = models.ForeignKey("League", on_delete=models.CASCADE)
+    gm = models.ForeignKey("GM", on_delete=models.SET_NULL, null=True)
+    coach = models.OneToOneField("Coach", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.franchise
 
 
 class League(models.Model):
-    league_name = models.CharField(max_length=25)
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
+    league_name = models.CharField(max_length=25, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
 
     def __str__(self):
         return self.league_name
 
 
 class City(models.Model):
-    city = models.CharField(max_length=20, primary_key=True)
+    city = models.CharField(max_length=20, unique=True)
     city_value = models.IntegerField()
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.city
 
 
 class Stadium(models.Model):
-    stadium_name = models.CharField(max_length=20, primary_key=True)
+    stadium_name = models.CharField(max_length=20, unique=True)
     seats = models.IntegerField(default=0)
     boxes = models.IntegerField(default=0)
     grade = models.IntegerField(default=20)
@@ -104,7 +108,11 @@ class Trait(models.TextChoices):
 
 
 class GM(models.Model):
-    trait = models.CharField(max_length=12, primary_key=True, choices=Trait.choices)
+    trait = models.CharField(max_length=12, choices=Trait.choices)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("trait", "league")
 
     def __str__(self):
         return self.trait
@@ -119,12 +127,14 @@ class Attribute(models.TextChoices):
     SUBSTITUTION = 'substitution', 'substitution'
     UNDERDOG = 'underdog', 'underdog'
     WILDCARD = 'wildcard', 'wildcard'
+    ROAD = 'road', 'road'
 
 
 class Coach(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30, unique=True)
     attribute_one = models.CharField(max_length=12, choices=Attribute.choices)
     attribute_two = models.CharField(max_length=12, choices=Attribute.choices)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -150,8 +160,7 @@ class Lineup(models.TextChoices):
 
 
 class Player(models.Model):
-
-    name = models.CharField(max_length=50, primary_key=True)
+    name = models.CharField(max_length=50, unique=True)
     suit = models.CharField(max_length=10, choices=Suit.choices)
     age = models.IntegerField(default=20)
     pv = models.FloatField(default=20)
@@ -164,46 +173,87 @@ class Player(models.Model):
     salary = models.FloatField(blank=True, null=True)
     grade = models.FloatField(blank=True, null=True)
     trainer = models.BooleanField(default=False)
+    year = models.IntegerField(default=1)
+    lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
+    franchise = models.ForeignKey(Franchise, on_delete=models.SET_NULL, null=True)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
 
+class PlayerHistory(models.Model):
+    season = models.IntegerField(default=1)
+    name = models.CharField(max_length=50)
+    suit = models.CharField(max_length=10, choices=Suit.choices)
+    age = models.IntegerField(default=20)
+    pv = models.FloatField(default=20)
+    epv = models.FloatField(default=20)
+    s_epv = models.FloatField(default=20)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('season', 'name',)
+
+    def __str__(self):
+        return self.name
+
+
 class Action(models.Model):
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
+    # need this id for graphQL MST
+    id = models.AutoField(primary_key=True)
+    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE)
     number_of_actions = models.IntegerField(default=2, validators=[MaxValueValidator(5), MinValueValidator(0)])
+    # Permanent Stadium Improvements
     improved_bathrooms = models.BooleanField(default=False)
+    improved_bathrooms_complete = models.BooleanField(default=False)
     improved_concessions = models.BooleanField(default=False)
+    improved_concessions_complete = models.BooleanField(default=False)
     jumbotron = models.BooleanField(default=False)
+    jumbotron_complete = models.BooleanField(default=False)
     upscale_bar = models.BooleanField(default=False)
+    upscale_bar_complete = models.BooleanField(default=False)
     hall_of_fame = models.BooleanField(default=False)
+    hall_of_fame_complete = models.BooleanField(default=False)
     improved_seating = models.BooleanField(default=False)
+    improved_seating_complete = models.BooleanField(default=False)
     improved_sound = models.BooleanField(default=False)
+    improved_sound_complete = models.BooleanField(default=False)
     party_deck = models.BooleanField(default=False)
+    party_deck_complete = models.BooleanField(default=False)
     wi_fi = models.BooleanField(default=False)
+    wi_fi_complete = models.BooleanField(default=False)
+    # One Season Promotions
     fan_night = models.BooleanField(default=False)
     family_game = models.BooleanField(default=False)
     door_prizes = models.BooleanField(default=False)
     mvp_night = models.BooleanField(default=False)
     parade_of_champions = models.BooleanField(default=False)
+    # Home Field Advantages
     bribe_the_refs = models.BooleanField(default=False)
     easy_runs = models.BooleanField(default=False)
+    easy_runs_complete = models.BooleanField(default=False)
     fan_factor = models.BooleanField(default=False)
+    fan_factor_complete = models.BooleanField(default=False)
+    # Player Development
     train_player = models.IntegerField(default=0, validators=[MaxValueValidator(5), MinValueValidator(0)])
     farm_system = models.BooleanField(default=False)
+    # Concessions and Revenue
     fan_favourites = models.BooleanField(default=False)
     gourmet_restaurant = models.BooleanField(default=False)
+    gourmet_restaurant_complete = models.BooleanField(default=False)
     beer_garden = models.BooleanField(default=False)
     naming_rights = models.BooleanField(default=False)
+    naming_rights_complete = models.BooleanField(default=False)
     event_planning = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.franchise
+        return self.franchise.franchise
 
 
 class Season(models.Model):
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
+    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+    season = models.IntegerField(default=1)
     ready = models.BooleanField(default=False)
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
@@ -218,23 +268,8 @@ class Season(models.Model):
     revenue = models.FloatField(default=0)
     expenses = models.FloatField(default=0)
 
-    def __str__(self):
-        return self.franchise
-
-
-class Staff(models.Model):
-    franchise = models.OneToOneField(Franchise, on_delete=models.CASCADE, primary_key=True)
-    gm = models.ForeignKey(GM, on_delete=models.CASCADE, null=True)
-    coach = models.OneToOneField(Coach, on_delete=models.CASCADE, null=True)
+    class Meta:
+        unique_together = ['franchise', 'season']
 
     def __str__(self):
-        return self.franchise
-
-
-class Roster(models.Model):
-    player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True)
-    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
-    lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
-
-    def __str__(self):
-        return self.player
+        return self.franchise.franchise

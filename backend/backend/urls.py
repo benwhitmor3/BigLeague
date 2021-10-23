@@ -34,13 +34,17 @@ router.register(r'coaches', views.CoachView, 'coach_view')
 router.register(r'players', views.PlayerView, 'player_view')
 router.register(r'actions', views.ActionView, 'action_view')
 router.register(r'seasons', views.SeasonView, 'season_view')
-router.register(r'staff', views.StaffView, 'staff_view')
-router.register(r'roster', views.RosterView, 'roster_view')
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('league_generation', csrf_exempt(views.league_generation_view), name='league_generation'),
+    path('draft_order', csrf_exempt(views.draft_order_view), name='draft_order'),
+    path('season_sim', csrf_exempt(views.season_simulation_view), name='season_sim'),
+    path('set_lineup', csrf_exempt(views.set_lineup_view), name='set_lineup'),
+    path('set_staff', csrf_exempt(views.set_staff_view), name='set_staff'),
+    path('sign_players', csrf_exempt(views.sign_players_view), name='sign_players'),
+    path('free_agency', csrf_exempt(views.free_agency_view), name='free_agency'),
     path('graphql/', csrf_exempt(GraphQLView.as_view(
         graphiql=True,
         schema=schema

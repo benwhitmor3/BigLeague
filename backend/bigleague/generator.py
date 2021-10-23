@@ -1,35 +1,68 @@
-from bigleague.models import *
+from .models import *
 import random
 from random import gauss
 import faker
 
-# manually create user, franchise, and league
 
-def gen_city(num_of_cities=8):
+def gen_franchise(league, num_of_franchises=7):
+    # create other franchises (36 names)
+    franchise_names = ["Aces", "All Stars", "Avengers", "Aztecs", "Big Blues", "Big Red", "Champions",
+                       "Crimson",
+                       "Dragons", "Devils", "Dream Team", "Elite", "Flames", "Flash", "Force", "Groove",
+                       "Heatwave",
+                       "Icons", "Jam", "Legends", "Masters", "Monarchy", "Pioneers", "Pride", "Racers",
+                       "Rebels",
+                       "Royals", "Saints", "Soul", "Spirit", "Storm", "Titans", "United", "Violets", "Voodoo",
+                       "Warriors", "Wild"]
+
+    franchise_list = random.sample(franchise_names, k=num_of_franchises)
+    cities = City.objects.filter(league=league)
+    # create other franchises
+    for franchise_name in franchise_list:
+        franchise = Franchise.objects.create(
+            franchise=franchise_name,
+            league=league
+        )
+        franchise.save()
+        # create stadium for other franchises
+        Stadium.objects.create(
+            stadium_name=franchise_name + ' stadium',
+            seats=random.randint(20000, 60000),
+            boxes=random.randint(50, 250),
+            grade=20,
+            max_grade=20,
+            home_field_advantage=0,
+            city=random.choice(cities),
+            franchise=franchise
+        )
+
+    # create actions and season 1 for ALL franchises
+    for franchise in Franchise.objects.all():
+        Season.objects.create(franchise=franchise, season=1, fan_index=70)
+        Action.objects.create(franchise=franchise)
+
+    return "Successfully created " + str(num_of_franchises) + " franchises"
+
+
+def gen_city(league, num_of_cities=8):
     cities = ["Los Angeles", "Chicago", "New York", "Phoenix", "Indianapolis", "Philadelphia", "Houston",
               "San Antonio", "Denver", "Boston", "Las Vegas", "Seattle", "Atalanta", "San Diego"]
     values = [5, 6, 7, 8, 9, 10, 11, 12]
     cities_list = random.sample(cities, k=num_of_cities)
 
-    # City.objects.all().delete()
-
     for city in cities_list:
-        City.objects.update_or_create(
+        City.objects.create(
             city=city,
-            defaults={
-                'city': city,
-                'city_value': random.choice(values)
-            }
+            city_value=random.choice(values),
+            league=league
         )
 
 
-def gen_player(num_of_players=50, year=1):
-
-    # Player.objects.all().delete()
+def gen_player(league, num_of_players=50, rookies=True):
 
     for players in range(num_of_players):
 
-        if year < 1:
+        if rookies is False:
             age = random.randint(18, 30)
         else:
             age = random.randint(18, 22)
@@ -136,39 +169,100 @@ def gen_player(num_of_players=50, year=1):
             pv=pv,
             epv=epv,
             s_epv=s_epv,
-            contract=contract,
-            t_option=t_option,
-            p_option=p_option,
-            renew=renew,
-            salary=salary,
-            grade=grade,
-            trainer=0,
-            league=League.objects.all()[0],
+            # contract=contract,
+            # t_option=t_option,
+            # p_option=p_option,
+            # renew=renew,
+            # salary=salary,
+            # grade=grade,
+            # trainer=0,
+            year=1,
+            league=league,
         )
 
-def gen_gm():
 
-    # GM.objects.all().delete()
+def gen_gm(league):
 
     gms = ['facilitator', 'promoter', 'recruiter', 'scouter', 'suitor', 'trainer']
 
     for trait in gms:
         GM.objects.create(
-        trait=trait,
-    )
+            trait=trait,
+            league=league,
+        )
 
 
-def gen_coach(num_of_coaches=10):
-
-    # Coach.objects.all().delete()
+def gen_coach(league, num_of_coaches=10):
 
     for coach in range(num_of_coaches):
-
-        attribute_one = random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'], k=1)[0]
-        attribute_two = random.choices(['teamwork', 'clutch', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard'], k=1)[0]
+        # coaches can have double teamwork trait
+        attributes = \
+            random.sample(['teamwork', 'teamwork', 'clutch', 'fame', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard', 'road'],
+                           k=2)
 
         Coach.objects.create(
             name=faker.Faker().name(),
-            attribute_one=attribute_one,
-            attribute_two=attribute_two,
+            attribute_one=attributes[0],
+            attribute_two=attributes[1],
+            league=league,
         )
+
+# identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
+# shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
+# "renew non-repeat" is 1 not 2 now.
+def gen_salary(franchise, player):
+    salary = 0
+    if franchise.gm.trait == "recruiter":
+        grade = 3
+    else:
+        grade = 5
+    if player.contract != 0:
+        salary = grade * (player.epv / (player.contract + 1))
+        if player.renew == "repeat":
+            salary += 2 * (player.epv / (player.contract + 1))
+        elif player.renew == "non-repeat":
+            salary += 1 * (player.epv / (player.contract + 1))
+        # need to edit this for now null options
+        if player.t_option != 0:
+            salary += (player.contract - (player.t_option if player.t_option is not None else 0)) * (player.epv / (player.contract + 1))
+        if player.p_option != 0:
+            salary -= 0.5 * (player.contract - (player.p_option if player.p_option is not None else 0)) * (player.epv / (player.contract + 1))
+
+        if player.age >= 27:
+            salary -= (player.age - 26) * (player.epv / (player.contract + 1))
+
+    else:
+        salary = None
+
+    print(salary)
+    return salary
+
+
+# identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
+# shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
+# "renew non-repeat" is 1 not 2 now.
+def gen_grade(franchise, player):
+    if player.contract != 0:
+        grade = (player.salary * (player.contract + 1)) / player.epv
+        if player.renew == "repeat":
+            grade -= 2
+        elif player.renew == "non-repeat":
+            grade -= 1
+
+        if player.t_option:
+            if player.t_option > 0:
+                grade -= (player.contract - player.t_option)
+        if player.p_option:
+            if player.p_option > 0:
+                grade += 0.5 * (player.contract - player.p_option)
+
+        if player.age >= 27:
+            grade += player.age - 26
+    else:
+        grade = None
+
+    if franchise.gm.trait == "recruiter":
+        grade += 2
+
+    print(grade)
+    return grade

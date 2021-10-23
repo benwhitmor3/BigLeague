@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'bigleague',
     'graphene_django',
     'django_filters',
+    'django_extensions',
 ]
 
 

@@ -15,7 +15,8 @@ FOCUS="FOCUS",
 GUTS="GUTS",
 SUBSTITUTION="SUBSTITUTION",
 UNDERDOG="UNDERDOG",
-WILDCARD="WILDCARD"
+WILDCARD="WILDCARD",
+ROAD="ROAD"
 }
 
 /**
@@ -32,4 +33,5 @@ export const CoachAttributeOneEnumType = types.enumeration("CoachAttributeOne", 
   "SUBSTITUTION", // substitution
   "UNDERDOG", // underdog
   "WILDCARD", // wildcard
+  "ROAD", // road
       ])

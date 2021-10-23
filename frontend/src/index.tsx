@@ -8,7 +8,7 @@ import { createHttpClient } from 'mst-gql'
 import { RootStore } from './models'
 import { getSnapshot } from 'mobx-state-tree'
 import { StoreContext } from './models'
-import {getToken} from "./components/Forms/token";
+// import {getToken} from "./components/Forms/token";
 
 
 const rootStore = RootStore.create(undefined, {
@@ -22,6 +22,8 @@ const render = () => {
     document.getElementById('root'),
   )
 }
+
+window.store = rootStore
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
@@ -31,12 +33,13 @@ render();
 
 declare global {
     interface Window {
-        rootStore: any;
+        store: any;
         getSnapshot: any;
         token: any;
         data: any
+        toJS: any
     }
 }
 
-window.getSnapshot = getSnapshot;
-window.token = getToken()
+// window.getSnapshot = getSnapshot;
+// window.token = getToken()
