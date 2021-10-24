@@ -377,6 +377,7 @@ def development(league):
 
         if player.trainer:
             player.pv += 1
+            player.trainer = False
 
         # updating epv based on new pv
         player.epv = player.pv + random.gauss(0, 3)
@@ -459,6 +460,28 @@ def team_option_true(league):
             player.save()
         else:
             print(str(player) + " was not released")
+
+
+def renewal_true(league):
+    # extends players if they are in the top 20% of the league pv
+    total_players = Player.objects.filter(league=league).count()
+    pv_threshold = Player.objects.filter(league=league).order_by("-pv")[int(0.2*total_players)].pv
+    for player in Player.objects.filter(league=league, contract=1, renew__in=["non-repeat", "repeat"]):
+        # makes team option TRUE if salary is greater than 125% of average for their EPV
+        if player.pv > pv_threshold:
+            if player.renew == "repeat":
+                print(str(player) + " was extended with repeat")
+                player.contract += 1
+                player.save()
+            if player.renew == "non-repeat":
+                print(str(player) + " was extended with non-repeat")
+                player.contract += 1
+                player.renew = "no"
+                player.save()
+        else:
+            print(str(player) + " was not extended")
+            player.renew = "no"
+            player.save()
 
 
 def franchise_progression(league):
@@ -614,6 +637,7 @@ def actions(league, season_num):
 def off_season(league):
 
     development(league)
+    renewal_true(league)
     contract_progression(league)
     player_option_true(league)
     team_option_true(league)

@@ -1,11 +1,12 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Tag, Space, Alert, Checkbox} from 'antd';
+import {Table, Tag, Space, Alert, Checkbox, Row, Col} from 'antd';
 import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
 import {colour, suit_icon, _to_fixed, _lineup, insertArray} from '../Utils/TableFunctions'
 import {toJS} from "mobx";
 import SigningModal from "../Molecules/SigningModal";
+import TrainerModal from "../Molecules/TrainerModal";
 import LineupSelect from "../Molecules/LineupSelect";
 import {mutateCreatePlayerQuery} from "../Utils/queries";
 
@@ -20,8 +21,10 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
         const store = useContext(StoreContext)
 
         const [visible, setVisible] = useState<boolean>(false)
+        const [trainerVisible, setTrainerVisible] = useState<boolean>(false)
         const [selectedPlayer, setSelectedPlayer] = useState<any>([]);
         const [rosterAlert, setRosterAlert] = useState<boolean>(false)
+        const [trainer, setTrainer] = useState<boolean | undefined>(false)
 
         const non_scouter_columns = [
             {
@@ -141,6 +144,79 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 title: 'Renew',
                 dataIndex: 'renew',
                 key: 'renew',
+                render: (renew: string, record: any) => (
+                    (record.renew == "repeat" && record.contract == 1) ? (
+                        <Space size="middle">
+                            <Tag color={"#ff7064"} style={{color: "#ffffff", border: "2px solid #ff7064"}}
+                                 onClick={() => {
+                                     store.mutateCreatePlayer({
+                                             "playerInput": {
+                                                 "name": record.name,
+                                                 "suit": record.suit,
+                                                 "age": record.age,
+                                                 "pv": record.pv,
+                                                 "epv": record.epv,
+                                                 "sEpv": record.sEpv,
+                                                 "contract": (record.contract + 1),
+                                                 "tOption": record.tOption,
+                                                 "pOption": record.pOption,
+                                                 "renew": record.renew,
+                                                 "salary": record.salary,
+                                                 "grade": record.grade,
+                                                 "lineup": record.lineup,
+                                                 "franchiseId": record.franchise.id,
+                                                 "trainer": record.trainer,
+                                                 "year": record.year,
+                                                 "leagueId": store.User.franchise.league.id
+                                             }
+                                         }, mutateCreatePlayerQuery,
+                                         undefined
+                                     );
+                                 }
+                                 }>
+                                Extend Player
+                            </Tag>
+                        </Space>
+                    ) : (
+                    (record.renew == "non-repeat" && record.contract == 1) ? (
+                        <Space size="middle">
+                            <Tag color={"#ff7064"} style={{color: "#ffffff", border: "2px solid #ff7064"}}
+                                 onClick={() => {
+                                     store.mutateCreatePlayer({
+                                             "playerInput": {
+                                                 "name": record.name,
+                                                 "suit": record.suit,
+                                                 "age": record.age,
+                                                 "pv": record.pv,
+                                                 "epv": record.epv,
+                                                 "sEpv": record.sEpv,
+                                                 "contract": (record.contract + 1),
+                                                 "tOption": record.tOption,
+                                                 "pOption": record.pOption,
+                                                 "renew": "No",
+                                                 "salary": record.salary,
+                                                 "grade": record.grade,
+                                                 "lineup": record.lineup,
+                                                 "franchiseId": record.franchise.id,
+                                                 "trainer": record.trainer,
+                                                 "year": record.year,
+                                                 "leagueId": store.User.franchise.league.id
+                                             }
+                                         }, mutateCreatePlayerQuery,
+                                         undefined
+                                     );
+                                 }
+                                 }>
+                                Extend Player
+                            </Tag>
+                        </Space>
+                    ) : (
+                        <text>
+                            {renew}
+                        </text>
+                    )
+                    )
+                ),
             },
             {
                 title: 'Salary',
@@ -185,7 +261,6 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                             </Tag>
                         </Space>
                     )
-
                 ),
             },
         ];
@@ -203,54 +278,51 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
         let trainer_column =
             {
                 title: 'Trainer',
-                dataIndex: 'trainer',
                 key: 'trainer',
-                render: (trainer: boolean, record: any) => (
-                     <Checkbox defaultChecked={trainer}
-                              onChange={() => {
-                                     store.mutateCreatePlayer({
-                                             "playerInput": {
-                                                 "name": record.name,
-                                                 "suit": record.suit,
-                                                 "age": record.age,
-                                                 "pv": record.pv,
-                                                 "epv": record.epv,
-                                                 "sEpv": record.sEpv,
-                                                 "contract": record.contract,
-                                                 "tOption": record.tOption,
-                                                 "pOption": record.pOption,
-                                                 "renew": record.renew,
-                                                 "salary": record.salary,
-                                                 "grade": record.grade,
-                                                 "lineup": record.lineup,
-                                                 "franchiseId": record.franchiseId,
-                                                 "trainer": !trainer,
-                                                 "year": record.year,
-                                                 "leagueId": store.User.franchise.league.id
-                                             }
-                                         }, mutateCreatePlayerQuery,
-                                         undefined
-                                     )}}>Trainer</Checkbox>
+                render: (record: PlayerTypeModelType) => (
+                    (record.trainer) ? (
+                        <Space size="middle">
+                            <Tag color={"#88af0c"} style={{ color: "#000000", border: "3px solid #88AF0C"}}>
+                            Trained
+                            </Tag>
+                        </Space>
+                    ) : (
+                        <Space size="middle">
+                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 🏋️‍♂️ </span>}
+                                 color={"#ebd2d1"} style={{ color: "#000000", border: "3px solid #EBD2D1"}}
+                                 onClick={() => {setSelectedPlayer(record); setTrainerVisible(true)}}>
+                            Train
+                            </Tag>
+                        </Space>
+                    )
                 ),
+
             }
 
         const columns = () => {
-            if (store.User.franchise.gm !== null)
-                if (store.User.franchise.gm.trait === "SCOUTER") {
+            if (franchise.gm !== null)
+                if (franchise.gm.trait === "SCOUTER") {
                     let scouter_columns = non_scouter_columns
                     insertArray(non_scouter_columns, 3, sEPV_column)
                     return scouter_columns
-                } else {
+                }
+                else if (franchise.gm.trait === "TRAINER") {
+                    let trainer_columns = non_scouter_columns
+                    insertArray(non_scouter_columns, 3, trainer_column)
+                    return trainer_columns
+                }
+                else {
                     return non_scouter_columns
                 }
             else return non_scouter_columns
-        }
+            }
 
         if (store.User == undefined || store.User.franchise == undefined) return <div>loading</div>;
         else {
             return (
                 <div>
                     <SigningModal visible={visible} setVisible={setVisible} selectedplayer={selectedPlayer}/>
+                    <TrainerModal trainerVisible={trainerVisible} setTrainerVisible={setTrainerVisible} selectedplayer={selectedPlayer}/>
                     {rosterAlert ?
                         <Alert
                             style={{marginBottom: '10px'}}

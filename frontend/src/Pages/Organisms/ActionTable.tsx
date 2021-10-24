@@ -4,7 +4,6 @@ import {Table, Checkbox, Button, notification} from 'antd';
 import {ActionTypeModelType, FranchiseTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
 import {IObservableArray, observable} from "mobx";
-import {lineupError, rosterError, staffError, starterError, unsignedError} from "../Molecules/SeasonSimChecker";
 
 interface IFranchise {
     franchise: FranchiseTypeModelType;
@@ -40,7 +39,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         const [eventPlanning, setEventPlanning] = useState<boolean | undefined>(franchise.action.eventPlanning)
 
 
-        const staffError = (franchise: string | undefined) => {
+        const actionError = (franchise: string | undefined) => {
         notification.error({
             message: 'Action Error',
             description: franchise + ' does not have enough actions',
@@ -73,7 +72,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
             let actionsSelected = newTrue - oldTrue
             // @ts-ignore
             if (actionsSelected > numberOfActions)
-                return staffError(franchise.franchise);
+                return actionError(franchise.franchise);
             else {
                 // @ts-ignore
                 submitActions(actionsSelected)
@@ -551,11 +550,12 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         ];
 
         let actions: IObservableArray<ActionTypeModelType> = observable([franchise.action])
+        // hack to re-render number of actions when train player is used
+        console.log(franchise.action.numberOfActions)
 
         if (store.User == undefined || store.User.franchise == undefined || store.User.franchise.action == undefined) return <div>loading</div>;
         else {
             return (
-                <div>
                     <Table columns={columns} dataSource={actions} pagination={false}
                            rowKey="id"
                            bordered
@@ -563,7 +563,6 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                                boxShadow: "0px 0px 2px 0px #D0D8F3",
                            }}
                     />
-                </div>
             );
         }
     }
