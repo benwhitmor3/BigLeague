@@ -265,6 +265,10 @@ class Season(models.Model):
     fan_base = models.FloatField(default=0)
     fan_index = models.FloatField(default=0)
     advertising = models.IntegerField(default=1)
+    ticket_price = models.FloatField(default=0)
+    tickets_sold = models.FloatField(default=0)
+    box_price = models.FloatField(default=0)
+    boxes_sold = models.FloatField(default=0)
     revenue = models.FloatField(default=0)
     expenses = models.FloatField(default=0)
 

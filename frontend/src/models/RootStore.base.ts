@@ -47,6 +47,8 @@ import { UpdatePlayerMutationModel, UpdatePlayerMutationModelType } from "./Upda
 import { updatePlayerMutationModelPrimitives, UpdatePlayerMutationModelSelector } from "./UpdatePlayerMutationModel.base"
 import { UpdateActionMutationModel, UpdateActionMutationModelType } from "./UpdateActionMutationModel"
 import { updateActionMutationModelPrimitives, UpdateActionMutationModelSelector } from "./UpdateActionMutationModel.base"
+import { UpdateSeasonMutationModel, UpdateSeasonMutationModelType } from "./UpdateSeasonMutationModel"
+import { updateSeasonMutationModelPrimitives, UpdateSeasonMutationModelSelector } from "./UpdateSeasonMutationModel.base"
 import { CreateStadiumMutationModel, CreateStadiumMutationModelType } from "./CreateStadiumMutationModel"
 import { createStadiumMutationModelPrimitives, CreateStadiumMutationModelSelector } from "./CreateStadiumMutationModel.base"
 import { UpdateStadiumMutationModel, UpdateStadiumMutationModelType } from "./UpdateStadiumMutationModel"
@@ -110,6 +112,27 @@ export type ActionInput = {
   eventPlanning?: boolean
   franchiseId?: string
 }
+export type SeasonInput = {
+  franchiseId?: string
+  season: number
+  ready?: boolean
+  wins?: number
+  losses?: number
+  ppg?: number
+  std?: number
+  championships?: number
+  bonuses?: number
+  penalties?: number
+  fanBase?: number
+  fanIndex?: number
+  advertising?: number
+  ticketPrice?: number
+  ticketsSold?: number
+  boxPrice?: number
+  boxesSold?: number
+  revenue?: number
+  expenses?: number
+}
 export type StadiumInput = {
   stadiumName?: string
   seats?: number
@@ -165,6 +188,7 @@ mutateCreateFranchise="mutateCreateFranchise",
 mutateUpdateFranchise="mutateUpdateFranchise",
 mutateCreatePlayer="mutateCreatePlayer",
 mutateUpdateAction="mutateUpdateAction",
+mutateUpdateSeason="mutateUpdateSeason",
 mutateCreateStadium="mutateCreateStadium",
 mutateUpdateStadium="mutateUpdateStadium"
 }
@@ -174,7 +198,7 @@ mutateUpdateStadium="mutateUpdateStadium"
 */
 export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
   .named("RootStore")
-  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['CityType', () => CityTypeModel], ['StadiumType', () => StadiumTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['PlayerType', () => PlayerTypeModel], ['PlayerHistoryType', () => PlayerHistoryTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['CreateUser', () => CreateUserModel], ['DeleteUser', () => DeleteUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel], ['CreateLeagueMutation', () => CreateLeagueMutationModel], ['CreateFranchiseMutation', () => CreateFranchiseMutationModel], ['UpdateFranchiseMutation', () => UpdateFranchiseMutationModel], ['UpdatePlayerMutation', () => UpdatePlayerMutationModel], ['UpdateActionMutation', () => UpdateActionMutationModel], ['CreateStadiumMutation', () => CreateStadiumMutationModel], ['UpdateStadiumMutation', () => UpdateStadiumMutationModel]], ['UserType', 'FranchiseType', 'LeagueType', 'CityType', 'StadiumType', 'GMType', 'CoachType', 'PlayerType', 'PlayerHistoryType', 'ActionType', 'SeasonType'], "js"))
+  .extend(configureStoreMixin([['UserType', () => UserTypeModel], ['FranchiseType', () => FranchiseTypeModel], ['LeagueType', () => LeagueTypeModel], ['CityType', () => CityTypeModel], ['StadiumType', () => StadiumTypeModel], ['GMType', () => GmTypeModel], ['CoachType', () => CoachTypeModel], ['PlayerType', () => PlayerTypeModel], ['PlayerHistoryType', () => PlayerHistoryTypeModel], ['ActionType', () => ActionTypeModel], ['SeasonType', () => SeasonTypeModel], ['CreateUser', () => CreateUserModel], ['DeleteUser', () => DeleteUserModel], ['ObtainJSONWebToken', () => ObtainJsonWebTokenModel], ['Verify', () => VerifyModel], ['Refresh', () => RefreshModel], ['CreateLeagueMutation', () => CreateLeagueMutationModel], ['CreateFranchiseMutation', () => CreateFranchiseMutationModel], ['UpdateFranchiseMutation', () => UpdateFranchiseMutationModel], ['UpdatePlayerMutation', () => UpdatePlayerMutationModel], ['UpdateActionMutation', () => UpdateActionMutationModel], ['UpdateSeasonMutation', () => UpdateSeasonMutationModel], ['CreateStadiumMutation', () => CreateStadiumMutationModel], ['UpdateStadiumMutation', () => UpdateStadiumMutationModel]], ['UserType', 'FranchiseType', 'LeagueType', 'CityType', 'StadiumType', 'GMType', 'CoachType', 'PlayerType', 'PlayerHistoryType', 'ActionType', 'SeasonType'], "js"))
   .props({
     userTypes: types.optional(types.map(types.late((): any => UserTypeModel)), {}),
     franchiseTypes: types.optional(types.map(types.late((): any => FranchiseTypeModel)), {}),
@@ -303,6 +327,11 @@ export const RootStoreBase = withTypedRefs<Refs>()(MSTGQLStore
     mutateUpdateAction(variables: { actionInput: ActionInput }, resultSelector: string | ((qb: UpdateActionMutationModelSelector) => UpdateActionMutationModelSelector) = updateActionMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
       return self.mutate<{ updateAction: UpdateActionMutationModelType}>(`mutation updateAction($actionInput: ActionInput!) { updateAction(actionInput: $actionInput) {
         ${typeof resultSelector === "function" ? resultSelector(new UpdateActionMutationModelSelector()).toString() : resultSelector}
+      } }`, variables, optimisticUpdate)
+    },
+    mutateUpdateSeason(variables: { seasonInput: SeasonInput }, resultSelector: string | ((qb: UpdateSeasonMutationModelSelector) => UpdateSeasonMutationModelSelector) = updateSeasonMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {
+      return self.mutate<{ updateSeason: UpdateSeasonMutationModelType}>(`mutation updateSeason($seasonInput: SeasonInput!) { updateSeason(seasonInput: $seasonInput) {
+        ${typeof resultSelector === "function" ? resultSelector(new UpdateSeasonMutationModelSelector()).toString() : resultSelector}
       } }`, variables, optimisticUpdate)
     },
     mutateCreateStadium(variables: { stadiumInput: StadiumInput }, resultSelector: string | ((qb: CreateStadiumMutationModelSelector) => CreateStadiumMutationModelSelector) = createStadiumMutationModelPrimitives.toString(), optimisticUpdate?: () => void) {

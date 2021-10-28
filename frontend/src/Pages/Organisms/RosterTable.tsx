@@ -24,7 +24,6 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
         const [trainerVisible, setTrainerVisible] = useState<boolean>(false)
         const [selectedPlayer, setSelectedPlayer] = useState<any>([]);
         const [rosterAlert, setRosterAlert] = useState<boolean>(false)
-        const [trainer, setTrainer] = useState<boolean | undefined>(false)
 
         const non_scouter_columns = [
             {

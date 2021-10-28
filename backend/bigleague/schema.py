@@ -382,6 +382,64 @@ class SeasonType(DjangoObjectType):
         model = Season
 
 
+class SeasonInput(graphene.InputObjectType):
+    franchise_id = graphene.String()
+    season = graphene.Int(required=True)
+    ready = graphene.Boolean(required=False)
+    wins = graphene.Int(default=0)
+    losses = graphene.Int(default=0)
+    ppg = graphene.Float(default=0)
+    std = graphene.Float(default=0)
+    championships = graphene.Int(default=0)
+    bonuses = graphene.Int(default=0)
+    penalties = graphene.Int(default=0)
+    fan_base = graphene.Float(default=0)
+    fan_index = graphene.Float(default=0)
+    advertising = graphene.Int(default=1)
+    ticket_price = graphene.Float(default=0)
+    tickets_sold = graphene.Float(default=0)
+    box_price = graphene.Float(default=0)
+    boxes_sold = graphene.Float(default=0)
+    revenue = graphene.Float(default=0)
+    expenses = graphene.Float(default=0)
+
+
+class UpdateSeasonMutation(graphene.Mutation):
+    class Arguments:
+        season_input = SeasonInput(required=True)
+
+    season = graphene.Field(SeasonType)
+
+    @staticmethod
+    def mutate(self, info, season_input=None):
+        franchise = Franchise.objects.get(pk=season_input.franchise_id)
+        obj, season = Season.objects.update_or_create(
+            franchise=franchise, season=season_input.season,
+            defaults={
+                'franchise_id': season_input.franchise_id,
+                'season': season_input.season,
+                'ready': season_input.ready,
+                'wins': season_input.wins,
+                'losses': season_input.losses,
+                'ppg': season_input.ppg,
+                'std': season_input.std,
+                'championships': season_input.championships,
+                'bonuses': season_input.bonuses,
+                'penalties': season_input.penalties,
+                'fan_base': season_input.fan_base,
+                'fan_index': season_input.fan_index,
+                'advertising': season_input.advertising,
+                'ticket_price': season_input.ticket_price,
+                'tickets_sold': season_input.tickets_sold,
+                'box_price': season_input.box_price,
+                'boxes_sold': season_input.boxes_sold,
+                'revenue': season_input.revenue,
+                'expenses': season_input.expenses,
+            }
+        )
+        return UpdateSeasonMutation(season=obj)
+
+
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     delete_user = DeleteUser.Field()
@@ -398,6 +456,8 @@ class Mutation(graphene.ObjectType):
     create_player = UpdatePlayerMutation.Field()
 
     update_action = UpdateActionMutation.Field()
+
+    update_season = UpdateSeasonMutation.Field()
 
     create_stadium = CreateStadiumMutation.Field()
     update_stadium = UpdateStadiumMutation.Field()

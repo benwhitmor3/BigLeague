@@ -25,9 +25,14 @@ export const LeagueTypeModel = LeagueTypeModelBase
             // @ts-ignore
             self.draftingFranchise = self.franchise(franchise.franchise)
         },
+        setSeasonSimCheck(check: boolean) {
+            // @ts-ignore
+            self.seasonSimCheck = check
+        },
     }))
     .props({
         draftingFranchise: types.union(types.undefined, types.reference(types.late(() => FranchiseTypeModel))),
+        seasonSimCheck: types.union(types.undefined, types.boolean)
     })
     .views(self => ({
         franchise(franchiseName: string) {

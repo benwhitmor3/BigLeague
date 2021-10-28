@@ -1,7 +1,9 @@
+from django.db import IntegrityError
+
 from .models import *
 import random
 from random import gauss
-import faker
+import names
 
 
 def gen_franchise(league, num_of_franchises=7):
@@ -161,24 +163,27 @@ def gen_player(league, num_of_players=50, rookies=True):
         #         grade += age - 26
         # else:
         #     grade = 0
+        try:
+            Player.objects.create(
+                name=names.get_full_name(),
+                suit=suit,
+                age=age,
+                pv=pv,
+                epv=epv,
+                s_epv=s_epv,
+                # contract=contract,
+                # t_option=t_option,
+                # p_option=p_option,
+                # renew=renew,
+                # salary=salary,
+                # grade=grade,
+                # trainer=0,
+                year=1,
+                league=league,
+            )
+        except IntegrityError as e:
+            print(e)
 
-        Player.objects.create(
-            name=faker.Faker().name(),
-            suit=suit,
-            age=age,
-            pv=pv,
-            epv=epv,
-            s_epv=s_epv,
-            # contract=contract,
-            # t_option=t_option,
-            # p_option=p_option,
-            # renew=renew,
-            # salary=salary,
-            # grade=grade,
-            # trainer=0,
-            year=1,
-            league=league,
-        )
 
 
 def gen_gm(league):
@@ -201,7 +206,7 @@ def gen_coach(league, num_of_coaches=10):
                            k=2)
 
         Coach.objects.create(
-            name=faker.Faker().name(),
+            name=names.get_full_name(),
             attribute_one=attributes[0],
             attribute_two=attributes[1],
             league=league,
@@ -222,11 +227,10 @@ def gen_salary(franchise, player):
             salary += 2 * (player.epv / (player.contract + 1))
         elif player.renew == "non-repeat":
             salary += 1 * (player.epv / (player.contract + 1))
-        # need to edit this for now null options
         if player.t_option != 0:
-            salary += (player.contract - (player.t_option if player.t_option is not None else 0)) * (player.epv / (player.contract + 1))
+            salary += ((player.contract - player.t_option) if player.t_option is not None else 0) * (player.epv / (player.contract + 1))
         if player.p_option != 0:
-            salary -= 0.5 * (player.contract - (player.p_option if player.p_option is not None else 0)) * (player.epv / (player.contract + 1))
+            salary -= 0.5 * ((player.contract - player.p_option) if player.p_option is not None else 0) * (player.epv / (player.contract + 1))
 
         if player.age >= 27:
             salary -= (player.age - 26) * (player.epv / (player.contract + 1))

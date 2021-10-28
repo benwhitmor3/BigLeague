@@ -37,6 +37,10 @@ export const SeasonTypeModelBase = withTypedRefs<Refs>()(ModelBase
     fanBase: types.union(types.undefined, types.number),
     fanIndex: types.union(types.undefined, types.number),
     advertising: types.union(types.undefined, types.integer),
+    ticketPrice: types.union(types.undefined, types.number),
+    ticketsSold: types.union(types.undefined, types.number),
+    boxPrice: types.union(types.undefined, types.number),
+    boxesSold: types.union(types.undefined, types.number),
     revenue: types.union(types.undefined, types.number),
     expenses: types.union(types.undefined, types.number),
   })
@@ -60,6 +64,10 @@ export class SeasonTypeModelSelector extends QueryBuilder {
   get fanBase() { return this.__attr(`fanBase`) }
   get fanIndex() { return this.__attr(`fanIndex`) }
   get advertising() { return this.__attr(`advertising`) }
+  get ticketPrice() { return this.__attr(`ticketPrice`) }
+  get ticketsSold() { return this.__attr(`ticketsSold`) }
+  get boxPrice() { return this.__attr(`boxPrice`) }
+  get boxesSold() { return this.__attr(`boxesSold`) }
   get revenue() { return this.__attr(`revenue`) }
   get expenses() { return this.__attr(`expenses`) }
   franchise(builder?: string | FranchiseTypeModelSelector | ((selector: FranchiseTypeModelSelector) => FranchiseTypeModelSelector)) { return this.__child(`franchise`, FranchiseTypeModelSelector, builder) }
@@ -68,4 +76,4 @@ export function selectFromSeasonType() {
   return new SeasonTypeModelSelector()
 }
 
-export const seasonTypeModelPrimitives = selectFromSeasonType().season.ready.wins.losses.ppg.std.championships.bonuses.penalties.fanBase.fanIndex.advertising.revenue.expenses
+export const seasonTypeModelPrimitives = selectFromSeasonType().season.ready.wins.losses.ppg.std.championships.bonuses.penalties.fanBase.fanIndex.advertising.ticketPrice.ticketsSold.boxPrice.boxesSold.revenue.expenses

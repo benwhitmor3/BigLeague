@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Button, Progress, notification} from 'antd';
+import {Button, Progress} from 'antd';
 import {observer} from "mobx-react";
 import axios from "axios";
 import {FranchiseTypeModelType, StoreContext} from "../../models";
@@ -17,9 +17,19 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
 
         const simSeason = () => {
 
-            store.User.franchise.league.franchiseSet.forEach((franchise: FranchiseTypeModelType) =>
-                simSeasonChecker(franchise))
+            // sets seasonSimCheck as true
+            store.User.league.setSeasonSimCheck(true)
 
+            // loops through each franchise, if check fails, sets seasonSim to false
+            store.User.franchise.league.franchiseSet.forEach((franchise: FranchiseTypeModelType) =>
+                simSeasonChecker(franchise, store.User.league))
+
+            // if seasonSimCheck is false do not run season simulation
+            if (store.User.league.seasonSimCheck === false) {
+                return
+            }
+
+            // season sim request
             const data = new FormData();
             data.append("league_id", store.User.franchise.league.id)
             data.append("season", store.User.franchise.seasonSet.length)
@@ -70,7 +80,6 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
                     setLoading(false)
                 })
         };
-
 
         if (loading) return (
             <div>

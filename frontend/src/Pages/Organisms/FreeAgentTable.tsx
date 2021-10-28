@@ -117,13 +117,12 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                     ) : (
                         <Space size="middle">
                             <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝 </span>}
-                                 color={"#ffe479"} style={{ color: "#000000", border: "3px solid #ffe479"}}
+                                 color={"#ffe479"} style={{ color: "#000000", border: "3px solid #ffe479", cursor: "pointer"}}
                                  onClick={() => {setSelectedPlayer(record); setVisible(true)}}>
                             Offer Contract
                             </Tag>
                         </Space>
                     )
-
                 ),
             },
         ];

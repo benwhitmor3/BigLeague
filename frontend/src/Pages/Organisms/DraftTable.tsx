@@ -104,7 +104,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                     ) : (
                         <Space size="middle">
                             <Tag color={"#ffe479"} icon={<span role="img" aria-label="player"> 📝 </span>}
-                                 style={{color: "#000000", border: "2px solid #ffe479"}}
+                                 style={{color: "#000000", border: "2px solid #ffe479", cursor: "pointer"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {

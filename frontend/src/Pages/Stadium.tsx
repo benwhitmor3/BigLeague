@@ -4,6 +4,7 @@ import {StoreContext} from "../models";
 import StadiumCard from "./Organisms/StadiumCard";
 import CreateStadium from "./Molecules/CreateStadium";
 import StadiumImage from "./Molecules/StadiumImage";
+import TicketInput from "./Molecules/TicketInput";
 
 export const Stadium: React.FunctionComponent = observer(() => {
 
@@ -14,6 +15,7 @@ export const Stadium: React.FunctionComponent = observer(() => {
             return (
                 <div>
                 <StadiumCard/>
+                <TicketInput/>
                 <StadiumImage/>
                 </div>
             )

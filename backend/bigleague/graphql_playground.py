@@ -363,6 +363,70 @@ action_update_variable = '''
 }
 '''
 
+update_season_mutation = '''
+mutation($seasonInput: SeasonInput!) {
+  updateSeason(seasonInput: $seasonInput){
+		__typename
+    season{
+      __typename
+      id
+      franchise{
+        __typename
+        id
+        seasonSet{
+          __typename
+          id
+          season
+          ready
+          wins
+          losses
+          ppg
+          std
+          championships
+          bonuses
+          penalties
+          fanBase
+          fanIndex
+          advertising
+          ticketPrice
+          ticketsSold
+          boxPrice
+          boxesSold
+          revenue
+          expenses
+        }
+      }
+    }
+  }
+}
+'''
+
+season_update_variable = '''
+{
+  "seasonInput": {
+    "franchiseId": "137",
+    "season": 2,
+    "ready": false,
+    "wins": 0,
+    "losses": 0,
+    "ppg": 0,
+    "std": 0,
+    "championships": 0,
+    "bonuses": 0,
+    "penalties": 0,
+    "fanBase": 0,
+    "fanIndex": 0,
+    "advertising": 0,
+    "ticketPrice": 0,
+    "ticketsSold": 0,
+    "boxPrice": 0,
+    "boxesSold": 0,
+    "revenue": 0,
+    "expenses": 0
+	}
+}
+'''
+
 roster_create_update_mutation = '''
 mutation($rosterInput: RosterInput!) {
   rosterUpdate(rosterInput: $rosterInput){

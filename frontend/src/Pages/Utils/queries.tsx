@@ -150,6 +150,10 @@ export const userQuery = `
         fanBase
         fanIndex
         advertising
+        ticketPrice
+        ticketsSold
+        boxPrice
+        boxesSold
         revenue
         expenses
       }
@@ -262,6 +266,10 @@ export const userQuery = `
           fanBase
           fanIndex
           advertising
+          ticketPrice
+          ticketsSold
+          boxPrice
+          boxesSold
           revenue
           expenses
         }

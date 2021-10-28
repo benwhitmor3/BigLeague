@@ -16,7 +16,7 @@ def sign_players(franchise):
     for player in Player.objects.filter(franchise=franchise, contract__isnull=True):
         # set contract
         if player.epv > first_epv_cutoff:
-            options = [3, 4, 4, 5, 5, 5, 5]
+            options = [3, 4, 4, 5, 5, 5, 5, 5, 5]
             player.contract = random.sample(options, k=1)[0]
         elif player.epv > second_epv_cutoff:
             options = [3, 4, 5]
@@ -25,40 +25,146 @@ def sign_players(franchise):
             player.contract = random.randint(1, 5)
         # set t_option
         if player.contract == 5:
-            options = [None, None, None, 1, 2, 3, 4]
-            player.t_option = random.sample(options, k=1)[0]
+            if player.epv > first_epv_cutoff:
+                options = [None, None, None, None, None, None, None, None, 4, 4]
+                player.t_option = random.sample(options, k=1)[0]
+            elif player.epv > second_epv_cutoff:
+                options = [None, None, None, None, None, None, None, 3, 4, 4]
+                player.t_option = random.sample(options, k=1)[0]
+            else:
+                options = [None, None, None, None, None, 2, 3, 3, 3, 4]
+                player.t_option = random.sample(options, k=1)[0]
         elif player.contract == 4:
-            options = [None, None, None, 1, 2, 3]
-            player.t_option = random.sample(options, k=1)[0]
+            if player.epv > first_epv_cutoff:
+                options = [None, None, None, None, None, None, None, 2, 3, 3]
+                player.t_option = random.sample(options, k=1)[0]
+            elif player.epv > second_epv_cutoff:
+                options = [None, None, None, None, None, None, 2, 3, 3, 3]
+                player.t_option = random.sample(options, k=1)[0]
+            else:
+                options = [None, None, None, None, None, 2, 2, 2, 3, 3]
+                player.t_option = random.sample(options, k=1)[0]
         elif player.contract == 3:
-            options = [None, None, 1, 2]
-            player.t_option = random.sample(options, k=1)[0]
+            if player.epv > first_epv_cutoff:
+                options = [None, None, None, None, None, None, None, 2, 2, 2]
+                player.t_option = random.sample(options, k=1)[0]
+            elif player.epv > second_epv_cutoff:
+                options = [None, None, None, None, None, None, None, 1, 2, 2]
+                player.t_option = random.sample(options, k=1)[0]
+            else:
+                options = [None, None, None, None, None, 1, 1, 1, 2, 2]
+                player.t_option = random.sample(options, k=1)[0]
         elif player.contract == 2:
-            options = [None, None, 1]
+            options = [None, None, None, None, None, None, None, 1, 1, 1]
             player.t_option = random.sample(options, k=1)[0]
-        elif player.contract == 1:
+        else:
             player.t_option = None
         # set p_option
-        if player.t_option is None:
-            if player.contract == 5:
-                options = [None, None, None, 1, 2, 3, 4]
+        if player.contract == 5:
+            if player.epv > first_epv_cutoff:
+                options = [None, None, None, None, None, None, 3, 4, 4, 4]
                 player.p_option = random.sample(options, k=1)[0]
-            elif player.contract == 4:
-                options = [None, None, None, 1, 2, 3]
+            elif player.epv > second_epv_cutoff:
+                options = [None, None, None, None, None, None, 2, 3, 4, 4]
                 player.p_option = random.sample(options, k=1)[0]
-            elif player.contract == 3:
-                options = [None, None, 1, 2]
+            else:
+                options = [None, None, None, None, None, None, 3, 3, 4, 4]
                 player.p_option = random.sample(options, k=1)[0]
-            elif player.contract == 2:
-                options = [None, 1]
+        elif player.contract == 4:
+            if player.epv > first_epv_cutoff:
+                options = [None, None, None, None, None, None, 2, 3, 3, 3]
                 player.p_option = random.sample(options, k=1)[0]
-            elif player.contract == 1:
-                player.p_option = None
+            elif player.epv > second_epv_cutoff:
+                options = [None, None, None, None, None, None, 2, 2, 3, 3]
+                player.p_option = random.sample(options, k=1)[0]
+            else:
+                options = [None, None, None, None, None, None, 2, 3, 3, 3]
+                player.p_option = random.sample(options, k=1)[0]
+        elif player.contract == 3:
+            if player.epv > first_epv_cutoff:
+                options = [None, None, None, None, None, None, 1, 2, 2, 2]
+                player.p_option = random.sample(options, k=1)[0]
+            elif player.epv > second_epv_cutoff:
+                options = [None, None, None, None, None, None, 1, 1, 2, 2]
+                player.p_option = random.sample(options, k=1)[0]
+            else:
+                options = [None, None, None, None, None, None, 1, 2, 2, 2]
+                player.p_option = random.sample(options, k=1)[0]
+        elif player.contract == 2:
+            if player.epv > first_epv_cutoff:
+                options = [None, None, None, None, None, None, 1, 1, 1, 1]
+                player.p_option = random.sample(options, k=1)[0]
+            elif player.epv > second_epv_cutoff:
+                options = [None, None, None, None, None, None, None, 1, 1, 1]
+                player.p_option = random.sample(options, k=1)[0]
+            else:
+                options = [None, None, None, None, None, None, None, 1, 1, 1]
+                player.p_option = random.sample(options, k=1)[0]
         else:
             player.p_option = None
         # set renew
-        renew_weight = ["no"] * 7 + ["non-repeat"] * 1 + ["repeat"] * 2
-        player.renew = random.choice(renew_weight)
+        if player.contract == 5:
+            if player.age > 23:
+                player.renew = "no"
+            else:
+                if player.epv > first_epv_cutoff:
+                    renew_weight = ["no"] * 5 + ["non-repeat"] * 2 + ["repeat"] * 3
+                    player.renew = random.choice(renew_weight)
+                elif player.epv > second_epv_cutoff:
+                    renew_weight = ["no"] * 7 + ["non-repeat"] * 1 + ["repeat"] * 2
+                    player.renew = random.choice(renew_weight)
+                else:
+                    renew_weight = ["no"] * 9 + ["non-repeat"] * 1
+                    player.renew = random.choice(renew_weight)
+        elif player.contract == 4:
+            if player.age > 24:
+                player.renew = "no"
+            else:
+                if player.epv > first_epv_cutoff:
+                    renew_weight = ["no"] * 5 + ["non-repeat"] * 2 + ["repeat"] * 3
+                    player.renew = random.choice(renew_weight)
+                elif player.epv > second_epv_cutoff:
+                    renew_weight = ["no"] * 8 + ["non-repeat"] * 1 + ["repeat"] * 1
+                    player.renew = random.choice(renew_weight)
+                else:
+                    renew_weight = ["no"] * 9 + ["non-repeat"] * 1
+                    player.renew = random.choice(renew_weight)
+        elif player.contract == 3:
+            if player.age > 25:
+                player.renew = "no"
+            else:
+                if player.epv > first_epv_cutoff:
+                    renew_weight = ["no"] * 7 + ["non-repeat"] * 2 + ["repeat"] * 1
+                    player.renew = random.choice(renew_weight)
+                elif player.epv > second_epv_cutoff:
+                    renew_weight = ["no"] * 8 + ["non-repeat"] * 2
+                    player.renew = random.choice(renew_weight)
+                else:
+                    renew_weight = ["no"] * 9 + ["non-repeat"] * 1
+                    player.renew = random.choice(renew_weight)
+        elif player.contract == 2:
+            if player.age > 26:
+                player.renew = "no"
+            else:
+                if player.epv > first_epv_cutoff:
+                    renew_weight = ["no"] * 7 + ["non-repeat"] * 1 + ["repeat"] * 2
+                    player.renew = random.choice(renew_weight)
+                elif player.epv > second_epv_cutoff:
+                    renew_weight = ["no"] * 8 + ["non-repeat"] * 2
+                    player.renew = random.choice(renew_weight)
+                else:
+                    renew_weight = ["no"] * 9 + ["non-repeat"] * 1
+                    player.renew = random.choice(renew_weight)
+        else:
+            if player.epv > first_epv_cutoff:
+                renew_weight = ["no"] * 8 + ["non-repeat"] * 1 + ["repeat"] * 1
+                player.renew = random.choice(renew_weight)
+            elif player.epv > second_epv_cutoff:
+                renew_weight = ["no"] * 8 + ["non-repeat"] * 2
+                player.renew = random.choice(renew_weight)
+            else:
+                renew_weight = ["no"] * 9 + ["non-repeat"] * 1
+                player.renew = random.choice(renew_weight)
 
         player.salary = gen_salary(franchise, player)
         player.grade = gen_grade(franchise, player)
@@ -84,7 +190,21 @@ def set_lineup(league, franchise):
 
 def set_staff(league, franchise):
     if franchise.gm is None:
-        franchise.gm = random.sample(set(GM.objects.filter(league=league)), 1)[0]
+        # if franchise has fewer than 4 players pick scouter or recruiter or trainer
+        if franchise.player_set.count() < 4:
+            franchise.gm = random.sample(set(GM.objects.filter(league=league, trait__in=['scouter', 'recruiter'])), 1)[0]
+        # if franchise has more than than 3 spades get suitor, trainer, facilitator
+        elif franchise.player_set.filter(suit='spade').count() > 3:
+            franchise.gm = random.sample(set(GM.objects.filter(league=league, trait__in=['suitor'])), 1)[0]
+        # if franchise has more than 3 young players (22 and younger), use trainer
+        elif franchise.player_set.filter(age__lt=23).count():
+            franchise.gm = random.sample(set(GM.objects.filter(league=league, trait__in=['trainer'])), 1)[0]
+        # if franchise has won a championship, use promoter or facilitator
+        elif franchise.season_set.filter(championships__gt=0).count() > 1:
+            franchise.gm = random.sample(set(GM.objects.filter(league=league, trait__in=['promoter', 'facilitator'])), 1)[0]
+        else:
+            franchise.gm = random.sample(set(GM.objects.filter(league=league)), 1)[0]
+
     if franchise.coach is None:
         franchise.coach = random.sample(set(Coach.objects.filter(league=league, franchise=None)), 1)[0]
     franchise.save()
@@ -266,7 +386,8 @@ def simulate_season(league, season):
         return {str(home): home_points, str(away): away_points}
 
     # run actions chosen throughout league
-    actions(league, season)
+    bot_actions(league, season)
+    apply_actions(league, season)
 
     league_schedule = schedule_creation()
     results = {}
@@ -377,6 +498,7 @@ def development(league):
 
         if player.trainer:
             player.pv += 1
+            print("trained " + str(player))
             player.trainer = False
 
         # updating epv based on new pv
@@ -466,7 +588,8 @@ def renewal_true(league):
     # extends players if they are in the top 20% of the league pv
     total_players = Player.objects.filter(league=league).count()
     pv_threshold = Player.objects.filter(league=league).order_by("-pv")[int(0.2*total_players)].pv
-    for player in Player.objects.filter(league=league, contract=1, renew__in=["non-repeat", "repeat"]):
+    # apply to all players in league with a bot franchise, one year left, and a renewable contract
+    for player in Player.objects.filter(league=league, franchise__user=None, contract=1, renew__in=["non-repeat", "repeat"]):
         # makes team option TRUE if salary is greater than 125% of average for their EPV
         if player.pv > pv_threshold:
             if player.renew == "repeat":
@@ -494,7 +617,102 @@ def franchise_progression(league):
         franchise.save()
 
 
-def actions(league, season_num):
+def bot_actions(league, season_num):
+
+    for franchise in Franchise.objects.filter(league=league, user__isnull=True):
+        season = franchise.season_set.get(season=season_num)
+        if franchise.gm.trait == 'facilitator':
+            franchise.action.number_of_actions += 2
+            franchise.action.save()
+        if franchise.gm.trait == 'promoter':
+            if franchise.action.fan_night is False and franchise.action.number_of_actions > 0:
+                franchise.action.fan_night = True
+                franchise.action.number_of_actions -= 1
+                franchise.action.save()
+            if franchise.action.family_game is False and franchise.action.number_of_actions > 0:
+                franchise.action.family_game = True
+                franchise.action.number_of_actions -= 1
+                franchise.action.save()
+            if franchise.action.door_prizes is False and franchise.action.number_of_actions > 0:
+                franchise.action.door_prizes = True
+                franchise.action.number_of_actions -= 1
+                franchise.action.save()
+            if franchise.action.mvp_night is False and season.championships > 0 and franchise.action.number_of_actions > 0:
+                franchise.action.mvp_night = True
+                franchise.action.number_of_actions -= 1
+                franchise.action.save()
+            if franchise.action.parade_of_champions is False and season.championships > 0 and franchise.action.number_of_actions > 0:
+                franchise.action.parade_of_champions = True
+                franchise.action.number_of_actions -= 1
+                franchise.action.save()
+        if franchise.gm.trait == 'trainer' and franchise.action.number_of_actions > 0:
+            players = franchise.player_set.filter(trainer=False).order_by('-pv')[0:franchise.action.number_of_actions]
+            for player in players:
+                player.trainer = True
+                player.save()
+                franchise.action.number_of_actions -= 1
+                franchise.action.save()
+
+        if franchise.action.improved_bathrooms is False and franchise.action.improved_bathrooms_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.improved_bathrooms = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.improved_concessions is False and franchise.action.improved_concessions_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.improved_concessions = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.jumbotron is False and franchise.action.jumbotron_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.jumbotron = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.upscale_bar is False and franchise.action.upscale_bar_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.upscale_bar = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.hall_of_fame is False and franchise.action.hall_of_fame_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.hall_of_fame = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.improved_seating is False and franchise.action.improved_seating_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.improved_seating = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.improved_sound is False and franchise.action.improved_sound_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.improved_sound = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.party_deck is False and franchise.action.party_deck_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.party_deck = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.wi_fi is False and franchise.action.wi_fi_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.wi_fi = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+
+        if franchise.action.fan_favourites is False and franchise.action.number_of_actions > 0:
+            franchise.action.fan_favourites = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.gourmet_restaurant is False and franchise.action.gourmet_restaurant_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.gourmet_restaurant = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.beer_garden is False and franchise.action.number_of_actions > 0:
+            franchise.action.beer_garden = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.naming_rights is False and franchise.action.naming_rights_complete is False and franchise.action.number_of_actions > 0:
+            franchise.action.naming_rights = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+        if franchise.action.event_planning is False and franchise.action.number_of_actions > 0:
+            franchise.action.event_planning = True
+            franchise.action.number_of_actions -= 1
+            franchise.action.save()
+
+
+def apply_actions(league, season_num):
     # need to add these actions still
     # if 'bribe the refs' in d[team]:
     #     print('+1 HF')

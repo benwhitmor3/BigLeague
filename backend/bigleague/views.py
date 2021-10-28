@@ -99,7 +99,7 @@ def league_generation_view(request):
             if int(len(league.player_set.all())) > 0:
                 print("League already has " + str(len(league.player_set.all())) + " players")
             else:
-                gen_player(league, num_of_franchises * 8, rookies=True)
+                gen_player(league, num_of_franchises * 8, rookies=False)
 
             if int(len(league.franchise_set.all())) > 1:
                 print("League already has more than one franchise")
