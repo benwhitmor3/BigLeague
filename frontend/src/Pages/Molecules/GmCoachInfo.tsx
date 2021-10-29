@@ -72,9 +72,6 @@ export const GmCoachInfo: React.FunctionComponent = observer(() => {
                         <Text><Text strong>Underdog:</Text> Adds 40% of the difference in player values to our
                             value</Text>
                     </li>
-                    <li>
-                        <Text><Text strong>Wildcard:</Text> Switch the suit of one of your players for 1 season</Text>
-                    </li>
                 </ul>
                 <Divider/>
             </Typography>

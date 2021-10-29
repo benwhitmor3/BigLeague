@@ -51,8 +51,7 @@ export const TrainerModal: React.FunctionComponent<IVisible> = observer(({ train
                             }
                         }, mutateCreatePlayerQuery,
                         undefined
-                    )
-                    store.mutateUpdateAction({
+                    ).then(() => store.mutateUpdateAction({
                             "actionInput": {
                                 "numberOfActions": (selectedplayer.franchise.action.numberOfActions - 1),
                                 "improvedBathrooms": selectedplayer.franchise.action.improvedBathrooms,
@@ -170,7 +169,7 @@ export const TrainerModal: React.FunctionComponent<IVisible> = observer(({ train
                                 }
                                 `,
                         undefined
-                    );
+                    ))
                 }
                 setTrainerVisible(false);
             }

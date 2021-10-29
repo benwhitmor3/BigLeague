@@ -202,7 +202,7 @@ def gen_coach(league, num_of_coaches=10):
     for coach in range(num_of_coaches):
         # coaches can have double teamwork trait
         attributes = \
-            random.sample(['teamwork', 'teamwork', 'clutch', 'fame', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'wildcard', 'road'],
+            random.sample(['teamwork', 'teamwork', 'clutch', 'fame', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'road'],
                            k=2)
 
         Coach.objects.create(

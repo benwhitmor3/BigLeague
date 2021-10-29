@@ -124,9 +124,10 @@ class Attribute(models.TextChoices):
     FAME = 'fame', 'fame'
     FOCUS = 'focus', 'focus'
     GUTS = 'guts', 'guts'
+    # MOMENTUM = 'momentum', 'momentum'
     SUBSTITUTION = 'substitution', 'substitution'
     UNDERDOG = 'underdog', 'underdog'
-    WILDCARD = 'wildcard', 'wildcard'
+    # WILDCARD = 'wildcard', 'wildcard'
     ROAD = 'road', 'road'
 
 

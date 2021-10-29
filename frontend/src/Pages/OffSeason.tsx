@@ -13,7 +13,8 @@ export const OffSeason: React.FunctionComponent = observer(() => {
     const [franchise, setFranchise] = useState<any>(store.User ? store.User.franchise : null);
 
     let unsignedGms = store.User.league.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.gm?.trait).filter((trait: any) => trait===undefined).length
-    console.log(unsignedGms)
+    let unsignedCoaches = store.User.league.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.coach?.attributeOne).filter((attributeOne: any) => attributeOne===undefined).length
+
 
     useEffect(() => {
         if (store.User) {
@@ -23,10 +24,10 @@ export const OffSeason: React.FunctionComponent = observer(() => {
 
     if (franchise == null)
         return <Spin/>
-    else if (unsignedGms > 0)
+    else if (unsignedGms > 0 || unsignedCoaches > 0)
         return (
         <div>
-            <h3>Bot Teams Are Missing General Managers</h3>
+            <h3>Franchise are Missing Staff</h3>
             <LeagueStatus/>
         </div>
         )

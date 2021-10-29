@@ -281,13 +281,14 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 render: (record: PlayerTypeModelType) => (
                     (record.trainer) ? (
                         <Space size="middle">
-                            <Tag color={"#88af0c"} style={{ color: "#000000", border: "3px solid #88AF0C"}}>
-                            Trained
+                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 🏋️‍♂️ </span>}
+                                color={"#a4c34f"} style={{ color: "#000000", border: "3px solid #A4C34F"}}>
+                            Training
                             </Tag>
                         </Space>
                     ) : (
                         <Space size="middle">
-                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 🏋️‍♂️ </span>}
+                            <Tag
                                  color={"#ebd2d1"} style={{ color: "#000000", border: "3px solid #EBD2D1"}}
                                  onClick={() => {setSelectedPlayer(record); setTrainerVisible(true)}}>
                             Train
@@ -295,7 +296,6 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                         </Space>
                     )
                 ),
-
             }
 
         const columns = () => {

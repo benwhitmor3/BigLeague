@@ -174,7 +174,7 @@ def sign_players(franchise):
     return "Signed players for " + franchise.franchise
 
 
-def set_lineup(league, franchise):
+def set_lineup(franchise):
     for player in Player.objects.filter(franchise=franchise).order_by('-pv')[:5]:
         player.lineup = "starter"
         player.save()
@@ -842,6 +842,10 @@ def apply_actions(league, season_num):
             season.revenue += 5 * stadium.grade * stadium.city.city_value * stadium.seats
             season.save()
             franchise.action.event_planning = False
+
+        # expenses for training a player
+        season.expenses += franchise.player_set.filter(trainer=True).count() * 5000000
+        season.save()
 
         # reset number of actions to 2
         franchise.action.number_of_actions = 2
