@@ -184,6 +184,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                     bordered
                     style={{
                         boxShadow: "0px 0px 2px 0px #D0D8F3",
+
                     }}
                 />
             );

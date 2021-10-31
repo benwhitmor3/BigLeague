@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Checkbox, Button, notification} from 'antd';
+import {Table, Checkbox, Button, notification, Col} from 'antd';
 import {ActionTypeModelType, FranchiseTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
 import {IObservableArray, observable} from "mobx";
@@ -207,9 +207,20 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
 
         const columns = [
             {
+                title: 'Confirm',
+                key: "Confirm",
+                fixed: 'left',
+                render: () => (
+                    <Button onClick={actionChecker}>
+                        Confirm
+                    </Button>
+                ),
+            },
+            {
                 title: '# of Actions',
                 dataIndex: "numberOfActions",
                 key: "numberOfActions",
+                fixed: 'left',
                 render: (numberOfActions: number) => (
                     ((franchise.gm?.trait === "FACILITATOR") ?
                     <text>{numberOfActions + facilitatorBonus}</text> :
@@ -442,22 +453,34 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
             //         <Checkbox defaultChecked={bribeTheRefs} onChange={(e) => setBribeTheRefs(e.target.checked)}></Checkbox>
             //     ),
             // },
-            // {
-            //     title: 'Easy Runs',
-            //     dataIndex: "easyRuns",
-            //     key: "easyRuns",
-            //     render: (easyRuns: boolean) => (
-            //         <Checkbox defaultChecked={easyRuns} onChange={(e) => setEasyRuns(e.target.checked)}></Checkbox>
-            //     ),
-            // },
-            // {
-            //     title: 'Fan Factor',
-            //     dataIndex: "fanFactor",
-            //     key: "fanFactor",
-            //     render: (fanFactor: boolean) => (
-            //         <Checkbox defaultChecked={fanFactor} onChange={(e) => setFanFactor(e.target.checked)}></Checkbox>
-            //     ),
-            // },
+            {
+                title: 'Easy Runs',
+                dataIndex: "easyRuns",
+                key: "easyRuns",
+                render: (easyRuns: boolean) => (
+                        ((franchise.action.easyRuns == true) ?
+                        <div>
+                            <span style={{color: "grey", marginRight: "5px"}}>used</span>
+                            <Checkbox disabled defaultChecked={true}></Checkbox>
+                        </div>
+                            :
+                        <Checkbox defaultChecked={easyRuns} onChange={(e) => setEasyRuns(e.target.checked)}></Checkbox>
+                    )
+                ),
+            },
+            {
+                title: 'Fan Factor',
+                dataIndex: "fanFactor",
+                key: "fanFactor",
+                render: (fanFactor: boolean) => (
+                    // @ts-ignore
+                    ((franchise.seasonSet[franchise.seasonSet.length - 1].fanIndex > 120) ?
+                            <Checkbox defaultChecked={fanFactor} onChange={(e) => setFanFactor(e.target.checked)}></Checkbox>
+                            :
+                            <Checkbox disabled></Checkbox>
+                    )
+                ),
+            },
             // {
             //     title: 'Train Player',
             //     dataIndex: "trainPlayer",
@@ -538,15 +561,6 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                               onChange={(e) => setEventPlanning(e.target.checked)}></Checkbox>
                 ),
             },
-            {
-                title: 'Submit',
-                key: "submit",
-                render: () => (
-                    <Button onClick={actionChecker}>
-                        Confirm
-                    </Button>
-                ),
-            },
         ];
 
         let actions: IObservableArray<ActionTypeModelType> = observable([franchise.action])
@@ -556,13 +570,18 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         if (store.User == undefined || store.User.franchise == undefined || store.User.franchise.action == undefined) return <div>loading</div>;
         else {
             return (
-                    <Table columns={columns} dataSource={actions} pagination={false}
+                <Col span={24}>
+                    <Table
+                        // @ts-ignore
+                        columns={columns} dataSource={actions} pagination={false}
                            rowKey="id"
                            bordered
+                           scroll={{ x: 'max-content' }}
                            style={{
                                boxShadow: "0px 0px 2px 0px #D0D8F3",
                            }}
                     />
+                </Col>
             );
         }
     }

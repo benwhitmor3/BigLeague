@@ -1,5 +1,6 @@
 import random
 import pandas as pd
+import pulp as p
 from django.db.models import Sum
 from .finance import ticket_revenue_per_season, box_revenue_per_season, merchandise_revenue, tv_revenue, \
     stadium_construction, stadium_upkeep, operating_cost, advertising_cost, salary_cost
@@ -210,6 +211,47 @@ def set_staff(league, franchise):
     franchise.save()
 
     return "Set Staff for " + franchise.franchise
+
+# def set_ticket_price(season, franchise):
+#     # goal of ticket_price for bots is to maximize tickets sold
+#
+#     # 𝑄 = (15𝐴 + 200) ∗ (6𝐴 + 2𝐹 + 3𝑆 − 𝑃)
+#     a = season.advertising
+#     f = season.fan_index
+#     s = franchise.stadium.grade
+#     pr = season.ticket_price
+#     demand = (15*a + 200) * (6*a + 2*f + 3*s - pr)
+#     revenue = pr * demand
+#
+#     # declare variables
+#     pr = p.LpVariable("PR", 0)
+#
+#     # Define the problem
+#     # Objective is to maximize profit
+#     prob = p.LpProblem("problem", p.LpMaximize)
+#
+#     # DEFINE CONSTRAINTS
+#     prob += pr >= 0
+#     capacity = franchise.stadium.seats
+#     prob += ((15*a + 200) * (6*a + 2*f + 3*s - pr)) <= capacity
+#
+#     # Define objective function
+#     prob += pr * ((15*a + 200) * (6*a + 2*f + 3*s - pr))
+#
+#
+#     status = prob.solve()
+#     print("This is the {} solution".format(p.LpStatus[status]))
+#     # make sure we got an optimal solution
+#     assert status == p.LpStatusOptimal
+#
+#     # print the value of pr
+#     print("To maximize sales you have to sell {} Tickets".
+#           format(p.value(pr)))
+#
+#     print("The maximum profit to be derived is $ {}".format(
+#         prob.objective.value()))
+#
+#     return "Set Tickets for " + franchise.franchise
 
 
 def simulate_season(league, season):
@@ -442,15 +484,20 @@ def simulate_season(league, season):
             if franchise.coach.attribute_one == 'fame' and franchise.coach.attribute_two == 'fame':
                 current_season.fan_index += 5
 
-        ticket_price = 150
-        box_price = 50000
+        # set random pricing and advertising for bot teams
+        if current_season.franchise.user is None:
+            current_season.ticket_price = random.randrange(130, 180, 1)
+            current_season.advertising = random.randrange(5, 12)
+            current_season.box_price = random.randrange(100000, 1000000, 50000)
+            current_season.save()
+
         print(str(franchise))
-        current_season.revenue += prev_season.revenue + ticket_revenue_per_season(ticket_price, games_played,
+        current_season.revenue += prev_season.revenue + ticket_revenue_per_season(current_season.ticket_price, games_played,
                                                                                   current_season.advertising,
                                                                                   current_season.fan_index,
-                                                                                  franchise.stadium) \
-                                  + box_revenue_per_season(box_price, current_season.advertising, prev_season.fan_index,
-                                                           franchise.stadium) \
+                                                                                  franchise.stadium, current_season) \
+                                  + box_revenue_per_season(current_season.box_price, current_season.advertising, prev_season.fan_index,
+                                                           franchise.stadium, current_season) \
                                   + merchandise_revenue(current_season.advertising, current_season.fan_index) \
                                   + tv_revenue(league, season, games_played)
 
@@ -713,13 +760,6 @@ def bot_actions(league, season_num):
 
 
 def apply_actions(league, season_num):
-    # need to add these actions still
-    # if 'bribe the refs' in d[team]:
-    #     print('+1 HF')
-    # if 'easy runs' in d[team]:
-    #     print('+1 HF')
-    # if 'fan factor' in d[team]:
-    #     print('+1 HF')
     for franchise in Franchise.objects.filter(league=league):
         season = Season.objects.get(franchise__franchise=franchise, season=season_num)
         stadium = Stadium.objects.get(franchise=franchise)
@@ -787,6 +827,19 @@ def apply_actions(league, season_num):
             season.expenses += 10000000
             season.save()
             franchise.action.wi_fi_complete = True
+        # home field advantages
+        if franchise.action.easy_runs and franchise.action.easy_runs_complete is False:
+            stadium.home_field_advantage += 1
+            stadium.save()
+            season.expenses += 20000000
+            season.save()
+            franchise.action.easy_runs_complete = True
+        if franchise.action.fan_factor and franchise.action.fan_factor_complete is False:
+            stadium.home_field_advantage += 1
+            stadium.save()
+            season.expenses += 50000000
+            season.save()
+            franchise.action.easy_runs_complete = True
         # promotions
         if franchise.action.fan_night:
             season.fan_index += 6

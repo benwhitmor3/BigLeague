@@ -12,21 +12,31 @@ from django.db.models import Sum
 '''_____________________________________revenue_functions___________________________________'''
 
 
-def ticket_revenue_per_season(price, games_played, advertising, fan_index, stadium):
+def ticket_revenue_per_season(price, games_played, advertising, fan_index, stadium, current_season):
     demand = (15 * advertising + 200) * (6 * advertising + 2 * fan_index + 3 * stadium.grade - price)
+    demand = round(demand, 0) if round(demand, 0) > 0 else 0
     if demand > stadium.seats:
+        current_season.tickets_sold = stadium.seats
+        current_season.save()
         return price * stadium.seats * games_played
     else:
-        return price * round(demand, 0) * games_played
+        current_season.tickets_sold = demand
+        current_season.save()
+        return price * demand * games_played
 
 
-def box_revenue_per_season(price, advertising, prev_fan_index, stadium):
+def box_revenue_per_season(price, advertising, prev_fan_index, stadium, current_season):
     demand = ((advertising * prev_fan_index * stadium.city.city_value) / 10) - (
             (price * stadium.city.city_value) / 10000)
+    demand = round(demand, 0) if round(demand, 0) > 0 else 0
     if demand > stadium.boxes:
+        current_season.boxes_sold = stadium.boxes
+        current_season.save()
         return price * stadium.boxes
     else:
-        return price * round(demand, 0)
+        current_season.boxes_sold = demand
+        current_season.save()
+        return price * demand
 
 
 def merchandise_revenue(advertising, fan_index):

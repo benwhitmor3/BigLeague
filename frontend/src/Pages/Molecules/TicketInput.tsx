@@ -23,32 +23,32 @@ export const TicketInput: React.FunctionComponent = observer(() => {
         // get franchise season set and filter to most current season
         const [season, setSeason] = useState<any>(store.User.franchise.seasonSet.filter(function (season: any) {
             return season.season === store.User.franchise.seasonSet[store.User.franchise.seasonSet.length - 1].season;
-        })[0]);
+        }));
 
         const onSubmit = handleSubmit(({advertising, ticketPrice, boxPrice}: priceConfig) => {
             // season returns a single-object array. Need this to get the object
             let season_obj = season[0]
             store.mutateUpdateSeason({
                     "seasonInput": {
-                        'franchiseId': season.franchise.id,
-                        'season': season.season,
+                        'franchiseId': season_obj.franchise.id,
+                        'season': season_obj.season,
                         'ready': false,
-                        'wins': season.wins,
-                        'losses': season.losses,
-                        'ppg': season.ppg,
-                        'std': season.std,
-                        'championships': season.championships,
-                        'bonuses': season.bonuses,
-                        'penalties': season.penalties,
-                        'fanBase': season.fanBase,
-                        'fanIndex': season.fanIndex,
+                        'wins': season_obj.wins,
+                        'losses': season_obj.losses,
+                        'ppg': season_obj.ppg,
+                        'std': season_obj.std,
+                        'championships': season_obj.championships,
+                        'bonuses': season_obj.bonuses,
+                        'penalties': season_obj.penalties,
+                        'fanBase': season_obj.fanBase,
+                        'fanIndex': season_obj.fanIndex,
                         'advertising': advertising,
                         'ticketPrice': ticketPrice,
-                        'ticketsSold': season.ticketsSold,
+                        'ticketsSold': season_obj.ticketsSold,
                         'boxPrice': boxPrice,
-                        'boxesSold': season.boxesSold,
-                        'revenue': season.revenue,
-                        'expenses': season.expenses,
+                        'boxesSold': season_obj.boxesSold,
+                        'revenue': season_obj.revenue,
+                        'expenses': season_obj.expenses,
                     },
                 },
                 `
@@ -158,7 +158,7 @@ export const TicketInput: React.FunctionComponent = observer(() => {
                 dataIndex: 'advertising',
                 key: 'advertising',
                 render: (advertising: number) => (
-                    (season.ticketPrice > 0 && season.boxPrice > 0) ? (
+                    (season.ticketPrice > 0 && season.boxPrice > 0 || advertising > 1) ? (
                         <text>{advertising}</text>
                     ) : (
                         <div>
@@ -266,7 +266,7 @@ export const TicketInput: React.FunctionComponent = observer(() => {
                             rowKey="id"
                             // @ts-ignore (need this to add defaultSorter for Wins)
                             columns={columns}
-                            dataSource={toJS([season])}
+                            dataSource={toJS(season)}
                             pagination={false}
                             bordered
                             style={{

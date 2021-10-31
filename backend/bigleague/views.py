@@ -166,7 +166,7 @@ def set_lineup_view(request):
         with transaction.atomic():
             # for every franchise not mine, get players and assign lineup based on pv
             for franchise in franchises:
-                set_lineup(league, franchise)
+                set_lineup(franchise)
 
         return HttpResponse(request)
 
@@ -183,6 +183,22 @@ def set_staff_view(request):
             # for every franchise not mine, assign staff
             for franchise in franchises:
                 set_staff(league, franchise)
+
+        return HttpResponse(request)
+
+
+def set_ticket_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        franchise_id = request.POST.get('franchise_id')
+        my_franchise = Franchise.objects.get(id=franchise_id)
+        league = my_franchise.league
+
+        franchises = Franchise.objects.filter(league=league, user=None)
+        with transaction.atomic():
+            # for every franchise not mine, assign staff
+            for franchise in franchises:
+                set_tickets(league, franchise)
 
         return HttpResponse(request)
 
