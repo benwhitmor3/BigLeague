@@ -79,18 +79,44 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 key: 'advertising',
             },
             {
-                title: 'Revenue',
+                title: 'Ticket Price',
+                dataIndex: 'ticketPrice',
+                key: 'ticketPrice',
+                sorter: (a: any, b: any) => a.ticketPrice - b.ticketPrice,
+                render: (ticketPrice: number) => <text>{(ticketPrice).toFixed(0)}</text>,
+            },
+            {
+                title: 'Tickets Sold',
+                dataIndex: 'ticketsSold',
+                key: 'ticketsSold',
+                sorter: (a: any, b: any) => a.boxesSold - b.boxesSold,
+            },
+            {
+                title: 'Box Price',
+                dataIndex: 'boxPrice',
+                key: 'boxPrice',
+                sorter: (a: any, b: any) => a.boxPrice - b.boxPrice,
+                render: (boxPrice: number) => <text>{(boxPrice).toFixed(0)}</text>,
+            },
+            {
+                title: 'Boxes Sold',
+                dataIndex: 'boxesSold',
+                key: 'boxesSold',
+                sorter: (a: any, b: any) => a.boxesSold - b.boxesSold,
+            },
+            {
+                title: 'Revenue (m)',
                 dataIndex: 'revenue',
                 key: 'revenue',
                 sorter: (a: any, b: any) => a.revenue - b.revenue,
-                render: (revenue: number) => <text>{(revenue/1000000).toFixed(2)} million</text>,
+                render: (revenue: number) => <text>{(revenue / 1000000).toFixed(2)}</text>,
             },
             {
-                title: 'Expenses',
+                title: 'Expenses (m)',
                 dataIndex: 'expenses',
                 key: 'expenses',
                 sorter: (a: any, b: any) => a.expenses - b.expenses,
-                render: (expenses: number) => <text>{(expenses/1000000).toFixed(2)} million</text>,
+                render: (expenses: number) => <text>{(expenses / 1000000).toFixed(2)}</text>,
             },
         ];
 

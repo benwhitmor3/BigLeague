@@ -62,7 +62,7 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                             "salary": salary,
                             "grade": offergrade,
                             "franchiseId": store.User.franchise.id,
-                            "trainer": false,
+                            "trainer": selectedplayer.trainer,
                             "year": selectedplayer.year,
                             "lineup": selectedplayer.lineup,
                             "leagueId": store.User.franchise.league.id

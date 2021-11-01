@@ -1,4 +1,6 @@
 import random
+
+import numpy
 import pandas as pd
 import pulp as p
 from django.db.models import Sum
@@ -212,46 +214,83 @@ def set_staff(league, franchise):
 
     return "Set Staff for " + franchise.franchise
 
-# def set_ticket_price(season, franchise):
-#     # goal of ticket_price for bots is to maximize tickets sold
-#
-#     # 𝑄 = (15𝐴 + 200) ∗ (6𝐴 + 2𝐹 + 3𝑆 − 𝑃)
-#     a = season.advertising
-#     f = season.fan_index
-#     s = franchise.stadium.grade
-#     pr = season.ticket_price
-#     demand = (15*a + 200) * (6*a + 2*f + 3*s - pr)
-#     revenue = pr * demand
-#
-#     # declare variables
-#     pr = p.LpVariable("PR", 0)
-#
-#     # Define the problem
-#     # Objective is to maximize profit
-#     prob = p.LpProblem("problem", p.LpMaximize)
-#
-#     # DEFINE CONSTRAINTS
-#     prob += pr >= 0
-#     capacity = franchise.stadium.seats
-#     prob += ((15*a + 200) * (6*a + 2*f + 3*s - pr)) <= capacity
-#
-#     # Define objective function
-#     prob += pr * ((15*a + 200) * (6*a + 2*f + 3*s - pr))
-#
-#
-#     status = prob.solve()
-#     print("This is the {} solution".format(p.LpStatus[status]))
-#     # make sure we got an optimal solution
-#     assert status == p.LpStatusOptimal
-#
-#     # print the value of pr
-#     print("To maximize sales you have to sell {} Tickets".
-#           format(p.value(pr)))
-#
-#     print("The maximum profit to be derived is $ {}".format(
-#         prob.objective.value()))
-#
-#     return "Set Tickets for " + franchise.franchise
+
+def set_ticket_price(prev_season, current_season, franchise):
+    capacity = franchise.stadium.seats
+    seats_list = numpy.arange(0, capacity + 1000, 1000)
+    advertising = current_season.advertising
+    # use previous season to estimate fan index for current season
+    fan_index = prev_season.fan_index
+    grade = franchise.stadium.grade
+
+    # declare price variable to maximize
+    price = p.LpVariable("price", 0)
+
+    revenue_max = {'revenue': 0, 'price': 0, 'demand': 0}
+    # loop through stadium seats in intervals of 1000 and find revenue max for each
+    for seats in seats_list:
+        # Define objective function (to maximize ticket price given seats)
+        prob = p.LpProblem("problem", p.LpMaximize)
+        prob += (15 * advertising + 200) * (6 * advertising + 2 * fan_index + 3 * grade - price)
+        # Define constraints
+        prob += price >= 0
+        prob += ((15*advertising + 200) * (6*advertising + 2*fan_index + 3*grade - price)) <= int(seats)
+
+        status = prob.solve()
+        # print("This is the {} solution".format(p.LpStatus[status]))
+        # make sure we got an optimal solution
+        assert status == p.LpStatusOptimal
+
+        max_price = p.value(price)
+        demand = int(prob.objective.value())
+        revenue = max_price * demand
+        if revenue > revenue_max['revenue']:
+            revenue_max = {'revenue': revenue, 'price': max_price, 'demand': demand}
+
+    current_season.ticket_price = revenue_max['price']
+    current_season.save()
+    print("Revenue Max For", str(franchise), revenue_max)
+
+    return "Set Ticket Price for " + franchise.franchise
+
+
+def set_box_price(prev_season, current_season, franchise):
+    capacity = franchise.stadium.boxes
+    boxes_list = numpy.arange(0, capacity + 10, 10)
+    advertising = current_season.advertising
+    # use previous season to estimate fan index for current season
+    fan_index = prev_season.fan_index
+    city_value = franchise.stadium.city.city_value
+
+    # declare price variable to maximize
+    price = p.LpVariable("price", 0)
+
+    revenue_max = {'revenue': 0, 'price': 0, 'demand': 0}
+    # loop through stadium boxes in intervals of 10 and find revenue max for each
+    for boxes in boxes_list:
+        # Define objective function (to maximize ticket price given seats)
+        prob = p.LpProblem("problem", p.LpMaximize)
+        prob += ((advertising * fan_index * city_value) / 10) - ((price * city_value) / 10000)
+        # Define constraints
+        prob += price >= 0
+        prob += ((advertising * fan_index * city_value) / 10) - ((price * city_value) / 10000) <= boxes
+
+        status = prob.solve()
+        # print("This is the {} solution".format(p.LpStatus[status]))
+        # make sure we got an optimal solution
+        assert status == p.LpStatusOptimal
+
+        max_price = p.value(price)
+        demand = int(prob.objective.value())
+        revenue = max_price * demand
+        if revenue > revenue_max['revenue']:
+            revenue_max = {'revenue': revenue, 'price': max_price, 'demand': demand}
+
+    current_season.box_price = revenue_max['price']
+    current_season.save()
+    print("Revenue Max For", str(franchise), revenue_max)
+
+    return "Set Box Price for " + franchise.franchise
 
 
 def simulate_season(league, season):
@@ -471,7 +510,7 @@ def simulate_season(league, season):
         current_season.championships = prev_season.championships
         # get champion
         if franchise == Season.objects.filter(season=season).order_by('-wins', '-ppg')[0].franchise:
-            print(franchise)
+            print('champion', str(franchise))
             current_season.championships = prev_season.championships + 1
 
         current_season.fan_base = fan_base(franchise.stadium.city.city_value, current_season.ppg, current_season.wins,
@@ -486,24 +525,26 @@ def simulate_season(league, season):
 
         # set random pricing and advertising for bot teams
         if current_season.franchise.user is None:
-            current_season.ticket_price = random.randrange(130, 180, 1)
-            current_season.advertising = random.randrange(5, 12)
-            current_season.box_price = random.randrange(100000, 1000000, 50000)
+            current_season.advertising = random.randrange(6, 14)
             current_season.save()
+            set_ticket_price(prev_season, current_season, franchise)
+            set_box_price(prev_season, current_season, franchise)
 
         print(str(franchise))
-        current_season.revenue += prev_season.revenue + ticket_revenue_per_season(current_season.ticket_price, games_played,
-                                                                                  current_season.advertising,
-                                                                                  current_season.fan_index,
-                                                                                  franchise.stadium, current_season) \
-                                  + box_revenue_per_season(current_season.box_price, current_season.advertising, prev_season.fan_index,
+        current_season.revenue += ticket_revenue_per_season(current_season.ticket_price, games_played,
+                                                            current_season.advertising,
+                                                            current_season.fan_index,
+                                                            franchise.stadium, current_season) \
+                                  + box_revenue_per_season(current_season.box_price, current_season.advertising,
+                                                           prev_season.fan_index,
                                                            franchise.stadium, current_season) \
                                   + merchandise_revenue(current_season.advertising, current_season.fan_index) \
                                   + tv_revenue(league, season, games_played)
 
-        current_season.expenses += prev_season.expenses + stadium_construction(franchise, season) + \
-                                   stadium_upkeep(franchise, season) + operating_cost() + \
-                                   advertising_cost(current_season.advertising) + salary_cost(franchise)
+        current_season.expenses += stadium_construction(franchise, season) + stadium_upkeep(franchise, season) \
+                                   + operating_cost()\
+                                   + advertising_cost(current_season.advertising)\
+                                   + salary_cost(franchise)
 
         current_season.save()
 

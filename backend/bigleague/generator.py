@@ -61,7 +61,6 @@ def gen_city(league, num_of_cities=8):
 
 
 def gen_player(league, num_of_players=50, rookies=True):
-
     for players in range(num_of_players):
 
         if rookies is False:
@@ -185,9 +184,7 @@ def gen_player(league, num_of_players=50, rookies=True):
             print(e)
 
 
-
 def gen_gm(league):
-
     gms = ['facilitator', 'promoter', 'recruiter', 'scouter', 'suitor', 'trainer']
 
     for trait in gms:
@@ -198,12 +195,12 @@ def gen_gm(league):
 
 
 def gen_coach(league, num_of_coaches=10):
-
     for coach in range(num_of_coaches):
         # coaches can have double teamwork trait
         attributes = \
-            random.sample(['teamwork', 'teamwork', 'clutch', 'fame', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'road'],
-                           k=2)
+            random.sample(
+                ['teamwork', 'teamwork', 'clutch', 'fame', 'fame', 'focus', 'guts', 'substitution', 'underdog', 'road'],
+                k=2)
 
         Coach.objects.create(
             name=names.get_full_name(),
@@ -211,6 +208,7 @@ def gen_coach(league, num_of_coaches=10):
             attribute_two=attributes[1],
             league=league,
         )
+
 
 # identical to Goegan plan but I had the division for contracts + 1 to help alleviate the high salary for
 # shorter contracts, and "renew repeat" takes 2 points from grade instead of 4.
@@ -228,9 +226,11 @@ def gen_salary(franchise, player):
         elif player.renew == "non-repeat":
             salary += 1 * (player.epv / (player.contract + 1))
         if player.t_option != 0:
-            salary += ((player.contract - player.t_option) if player.t_option is not None else 0) * (player.epv / (player.contract + 1))
+            salary += ((player.contract - player.t_option) if player.t_option is not None else 0) * (
+                        player.epv / (player.contract + 1))
         if player.p_option != 0:
-            salary -= 0.5 * ((player.contract - player.p_option) if player.p_option is not None else 0) * (player.epv / (player.contract + 1))
+            salary -= 0.5 * ((player.contract - player.p_option) if player.p_option is not None else 0) * (
+                        player.epv / (player.contract + 1))
 
         if player.age >= 27:
             salary -= (player.age - 26) * (player.epv / (player.contract + 1))
