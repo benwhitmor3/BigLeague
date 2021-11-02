@@ -1,8 +1,9 @@
 from django.db import transaction
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from rest_framework import viewsets
-from .league_functions import sign_players, set_lineup, off_season, simulate_season, free_agency, set_staff
-from .generator import gen_city, gen_gm, gen_coach, gen_player, gen_salary, gen_grade, gen_franchise
+from .simulation_functions import off_season, simulate_season
+from .bot_functions import sign_players, set_lineup, set_staff, free_agency
+from .generator import gen_city, gen_gm, gen_coach, gen_player, gen_franchise
 from .serializers import UserSerializer, FranchiseSerializer, LeagueSerializer, CitySerializer, StadiumSerializer, \
     GMSerializer, CoachSerializer, PlayerSerializer, ActionSerializer, SeasonSerializer
 from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season
@@ -109,36 +110,6 @@ def league_generation_view(request):
         return HttpResponse(request)
 
 
-def draft_order_view(request):
-    """this sets the order for the draft based on the previous season results"""
-    print('RECEIVED REQUEST: ' + request.method)
-    if request.method == 'POST':
-        franchise_id = request.POST.get('franchise_id')
-        franchise = Franchise.objects.get(id=franchise_id)
-        league = franchise.league
-        season = request.POST.get('season')
-
-        s = Season.objects.all()
-        if season == '1':
-            # get season for league and season number sorted ascending wins, ppg, franchise_id for inaugural season
-            franchise_order = sorted(
-                s.filter(franchise__league=league, season=season).values('wins', 'ppg', 'franchise_id',
-                                                                         'franchise_id__franchise'),
-                key=lambda i: (i['wins'], i['ppg'], i['franchise_id']))
-        else:
-            # get season for league and season number sorted ascending wins, ppg, franchise_id
-            franchise_order = sorted(
-                s.filter(franchise__league=league, season=int(season) - 1).values('wins', 'ppg', 'franchise_id',
-                                                                                  'franchise_id__franchise'),
-                key=lambda i: (i['wins'], i['ppg'], i['franchise_id']))
-
-        draft_order = []
-        for i in franchise_order:
-            draft_order.append(i['franchise_id__franchise'])
-
-        return JsonResponse({'draft_order': draft_order})
-
-
 def sign_players_view(request):
     print('RECEIVED REQUEST: ' + request.method)
     if request.method == 'POST':
@@ -206,7 +177,6 @@ def season_simulation_view(request):
     if request.method == 'POST':
         league_id = request.POST.get('league_id')
         league = League.objects.get(id=league_id)
-        franchises = Franchise.objects.filter(league_id=league_id)
         season = request.POST.get('season')
 
         with transaction.atomic():

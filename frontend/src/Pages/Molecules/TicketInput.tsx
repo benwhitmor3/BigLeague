@@ -173,8 +173,8 @@ export const TicketInput: React.FunctionComponent = observer(() => {
                                     message: 'Advertising need to be 1 minimum',
                                 },
                                 max: {
-                                    value: 16,
-                                    message: 'Advertising need to be 16 maximum',
+                                    value: 10,
+                                    message: 'Advertising need to be 10 maximum',
                                 },
                             })}/>
                             </form>
