@@ -82,7 +82,7 @@ const App: React.FunctionComponent = observer(() => {
                             </div>
                         </Content>
 
-                        <Footer style={{textAlign: 'center'}}>The Big League ©2020 Created by Ben Whitmore</Footer>
+                        <Footer style={{textAlign: 'center'}}>The Big League ©2021 Created by Ben Whitmore</Footer>
                     </Router>
                 </Layout>
             </div>
