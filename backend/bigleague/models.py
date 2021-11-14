@@ -57,11 +57,14 @@ class User(AbstractBaseUser):
 
 
 class Franchise(models.Model):
-    franchise = models.CharField(max_length=25, unique=True)
+    franchise = models.CharField(max_length=25)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
     league = models.ForeignKey("League", on_delete=models.CASCADE)
     gm = models.ForeignKey("GM", on_delete=models.SET_NULL, null=True)
     coach = models.OneToOneField("Coach", on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        unique_together = ('franchise', 'league',)
 
     def __str__(self):
         return self.franchise
@@ -76,16 +79,19 @@ class League(models.Model):
 
 
 class City(models.Model):
-    city = models.CharField(max_length=20, unique=True)
+    city = models.CharField(max_length=20)
     city_value = models.IntegerField()
     league = models.ForeignKey(League, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('city', 'league',)
 
     def __str__(self):
         return self.city
 
 
 class Stadium(models.Model):
-    stadium_name = models.CharField(max_length=20, unique=True)
+    stadium_name = models.CharField(max_length=20)
     seats = models.IntegerField(default=0)
     boxes = models.IntegerField(default=0)
     grade = models.IntegerField(default=20)
@@ -112,7 +118,7 @@ class GM(models.Model):
     league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ("trait", "league")
+        unique_together = ('trait', 'league',)
 
     def __str__(self):
         return self.trait
@@ -132,10 +138,13 @@ class Attribute(models.TextChoices):
 
 
 class Coach(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30)
     attribute_one = models.CharField(max_length=12, choices=Attribute.choices)
     attribute_two = models.CharField(max_length=12, choices=Attribute.choices)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('name', 'league',)
 
     def __str__(self):
         return self.name
@@ -161,7 +170,7 @@ class Lineup(models.TextChoices):
 
 
 class Player(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50)
     suit = models.CharField(max_length=10, choices=Suit.choices)
     age = models.IntegerField(default=20)
     pv = models.FloatField(default=20)
@@ -178,6 +187,9 @@ class Player(models.Model):
     lineup = models.CharField(max_length=10, choices=Lineup.choices, null=True)
     franchise = models.ForeignKey(Franchise, on_delete=models.SET_NULL, null=True)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('name', 'league',)
 
     def __str__(self):
         return self.name

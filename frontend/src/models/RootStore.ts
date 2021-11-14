@@ -27,6 +27,10 @@ export const RootStore = RootStoreBase
       types.null,
       types.reference(types.late((): any => UserTypeModel)),
     ),
+    isLoggedIn: types.union(
+      types.undefined,
+      types.boolean,
+    ),
   })
   .actions((self) => ({
       setUser(email: string) {
@@ -320,7 +324,10 @@ __typename
       {fetchPolicy: "cache-and-network"},
           ).then((data) => self.User! = self.userTypes!.get(data!.user!.id!))
   return query
-      }
+      },
+    setIsLoggedIn(loggedIn: boolean) {
+            self.isLoggedIn = loggedIn
+        },
   }))
 
 

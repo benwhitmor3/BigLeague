@@ -28,8 +28,8 @@ def gen_franchise(league, num_of_franchises=7):
             franchise=franchise
         )
 
-    # create actions and season 1 for ALL franchises
-    for franchise in Franchise.objects.all():
+    # create actions and season 1 for ALL league franchises
+    for franchise in Franchise.objects.filter(league=league):
         Season.objects.create(franchise=franchise, season=1, fan_index=70)
         Action.objects.create(franchise=franchise)
 

@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {observer} from "mobx-react";
 import {StoreContext} from "../../models";
 import {useForm} from "react-hook-form";
-import {Alert} from "antd";
+import {Alert, Card, Space} from "antd";
 import CSS from "csstype";
 
 type franchiseConfig = {
@@ -237,7 +237,9 @@ export const CreateFranchise: React.FunctionComponent<ICreate> = observer(({setF
         if (store.User == undefined) return <div>Missing User</div>;
         else {
             return (
-                <form onSubmit={onSubmit}>
+            <form style={{textAlign: 'center', marginTop: '20px'}} noValidate autoComplete="off" onSubmit={onSubmit}>
+            <Card style={{display: 'inline-block', width: '30%'}} title="Start League">
+                <Space direction="vertical">
                     <label style={labelStyles}>Franchise Name</label>
                     <input name="franchiseName" style={formStyles} ref={register({
                         required: {
@@ -249,12 +251,12 @@ export const CreateFranchise: React.FunctionComponent<ICreate> = observer(({setF
                             message: 'Max Franchise name length is 25',
                         },
                     })}/>
-
                     <input type="submit" style={buttonStyles} value="Create Franchise"/>
 
                 <br/> {errors.franchiseName && <Alert message={errors.franchiseName.message} type="error" closable/>}
-                    <br/>
-
+                <br/>
+                </Space>
+            </Card>
                 </form>
             );
         }

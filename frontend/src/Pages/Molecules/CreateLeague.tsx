@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {observer} from "mobx-react";
 import {StoreContext} from "../../models";
 import {useForm} from "react-hook-form";
-import {Alert} from "antd";
+import {Alert, Button, Card, Input, Space} from "antd";
 import CSS from "csstype";
 
 type leagueConfig = {
@@ -62,7 +62,9 @@ export const CreateLeague: React.FunctionComponent = observer(() => {
     };
 
     return (
-        <form onSubmit={onSubmit}>
+        <form style={{textAlign: 'center', marginTop: '20px'}} noValidate autoComplete="off" onSubmit={onSubmit}>
+            <Card style={{display: 'inline-block', width: '30%'}} title="Start League">
+                <Space direction="vertical">
             <label style={labelStyles}>League Name:</label>
             <input name="leagueName" style={formStyles} ref={register({
                 required: {
@@ -76,12 +78,11 @@ export const CreateLeague: React.FunctionComponent = observer(() => {
             })}/>
 
             <input name="email" style={{display: "none"}} value={store.User.email} ref={register({})}/>
-
             <input type="submit" style={buttonStyles} value="Create League"/>
-
             <br/> {errors.leagueName && <Alert message={errors.leagueName.message} type="error" closable/>}
             <br/>
-
+                </Space>
+            </Card>
         </form>
     );
 }
