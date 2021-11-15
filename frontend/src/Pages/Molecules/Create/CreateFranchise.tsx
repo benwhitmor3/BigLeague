@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
 import {observer} from "mobx-react";
-import {StoreContext} from "../../models";
+import {StoreContext} from "../../../models";
 import {useForm} from "react-hook-form";
 import {Alert, Card, Space} from "antd";
-import CSS from "csstype";
+import {buttonStyles, cardStyles, formStyles, inputStyles, labelStyles} from "./CreateStyles";
+import { useHistory } from "react-router-dom";
 
 type franchiseConfig = {
     franchiseName: any;
@@ -13,18 +14,19 @@ interface ICreate {
     setFranchise: any;
 }
 
-export const CreateFranchise: React.FunctionComponent<ICreate> = observer(({setFranchise} : ICreate) => {
+export const CreateFranchise: React.FunctionComponent<ICreate> = observer(({setFranchise}: ICreate) => {
 
         const store = useContext(StoreContext)
+        const history = useHistory();
         const {register, handleSubmit, errors} = useForm<franchiseConfig>();
         const onSubmit = handleSubmit(({franchiseName}: franchiseConfig) => {
             console.log(franchiseName);
             store.mutateCreateFranchise({
-                        "email": store.User.email,
-                        "franchiseInput": {
-                            "franchise": franchiseName
-                        }
-                    },
+                    "email": store.User.email,
+                    "franchiseInput": {
+                        "franchise": franchiseName
+                    }
+                },
                 `
             franchise {
                 __typename
@@ -210,56 +212,29 @@ export const CreateFranchise: React.FunctionComponent<ICreate> = observer(({setF
                 setFranchise(data.createFranchise.user.franchise))
         });
 
-
-    const labelStyles: CSS.Properties = {
-        marginRight: '5px',
-    };
-
-    const formStyles: CSS.Properties = {
-        backgroundColor: '#d4380d',
-        border: '0px',
-        borderRadius: '4px',
-        padding: '0.5rem',
-        fontSize: '14px',
-        color: '#fff2e8',
-    };
-
-    const buttonStyles: CSS.Properties = {
-        backgroundColor: '#ad2102',
-        margin: '5px',
-        border: '0px',
-        borderRadius: '12px',
-        fontSize: '14px',
-        color: '#fff2e8',
-        padding: '8px',
-    };
-
-        if (store.User == undefined) return <div>Missing User</div>;
-        else {
-            return (
-            <form style={{textAlign: 'center', marginTop: '20px'}} noValidate autoComplete="off" onSubmit={onSubmit}>
-            <Card style={{display: 'inline-block', width: '30%'}} title="Start League">
-                <Space direction="vertical">
-                    <label style={labelStyles}>Franchise Name</label>
-                    <input name="franchiseName" style={formStyles} ref={register({
-                        required: {
-                            value: true,
-                            message: "Franchise name is a required field",
-                        },
-                        maxLength: {
-                            value: 25,
-                            message: 'Max Franchise name length is 25',
-                        },
-                    })}/>
-                    <input type="submit" style={buttonStyles} value="Create Franchise"/>
-
-                <br/> {errors.franchiseName && <Alert message={errors.franchiseName.message} type="error" closable/>}
-                <br/>
-                </Space>
-            </Card>
-                </form>
-            );
-        }
+        return (
+            <form style={formStyles} onSubmit={onSubmit}>
+                <Card style={cardStyles} title="Start Franchise">
+                    <Space direction="vertical">
+                        <label style={labelStyles}>Franchise Name</label>
+                        <input name="franchiseName" style={inputStyles} ref={register({
+                            required: {
+                                value: true,
+                                message: "Franchise name is a required field",
+                            },
+                            maxLength: {
+                                value: 25,
+                                message: 'Max Franchise name length is 25',
+                            },
+                        })}/>
+                        <input type="submit" style={buttonStyles} value="Create Franchise"/>
+                        <br/> {errors.franchiseName &&
+                    <Alert message={errors.franchiseName.message} type="error" closable/>}
+                        <br/>
+                    </Space>
+                </Card>
+            </form>
+        );
     }
 )
 

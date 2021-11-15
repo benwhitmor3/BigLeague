@@ -15,6 +15,7 @@ export const StaffCard: React.FunctionComponent<IFranchise> = observer(({franchi
     const store = useContext(StoreContext)
 
     return (
+        <div>
             <Card bordered={false}
                   key={franchise.id}
                   style={{
@@ -68,6 +69,7 @@ export const StaffCard: React.FunctionComponent<IFranchise> = observer(({franchi
                     </Col>
                 </Row>
             </Card>
+        </div>
     );
 })
 

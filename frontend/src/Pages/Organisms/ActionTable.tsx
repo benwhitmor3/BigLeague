@@ -570,6 +570,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         if (store.User == undefined || store.User.franchise == undefined || store.User.franchise.action == undefined) return <div>loading</div>;
         else {
             return (
+                <div>
                 <Col span={24}>
                     <Table
                         // @ts-ignore
@@ -582,6 +583,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                            }}
                     />
                 </Col>
+                </div>
             );
         }
     }

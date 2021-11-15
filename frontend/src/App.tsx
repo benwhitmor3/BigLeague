@@ -3,7 +3,7 @@ import './index.css';
 // @ts-ignore
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import 'antd/dist/antd.css';
-import {Layout, Menu, Spin} from 'antd';
+import {Card, Layout, Menu, Spin} from 'antd';
 import './Header.css'
 import {useQuery} from "./models";
 import {observer} from "mobx-react";
@@ -19,6 +19,7 @@ import FreeAgency from "./Pages/FreeAgency";
 import Staff from "./Pages/Staff";
 import LoginForm from "./Pages/LoginForm";
 import SignupForm from "./Pages/SignupForm";
+import Loading from "./Pages/Molecules/Loading";
 
 
 const {Header, Content, Footer} = Layout;
@@ -67,7 +68,7 @@ const App: React.FunctionComponent = observer(() => {
                     store.setIsLoggedIn(false)
                 });
         }
-    }, [store.isLoggedIn]);
+    }, [store.isLoggedIn, ]);
 
 
     if (!store.isLoggedIn) {
@@ -100,7 +101,7 @@ const App: React.FunctionComponent = observer(() => {
                         </Layout>
             </div>;
     }
-    if (loading || store.User == undefined) return <div><Spin size="large"/></div>;
+    if (loading || store.User == undefined) return <div><Loading/></div>;
     else {
         return (
             <div>

@@ -3,17 +3,19 @@ import {observer} from 'mobx-react'
 import {FranchiseTypeModelType, StoreContext} from "../models";
 import DraftTable from "./Organisms/DraftTable";
 import DraftOrder from "./Organisms/DraftOrder";
+import Loading from "./Molecules/Loading";
 
 
 export const Draft: React.FunctionComponent = observer(() => {
 
     const store = useContext(StoreContext)
 
-    let unsignedGms = store.User.league.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.gm?.trait).filter((trait: any) => trait===undefined).length;
+    let unsignedGms = store.User?.league?.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.gm?.trait).filter((trait: any) => trait===undefined).length;
 
-    let unsignedCoaches = store.User.league.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.coach?.attributeOne).filter((attributeOne: any) => attributeOne===undefined).length
+    let unsignedCoaches = store.User?.league?.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.coach?.attributeOne).filter((attributeOne: any) => attributeOne===undefined).length
 
-    if (store.User == undefined) return <div>loading</div>;
+    if (store.User?.league == null)
+        return <Loading/>
     else if (unsignedGms > 0 || unsignedCoaches > 0)
         return (
         <div>

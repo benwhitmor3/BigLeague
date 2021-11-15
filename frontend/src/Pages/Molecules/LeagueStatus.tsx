@@ -1,8 +1,9 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Card, Col, Row, Statistic, Badge, Divider} from 'antd';
 import {observer} from "mobx-react";
 import {FranchiseTypeModelType, StoreContext} from "../../models";
+import {useTrail, animated} from 'react-spring'
 
 
 export const unsignedPlayer = (franchise: FranchiseTypeModelType) => {
@@ -45,16 +46,33 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
+         useEffect(() => {
+            // used for animation of draft order
+            const timer = setTimeout(() => {
+                toggle(true)
+            }, 100);
+            return () => clearTimeout(timer);
+        }, []);
+
+        // used for animation of franchises
+        const [on, toggle] = useState(false);
+        const springs = useTrail(store.User.league.franchiseSet.length, {
+            to: {opacity: on ? 1 : 0.5},
+            config: {tension: 300}
+        });
+
         return (
             <Col span={24}>
-                {store.User.league.franchiseSet.map((franchise: FranchiseTypeModelType) => {
-                        return (
-                            <div>
-                                <Divider/>
+                {springs.map((animation, index) => (
+                        <animated.div style={{
+                            ...animation
+                        }}
+                                      key={index}>
+                            <Divider/>
                                 <Row>
                                     <Col span={7} offset={0}>
                                         <Card bordered={false}
-                                              key={franchise.id}
+                                              key={store.User.league.franchiseSet[index].id}
                                               style={{
                                                   borderRadius: "8px",
                                                   width: "100%",
@@ -63,13 +81,13 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
                                               }}
                                         >
                                             <Statistic title="Franchise"
-                                                       value={franchise ? franchise?.franchise : "None"}/>
+                                                       value={store.User.league.franchiseSet[index] ? store.User.league.franchiseSet[index].franchise : "None"}/>
                                         </Card>
                                     </Col>
                                     <Col span={7} offset={1}>
-                                        <Badge.Ribbon color={unsignedPlayerColor(franchise)} text={unsignedPlayer(franchise)}>
+                                        <Badge.Ribbon color={unsignedPlayerColor(store.User.league.franchiseSet[index])} text={unsignedPlayer(store.User.league.franchiseSet[index])}>
                                             <Card bordered={false}
-                                                  key={franchise.id}
+                                                  key={store.User.league.franchiseSet[index].id}
                                                   style={{
                                                       borderRadius: "8px",
                                                       width: "100%",
@@ -78,14 +96,14 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
                                                   }}
                                             >
                                                 <Statistic title="General Manager"
-                                                           value={franchise.gm ? franchise?.gm?.trait?.toLowerCase() : "None"}/>
+                                                           value={store.User.league.franchiseSet[index].gm ? store.User.league.franchiseSet[index]?.gm?.trait?.toLowerCase() : "None"}/>
                                             </Card>
                                         </Badge.Ribbon>
                                     </Col>
                                     <Col span={7} offset={1}>
-                                        <Badge.Ribbon color={unsetPlayerColor(franchise)} text={unsetPlayers(franchise)}>
+                                        <Badge.Ribbon color={unsetPlayerColor(store.User.league.franchiseSet[index])} text={unsetPlayers(store.User.league.franchiseSet[index])}>
                                             <Card bordered={false}
-                                                  key={franchise.id}
+                                                  key={store.User.league.franchiseSet[index].id}
                                                   style={{
                                                       borderRadius: "8px",
                                                       width: "100%",
@@ -94,16 +112,14 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
                                                   }}
                                             >
                                                 <Statistic title="Coach"
-                                                           value={franchise.coach ? franchise.coach?.name?.toLowerCase() : "None"}/>
+                                                           value={store.User.league.franchiseSet[index].coach ? store.User.league.franchiseSet[index].coach?.name?.toLowerCase() : "None"}/>
                                             </Card>
                                         </Badge.Ribbon>
                                     </Col>
                                 </Row>
-                            </div>
-                        )
-                    }
-                )
-                }
+                        </animated.div>
+                    ))}
+                    )
             </Col>
         )
     }

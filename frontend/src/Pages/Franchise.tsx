@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {observer} from 'mobx-react'
 import {FranchiseTypeModelType, StoreContext} from "../models";
-import CreateFranchise from "./Molecules/CreateFranchise";
+import CreateFranchise from "./Molecules/Create/CreateFranchise";
 import GenerateLeagueOpponents from "./Organisms/GenerateLeagueOpponents";
 import FranchiseCards from "./Organisms/FranchiseCards";
 
@@ -17,12 +17,17 @@ export const Franchise: React.FunctionComponent = observer(() => {
         }
     }, [store.User])
 
-    if (franchise == null)
+    if (store.User?.league == undefined) return (
+            <h1 className="ld ld-jump-alt-in" style={{textAlign: 'center', marginTop: '40px', fontSize: '32px'}}>
+                Missing League
+            </h1>
+        );
+    else if (store.User?.franchise == null)
         return <CreateFranchise setFranchise={setFranchise}/>;
-    if (store.User.franchise.league.franchiseSet.length <= 1)
+    else if (store.User.franchise.league.franchiseSet.length <= 1)
         return <GenerateLeagueOpponents/>;
     else {
-        return <FranchiseCards franchise={franchise} setFranchise={setFranchise}/>;
+        return <FranchiseCards franchise={franchise} setFranchise={setFranchise}/>
     }
 })
 

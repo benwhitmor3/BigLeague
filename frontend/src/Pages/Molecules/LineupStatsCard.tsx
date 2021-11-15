@@ -9,6 +9,7 @@ interface IFranchise {
 export const LineupStatsCard: React.FunctionComponent<IFranchise> = observer(({franchise}: IFranchise) => {
 
     return (
+        <div>
         <Card bordered={false}
               key={franchise.id}
               style={{
@@ -43,6 +44,7 @@ export const LineupStatsCard: React.FunctionComponent<IFranchise> = observer(({f
                 </Col>
             </Row>
         </Card>
+        </div>
     );
 })
 

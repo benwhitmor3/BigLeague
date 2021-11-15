@@ -1,9 +1,11 @@
 import React, {useContext} from 'react';
 import {observer} from "mobx-react";
-import {StoreContext} from "../../models";
+import {StoreContext} from "../../../models";
 import {useForm} from "react-hook-form";
-import {Alert, Button, Card, Input, Space} from "antd";
-import CSS from "csstype";
+import {Alert, Card, Space} from "antd";
+import {labelStyles, formStyles, buttonStyles, inputStyles, cardStyles} from "./CreateStyles";
+import { useHistory } from "react-router-dom";
+
 
 type leagueConfig = {
     leagueName: string;
@@ -13,6 +15,7 @@ type leagueConfig = {
 export const CreateLeague: React.FunctionComponent = observer(() => {
 
     const store = useContext(StoreContext)
+    const history = useHistory();
     const {register, handleSubmit, errors} = useForm<leagueConfig>();
     const onSubmit = handleSubmit(({leagueName, email}: leagueConfig) => {
         console.log(leagueName, email);
@@ -35,38 +38,15 @@ export const CreateLeague: React.FunctionComponent = observer(() => {
                 }   
                 `,
             undefined
-        )
+        ).then(() => history.push('/Franchise'))
     });
 
-    const labelStyles: CSS.Properties = {
-        marginRight: '5px',
-    };
-
-    const formStyles: CSS.Properties = {
-        backgroundColor: '#d4380d',
-        border: '0px',
-        borderRadius: '4px',
-        padding: '0.5rem',
-        fontSize: '14px',
-        color: '#fff2e8',
-    };
-
-    const buttonStyles: CSS.Properties = {
-        backgroundColor: '#ad2102',
-        margin: '5px',
-        border: '0px',
-        borderRadius: '12px',
-        fontSize: '14px',
-        color: '#fff2e8',
-        padding: '8px',
-    };
-
     return (
-        <form style={{textAlign: 'center', marginTop: '20px'}} noValidate autoComplete="off" onSubmit={onSubmit}>
-            <Card style={{display: 'inline-block', width: '30%'}} title="Start League">
-                <Space direction="vertical">
+        <form style={formStyles} onSubmit={onSubmit}>
+            <Card style={cardStyles} title="Start League">
+            <Space direction="vertical">
             <label style={labelStyles}>League Name:</label>
-            <input name="leagueName" style={formStyles} ref={register({
+            <input name="leagueName" style={inputStyles} ref={register({
                 required: {
                     value: true,
                     message: "League name is a required field",

@@ -64,6 +64,12 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 title: 'Franchise',
                 dataIndex: ["franchise", "franchise"],
                 key: "franchise",
+                render: (franchise: number) => (
+                    franchise
+                        ?
+                        <span className="ld ld-float-rtl-in" style={{animationDuration: "2s"}}>{franchise}</span>
+                        :
+                        null)
             },
             {
                 title: 'Action',
@@ -71,7 +77,9 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 render: (text: string, record: any) => (
                     (record.franchise) ? (
                         <Space size="middle">
-                            <Tag color={"#d4380d"} style={{color: "#ffffff", border: "2px solid #cb2022"}}
+                            <Tag
+                                className="ld ld-float-rtl-in"
+                                color={"#d4380d"} style={{color: "#ffffff", border: "2px solid #cb2022", animationDuration: "2s"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {

@@ -5,6 +5,7 @@ import {Spin} from 'antd';
 import SignPlayersButton from "./Molecules/SignPlayersButton";
 import SetLineupsButton from "./Molecules/SetLineupsButton";
 import LeagueStatus from "./Molecules/LeagueStatus";
+import Loading from "./Molecules/Loading";
 
 export const OffSeason: React.FunctionComponent = observer(() => {
 
@@ -12,8 +13,8 @@ export const OffSeason: React.FunctionComponent = observer(() => {
 
     const [franchise, setFranchise] = useState<any>(store.User ? store.User.franchise : null);
 
-    let unsignedGms = store.User.league.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.gm?.trait).filter((trait: any) => trait===undefined).length
-    let unsignedCoaches = store.User.league.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.coach?.attributeOne).filter((attributeOne: any) => attributeOne===undefined).length
+    let unsignedGms = store.User?.league?.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.gm?.trait).filter((trait: any) => trait===undefined).length
+    let unsignedCoaches = store.User?.league?.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.coach?.attributeOne).filter((attributeOne: any) => attributeOne===undefined).length
 
 
     useEffect(() => {
@@ -22,8 +23,8 @@ export const OffSeason: React.FunctionComponent = observer(() => {
         }
     }, [store.User])
 
-    if (franchise == null)
-        return <Spin/>
+    if (store.User?.league == null)
+        return <Loading/>
     else if (unsignedGms > 0 || unsignedCoaches > 0)
         return (
         <div>

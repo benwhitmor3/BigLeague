@@ -55,7 +55,6 @@ export const GenerateLeagueOpponents: React.FunctionComponent = observer(() => {
                                 onChange={(value: any) => setNumberOfFranchises(value)}>
                             <Option value="8">8</Option>
                             <Option value="16">16</Option>
-                            <Option value="32">32</Option>
                         </Select>
                     </div>
                     <Card bordered={false}

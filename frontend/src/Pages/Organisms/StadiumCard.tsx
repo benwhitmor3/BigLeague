@@ -4,6 +4,7 @@ import {StoreContext} from "../../models";
 import {Statistic, Row, Col, Card, Spin, Tag, Space} from 'antd';
 import {EditOutlined} from "@ant-design/icons";
 import EditStadiumModal from "../Molecules/EditStadiumModal";
+import StadiumIcon from "../Atoms/StadiumIcon";
 
 export const StadiumCard: React.FunctionComponent = observer(() => {
 
@@ -12,11 +13,12 @@ export const StadiumCard: React.FunctionComponent = observer(() => {
     const [editStadiumVisible, setEditStadiumVisible] = useState<boolean>(false)
 
     if (store.User == undefined)
-        return <div><Spin size="large" /></div>;
+        return <div><Spin size="large"/></div>;
     else {
         return (
             <div>
-                <EditStadiumModal editStadiumVisible={editStadiumVisible} setEditStadiumVisible={setEditStadiumVisible}/>
+                <EditStadiumModal editStadiumVisible={editStadiumVisible}
+                                  setEditStadiumVisible={setEditStadiumVisible}/>
                 <Row gutter={[0, 24]}>
                     <Col span={24}>
                         <Card bordered={false}
@@ -41,7 +43,8 @@ export const StadiumCard: React.FunctionComponent = observer(() => {
                                 <Col span={2} offset={0}>
                                     <Space size="middle">
                                         <Tag icon={<EditOutlined/>}
-                                             color={"#eeeeee"} style={{color: "#000000", border: "3px solid #eeeeee", cursor: "pointer"}}
+                                             color={"#eeeeee"}
+                                             style={{color: "#000000", border: "3px solid #eeeeee", cursor: "pointer"}}
                                              onClick={() => {
                                                  setEditStadiumVisible(true)
                                              }}>
@@ -58,9 +61,12 @@ export const StadiumCard: React.FunctionComponent = observer(() => {
                                 <Col span={8} offset={0}>
                                     <Statistic title="Max Grade" value={store.User.franchise.stadium.maxGrade}/>
                                 </Col>
-                                <Col span={8} offset={0}>
+                                <Col span={6} offset={0}>
                                     <Statistic title="Home Field Advantage"
                                                value={store.User.franchise.stadium.homeFieldAdvantage}/>
+                                </Col>
+                                <Col span={2} offset={0}>
+                                    <StadiumIcon/>
                                 </Col>
                             </Row>
                         </Card>

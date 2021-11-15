@@ -15,7 +15,7 @@ interface IFranchise {
 export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({franchise, setFranchise}: IFranchise) => {
 
     return (
-        <div className="site-card-wrapper">
+        <div>
             <Row gutter={[24, 0]}>
                 <Col span={12}>
                     <StaffCard franchise={franchise} setFranchise={setFranchise}/>

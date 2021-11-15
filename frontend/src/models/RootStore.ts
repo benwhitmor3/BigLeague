@@ -27,9 +27,9 @@ export const RootStore = RootStoreBase
       types.null,
       types.reference(types.late((): any => UserTypeModel)),
     ),
-    isLoggedIn: types.union(
-      types.undefined,
+    isLoggedIn: types.optional(
       types.boolean,
+      false,
     ),
   })
   .actions((self) => ({

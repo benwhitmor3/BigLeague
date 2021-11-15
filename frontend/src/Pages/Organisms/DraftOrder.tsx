@@ -71,6 +71,7 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
 
                     {(store.User.league.bestDraftPlayer && store.User.league.draftingFranchise !== store.User.franchise) ?
                         <Statistic
+                            className="ld ld-flip-v-in"
                             style={{
                                 display: "block", marginLeft: 'auto', marginRight: 'auto',
                                 padding: '10px',
@@ -92,7 +93,8 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
 
                     {store.User.league.draftOrder ? store.User.league.draftOrder.map((franchise: FranchiseTypeModelType, index: number) => {
                             let number = (index + 1)
-                            return <Card hoverable
+                            return <Card
+                                hoverable
                                          onClick={() =>
                                              store.User.league.setDraftingFranchise(franchise)
                                          }
