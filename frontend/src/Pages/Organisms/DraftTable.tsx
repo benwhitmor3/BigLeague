@@ -6,6 +6,7 @@ import {observer} from "mobx-react";
 import {colour, suit_icon, insertArray, draft} from '../Utils/TableFunctions'
 import {IObservableArray, observable, toJS} from 'mobx';
 import {mutateCreatePlayerQuery} from "../Utils/queries";
+import {tableStyles} from "./Tables/TableStyles";
 
 
 export const DraftTable: React.FunctionComponent = observer(() => {
@@ -79,7 +80,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                         <Space size="middle">
                             <Tag
                                 className="ld ld-float-rtl-in"
-                                color={"#d4380d"} style={{color: "#ffffff", border: "2px solid #cb2022", animationDuration: "2s"}}
+                                color={"#B93538"} style={{color: "#ffffff", border: "2px solid #B93538", animationDuration: "2s"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -111,8 +112,8 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                         </Space>
                     ) : (
                         <Space size="middle">
-                            <Tag color={"#ffe479"} icon={<span role="img" aria-label="player"> 📝 </span>}
-                                 style={{color: "#000000", border: "2px solid #ffe479", cursor: "pointer"}}
+                            <Tag color={"#FFDE70"} icon={<span role="img" aria-label="player"> 📝 </span>}
+                                 style={{color: "#000000", border: "2px solid #FFDE70", cursor: "pointer"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -190,10 +191,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                     dataSource={toJS(draftClass)}
                     pagination={false}
                     bordered
-                    style={{
-                        boxShadow: "0px 0px 2px 0px #D0D8F3",
-
-                    }}
+                    style={tableStyles}
                 />
             );
         }

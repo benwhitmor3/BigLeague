@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import {observer} from 'mobx-react'
 import {StoreContext} from "../../models";
 import {Statistic, Row, Col, Card, Select} from 'antd';
+import {cardStyles} from "./Create/CreateStyles";
 
 const {Option} = Select;
 
@@ -18,12 +19,7 @@ export const StaffCard: React.FunctionComponent<IFranchise> = observer(({franchi
         <div>
             <Card bordered={false}
                   key={franchise.id}
-                  style={{
-                      borderRadius: "8px",
-                      width: "100%",
-                      marginBottom: "20px",
-                      boxShadow: "0px 0px 4px 0px #D0D8F3",
-                  }}
+                  style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}}
             >
                 <Row gutter={[0, 24]}>
                     <Col span={12} offset={0}>
@@ -44,26 +40,24 @@ export const StaffCard: React.FunctionComponent<IFranchise> = observer(({franchi
                             )}
                         </Select>
                     </Col>
-                    <Col span={8} offset={4}>
+                    <Col span={6} offset={6}>
                         <Statistic title="City"
                                    value={franchise.stadium ? franchise.stadium.city.city : "None"}/>
                     </Col>
                 </Row>
-                <Row gutter={[0, 24]}>
-                    <Col span={24} offset={0}>
+                <Row gutter={[0, 0]}>
+                    <Col span={6} offset={0}>
                         <Statistic title="General Manager"
                                    value={franchise.gm ? franchise.gm.trait.toLowerCase() : "None"}/>
                     </Col>
-                </Row>
-                <Row gutter={[0, 0]}>
-                    <Col span={8} offset={0}>
+                    <Col span={6} offset={0}>
                         <Statistic title="Coach" value={franchise.coach ? franchise.coach.name : "None"}/>
                     </Col>
-                    <Col span={8} offset={0}>
+                    <Col span={6} offset={0}>
                         <Statistic title="Attribute One"
                                    value={franchise.coach ? franchise.coach.attributeOne.toLowerCase() : "None"}/>
                     </Col>
-                    <Col span={8} offset={0}>
+                    <Col span={6} offset={0}>
                         <Statistic title="Attribute Two"
                                    value={franchise.coach ? franchise.coach.attributeTwo.toLowerCase() : "None"}/>
                     </Col>

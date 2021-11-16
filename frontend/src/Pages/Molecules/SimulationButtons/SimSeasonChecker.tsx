@@ -1,13 +1,28 @@
 import React from 'react';
 import 'antd/dist/antd.css';
 import {notification} from 'antd';
-import {FranchiseTypeModelType, LeagueTypeModelType} from "../../models";
+import {FranchiseTypeModelType, LeagueTypeModelType} from "../../../models";
 
+export const ticketError = (franchise: string | undefined) => {
+    notification.error({
+        message: 'Ticket Error',
+        description: franchise + ' do not have prices set',
+        duration: 10,
+    });
+};
+
+export const actionError = (franchise: string | undefined) => {
+    notification.error({
+        message: 'Actions Error',
+        description: franchise + ' still have actions available',
+        duration: 10,
+    });
+};
 
 export const rosterError = (franchise: string | undefined) => {
     notification.error({
         message: 'Roster Error',
-        description: franchise + ' does not have enough players',
+        description: franchise + ' do not have enough players',
         duration: 10,
     });
 };
@@ -15,7 +30,7 @@ export const rosterError = (franchise: string | undefined) => {
 export const lineupError = (franchise: string | undefined) => {
     notification.error({
         message: 'Lineup Error',
-        description: franchise + ' has players with no lineup assigned',
+        description: franchise + ' have players with no lineup assigned',
         duration: 10,
     });
 };
@@ -23,7 +38,7 @@ export const lineupError = (franchise: string | undefined) => {
 export const unsignedError = (franchise: string | undefined) => {
     notification.error({
         message: 'Unsigned Error',
-        description: franchise + ' has unsigned players',
+        description: franchise + ' have unsigned players',
         duration: 10,
     });
 };
@@ -31,7 +46,7 @@ export const unsignedError = (franchise: string | undefined) => {
 export const starterError = (franchise: string | undefined) => {
     notification.error({
         message: 'Starter Error',
-        description: franchise + ' does not have 5 starters',
+        description: franchise + ' do not have 5 starters',
         duration: 10,
     });
 };
@@ -39,7 +54,7 @@ export const starterError = (franchise: string | undefined) => {
 export const staffError = (franchise: string | undefined) => {
     notification.error({
         message: 'Staff Error',
-        description: franchise + ' is not fully staffed',
+        description: franchise + ' are not fully staffed',
         duration: 10,
     });
 };

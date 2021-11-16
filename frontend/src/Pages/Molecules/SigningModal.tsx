@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Tag, Input, Modal, Select} from 'antd';
+import {Tag, Input, Modal, Select, Button} from 'antd';
 import {observer} from "mobx-react";
 import CSS from "csstype";
 import {StoreContext} from "../../models";
 import {mutateCreatePlayerQuery} from "../Utils/queries";
+import {buttonStyles} from "./Create/CreateStyles";
 
 interface IVisible {
     visible: boolean;
@@ -144,11 +145,16 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                 <Modal
                     title="Contract Portal"
                     centered
+                    closable={false}
                     visible={visible}
-                    onOk={() =>
-                        sign_player()
-                    }
-                    onCancel={() => setVisible(false)}
+                    footer={[
+                        <Button style={buttonStyles} onClick={() => setVisible(false)}>
+                            Cancel
+                        </Button>,
+                        <Button style={buttonStyles} onClick={() => sign_player()}>
+                            Confirm
+                        </Button>,
+                    ]}
                     width={'600px'}
                 >
                     <h4>{selectedplayer.name}</h4>

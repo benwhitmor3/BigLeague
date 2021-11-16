@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import {StoreContext} from "../models";
 import {observer} from "mobx-react";
 import LeagueTable from "./Organisms/LeagueTable";
-import Loading from "./Molecules/Loading";
+import SmallLoading from "./Atoms/SmallLoading";
 
 
 export const League: React.FunctionComponent = observer(() => {
@@ -11,7 +11,7 @@ export const League: React.FunctionComponent = observer(() => {
         const store = useContext(StoreContext)
 
         if (store.User?.franchise == null)
-            return <Loading/>
+            return <SmallLoading animation="ld ld-bounce"/>
         else {
             return (
                 <LeagueTable/>

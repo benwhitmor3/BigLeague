@@ -1,19 +1,21 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Button, Progress} from 'antd';
+import {Button} from 'antd';
 import {observer} from "mobx-react";
 import axios from "axios";
-import {FranchiseTypeModelType, StoreContext} from "../../models";
-import {userQuery} from "../Utils/queries";
-import {simSeasonChecker} from "./SeasonSimChecker";
+import {FranchiseTypeModelType, StoreContext} from "../../../models";
+import {userQuery} from "../../Utils/queries";
+import {actionError, simSeasonChecker, ticketError} from "./SimSeasonChecker";
+import {simButtonStyles} from "./SimButtonStyles";
+import BigLoading from "../../Atoms/BigLoading";
 
 
-export const SeasonSimButton: React.FunctionComponent = observer(() => {
+export const SimSeasonButton: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
         const [loading, setLoading] = useState<boolean>(false)
-        const [percent, setPercent] = useState<number>(0)
+        const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
 
         const simSeason = () => {
 
@@ -23,6 +25,18 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
             // loops through each franchise, if check fails, sets seasonSim to false
             store.User.franchise.league.franchiseSet.forEach((franchise: FranchiseTypeModelType) =>
                 simSeasonChecker(franchise, store.User.league))
+
+            //checks if user team has ticket pricing
+            if (store.User.franchise.seasonSet[store.User.franchise.seasonSet.length - 1].ticketPrice == 0
+                || store.User.franchise.seasonSet[store.User.franchise.seasonSet.length - 1].boxPrice == 0) {
+                store.User.league.setSeasonSimCheck(false)
+                return ticketError(store.User.franchise.franchise);
+            }
+            //checks if user team has actions available
+            if (store.User.franchise.action.numberOfActions > 0) {
+                store.User.league.setSeasonSimCheck(false)
+                return actionError(store.User.franchise.franchise);
+            }
 
             // if seasonSimCheck is false do not run season simulation
             if (store.User.league.seasonSimCheck === false) {
@@ -34,7 +48,6 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
             data.append("league_id", store.User.franchise.league.id)
             data.append("season", store.User.franchise.seasonSet.length)
             setLoading(true)
-            setPercent(50)
             axios.post('http://127.0.0.1:8000/season_sim', data)
                 .then(res => {
                     console.log(res.data)
@@ -70,7 +83,7 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
                     }`
                     )
                     store.queryUser(
-                    {email: "email@email.com"},
+                    {email: email},
                     userQuery
                     )
                     setLoading(false)
@@ -83,14 +96,13 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
 
         if (loading) return (
             <div>
-                <h3>Simulating Season</h3>
-                <Progress strokeColor={{'0%': '#108ee9', '100%': '#87d068',}} percent={percent}/>
+                <BigLoading animation="ld ld-bounce"/>
             </div>
         )
         else {
             return (
                 <div>
-                    <Button type="primary" onClick={() => simSeason()} block>
+                    <Button style={simButtonStyles} onClick={() => simSeason()} block>
                         Simulate Season
                     </Button>
                 </div>
@@ -99,4 +111,4 @@ export const SeasonSimButton: React.FunctionComponent = observer(() => {
     }
 )
 
-export default SeasonSimButton;
+export default SimSeasonButton;

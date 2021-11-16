@@ -1,7 +1,5 @@
-import React, {useContext} from "react";
-import {PlayerTypeModelType, StoreContext} from "../../models";
-import {Space, Tag} from "antd";
-import {mutateCreatePlayerQuery} from "./queries";
+import React from "react";
+import {PlayerTypeModelType} from "../../models";
 
 export const insertArray = ( array: any, index: number, item: any ) => {
     array.splice( index, 0, item );

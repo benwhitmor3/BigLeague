@@ -3,12 +3,12 @@ import './index.css';
 // @ts-ignore
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import 'antd/dist/antd.css';
-import {Card, Layout, Menu, Spin} from 'antd';
+import {Layout, Menu} from 'antd';
 import './Header.css'
 import {useQuery} from "./models";
 import {observer} from "mobx-react";
 import Franchise from "./Pages/Franchise";
-import Stadium from "./Pages/Stadium";
+// import Stadium from "./Pages/Stadium";
 import Draft from "./Pages/Draft";
 import League from "./Pages/League";
 import Season from "./Pages/Season";
@@ -19,7 +19,7 @@ import FreeAgency from "./Pages/FreeAgency";
 import Staff from "./Pages/Staff";
 import LoginForm from "./Pages/LoginForm";
 import SignupForm from "./Pages/SignupForm";
-import Loading from "./Pages/Molecules/Loading";
+import SmallLoading from "./Pages/Atoms/SmallLoading";
 
 
 const {Header, Content, Footer} = Layout;
@@ -75,8 +75,8 @@ const App: React.FunctionComponent = observer(() => {
         return <div>
                         <Layout className='layout'>
                             <Router>
-                                <Header style={{backgroundColor: '#d4380d'}}>
-                                    <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#fff2e8'}}>
+                                <Header style={{backgroundColor: '#12263A'}}>
+                                    <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
                                         <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
                                         {isLoggedIn ? (
                                                 <Menu.Item key="11" style={{float: 'right'}} onClick={() => {
@@ -101,16 +101,16 @@ const App: React.FunctionComponent = observer(() => {
                         </Layout>
             </div>;
     }
-    if (loading || store.User == undefined) return <div><Loading/></div>;
+    if (loading || store.User == undefined) return <div><SmallLoading animation="ld ld-bounce"/></div>;
     else {
         return (
             <div>
                 <Layout className='layout'>
                     <Router>
-                        <Header style={{backgroundColor: '#d4380d'}}>
-                            <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#fff2e8'}}>
+                        <Header style={{backgroundColor: '#12263A'}}>
+                            <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
                                 <Menu.Item key="1"><Link to="/Home">Home</Link></Menu.Item>
-                                <Menu.Item key="2"><Link to="/Stadium">Stadium</Link></Menu.Item>
+                                {/*<Menu.Item key="2"><Link to="/Stadium">Stadium</Link></Menu.Item>*/}
                                 <Menu.Item key="3"><Link to="/Franchise">Franchise</Link></Menu.Item>
                                 <Menu.Item key="4"><Link to="/Staff">Staff</Link></Menu.Item>
                                 <Menu.Item key="5"><Link to="/OffSeason">OffSeason</Link></Menu.Item>
@@ -133,7 +133,7 @@ const App: React.FunctionComponent = observer(() => {
                             <div className="site-layout-content">
                                 <Switch>
                                     <Route exact path='/Home' component={Home}/>
-                                    <Route exact path='/Stadium' component={Stadium}/>
+                                    {/*<Route exact path='/Stadium' component={Stadium}/>*/}
                                     <Route exact path='/Franchise' component={Franchise}/>
                                     <Route exact path='/Staff' component={Staff}/>
                                     <Route exact path='/Draft' component={Draft}/>

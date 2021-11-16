@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import {observer} from 'mobx-react'
 import {FranchiseTypeModelType, StoreContext} from "../models";
 import CreateFranchise from "./Molecules/Create/CreateFranchise";
-import GenerateLeagueOpponents from "./Organisms/GenerateLeagueOpponents";
 import FranchiseCards from "./Organisms/FranchiseCards";
+import CreateBots from "./Molecules/Create/CreateBots";
 
 export const Franchise: React.FunctionComponent = observer(() => {
 
@@ -25,7 +25,7 @@ export const Franchise: React.FunctionComponent = observer(() => {
     else if (store.User?.franchise == null)
         return <CreateFranchise setFranchise={setFranchise}/>;
     else if (store.User.franchise.league.franchiseSet.length <= 1)
-        return <GenerateLeagueOpponents/>;
+        return <CreateBots/>;
     else {
         return <FranchiseCards franchise={franchise} setFranchise={setFranchise}/>
     }

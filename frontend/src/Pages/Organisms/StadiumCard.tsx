@@ -3,8 +3,12 @@ import {observer} from 'mobx-react'
 import {StoreContext} from "../../models";
 import {Statistic, Row, Col, Card, Spin, Tag, Space} from 'antd';
 import {EditOutlined} from "@ant-design/icons";
-import EditStadiumModal from "../Molecules/EditStadiumModal";
+import EditStadiumModal from "../Molecules/Modals/EditStadiumModal";
 import StadiumIcon from "../Atoms/StadiumIcon";
+import {cardStyles} from "../Molecules/Create/CreateStyles";
+
+
+// NOT USED AT THE MOMENT
 
 export const StadiumCard: React.FunctionComponent = observer(() => {
 
@@ -23,12 +27,7 @@ export const StadiumCard: React.FunctionComponent = observer(() => {
                     <Col span={24}>
                         <Card bordered={false}
                               key={store.User.franchise.id}
-                              style={{
-                                  borderRadius: "8px",
-                                  width: "100%",
-                                  marginBottom: "20px",
-                                  boxShadow: "0px 0px 4px 0px #D0D8F3",
-                              }}
+                              style={{...{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}, ...{cardStyles}}}
                         >
                             <Row gutter={[0, 24]}>
                                 <Col span={8} offset={0}>

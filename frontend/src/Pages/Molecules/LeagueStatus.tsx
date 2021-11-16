@@ -4,7 +4,28 @@ import {Card, Col, Row, Statistic, Badge, Divider} from 'antd';
 import {observer} from "mobx-react";
 import {FranchiseTypeModelType, StoreContext} from "../../models";
 import {useTrail, animated} from 'react-spring'
+import MissingStartersIcon from "../Atoms/MissingStartersIcon";
+import StartersIcon from "../Atoms/StartersIcon";
+import UnsetPlayerIcon from "../Atoms/UnsetPlayerIcon";
+import UnsignedPlayerIcon from "../Atoms/UnsignedPlayerIcon";
+import SignedPlayerIcon from "../Atoms/SignedPlayerIcon";
 
+
+export const missingStaff = (franchise: FranchiseTypeModelType) => {
+    if (!franchise.gm?.trait || !franchise.coach?.attributeOne)
+        return "Missing Staff"
+    else {
+        return "Staff Signed"
+    }
+};
+
+export const missingStaffColor = (franchise: FranchiseTypeModelType) => {
+    if (!franchise.gm?.trait || !franchise.coach?.attributeOne)
+        return "#EB5E55"
+    else {
+        return "#71C544"
+    }
+};
 
 export const unsignedPlayer = (franchise: FranchiseTypeModelType) => {
     if (franchise.unsignedPlayers.length > 0)
@@ -16,9 +37,19 @@ export const unsignedPlayer = (franchise: FranchiseTypeModelType) => {
 
 export const unsignedPlayerColor = (franchise: FranchiseTypeModelType) => {
     if (franchise.unsignedPlayers.length > 0)
-        return "red"
+        return "#EB5E55"
     else {
-        return "green"
+        return "#71C544"
+    }
+};
+
+export const unsignedPlayerLogic = (franchise: FranchiseTypeModelType) => {
+    if (franchise.unsignedPlayers.length > 0)
+        return (
+            <UnsignedPlayerIcon/>
+        )
+    else {
+        return <SignedPlayerIcon/>
     }
 };
 
@@ -34,11 +65,21 @@ export const unsetPlayers = (franchise: FranchiseTypeModelType) => {
 
 export const unsetPlayerColor = (franchise: FranchiseTypeModelType) => {
     if (franchise.unsetPlayers.length > 0)
-        return "red"
+        return "#EB5E55"
     else if (franchise.starters.length !== 5) {
-        return "red"
+        return "#EB5E55"
     } else {
-        return "green"
+        return "#71C544"
+    }
+};
+
+export const unsetPlayerLogic = (franchise: FranchiseTypeModelType) => {
+    if (franchise.unsetPlayers.length > 0)
+        return <UnsetPlayerIcon/>
+    else if (franchise.starters.length !== 5) {
+        return <MissingStartersIcon/>
+    } else {
+        return <StartersIcon/>
     }
 };
 
@@ -46,7 +87,7 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-         useEffect(() => {
+        useEffect(() => {
             // used for animation of draft order
             const timer = setTimeout(() => {
                 toggle(true)
@@ -64,62 +105,65 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
         return (
             <Col span={24}>
                 {springs.map((animation, index) => (
-                        <animated.div style={{
-                            ...animation
-                        }}
-                                      key={index}>
-                            <Divider/>
-                                <Row>
-                                    <Col span={7} offset={0}>
-                                        <Card bordered={false}
-                                              key={store.User.league.franchiseSet[index].id}
-                                              style={{
-                                                  borderRadius: "8px",
-                                                  width: "100%",
-                                                  marginBottom: "10px",
-                                                  boxShadow: "0px 0px 4px 0px #D0D8F3",
-                                              }}
-                                        >
-                                            <Statistic title="Franchise"
-                                                       value={store.User.league.franchiseSet[index] ? store.User.league.franchiseSet[index].franchise : "None"}/>
-                                        </Card>
-                                    </Col>
-                                    <Col span={7} offset={1}>
-                                        <Badge.Ribbon color={unsignedPlayerColor(store.User.league.franchiseSet[index])} text={unsignedPlayer(store.User.league.franchiseSet[index])}>
-                                            <Card bordered={false}
-                                                  key={store.User.league.franchiseSet[index].id}
-                                                  style={{
-                                                      borderRadius: "8px",
-                                                      width: "100%",
-                                                      marginBottom: "10px",
-                                                      boxShadow: "0px 0px 4px 0px #D0D8F3",
-                                                  }}
-                                            >
+                    <animated.div style={{
+                        ...animation
+                    }}
+                                  key={index}>
+                        <Divider/>
+                        <Row>
+                            <Col span={7} offset={0}>
+                                 <Badge.Ribbon color={missingStaffColor(store.User.league.franchiseSet[index])}
+                                              text={missingStaff(store.User.league.franchiseSet[index])}>
+                                <Card bordered={false}
+                                      key={store.User.league.franchiseSet[index].id}
+                                      style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}}
+                                >
+                                    <Statistic title="Franchise"
+                                               value={store.User.league.franchiseSet[index] ? store.User.league.franchiseSet[index].franchise : "None"}/>
+                                </Card>
+                                 </Badge.Ribbon>
+                            </Col>
+                            <Col span={7} offset={1}>
+                                <Badge.Ribbon color={unsignedPlayerColor(store.User.league.franchiseSet[index])}
+                                              text={unsignedPlayer(store.User.league.franchiseSet[index])}>
+                                    <Card bordered={false}
+                                          key={store.User.league.franchiseSet[index].id}
+                                          style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}}
+                                    >
+                                        <Row>
+                                            <Col span={12}>
                                                 <Statistic title="General Manager"
                                                            value={store.User.league.franchiseSet[index].gm ? store.User.league.franchiseSet[index]?.gm?.trait?.toLowerCase() : "None"}/>
-                                            </Card>
-                                        </Badge.Ribbon>
-                                    </Col>
-                                    <Col span={7} offset={1}>
-                                        <Badge.Ribbon color={unsetPlayerColor(store.User.league.franchiseSet[index])} text={unsetPlayers(store.User.league.franchiseSet[index])}>
-                                            <Card bordered={false}
-                                                  key={store.User.league.franchiseSet[index].id}
-                                                  style={{
-                                                      borderRadius: "8px",
-                                                      width: "100%",
-                                                      marginBottom: "10px",
-                                                      boxShadow: "0px 0px 4px 0px #D0D8F3",
-                                                  }}
-                                            >
+                                            </Col>
+                                            <Col span={12}>
+                                                {unsignedPlayerLogic(store.User.league.franchiseSet[index])}
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Badge.Ribbon>
+                            </Col>
+                            <Col span={7} offset={1}>
+                                <Badge.Ribbon color={unsetPlayerColor(store.User.league.franchiseSet[index])}
+                                              text={unsetPlayers(store.User.league.franchiseSet[index])}>
+                                    <Card bordered={false}
+                                          key={store.User.league.franchiseSet[index].id}
+                                          style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}}>
+                                        <Row>
+                                            <Col span={12}>
                                                 <Statistic title="Coach"
                                                            value={store.User.league.franchiseSet[index].coach ? store.User.league.franchiseSet[index].coach?.name?.toLowerCase() : "None"}/>
-                                            </Card>
-                                        </Badge.Ribbon>
-                                    </Col>
-                                </Row>
-                        </animated.div>
-                    ))}
-                    )
+                                            </Col>
+                                            <Col span={12}>
+                                                {unsetPlayerLogic(store.User.league.franchiseSet[index])}
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                </Badge.Ribbon>
+                            </Col>
+                        </Row>
+                    </animated.div>
+                ))}
+                )
             </Col>
         )
     }

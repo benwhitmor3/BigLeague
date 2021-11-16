@@ -6,7 +6,8 @@ import {observer} from "mobx-react";
 import {colour, suit_icon, insertArray, _to_fixed} from '../Utils/TableFunctions'
 import {IObservableArray, observable, toJS} from 'mobx';
 import SigningModal from "../Molecules/SigningModal";
-import FreeAgencyButton from "../Molecules/FreeAgentButton";
+import FreeAgencyButton from "../Molecules/SimulationButtons/FreeAgentButton";
+import {tableStyles} from "./Tables/TableStyles";
 
 export const FreeAgentTable: React.FunctionComponent = observer(() => {
 
@@ -165,10 +166,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                     dataSource={toJS(freeAgentClass)}
                     pagination={false}
                     bordered
-                    style={{
-                        marginTop: '10px',
-                        boxShadow: "0px 0px 2px 0px #D0D8F3",
-                    }}
+                    style={tableStyles}
                 />
                 </div>
             );

@@ -2,9 +2,9 @@ import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
 import {StoreContext} from "../models";
 import {observer} from "mobx-react";
-import SeasonSimButton from "./Molecules/SeasonSimButton";
+import SimSeasonButton from "./Molecules/SimulationButtons/SimSeasonButton";
 import SeasonTable from "./Organisms/SeasonTable";
-import Loading from "./Molecules/Loading";
+import SmallLoading from "./Atoms/SmallLoading";
 
 
 export const Season: React.FunctionComponent = observer(() => {
@@ -12,11 +12,11 @@ export const Season: React.FunctionComponent = observer(() => {
         const store = useContext(StoreContext)
 
         if (store.User?.franchise == null)
-            return <Loading/>
+            return <SmallLoading animation="ld ld-bounce"/>
         else
             return (
             <div>
-                <SeasonSimButton/>
+                <SimSeasonButton/>
                 <SeasonTable/>
             </div>
         );

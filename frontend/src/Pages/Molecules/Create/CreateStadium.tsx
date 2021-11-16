@@ -89,10 +89,10 @@ export const CreateStadium: React.FunctionComponent = observer(() => {
         {
             return (
                 <form style={formStyles} onSubmit={onSubmit}>
-                    <Card style={cardStyles} title="Create Stadium">
+                    <Card style={{...{marginBottom: '20px'}, ...{cardStyles}}} title="Create Stadium">
                         <Space direction="vertical">
                             <label style={labelStyles}>Stadium Name:</label>
-                            <input name="stadiumName" style={formStyles} ref={register({
+                            <input name="stadiumName" style={inputStyles} ref={register({
                                 required: {
                                     value: true,
                                     message: "Stadium name is a required field",
@@ -121,7 +121,7 @@ export const CreateStadium: React.FunctionComponent = observer(() => {
                             {errors.seats && <Alert message={errors.seats.message} type="error" closable/>}
 
                             <label style={labelStyles}>Boxes:</label>
-                            <input name="boxes" type="number" style={formStyles} onChange={event => {
+                            <input name="boxes" type="number" style={inputStyles} onChange={event => {
                                 setBoxes(event.target.valueAsNumber)
                             }} ref={register({
                                 required: {

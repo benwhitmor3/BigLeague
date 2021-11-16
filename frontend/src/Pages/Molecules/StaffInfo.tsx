@@ -1,13 +1,15 @@
 import React from 'react';
 import {observer} from 'mobx-react'
-import {Typography, Divider} from 'antd';
+import {Typography, Divider, Card} from 'antd';
+import {cardStyles} from "./Create/CreateStyles";
 
 const {Title, Paragraph, Text} = Typography;
 
-export const GmCoachInfo: React.FunctionComponent = observer(() => {
+export const StaffInfo: React.FunctionComponent = observer(() => {
 
     return (
         <div>
+            <Card style={{...{boxShadow: 'rgba(0, 0, 0, 0.2) 0px 1px 1px'}, ...{cardStyles}}}>
             <Typography>
                 <Title level={2}>GMs</Title>
                 <Paragraph>
@@ -75,8 +77,9 @@ export const GmCoachInfo: React.FunctionComponent = observer(() => {
                 </ul>
                 <Divider/>
             </Typography>
+            </Card>
         </div>
     );
 })
 
-export default GmCoachInfo;
+export default StaffInfo;

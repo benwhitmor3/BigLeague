@@ -3,7 +3,7 @@ import {observer} from "mobx-react";
 import {StoreContext} from "../models";
 import StadiumCard from "./Organisms/StadiumCard";
 import CreateStadium from "./Molecules/Create/CreateStadium";
-import TicketInput from "./Molecules/TicketInput";
+import TicketTable from "./Organisms/Tables/TicketTable";
 
 export const Stadium: React.FunctionComponent = observer(() => {
 
@@ -14,7 +14,7 @@ export const Stadium: React.FunctionComponent = observer(() => {
             return (
                 <div>
                 <StadiumCard/>
-                <TicketInput/>
+                <TicketTable franchise={store.User.franchise}/>
                 </div>
             )
         else

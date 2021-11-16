@@ -1,14 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Alert, Modal} from 'antd';
+import {Modal, Space, Button} from 'antd';
 import {observer} from "mobx-react";
-import {FranchiseTypeModelType, StoreContext} from "../../models";
-import {userQuery} from "../Utils/queries";
-import {simSeasonChecker} from "./SeasonSimChecker";
-import axios from "axios";
-import {Select} from "../Atoms/Select";
+import {StoreContext} from "../../../models";
 import {useForm} from "react-hook-form";
-import CSS from "csstype";
+import {buttonStyles, formStyles, inputStyles, labelStyles} from "../Create/CreateStyles";
 
 interface IVisible {
     editStadiumVisible: boolean;
@@ -167,90 +163,73 @@ export const EditStadiumModal: React.FunctionComponent<IVisible> = observer(({ed
             setEditStadiumVisible(false);
         });
 
-        const labelStyles: CSS.Properties = {
-            marginRight: '5px',
-            marginLeft: '5px',
-        };
-
-        const formStyles: CSS.Properties = {
-            backgroundColor: '#d4380d',
-            border: '0px',
-            display: 'inline',
-            borderRadius: '4px',
-            padding: '0.5rem',
-            fontSize: '14px',
-            color: '#fff2e8',
-        };
-
-        const buttonStyles: CSS.Properties = {
-            backgroundColor: '#ad2102',
-            margin: '5px',
-            border: '0px',
-            display: 'inline',
-            borderRadius: '12px',
-            fontSize: '12px',
-            color: '#fff2e8',
-            padding: '8px',
-        };
-
         return (
             <div>
                 <Modal
-                    title="Edit Stadium"
                     centered
+                    closable={false}
                     visible={editStadiumVisible}
-                    onOk={() =>
-                        onSubmit()
-                    }
-                    onCancel={() => setEditStadiumVisible(false)}
+                    // onOk={() =>
+                    //     onSubmit()
+                    // }
+                    // onCancel={() => setEditStadiumVisible(false)}
+                    footer={[
+                        <Button style={buttonStyles} onClick={() => setEditStadiumVisible(false)}>
+                            Cancel
+                        </Button>,
+                        <Button style={buttonStyles} onClick={() => onSubmit()}>
+                            Confirm
+                        </Button>,
+                    ]}
                     width={'600px'}
                 >
-                    <form onSubmit={onSubmit}>
+                    <form style={formStyles} onSubmit={onSubmit}>
+                        <Space direction="vertical">
 
-                        <label style={labelStyles}>Seats:</label>
-                        <input name="seats" type="number" style={formStyles}
-                               defaultValue={store.User.franchise.stadium.seats}
-                               onChange={event => {
-                                   setSeats(event.target.valueAsNumber)
-                               }}
-                               ref={register({
-                                   required: {
-                                       value: true,
-                                       message: "Seats is a required field",
-                                   },
-                                   min: {
-                                       value: 1,
-                                       message: 'At least 1 seat is required',
-                                   },
-                               })}/>
+                            <label style={labelStyles}>Seats</label>
+                            <input name="seats" type="number" style={inputStyles}
+                                   defaultValue={store.User.franchise.stadium.seats}
+                                   onChange={event => {
+                                       setSeats(event.target.valueAsNumber)
+                                   }}
+                                   ref={register({
+                                       required: {
+                                           value: true,
+                                           message: "Seats is a required field",
+                                       },
+                                       min: {
+                                           value: 1,
+                                           message: 'At least 1 seat is required',
+                                       },
+                                   })}/>
 
-                        <label style={labelStyles}>Boxes:</label>
-                        <input name="boxes" type="number" style={formStyles}
-                               defaultValue={store.User.franchise.stadium.boxes}
-                               onChange={event => {
-                                   setBoxes(event.target.valueAsNumber)
-                               }}
-                               ref={register({
-                                   required: {
-                                       value: true,
-                                       message: "Boxes is a required field",
-                                   },
-                                   min: {
-                                       value: 1,
-                                       message: 'At least 1 box is required',
-                                   },
-                               })}/>
+                            <label style={labelStyles}>Boxes</label>
+                            <input name="boxes" type="number" style={inputStyles}
+                                   defaultValue={store.User.franchise.stadium.boxes}
+                                   onChange={event => {
+                                       setBoxes(event.target.valueAsNumber)
+                                   }}
+                                   ref={register({
+                                       required: {
+                                           value: true,
+                                           message: "Boxes is a required field",
+                                       },
+                                       min: {
+                                           value: 1,
+                                           message: 'At least 1 box is required',
+                                       },
+                                   })}/>
 
-                        <div style={{marginTop: '20px', marginBottom: '10px'}}>
-                            <label style={labelStyles}>Current Grade:</label><span
-                            style={{marginRight: '20px'}}>{store.User.franchise.stadium.grade}</span>
-                            <label style={labelStyles}>Renovated
-                                Grade:</label><span>{store.User.franchise.stadium.maxGrade}</span>
-                        </div>
-
-
-                        <h1 style={{marginTop: '10px'}}>{total ? 'Renovation Cost: $' + (total / 1000000).toFixed(3) + ' million' : ''}</h1>
-
+                            <label style={labelStyles}>Current Grade</label>
+                            <span>{store.User.franchise.stadium.grade}</span>
+                            <label style={labelStyles}>Renovated Grade</label>
+                            <span>{store.User.franchise.stadium.maxGrade}</span>
+                            <h3>{total
+                                ?
+                                'Renovation Cost: $' + (total / 1000000).toFixed(3) + ' million'
+                                :
+                                'Renovation Cost: $0'}</h3>
+                        </Space>
                     </form>
                 </Modal>
 

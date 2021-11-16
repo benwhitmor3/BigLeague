@@ -11,7 +11,7 @@ export const StadiumIcon: React.FunctionComponent = observer(() => {
              }}
              viewBox="0 0 100 100"
              xmlns="http://www.w3.org/2000/svg"
-             width="60px" height="60px">
+             width="50px" height="50px">
             <g fill="#61DAFB"
             >
                 <path fill="#0a4308"

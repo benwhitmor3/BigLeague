@@ -12,12 +12,7 @@ export const LineupStatsCard: React.FunctionComponent<IFranchise> = observer(({f
         <div>
         <Card bordered={false}
               key={franchise.id}
-              style={{
-                  borderRadius: "8px",
-                  width: "100%",
-                  marginBottom: "20px",
-                  boxShadow: "0px 0px 4px 0px #D0D8F3",
-              }}>
+              style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px', marginBottom: '20px'}}>
             <Row gutter={[0, 0]}>
                 <Col span={4} offset={0}>
                     {(franchise.gm?.trait === 'SUITOR')

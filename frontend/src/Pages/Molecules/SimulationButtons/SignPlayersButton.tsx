@@ -1,38 +1,31 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Button, Progress} from 'antd';
+import {Button} from 'antd';
 import {observer} from "mobx-react";
 import axios from "axios";
-import {StoreContext} from "../../models";
-import CSS from "csstype";
+import {StoreContext} from "../../../models";
+import {simButtonStyles} from "./SimButtonStyles";
+import SmallLoading from "../../Atoms/SmallLoading";
+import BigLoading from "../../Atoms/BigLoading";
 
 
-const buttonStyles: CSS.Properties = {
-    backgroundColor: '#ad2102',
-    border: '0px',
-    borderRadius: '12px',
-    marginBottom: '8px',
-    fontSize: '14px',
-    color: '#fff2e8',
-};
 
-export const SetStaffButton: React.FunctionComponent = observer(() => {
+export const SignPlayersButton: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
         const [loading, setLoading] = useState<boolean>(false)
-        const [percent, setPercent] = useState<number>(0)
+        const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
 
-        const setLineups = () => {
+        const signPlayers = () => {
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
             setLoading(true)
-            setPercent(50)
-            axios.post('http://127.0.0.1:8000/set_tickets', data)
+            axios.post('http://127.0.0.1:8000/sign_players', data)
                 .then(res => {
                     console.log(res.data)
                     store.queryUser(
-                    {email: "email@email.com"},
+                    {email: email},
                         `__typename
                                       id
                                       franchise{
@@ -59,50 +52,32 @@ export const SetStaffButton: React.FunctionComponent = observer(() => {
                                               renew
                                               salary
                                               grade
-                                              year
                                               trainer
                                               lineup
-                                            }
-                                            gm{
-                                                __typename
-                                                id
-                                                trait
-                                            }
-                                            coach{
-                                                __typename
-                                                id
-                                                name
-                                                attributeOne
-                                                attributeTwo
-                                                franchise{
-                                                    __typename
-                                                    id
-                                                }
                                             }
                                           }
                                         }
                                       }`
                     )
-                    setLoading(false)
+                    setTimeout(() => {setLoading(false)}, 1500);
                 })
                 .catch(err => {
                     console.log(err)
-                    setLoading(false)
+                    setTimeout(() => {setLoading(false)}, 1500);
                 })
         };
 
 
         if (loading) return (
             <div>
-                <h3>Setting Tickets</h3>
-                <Progress strokeColor={{'0%': '#108ee9', '100%': '#87d068',}} percent={percent}/>
+                <SmallLoading animation="ld ld-bounce"/>
             </div>
         )
         else {
             return (
                 <div>
-                    <Button type="primary" style={buttonStyles} onClick={() => setLineups()} block>
-                        Set Tickets
+                    <Button style={simButtonStyles} onClick={() => signPlayers()} block>
+                        Sign Bots Players
                     </Button>
                 </div>
             );
@@ -110,4 +85,4 @@ export const SetStaffButton: React.FunctionComponent = observer(() => {
     }
 )
 
-export default SetStaffButton;
+export default SignPlayersButton;

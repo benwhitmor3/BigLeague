@@ -1,6 +1,6 @@
 .ant-menu-item{
-  color: #fff2e8;
-  background-color: #d4380d;
+  color: #ffffff;
+  background-color: #12263A;
   height: 63px;
   font-size: 16px;
   font-weight: bold;
@@ -14,7 +14,7 @@
 .ant-menu-horizontal.ant-menu-dark > .ant-menu-submenu-open,
 .ant-menu-horizontal.ant-menu-dark > .ant-menu-item-selected,
 .ant-menu-horizontal.ant-menu-dark > .ant-menu-submenu-selected {
-  background-color: #d4380d;
+  background-color: #12263A;
   color: #ffffff;
   border-bottom: 0px solid #ffffff;
 }

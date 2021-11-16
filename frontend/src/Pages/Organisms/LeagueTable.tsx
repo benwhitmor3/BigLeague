@@ -5,6 +5,7 @@ import {Table, Tag, Spin} from 'antd';
 import {observer} from "mobx-react";
 import {toJS} from 'mobx';
 import {colour, insertArray, suit_icon} from "../Utils/TableFunctions";
+import {tableStyles} from "./Tables/TableStyles";
 
 
 export const LeagueTable: React.FunctionComponent = observer(() => {
@@ -109,9 +110,7 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
                     dataSource={toJS(store.User.league.playerhistorySet)}
                     pagination={false}
                     bordered
-                    style={{
-                        boxShadow: "0px 0px 2px 0px #D0D8F3",
-                    }}
+                    style={tableStyles}
                 />
             );
         }

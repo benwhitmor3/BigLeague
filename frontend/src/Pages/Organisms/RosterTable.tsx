@@ -9,6 +9,7 @@ import SigningModal from "../Molecules/SigningModal";
 import TrainerModal from "../Molecules/TrainerModal";
 import LineupSelect from "../Molecules/LineupSelect";
 import {mutateCreatePlayerQuery} from "../Utils/queries";
+import {tableStyles} from "./Tables/TableStyles";
 
 
 interface IFranchise {
@@ -42,7 +43,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: 'epv',
                 key: 'epv',
                 sorter: (a: any, b: any) => a.epv - b.epv,
-                render: (epv: number) => <text>{epv.toFixed(1)}</text>,
+                render: (epv: number) => <span>{epv.toFixed(1)}</span>,
             },
             {
                 title: 'Suit',
@@ -86,7 +87,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 render: (tOption: number, record: any) => (
                     (record.tOption == 0) ? (
                         <Space size="middle">
-                            <Tag color={"#ff7064"} style={{color: "#ffffff", border: "2px solid #ff7064"}}
+                            <Tag color={"#FFB4AD"} style={{color: "#000000", border: "2px solid #FFB4AD"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -117,7 +118,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                             </Tag>
                         </Space>
                     ) : (
-                        <text>{tOption}</text>
+                        <span>{tOption}</span>
                     )
 
                 ),
@@ -129,12 +130,12 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 render: (pOption: number, record: any) => (
                     (record.pOption == 0) ? (
                         <Space size="middle">
-                            <Tag color={"#ff7064"} style={{color: "#ffffff", border: "2px solid #ff7064"}}>
+                            <Tag color={"#E97280"} style={{color: "#ffffff", border: "2px solid #E97280"}}>
                                 Active
                             </Tag>
                         </Space>
                     ) : (
-                        <text>{pOption}</text>
+                        <span>{pOption}</span>
                     )
 
                 ),
@@ -146,7 +147,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 render: (renew: string, record: any) => (
                     (record.renew == "repeat" && record.contract == 1) ? (
                         <Space size="middle">
-                            <Tag color={"#ff7064"} style={{color: "#ffffff", border: "2px solid #ff7064"}}
+                            <Tag color={"#FFB4AD"} style={{color: "#000000", border: "2px solid #FFB4AD"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -179,7 +180,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                     ) : (
                     (record.renew == "non-repeat" && record.contract == 1) ? (
                         <Space size="middle">
-                            <Tag color={"#ff7064"} style={{color: "#ffffff", border: "2px solid #ff7064"}}
+                            <Tag color={"#FFB4AD"} style={{color: "#ffffff", border: "2px solid #FFB4AD"}}
                                  onClick={() => {
                                      store.mutateCreatePlayer({
                                              "playerInput": {
@@ -210,9 +211,9 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                             </Tag>
                         </Space>
                     ) : (
-                        <text>
+                        <span>
                             {renew}
-                        </text>
+                        </span>
                     )
                     )
                 ),
@@ -222,14 +223,14 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: 'salary',
                 key: 'salary',
                 sorter: (a: any, b: any) => a.salary - b.salary,
-                render: (salary: number) => <text>{_to_fixed(salary)}</text>,
+                render: (salary: number) => <span>{_to_fixed(salary)}</span>,
             },
             {
                 title: 'Grade',
                 dataIndex: 'grade',
                 key: 'grade',
                 sorter: (a: any, b: any) => a.grade - b.grade,
-                render: (grade: number) => <text>{_to_fixed(grade)}</text>,
+                render: (grade: number) => <span>{_to_fixed(grade)}</span>,
             },
             {
                 title: 'Lineup',
@@ -247,14 +248,14 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
 
                     (record.contract) ? (
                         <Space size="middle">
-                            <Tag color={"#89dc0d"} style={{ color: "#000000", border: "3px solid #89dc0d"}}>
+                            <Tag color={"#57B43A"} style={{ color: "#ffffff", border: "3px solid #57B43A"}}>
                             Signed
                             </Tag>
                         </Space>
                     ) : (
                         <Space size="middle">
                             <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝 </span>}
-                                 color={"#ffe479"} style={{ color: "#000000", border: "3px solid #ffe479"}}
+                                 color={"#FFDE70"} style={{ color: "#000000", border: "3px solid #FFDE70"}}
                                  onClick={() => {setSelectedPlayer(record); setVisible(true)}}>
                             Offer Contract
                             </Tag>
@@ -271,7 +272,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: 'sEpv',
                 key: 'sEpv',
                 sorter: (a: any, b: any) => a.sEpv - b.sEpv,
-                render: (sEpv: number) => <text>{sEpv.toFixed(1)}</text>,
+                render: (sEpv: number) => <span>{sEpv.toFixed(1)}</span>,
             }
 
         let trainer_column =
@@ -281,15 +282,16 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 render: (record: PlayerTypeModelType) => (
                     (record.trainer) ? (
                         <Space size="middle">
-                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 🏋️‍♂️ </span>}
-                                color={"#a4c34f"} style={{ color: "#000000", border: "3px solid #A4C34F"}}>
+                            <Tag
+                                // icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 🏋️‍♂️ </span>}
+                                color={"#620E81"} style={{ color: "#ffffff", border: "3px solid #620E81"}}>
                             Training
                             </Tag>
                         </Space>
                     ) : (
                         <Space size="middle">
                             <Tag
-                                 color={"#ebd2d1"} style={{ color: "#000000", border: "3px solid #EBD2D1"}}
+                                 color={"#E4B6F7"} style={{ color: "#000000", border: "3px solid #E4B6F7"}}
                                  onClick={() => {setSelectedPlayer(record); setTrainerVisible(true)}}>
                             Train
                             </Tag>
@@ -336,9 +338,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                     <Table columns={columns()} dataSource={toJS(franchise.playerSet)} pagination={false}
                            rowKey="id"
                            bordered
-                           style={{
-                               boxShadow: "0px 0px 2px 0px #D0D8F3",
-                           }}
+                           style={tableStyles}
                     />
                 </div>
             );

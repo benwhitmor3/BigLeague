@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
-import {Modal, notification} from 'antd';
+import {Button, Modal, notification} from 'antd';
 import {observer} from "mobx-react";
 import {StoreContext} from "../../models";
 import {mutateCreatePlayerQuery} from "../Utils/queries";
+import {buttonStyles} from "./Create/CreateStyles";
 
 interface IVisible {
     trainerVisible: boolean;
@@ -180,10 +181,19 @@ export const TrainerModal: React.FunctionComponent<IVisible> = observer(({ train
                     title="Trainer"
                     centered
                     visible={trainerVisible}
-                    onOk={() =>
-                        train_player()
-                    }
-                    onCancel={() => setTrainerVisible(false)}
+                    // onOk={() =>
+                    //     train_player()
+                    // }
+                    // onCancel={() => setTrainerVisible(false)}
+                    closable={false}
+                    footer={[
+                        <Button style={buttonStyles} onClick={() => setTrainerVisible(false)}>
+                            Cancel
+                        </Button>,
+                        <Button style={buttonStyles} onClick={() => train_player()}>
+                            Confirm
+                        </Button>,
+                    ]}
                     width={'600px'}
                 >
                     <p>Are you sure you want to train {selectedplayer.name}?</p>

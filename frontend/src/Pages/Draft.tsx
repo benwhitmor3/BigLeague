@@ -3,7 +3,9 @@ import {observer} from 'mobx-react'
 import {FranchiseTypeModelType, StoreContext} from "../models";
 import DraftTable from "./Organisms/DraftTable";
 import DraftOrder from "./Organisms/DraftOrder";
-import Loading from "./Molecules/Loading";
+import SmallLoading from "./Atoms/SmallLoading";
+import DraftButton from "./Molecules/SimulationButtons/DraftButton";
+import BestDraftPlayer from "./Molecules/BestDraftPlayer";
 
 
 export const Draft: React.FunctionComponent = observer(() => {
@@ -15,7 +17,7 @@ export const Draft: React.FunctionComponent = observer(() => {
     let unsignedCoaches = store.User?.league?.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.coach?.attributeOne).filter((attributeOne: any) => attributeOne===undefined).length
 
     if (store.User?.league == null)
-        return <Loading/>
+        return <SmallLoading animation="ld ld-bounce"/>
     else if (unsignedGms > 0 || unsignedCoaches > 0)
         return (
         <div>
@@ -25,6 +27,8 @@ export const Draft: React.FunctionComponent = observer(() => {
     else {
         return (
             <div>
+                <DraftButton/>
+                <BestDraftPlayer/>
                 <DraftOrder/>
                 <DraftTable/>
             </div>

@@ -4,6 +4,7 @@ import {Table, Select} from 'antd';
 import {observer} from "mobx-react";
 import {toJS} from 'mobx';
 import {StoreContext} from "../../models";
+import {tableStyles} from "./Tables/TableStyles";
 
 const {Option} = Select;
 
@@ -131,10 +132,12 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                     bordered={false}
                     style={{
                         width: "100%",
-                        borderRadius: "8px",
+                        borderRadius: "2px",
                         fontSize: '24px',
                         padding: '0.5rem',
+                        marginBottom: '4px',
                         textAlignLast: 'center',
+                        boxShadow: 'rgba(9, 30, 66, 0.1) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'
                     }}
                     onChange={(season: string) => setSeason(store.User.franchise.league.franchiseSet.map((franchise: any) => franchise.seasonSet[parseInt(season) - 1]))}>
                     {store.User.franchise.seasonSet.map((season: any) =>
@@ -152,9 +155,7 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                     dataSource={toJS(season)}
                     pagination={false}
                     bordered
-                    style={{
-                        boxShadow: "0px 0px 2px 0px #D0D8F3",
-                    }}
+                    style={tableStyles}
                 />
             </div>
         );

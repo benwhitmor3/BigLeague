@@ -208,7 +208,7 @@ def simulate_season(league, season):
 
     '''Apply simulation results to season'''
     for franchise in Franchise.objects.filter(league=league):
-        s = Season.objects.get(franchise__franchise=franchise, season=season)
+        s = Season.objects.get(franchise__franchise=franchise, franchise__league=league, season=season)
         # get wins
         s.wins = winner.count(franchise.franchise)
         # get losses
@@ -225,15 +225,15 @@ def simulate_season(league, season):
     '''Calculate Fan Functions, Champion, and Financial Based on Season Sim'''
     # this loop needs to be after so that all the teams have season stats set
     for franchise in Franchise.objects.filter(league=league):
-        current_season = Season.objects.get(franchise__franchise=franchise, season=season)
+        current_season = Season.objects.get(franchise__franchise=franchise, franchise__league=league, season=season)
         if season == 1:
             prev_season = current_season
         else:
-            prev_season = Season.objects.get(franchise__franchise=franchise, season=(season - 1))
+            prev_season = Season.objects.get(franchise__franchise=franchise, franchise__league=league, season=(season - 1))
 
         current_season.championships = prev_season.championships
         # get champion
-        if franchise == Season.objects.filter(season=season).order_by('-wins', '-ppg')[0].franchise:
+        if franchise == Season.objects.filter(franchise__league=league, season=season).order_by('-wins', '-ppg')[0].franchise:
             current_season.championships = prev_season.championships + 1
         # calculate fan base
         current_season.fan_base = fan_base(franchise.stadium.city.city_value, current_season.ppg, current_season.wins,
@@ -414,7 +414,7 @@ def franchise_progression(league):
 def apply_actions(league, season_num):
     """After actions have been selected. Applies factors, expenses, and revenues"""
     for franchise in Franchise.objects.filter(league=league):
-        season = Season.objects.get(franchise__franchise=franchise, season=season_num)
+        season = Season.objects.get(franchise__franchise=franchise, franchise__league=league, season=season_num)
         stadium = Stadium.objects.get(franchise=franchise)
         # stadium improvement actions (permanent)
         if franchise.action.improved_bathrooms and franchise.action.improved_bathrooms_complete is False:

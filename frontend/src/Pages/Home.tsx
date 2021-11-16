@@ -6,7 +6,7 @@ import {Spin} from 'antd';
 import CreateLeague from "./Molecules/Create/CreateLeague";
 import '../loading.css';
 import '../transition.min.css';
-import Loading from "./Molecules/Loading";
+import BigLoading from "./Atoms/BigLoading";
 
 export const Home: React.FunctionComponent = observer(() => {
 
@@ -26,7 +26,7 @@ export const Home: React.FunctionComponent = observer(() => {
                 <h1>Welcome to, {store.User.league?.leagueName}!</h1>
                 <h1>Good luck this season, {store.User.franchise?.franchise}!</h1>
                 <p>Please read the instructions to guide you on your way to victory</p>
-                <Loading/>
+                <BigLoading animation="ld ld-bounce"/>
             </div>
         )
         else {
