@@ -9,7 +9,7 @@ export const StaffInfo: React.FunctionComponent = observer(() => {
 
     return (
         <div>
-            <Card style={{...{boxShadow: 'rgba(0, 0, 0, 0.2) 0px 1px 1px'}, ...{cardStyles}}}>
+            <Card style={{...{cardStyles}, ...{width: '100%'}}}>
             <Typography>
                 <Title level={2}>GMs</Title>
                 <Paragraph>

@@ -1,13 +1,13 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space} from 'antd';
-import {PlayerTypeModelType, StoreContext} from "../../models";
+import {PlayerTypeModelType, StoreContext} from "../../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon, insertArray, _to_fixed} from '../Utils/TableFunctions'
+import {colour, suit_icon, insertArray, _to_fixed} from '../../Utils/tablefunctions'
 import {IObservableArray, observable, toJS} from 'mobx';
-import SigningModal from "../Molecules/SigningModal";
-import FreeAgencyButton from "../Molecules/SimulationButtons/FreeAgentButton";
-import {tableStyles} from "./Tables/TableStyles";
+import SigningModal from "../../Molecules/Modals/SigningModal";
+import FreeAgencyButton from "../../Molecules/SimulationButtons/FreeAgentButton";
+import {tableStyles} from "./TableStyles";
 
 export const FreeAgentTable: React.FunctionComponent = observer(() => {
 

@@ -6,7 +6,7 @@ import {Spin} from 'antd';
 import CreateLeague from "./Molecules/Create/CreateLeague";
 import '../loading.css';
 import '../transition.min.css';
-import BigLoading from "./Atoms/BigLoading";
+import BigLoading from "./Atoms/Loading/BigLoading";
 
 export const Home: React.FunctionComponent = observer(() => {
 

@@ -3,8 +3,8 @@ import 'antd/dist/antd.css';
 import {StoreContext} from "../models";
 import {observer} from "mobx-react";
 import SimSeasonButton from "./Molecules/SimulationButtons/SimSeasonButton";
-import SeasonTable from "./Organisms/SeasonTable";
-import SmallLoading from "./Atoms/SmallLoading";
+import SeasonTable from "./Organisms/Tables/SeasonTable";
+import SmallLoading from "./Atoms/Loading/SmallLoading";
 
 
 export const Season: React.FunctionComponent = observer(() => {

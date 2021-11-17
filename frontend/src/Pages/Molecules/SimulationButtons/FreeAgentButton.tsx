@@ -4,7 +4,7 @@ import {Button} from 'antd';
 import {observer} from "mobx-react";
 import axios from "axios";
 import {StoreContext} from "../../../models";
-import SmallLoading from "../../Atoms/SmallLoading";
+import SmallLoading from "../../Atoms/Loading/SmallLoading";
 import {simButtonStyles} from "./SimButtonStyles";
 
 export const FreeAgencyButton: React.FunctionComponent = observer(() => {

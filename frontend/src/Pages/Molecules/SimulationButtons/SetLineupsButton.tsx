@@ -5,7 +5,7 @@ import {observer} from "mobx-react";
 import axios from "axios";
 import {StoreContext} from "../../../models";
 import {simButtonStyles} from "./SimButtonStyles";
-import SmallLoading from "../../Atoms/SmallLoading";
+import SmallLoading from "../../Atoms/Loading/SmallLoading";
 
 export const SetLineupsButton: React.FunctionComponent = observer(() => {
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import {observer} from 'mobx-react'
 import {Statistic, Row, Col, Card} from 'antd';
+import {cardStyles} from "./CardStyles";
 
 interface IFranchise {
     franchise: any;
@@ -12,7 +13,7 @@ export const LineupStatsCard: React.FunctionComponent<IFranchise> = observer(({f
         <div>
         <Card bordered={false}
               key={franchise.id}
-              style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px', marginBottom: '20px'}}>
+              style={cardStyles}>
             <Row gutter={[0, 0]}>
                 <Col span={4} offset={0}>
                     {(franchise.gm?.trait === 'SUITOR')

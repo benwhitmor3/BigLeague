@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='League',
+            name='PlayerHistory',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('league_name', models.CharField(max_length=25)),

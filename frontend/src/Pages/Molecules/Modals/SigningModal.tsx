@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Tag, Input, Modal, Select, Button} from 'antd';
+import {Tag, Input, Modal, Select, Button, Space} from 'antd';
 import {observer} from "mobx-react";
 import CSS from "csstype";
-import {StoreContext} from "../../models";
-import {mutateCreatePlayerQuery} from "../Utils/queries";
-import {buttonStyles} from "./Create/CreateStyles";
+import {StoreContext} from "../../../models";
+import {mutateCreatePlayerQuery} from "../../Utils/queries";
+import {buttonStyles} from "../Create/CreateStyles";
 
 interface IVisible {
     visible: boolean;
@@ -148,10 +148,10 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                     closable={false}
                     visible={visible}
                     footer={[
-                        <Button style={buttonStyles} onClick={() => setVisible(false)}>
+                        <Button style={{...buttonStyles, ...{width: '100px'}}} onClick={() => setVisible(false)}>
                             Cancel
                         </Button>,
-                        <Button style={buttonStyles} onClick={() => sign_player()}>
+                        <Button style={{...buttonStyles, ...{width: '100px'}}} onClick={() => sign_player()}>
                             Confirm
                         </Button>,
                     ]}
@@ -216,7 +216,6 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                     <Tag color={gradecolour} style={{marginTop: '10px', fontSize: '14px'}}>
                         {offergrade.toFixed(2)}
                     </Tag>
-
                 </Modal>
 
             </div>

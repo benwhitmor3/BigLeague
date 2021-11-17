@@ -1,11 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Checkbox, Button, notification, Col} from 'antd';
-import {ActionTypeModelType, FranchiseTypeModelType, StoreContext} from "../../models";
+import {ActionTypeModelType, FranchiseTypeModelType, StoreContext} from "../../../models";
 import {observer} from "mobx-react";
-import {IObservableArray, observable} from "mobx";
-import {buttonStyles, tableStyles} from "./Tables/TableStyles";
-import {userQuery} from "../Utils/queries";
+import {IObservableArray, IObservableObject, observable} from "mobx";
+import {buttonStyles, tableStyles} from "./TableStyles";
+import {userQuery} from "../../Utils/queries";
+import {actionError} from "../../Atoms/notificationerrors";
 
 interface IFranchise {
     franchise: FranchiseTypeModelType;
@@ -67,14 +68,6 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         const [namingRights, setNamingRights] = useState<boolean | undefined>(franchise.action.namingRights)
         const [eventPlanning, setEventPlanning] = useState<boolean | undefined>(franchise.action.eventPlanning)
 
-
-        const actionError = (franchise: string | undefined) => {
-            notification.error({
-                message: 'Action Error',
-                description: franchise + ' does not have enough actions',
-                duration: 10,
-            });
-        };
 
         const actionChecker = (franchise: any) => {
             let oldActions = [franchise.action.improvedBathrooms, franchise.action.improvedConcessions, franchise.action.jumbotron,
@@ -239,17 +232,6 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         }
 
         const columns = [
-            {
-                title: 'Confirm',
-                key: "Confirm",
-                fixed: 'left',
-                render: () => (
-                    <Button style={{...buttonStyles, ...{marginBottom: '12px', marginTop: '10px'}}}
-                            onClick={() => actionChecker(franchise)}>
-                        Confirm
-                    </Button>
-                ),
-            },
             {
                 title: 'Actions',
                 dataIndex: "numberOfActions",
@@ -479,14 +461,6 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                     )
                 ),
             },
-            // {
-            //     title: 'Bribe The Refs',
-            //     dataIndex: "bribeTheRefs",
-            //     key: "bribeTheRefs",
-            //     render: (bribeTheRefs: boolean) => (
-            //         <Checkbox defaultChecked={bribeTheRefs} onChange={(e) => setBribeTheRefs(e.target.checked)}></Checkbox>
-            //     ),
-            // },
             {
                 title: 'Easy Runs',
                 dataIndex: "easyRuns",
@@ -516,16 +490,6 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                     )
                 ),
             },
-            // {
-            //     title: 'Train Player',
-            //     dataIndex: "trainPlayer",
-            //     key: "trainPlayer",
-            // },
-            // {
-            //     title: 'Farm System',
-            //     dataIndex: "farmSystem",
-            //     key: "farmSystem",
-            // },
             {
                 title: 'Fan Favourites',
                 dataIndex: "fanFavourites",
@@ -597,10 +561,22 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                               onChange={(e) => setEventPlanning(e.target.checked)}></Checkbox>
                 ),
             },
+            {
+                title: 'Confirm',
+                key: "Confirm",
+                fixed: 'right',
+                render: () => (
+                    <Button style={{...buttonStyles, ...{marginBottom: '12px', marginTop: '10px'}}}
+                            onClick={() => actionChecker(franchise)}>
+                        Confirm
+                    </Button>
+                ),
+            }
         ];
 
         let actions: IObservableArray<ActionTypeModelType> = observable([franchise.action])
         // hack to re-render number of actions when train player is used
+        console.log(franchise.action.numberOfActions)
 
         if (store.User == undefined || store.User.franchise == undefined || store.User.franchise.action == undefined) return <div>loading</div>;
         else {

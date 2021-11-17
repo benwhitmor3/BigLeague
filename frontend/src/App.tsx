@@ -4,13 +4,12 @@ import './index.css';
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import 'antd/dist/antd.css';
 import {Layout, Menu} from 'antd';
-import './Header.css'
+import './App.css'
 import {useQuery} from "./models";
 import {observer} from "mobx-react";
 import Franchise from "./Pages/Franchise";
-// import Stadium from "./Pages/Stadium";
 import Draft from "./Pages/Draft";
-import League from "./Pages/League";
+import PlayerHistory from "./Pages/PlayerHistory";
 import Season from "./Pages/Season";
 import Home from "./Pages/Home";
 import OffSeason from "./Pages/OffSeason";
@@ -19,7 +18,7 @@ import FreeAgency from "./Pages/FreeAgency";
 import Staff from "./Pages/Staff";
 import LoginForm from "./Pages/LoginForm";
 import SignupForm from "./Pages/SignupForm";
-import SmallLoading from "./Pages/Atoms/SmallLoading";
+import SmallLoading from "./Pages/Atoms/Loading/SmallLoading";
 
 
 const {Header, Content, Footer} = Layout;
@@ -110,14 +109,13 @@ const App: React.FunctionComponent = observer(() => {
                         <Header style={{backgroundColor: '#12263A'}}>
                             <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
                                 <Menu.Item key="1"><Link to="/Home">Home</Link></Menu.Item>
-                                {/*<Menu.Item key="2"><Link to="/Stadium">Stadium</Link></Menu.Item>*/}
                                 <Menu.Item key="3"><Link to="/Franchise">Franchise</Link></Menu.Item>
                                 <Menu.Item key="4"><Link to="/Staff">Staff</Link></Menu.Item>
                                 <Menu.Item key="5"><Link to="/OffSeason">OffSeason</Link></Menu.Item>
                                 <Menu.Item key="6"><Link to="/Draft">Draft</Link></Menu.Item>
                                 <Menu.Item key="7"><Link to="/FreeAgency">Free Agency</Link></Menu.Item>
                                 <Menu.Item key="8"><Link to="/Season">Season</Link></Menu.Item>
-                                <Menu.Item key="9"><Link to="/LeagueSummary">League Summary</Link></Menu.Item>
+                                <Menu.Item key="9"><Link to="/PlayerHistory">Player History</Link></Menu.Item>
                                 <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
                                 {isLoggedIn ? (
                                         <Menu.Item key="11" style={{float: 'right'}} onClick={() => {
@@ -133,12 +131,11 @@ const App: React.FunctionComponent = observer(() => {
                             <div className="site-layout-content">
                                 <Switch>
                                     <Route exact path='/Home' component={Home}/>
-                                    {/*<Route exact path='/Stadium' component={Stadium}/>*/}
-                                    <Route exact path='/Franchise' component={Franchise}/>
+                                    <Route exact path='/Franchise' component={Franchise}/>w
                                     <Route exact path='/Staff' component={Staff}/>
                                     <Route exact path='/Draft' component={Draft}/>
                                     <Route exact path='/FreeAgency' component={FreeAgency}/>
-                                    <Route exact path='/LeagueSummary' component={League}/>
+                                    <Route exact path='/PlayerHistory' component={PlayerHistory}/>
                                     <Route exact path='/Season' component={Season}/>
                                     <Route exact path='/OffSeason' component={OffSeason}/>
                                     <Route exact path='/Login' component={LoginForm}/>

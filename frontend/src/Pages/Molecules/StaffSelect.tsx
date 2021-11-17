@@ -3,6 +3,7 @@ import {observer} from 'mobx-react'
 import {CoachTypeModelType, StoreContext} from "../../models";
 import {Select, Button, Card, Space} from 'antd';
 import {buttonStyles} from "./Create/CreateStyles";
+import {cardStyles} from "../Organisms/Cards/CardStyles";
 
 
 export const StaffSelect: React.FunctionComponent = observer(() => {
@@ -54,7 +55,7 @@ export const StaffSelect: React.FunctionComponent = observer(() => {
 
     return (
         <div>
-            <Card style={{boxShadow: 'rgba(0, 0, 0, 0.2) 0px 1px 1px'}}
+            <Card style={cardStyles}
                   title="Select Staff">
                 <Space direction="vertical">
                     <label>GMs </label>
@@ -68,7 +69,7 @@ export const StaffSelect: React.FunctionComponent = observer(() => {
                     })}
                             value={coachId} onChange={(coach: any) => setCoachId(coach)}/>
                     {store.User.franchise.gm && store.User.franchise.coach ? null :
-                        <Button style={{...{minWidth: '100px'}, ...buttonStyles}}
+                        <Button style={{...buttonStyles, ...{width: '25%'}}}
                                 onClick={() => onSubmit(franchise, gmId, coachId)}>Sign</Button>}
                 </Space>
             </Card>

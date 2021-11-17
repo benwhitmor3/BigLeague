@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
 import {observer} from 'mobx-react'
-import {StoreContext} from "../../models";
+import {StoreContext} from "../../../models";
 import {Statistic, Row, Col, Card, Select} from 'antd';
-import {cardStyles} from "./Create/CreateStyles";
+import {cardStyles} from "./CardStyles";
 
 const {Option} = Select;
 
@@ -19,7 +19,7 @@ export const StaffCard: React.FunctionComponent<IFranchise> = observer(({franchi
         <div>
             <Card bordered={false}
                   key={franchise.id}
-                  style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}}
+                  style={cardStyles}
             >
                 <Row gutter={[0, 24]}>
                     <Col span={12} offset={0}>

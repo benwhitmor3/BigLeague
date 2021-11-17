@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import {Statistic, Tag} from 'antd';
 import {StoreContext} from "../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon} from "../Utils/TableFunctions";
+import {colour, suit_icon} from "../Utils/tablefunctions";
 
 export const BestDraftPlayer: React.FunctionComponent = observer(() => {
 
@@ -17,9 +17,8 @@ export const BestDraftPlayer: React.FunctionComponent = observer(() => {
                         style={{
                             display: "block", marginLeft: 'auto', marginRight: 'auto',
                             padding: '10px',
-                            boxShadow: "0px 0px 4px 0px #D0D8F3",
+                            boxShadow: "rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px",
                             borderRadius: "4px",
-                            marginTop: "15px",
                             textAlign: 'center',
                         }}
                         value={store.User.league.bestDraftPlayer.name}

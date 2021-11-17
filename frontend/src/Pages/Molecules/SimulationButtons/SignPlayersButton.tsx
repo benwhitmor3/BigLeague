@@ -5,8 +5,8 @@ import {observer} from "mobx-react";
 import axios from "axios";
 import {StoreContext} from "../../../models";
 import {simButtonStyles} from "./SimButtonStyles";
-import SmallLoading from "../../Atoms/SmallLoading";
-import BigLoading from "../../Atoms/BigLoading";
+import SmallLoading from "../../Atoms/Loading/SmallLoading";
+import BigLoading from "../../Atoms/Loading/BigLoading";
 
 
 

@@ -1,21 +1,20 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space, Alert, Checkbox, Row, Col} from 'antd';
-import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../../models";
+import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon, _to_fixed, _lineup, insertArray} from '../Utils/TableFunctions'
+import {colour, suit_icon, _to_fixed, _lineup, insertArray} from '../../Utils/tablefunctions'
 import {toJS} from "mobx";
-import SigningModal from "../Molecules/SigningModal";
-import TrainerModal from "../Molecules/TrainerModal";
-import LineupSelect from "../Molecules/LineupSelect";
-import {mutateCreatePlayerQuery} from "../Utils/queries";
-import {tableStyles} from "./Tables/TableStyles";
+import SigningModal from "../../Molecules/Modals/SigningModal";
+import TrainerModal from "../../Molecules/Modals/TrainerModal";
+import LineupSelect from "../../Molecules/LineupSelect";
+import {mutateCreatePlayerQuery} from "../../Utils/queries";
+import {tableStyles} from "./TableStyles";
 
 
 interface IFranchise {
     franchise: FranchiseTypeModelType;
 }
-
 
 export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franchise} : IFranchise) => {
 

@@ -1,12 +1,12 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Tag, Space} from 'antd';
-import {PlayerTypeModelType, StoreContext} from "../../models";
+import {PlayerTypeModelType, StoreContext} from "../../../models";
 import {observer} from "mobx-react";
-import {colour, suit_icon, insertArray, draft} from '../Utils/TableFunctions'
+import {colour, suit_icon, insertArray} from '../../Utils/tablefunctions'
 import {IObservableArray, observable, toJS} from 'mobx';
-import {mutateCreatePlayerQuery} from "../Utils/queries";
-import {tableStyles} from "./Tables/TableStyles";
+import {mutateCreatePlayerQuery} from "../../Utils/queries";
+import {tableStyles} from "./TableStyles";
 
 
 export const DraftTable: React.FunctionComponent = observer(() => {

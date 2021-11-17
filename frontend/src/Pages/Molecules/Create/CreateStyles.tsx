@@ -8,7 +8,7 @@ export const formStyles: CSS.Properties = {
 export const cardStyles: CSS.Properties = {
     display: 'inline-block',
     width: '30%',
-    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 2px 8px'
+    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 2px 8px',
 };
 
 export const labelStyles: CSS.Properties = {
@@ -31,6 +31,7 @@ export const buttonStyles: CSS.Properties = {
     border: '0px',
     borderRadius: '4px',
     fontSize: '14px',
+    width: '80%',
     color: '#FDFFFC',
     padding: '6px',
     verticalAlign: 'middle',

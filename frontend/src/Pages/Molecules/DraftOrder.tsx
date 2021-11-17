@@ -3,6 +3,7 @@ import 'antd/dist/antd.css';
 import {Card} from 'antd';
 import {FranchiseTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
+import {cardStyles} from "../Organisms/Cards/CardStyles";
 
 export const DraftOrder: React.FunctionComponent = observer(() => {
 
@@ -32,10 +33,10 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
                             let number = (index + 1)
                             return <Card
                                 hoverable
-                                         onClick={() =>
-                                             store.User.league.setDraftingFranchise(franchise)
-                                         }
-                                         key={index} style={{
+                                onClick={() =>
+                                    store.User.league.setDraftingFranchise(franchise)
+                                }
+                                key={index} style={{
                                 width: '12.5%', marginTop: '20px', marginBottom: '20px', display: 'inline-flex',
                                 border: draft_order_border(franchise.franchise)
                             }}>
@@ -46,7 +47,6 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
                         )
                         : null
                     }
-
                 </div>
             );
         }

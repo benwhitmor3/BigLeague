@@ -115,27 +115,27 @@ def league_generation_view(request):
         with transaction.atomic():
             # create cities, gms, and coaches
             if int(len(league.city_set.all())) > 0:
-                print("League already has " + str(len(league.city_set.all())) + " cities")
+                print("PlayerHistory already has " + str(len(league.city_set.all())) + " cities")
             else:
                 gen_city(league, 10)
 
             if int(len(league.gm_set.all())) > 0:
-                print("League already has " + str(len(league.gm_set.all())) + " gms")
+                print("PlayerHistory already has " + str(len(league.gm_set.all())) + " gms")
             else:
                 gen_gm(league)
 
             if int(len(league.coach_set.all())) > 0:
-                print("League already has " + str(len(league.coach_set.all())) + " coaches")
+                print("PlayerHistory already has " + str(len(league.coach_set.all())) + " coaches")
             else:
                 gen_coach(league, num_of_franchises * 2)
 
             if int(len(league.player_set.all())) > 0:
-                print("League already has " + str(len(league.player_set.all())) + " players")
+                print("PlayerHistory already has " + str(len(league.player_set.all())) + " players")
             else:
                 gen_player(league, num_of_franchises * 8, rookies=False)
 
             if int(len(league.franchise_set.all())) > 1:
-                print("League already has more than one franchise")
+                print("PlayerHistory already has more than one franchise")
             else:
                 gen_franchise(league, num_of_franchises - 1)
 

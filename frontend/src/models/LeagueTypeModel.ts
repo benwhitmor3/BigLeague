@@ -1,9 +1,7 @@
 import {Instance, types} from "mobx-state-tree"
 import {LeagueTypeModelBase} from "./LeagueTypeModel.base"
-import {FranchiseTypeModel, FranchiseTypeModelSelector, FranchiseTypeModelType} from "./FranchiseTypeModel";
-import {UserTypeModel} from "./UserTypeModel";
+import {FranchiseTypeModel, FranchiseTypeModelType} from "./FranchiseTypeModel";
 import {PlayerTypeModelType} from "./PlayerTypeModel";
-import {draft} from "../Pages/Utils/TableFunctions";
 
 /* The TypeScript type of an instance of LeagueTypeModel */
 export interface LeagueTypeModelType extends Instance<typeof LeagueTypeModel.Type> {
@@ -88,5 +86,11 @@ export const LeagueTypeModel = LeagueTypeModelBase
                 return a.wins - b.wins;
             })
             return draftOrder
+        },
+        get franchisesWithoutGm(){
+            return self.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.gm?.trait).filter((trait: any) => trait === undefined)
+        },
+        get franchisesWithoutCoach(){
+            return self.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.coach?.attributeOne).filter((attributeOne: any) => attributeOne === undefined)
         },
     }))

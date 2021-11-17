@@ -4,11 +4,11 @@ import {Card, Col, Row, Statistic, Badge, Divider} from 'antd';
 import {observer} from "mobx-react";
 import {FranchiseTypeModelType, StoreContext} from "../../models";
 import {useTrail, animated} from 'react-spring'
-import MissingStartersIcon from "../Atoms/MissingStartersIcon";
-import StartersIcon from "../Atoms/StartersIcon";
-import UnsetPlayerIcon from "../Atoms/UnsetPlayerIcon";
-import UnsignedPlayerIcon from "../Atoms/UnsignedPlayerIcon";
-import SignedPlayerIcon from "../Atoms/SignedPlayerIcon";
+import MissingStartersIcon from "../Atoms/Icons/MissingStartersIcon";
+import StartersIcon from "../Atoms/Icons/StartersIcon";
+import UnsetPlayerIcon from "../Atoms/Icons/UnsetPlayerIcon";
+import UnsignedPlayerIcon from "../Atoms/Icons/UnsignedPlayerIcon";
+import SignedPlayerIcon from "../Atoms/Icons/SignedPlayerIcon";
 
 
 export const missingStaff = (franchise: FranchiseTypeModelType) => {

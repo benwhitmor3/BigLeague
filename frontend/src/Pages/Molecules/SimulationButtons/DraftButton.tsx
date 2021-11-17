@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import {Button, Progress} from 'antd';
 import {observer} from "mobx-react";
 import {FranchiseTypeModelType, StoreContext} from "../../../models";
-import SmallLoading from "../../Atoms/SmallLoading";
+import SmallLoading from "../../Atoms/Loading/SmallLoading";
 import {simButtonStyles} from "./SimButtonStyles";
 import {mutateCreatePlayerQuery} from "../../Utils/queries";
 

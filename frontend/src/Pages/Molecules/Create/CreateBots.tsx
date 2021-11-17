@@ -4,7 +4,7 @@ import {StoreContext} from "../../../models";
 import {Card, Button, Select, Space} from 'antd';
 import axios from "axios";
 import {userQuery} from "../../Utils/queries";
-import SmallLoading from "../../Atoms/SmallLoading";
+import SmallLoading from "../../Atoms/Loading/SmallLoading";
 import {buttonStyles, cardStyles, formStyles, inputStyles, labelStyles} from "./CreateStyles";
 
 const {Option} = Select;

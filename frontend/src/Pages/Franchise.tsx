@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {observer} from 'mobx-react'
 import {FranchiseTypeModelType, StoreContext} from "../models";
 import CreateFranchise from "./Molecules/Create/CreateFranchise";
-import FranchiseCards from "./Organisms/FranchiseCards";
+import FranchiseCards from "./Templates/FranchiseCards";
 import CreateBots from "./Molecules/Create/CreateBots";
 
 export const Franchise: React.FunctionComponent = observer(() => {

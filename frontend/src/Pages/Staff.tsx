@@ -3,8 +3,7 @@ import {observer} from 'mobx-react'
 import {StoreContext} from "../models";
 import StaffInfo from "./Molecules/StaffInfo";
 import StaffSelect from "./Molecules/StaffSelect";
-import SetStaffButton from "./Molecules/SimulationButtons/SetStaffButton";
-import SmallLoading from "./Atoms/SmallLoading";
+import SmallLoading from "./Atoms/Loading/SmallLoading";
 import {Col, Row} from "antd";
 
 export const Staff: React.FunctionComponent = observer(() => {

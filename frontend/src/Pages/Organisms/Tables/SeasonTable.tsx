@@ -3,8 +3,8 @@ import 'antd/dist/antd.css';
 import {Table, Select} from 'antd';
 import {observer} from "mobx-react";
 import {toJS} from 'mobx';
-import {StoreContext} from "../../models";
-import {tableStyles} from "./Tables/TableStyles";
+import {StoreContext} from "../../../models";
+import {tableStyles} from "./TableStyles";
 
 const {Option} = Select;
 
@@ -36,14 +36,14 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'ppg',
                 key: 'ppg',
                 sorter: (a: any, b: any) => a.ppg - b.ppg,
-                render: (ppg: number) => <text>{ppg.toFixed(1)}</text>,
+                render: (ppg: number) => <text>{ppg?.toFixed(1)}</text>,
             },
             {
                 title: 'STD',
                 dataIndex: 'std',
                 key: 'std',
                 sorter: (a: any, b: any) => a.std - b.std,
-                render: (std: number) => <text>{std.toFixed(1)}</text>,
+                render: (std: number) => <text>{std?.toFixed(1)}</text>,
             },
             {
                 title: 'Championships',
@@ -65,14 +65,14 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'fanBase',
                 key: 'fanBase',
                 sorter: (a: any, b: any) => a.fanBase - b.fanBase,
-                render: (fanBase: number) => <text>{fanBase.toFixed(1)}</text>,
+                render: (fanBase: number) => <text>{fanBase?.toFixed(1)}</text>,
             },
             {
                 title: 'Fan Index',
                 dataIndex: 'fanIndex',
                 key: 'fanIndex',
                 sorter: (a: any, b: any) => a.fanIndex - b.fanIndex,
-                render: (fanIndex: number) => <text>{fanIndex.toFixed(1)}</text>,
+                render: (fanIndex: number) => <text>{fanIndex?.toFixed(1)}</text>,
             },
             {
                 title: 'Advertising',
@@ -84,7 +84,7 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'ticketPrice',
                 key: 'ticketPrice',
                 sorter: (a: any, b: any) => a.ticketPrice - b.ticketPrice,
-                render: (ticketPrice: number) => <text>{(ticketPrice).toFixed(0)}</text>,
+                render: (ticketPrice: number) => <text>{(ticketPrice)?.toFixed(0)}</text>,
             },
             {
                 title: 'Tickets Sold',
@@ -97,7 +97,7 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'boxPrice',
                 key: 'boxPrice',
                 sorter: (a: any, b: any) => a.boxPrice - b.boxPrice,
-                render: (boxPrice: number) => <text>{(boxPrice).toFixed(0)}</text>,
+                render: (boxPrice: number) => <text>{(boxPrice)?.toFixed(0)}</text>,
             },
             {
                 title: 'Boxes Sold',
@@ -110,14 +110,14 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'revenue',
                 key: 'revenue',
                 sorter: (a: any, b: any) => a.revenue - b.revenue,
-                render: (revenue: number) => <text>{(revenue / 1000000).toFixed(2)}</text>,
+                render: (revenue: number) => <text>{(revenue / 1000000)?.toFixed(2)}</text>,
             },
             {
                 title: 'Expenses (m)',
                 dataIndex: 'expenses',
                 key: 'expenses',
                 sorter: (a: any, b: any) => a.expenses - b.expenses,
-                render: (expenses: number) => <text>{(expenses / 1000000).toFixed(2)}</text>,
+                render: (expenses: number) => <text>{(expenses / 1000000)?.toFixed(2)}</text>,
             },
         ];
 

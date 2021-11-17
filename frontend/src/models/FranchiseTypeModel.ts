@@ -1,5 +1,7 @@
 import {Instance} from "mobx-state-tree"
 import {FranchiseTypeModelBase} from "./FranchiseTypeModel.base"
+import {PlayerTypeModelType} from "./PlayerTypeModel";
+import {ActionTypeModelType} from "./ActionTypeModel";
 
 /* The TypeScript type of an instance of FranchiseTypeModel */
 export interface FranchiseTypeModelType extends Instance<typeof FranchiseTypeModel.Type> {
@@ -124,8 +126,10 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             });
             return unsetPlayers
         },
-        // get numberOfActions() {
-        //     if (self.gm?.trait == "FACILITATOR")
-        //     return unsetPlayers
+        // get actions() {
+        //     let action = self.action.map((act: ActionTypeModelType) => {
+        //             return act
+        //     })
+        //     return action
         // },
     }))

@@ -1,14 +1,14 @@
 import React, {useContext} from 'react';
-import {StoreContext} from "../../models";
+import {StoreContext} from "../../../models";
 import 'antd/dist/antd.css';
 import {Table, Tag, Spin} from 'antd';
 import {observer} from "mobx-react";
 import {toJS} from 'mobx';
-import {colour, insertArray, suit_icon} from "../Utils/TableFunctions";
-import {tableStyles} from "./Tables/TableStyles";
+import {colour, insertArray, suit_icon} from "../../Utils/tablefunctions";
+import {tableStyles} from "./TableStyles";
 
 
-export const LeagueTable: React.FunctionComponent = observer(() => {
+export const PlayerHistoryTable: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
@@ -19,7 +19,7 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
                 key: 'name',
                 sorter: (a: any, b: any) => a.name.localeCompare(b.name),
                 // @ts-ignore
-                filters: [...new Map(store.User.league.playerhistorySet.map(item =>
+                filters: [...new Map(store.User.league.playerhistorySet?.map(item =>
                 [item['name'], {text: item.name, value: item.name}])).values()],
                 onFilter: (value: any, record: any) => record.name.indexOf(value) === 0,
             },
@@ -29,7 +29,7 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
                 key: 'season',
                 sorter: (a: any, b: any) => a.season - b.season,
                 // @ts-ignore
-                filters: [...new Map(store.User.league.playerhistorySet.map(item =>
+                filters: [...new Map(store.User.league.playerhistorySet?.map(item =>
                 [item['season'], {text: item.season, value: item.season}])).values()],
                 onFilter: (value: any, record: any) => record.season.indexOf(value) === 0,
             },
@@ -117,4 +117,4 @@ export const LeagueTable: React.FunctionComponent = observer(() => {
     }
 )
 
-export default LeagueTable;
+export default PlayerHistoryTable;

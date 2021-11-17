@@ -1,23 +1,12 @@
-import React, {useReducer, useEffect, useContext} from 'react';
+import React, {useReducer, useContext} from 'react';
 import {Alert, Button, Card, Input, Space} from 'antd';
-import CSS from "csstype";
 import { useHistory } from "react-router-dom";
 import {StoreContext} from "../models";
 import {observer} from "mobx-react";
+import {buttonStyles} from "./Molecules/Create/CreateStyles";
 
 
-const buttonStyles: CSS.Properties = {
-    backgroundColor: '#ad2102',
-    border: '0px',
-    borderRadius: '12px',
-    marginBottom: '8px',
-    fontSize: '14px',
-    color: '#fff2e8',
-    width: '100%'
-};
-
-//state type
-
+//state type (using redux for practice)
 type State = {
     email: string
     password: string

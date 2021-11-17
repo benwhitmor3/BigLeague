@@ -1,18 +1,7 @@
 import React, {useReducer, useEffect} from 'react';
 import {Alert, Button, Card, Input, Space} from 'antd';
-import CSS from "csstype";
 import {observer} from "mobx-react";
-
-
-const buttonStyles: CSS.Properties = {
-    backgroundColor: '#ad2102',
-    border: '0px',
-    borderRadius: '12px',
-    marginBottom: '8px',
-    fontSize: '14px',
-    color: '#fff2e8',
-    width: '100%'
-};
+import {buttonStyles} from "./Molecules/Create/CreateStyles";
 
 //state type
 

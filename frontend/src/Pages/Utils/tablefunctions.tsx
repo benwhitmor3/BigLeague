@@ -1,5 +1,5 @@
 import React from "react";
-import {PlayerTypeModelType} from "../../models";
+
 
 export const insertArray = ( array: any, index: number, item: any ) => {
     array.splice( index, 0, item );
@@ -44,9 +44,6 @@ export const colour = (suit: string) => {
   }
 }
 
-  export const draft = (player: PlayerTypeModelType) => {
-    console.log(player)
-  }
 
   export const _lineup = (lineup: any) => {
     if (lineup != null) {
