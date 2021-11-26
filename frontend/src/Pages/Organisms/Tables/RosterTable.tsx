@@ -129,7 +129,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 render: (pOption: number, record: any) => (
                     (record.pOption == 0) ? (
                         <Space size="middle">
-                            <Tag color={"#E97280"} style={{color: "#ffffff", border: "2px solid #E97280"}}>
+                            <Tag color={"#e96879"} style={{color: "#ffffff", border: "2px solid #e96879"}}>
                                 Active
                             </Tag>
                         </Space>

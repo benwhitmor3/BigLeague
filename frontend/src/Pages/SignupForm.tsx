@@ -3,8 +3,7 @@ import {Alert, Button, Card, Input, Space} from 'antd';
 import {observer} from "mobx-react";
 import {buttonStyles} from "./Molecules/Create/CreateStyles";
 
-//state type
-
+//state type (using redux for practice)
 type State = {
     username: string
     email: string
@@ -128,6 +127,7 @@ const SignupForm: React.FunctionComponent = observer(() => {
                 payload: event.target.value
             });
         }
+
     return (
         <form style={{textAlign: 'center', marginTop: '20px'}} noValidate autoComplete="off">
             <Card style={{display: 'inline-block', width: '30%'}} title="Register">

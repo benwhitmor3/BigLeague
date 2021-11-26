@@ -26,7 +26,7 @@ export const inputStyles: CSS.Properties = {
 };
 
 export const buttonStyles: CSS.Properties = {
-    backgroundColor: '#84A9C0',
+    backgroundColor: '#7395aa',
     margin: '5px',
     border: '0px',
     borderRadius: '4px',

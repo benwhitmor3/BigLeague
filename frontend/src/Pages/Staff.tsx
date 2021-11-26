@@ -5,6 +5,7 @@ import StaffInfo from "./Molecules/StaffInfo";
 import StaffSelect from "./Molecules/StaffSelect";
 import SmallLoading from "./Atoms/Loading/SmallLoading";
 import {Col, Row} from "antd";
+import SetStaffButton from "./Molecules/SimulationButtons/SetStaffButton";
 
 export const Staff: React.FunctionComponent = observer(() => {
 
@@ -15,9 +16,14 @@ export const Staff: React.FunctionComponent = observer(() => {
     else {
         return (
             <div>
-                <Row>
+                <Row gutter={[0,24]}>
                     <Col span={24}>
                         <StaffInfo/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={24}>
+                        <SetStaffButton/>
                     </Col>
                 </Row>
                 <Row>

@@ -2,6 +2,7 @@ import {Instance} from "mobx-state-tree"
 import {FranchiseTypeModelBase} from "./FranchiseTypeModel.base"
 import {PlayerTypeModelType} from "./PlayerTypeModel";
 import {ActionTypeModelType} from "./ActionTypeModel";
+import {SeasonTypeModelType} from "./SeasonTypeModel";
 
 /* The TypeScript type of an instance of FranchiseTypeModel */
 export interface FranchiseTypeModelType extends Instance<typeof FranchiseTypeModel.Type> {
@@ -126,10 +127,11 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             });
             return unsetPlayers
         },
-        // get actions() {
-        //     let action = self.action.map((act: ActionTypeModelType) => {
-        //             return act
-        //     })
-        //     return action
-        // },
+        get profit() {
+            let revenue = self.seasonSet.map((season: SeasonTypeModelType) => season.revenue).reduce((a: any, b: any) => a + b)
+            let expenses = self.seasonSet.map((season: SeasonTypeModelType) => season.expenses).reduce((a: any, b: any) => a + b)
+            // @ts-ignore
+            let profit = revenue - expenses
+            return profit
+        },
     }))

@@ -1,6 +1,5 @@
 import React from "react";
 
-
 export const insertArray = ( array: any, index: number, item: any ) => {
     array.splice( index, 0, item );
 };

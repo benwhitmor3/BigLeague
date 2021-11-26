@@ -19,6 +19,7 @@ import Staff from "./Pages/Staff";
 import LoginForm from "./Pages/LoginForm";
 import SignupForm from "./Pages/SignupForm";
 import SmallLoading from "./Pages/Atoms/Loading/SmallLoading";
+import Leaderboard from "./Pages/Leaderboard";
 
 
 const {Header, Content, Footer} = Layout;
@@ -76,22 +77,22 @@ const App: React.FunctionComponent = observer(() => {
                             <Router>
                                 <Header style={{backgroundColor: '#12263A'}}>
                                     <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
-                                        <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
+                                        <Menu.Item key="13" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
                                         {isLoggedIn ? (
-                                                <Menu.Item key="11" style={{float: 'right'}} onClick={() => {
+                                                <Menu.Item key="14" style={{float: 'right'}} onClick={() => {
                                                     deleteToken()
                                                 }}>Logout
                                                     <a href="/Login"/></Menu.Item>)
                                             :
-                                            (<Menu.Item key="12" style={{float: 'right'}}>Login<a href="/Login"/></Menu.Item>)
+                                            (<Menu.Item key="15" style={{float: 'right'}}>Login<a href="/Login"/></Menu.Item>)
                                         }
                                     </Menu>
                                 </Header>
                                 <Content style={{margin: '0px'}}>
                                     <div className="site-layout-content">
                                         <Switch>
-                                            <Route path='/' component={LoginForm}/>
                                             <Route exact path='/Register' component={SignupForm}/>
+                                            <Route path='/' component={LoginForm}/>
                                         </Switch>
                                     </div>
                                 </Content>
@@ -109,13 +110,14 @@ const App: React.FunctionComponent = observer(() => {
                         <Header style={{backgroundColor: '#12263A'}}>
                             <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
                                 <Menu.Item key="1"><Link to="/Home">Home</Link></Menu.Item>
-                                <Menu.Item key="3"><Link to="/Franchise">Franchise</Link></Menu.Item>
-                                <Menu.Item key="4"><Link to="/Staff">Staff</Link></Menu.Item>
-                                <Menu.Item key="5"><Link to="/OffSeason">OffSeason</Link></Menu.Item>
-                                <Menu.Item key="6"><Link to="/Draft">Draft</Link></Menu.Item>
-                                <Menu.Item key="7"><Link to="/FreeAgency">Free Agency</Link></Menu.Item>
+                                <Menu.Item key="2"><Link to="/Franchise">Franchise</Link></Menu.Item>
+                                <Menu.Item key="3"><Link to="/Staff">Staff</Link></Menu.Item>
+                                <Menu.Item key="4"><Link to="/OffSeason">OffSeason</Link></Menu.Item>
+                                <Menu.Item key="5"><Link to="/Draft">Draft</Link></Menu.Item>
+                                <Menu.Item key="6"><Link to="/FreeAgency">Free Agency</Link></Menu.Item>
+                                <Menu.Item key="7"><Link to="/PlayerHistory">Player History</Link></Menu.Item>
                                 <Menu.Item key="8"><Link to="/Season">Season</Link></Menu.Item>
-                                <Menu.Item key="9"><Link to="/PlayerHistory">Player History</Link></Menu.Item>
+                                <Menu.Item key="9"><Link to="/Leaderboard">Leaderboard</Link></Menu.Item>
                                 <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
                                 {isLoggedIn ? (
                                         <Menu.Item key="11" style={{float: 'right'}} onClick={() => {
@@ -133,11 +135,12 @@ const App: React.FunctionComponent = observer(() => {
                                     <Route exact path='/Home' component={Home}/>
                                     <Route exact path='/Franchise' component={Franchise}/>w
                                     <Route exact path='/Staff' component={Staff}/>
+                                    <Route exact path='/OffSeason' component={OffSeason}/>
                                     <Route exact path='/Draft' component={Draft}/>
                                     <Route exact path='/FreeAgency' component={FreeAgency}/>
                                     <Route exact path='/PlayerHistory' component={PlayerHistory}/>
                                     <Route exact path='/Season' component={Season}/>
-                                    <Route exact path='/OffSeason' component={OffSeason}/>
+                                    <Route exact path='/Leaderboard' component={Leaderboard}/>
                                     <Route exact path='/Login' component={LoginForm}/>
                                     <Route exact path='/Register' component={SignupForm}/>
                                 </Switch>

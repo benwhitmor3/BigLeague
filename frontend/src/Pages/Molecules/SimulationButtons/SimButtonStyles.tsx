@@ -1,7 +1,7 @@
 import CSS from "csstype";
 
 export const simButtonStyles: CSS.Properties = {
-    backgroundColor: '#84A9C0',
+    backgroundColor: '#7395aa',
     // margin: '10px',
     marginBottom: '25px',
     border: '0px',

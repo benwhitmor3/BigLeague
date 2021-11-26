@@ -163,7 +163,6 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
                         </Row>
                     </animated.div>
                 ))}
-                )
             </Col>
         )
     }
