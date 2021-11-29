@@ -44,7 +44,7 @@ export const PlayerHistoryTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'epv',
                 key: 'epv',
                 sorter: (a: any, b: any) => a.epv - b.epv,
-                render: (epv: number) => <text>{epv.toFixed(1)}</text>,
+                render: (epv: number) => <span>{epv.toFixed(1)}</span>,
             },
             {
                 title: 'Suit',
@@ -84,7 +84,7 @@ export const PlayerHistoryTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'sEpv',
                 key: 'sEpv',
                 sorter: (a: any, b: any) => a.sEpv - b.sEpv,
-                render: (sEpv: number) => <text>{sEpv.toFixed(1)}</text>,
+                render: (sEpv: number) => <span>{sEpv.toFixed(1)}</span>,
             }
 
 
@@ -101,7 +101,7 @@ export const PlayerHistoryTable: React.FunctionComponent = observer(() => {
         }
 
 
-        if (store.User == undefined || store.User.franchise == undefined) return <div><Spin size="large"/></div>;
+        if (store.User?.franchise === undefined) return <div><Spin size="large"/></div>;
         else {
             return (
                 <Table

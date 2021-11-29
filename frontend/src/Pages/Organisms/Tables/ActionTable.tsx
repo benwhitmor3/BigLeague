@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Checkbox, Button, notification, Col} from 'antd';
+import {Table, Checkbox, Button} from 'antd';
 import {ActionTypeModelType, FranchiseTypeModelType, StoreContext} from "../../../models";
 import {observer} from "mobx-react";
-import {IObservableArray, IObservableObject, observable} from "mobx";
+import {IObservableArray, observable} from "mobx";
 import {buttonStyles, tableStyles} from "./TableStyles";
 import {userQuery} from "../../Utils/queries";
 import {actionError} from "../../Atoms/notificationerrors";
@@ -249,7 +249,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "improvedBathrooms",
                 key: "improvedBathrooms",
                 render: (improvedBathrooms: boolean) => (
-                    ((franchise.action.improvedBathrooms == true) ?
+                    ((franchise.action.improvedBathrooms === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -265,7 +265,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "improvedConcessions",
                 key: "improvedConcessions",
                 render: (improvedConcessions: boolean) => (
-                    ((franchise.action.improvedConcessions == true) ?
+                    ((franchise.action.improvedConcessions === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -281,7 +281,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "jumbotron",
                 key: "jumbotron",
                 render: (jumbotron: boolean) => (
-                    ((franchise.action.jumbotron == true) ?
+                    ((franchise.action.jumbotron === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -297,13 +297,13 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "upscaleBar",
                 key: "upscaleBar",
                 render: (upscaleBar: boolean) => (
-                    ((franchise.action.upscaleBar == true) ?
+                    ((franchise.action.upscaleBar === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
                             </div>
                             :
-                            ((franchise.action.improvedConcessions == true) ?
+                            ((franchise.action.improvedConcessions === true) ?
                                     <Checkbox defaultChecked={upscaleBar}
                                               onChange={(e) => setUpscaleBar(e.target.checked)}></Checkbox>
                                     :
@@ -317,7 +317,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "hallOfFame",
                 key: "hallOfFame",
                 render: (hallOfFame: boolean) => (
-                    ((franchise.action.hallOfFame == true) ?
+                    ((franchise.action.hallOfFame === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -338,7 +338,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "improvedSeating",
                 key: "improvedSeating",
                 render: (improvedSeating: boolean) => (
-                    ((franchise.action.improvedSeating == true) ?
+                    ((franchise.action.improvedSeating === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -354,7 +354,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "improvedSound",
                 key: "improvedSound",
                 render: (improvedSound: boolean) => (
-                    ((franchise.action.improvedSound == true) ?
+                    ((franchise.action.improvedSound === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -370,7 +370,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "partyDeck",
                 key: "partyDeck",
                 render: (partyDeck: boolean) => (
-                    ((franchise.action.partyDeck == true) ?
+                    ((franchise.action.partyDeck === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -386,7 +386,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "wiFi",
                 key: "wiFi",
                 render: (wiFi: boolean) => (
-                    ((franchise.action.wiFi == true) ?
+                    ((franchise.action.wiFi === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -401,7 +401,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "fanNight",
                 key: "fanNight",
                 render: (fanNight: boolean) => (
-                    ((franchise.gm?.trait == "PROMOTER") ?
+                    ((franchise.gm?.trait === "PROMOTER") ?
                             <Checkbox defaultChecked={fanNight} onChange={(e) => setFanNight(e.target.checked)}></Checkbox>
                             :
                             <Checkbox disabled></Checkbox>
@@ -413,7 +413,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "familyGame",
                 key: "familyGame",
                 render: (familyGame: boolean) => (
-                    ((franchise.gm?.trait == "PROMOTER") ?
+                    ((franchise.gm?.trait === "PROMOTER") ?
                             <Checkbox defaultChecked={familyGame}
                                       onChange={(e) => setFamilyGame(e.target.checked)}></Checkbox>
                             :
@@ -426,7 +426,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "doorPrizes",
                 key: "doorPrizes",
                 render: (doorPrizes: boolean) => (
-                    ((franchise.gm?.trait == "PROMOTER") ?
+                    ((franchise.gm?.trait === "PROMOTER") ?
                             <Checkbox defaultChecked={doorPrizes}
                                       onChange={(e) => setDoorPrizes(e.target.checked)}></Checkbox>
                             :
@@ -440,7 +440,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "mvpNight",
                 render: (mvpNight: boolean) => (
                     // @ts-ignore
-                    ((franchise.gm?.trait == "PROMOTER" && franchise.championships > 0) ?
+                    ((franchise.gm?.trait === "PROMOTER" && franchise.championships > 0) ?
                             <Checkbox defaultChecked={mvpNight} onChange={(e) => setMvpNight(e.target.checked)}></Checkbox>
                             :
                             <Checkbox disabled></Checkbox>
@@ -453,7 +453,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "paradeOfChampions",
                 render: (paradeOfChampions: boolean) => (
                     // @ts-ignore
-                    ((franchise.gm?.trait == "PROMOTER" && franchise.championships > 0) ?
+                    ((franchise.gm?.trait === "PROMOTER" && franchise.championships > 0) ?
                             <Checkbox defaultChecked={paradeOfChampions}
                                       onChange={(e) => setParadeOfChampions(e.target.checked)}></Checkbox>
                             :
@@ -466,7 +466,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "easyRuns",
                 key: "easyRuns",
                 render: (easyRuns: boolean) => (
-                    ((franchise.action.easyRuns == true) ?
+                    ((franchise.action.easyRuns === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -495,10 +495,10 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "fanFavourites",
                 key: "fanFavourites",
                 render: (fanFavourites: boolean) => (
-                    ((franchise.action.fanFavourites == true) ?
+                    ((franchise.action.fanFavourites === true) ?
                             <Checkbox disabled defaultChecked={true}></Checkbox>
                             :
-                            ((franchise.action.improvedConcessions == true) ?
+                            ((franchise.action.improvedConcessions === true) ?
                                     <Checkbox defaultChecked={fanFavourites}
                                               onChange={(e) => setFanFavourites(e.target.checked)}></Checkbox>
                                     :
@@ -512,7 +512,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "gourmetRestaurant",
                 key: "gourmetRestaurant",
                 render: (gourmetRestaurant: boolean) => (
-                    ((franchise.action.gourmetRestaurant == true) ?
+                    ((franchise.action.gourmetRestaurant === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -528,7 +528,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "beerGarden",
                 key: "beerGarden",
                 render: (beerGarden: boolean) => (
-                    ((franchise.action.upscaleBar == true) ?
+                    ((franchise.action.upscaleBar === true) ?
                             <Checkbox defaultChecked={beerGarden}
                                       onChange={(e) => setBeerGarden(e.target.checked)}></Checkbox>
                             :
@@ -541,7 +541,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: "namingRights",
                 key: "namingRights",
                 render: (namingRights: boolean) => (
-                    ((franchise.action.namingRights == true) ?
+                    ((franchise.action.namingRights === true) ?
                             <div>
                                 <span style={{color: "grey", marginRight: "5px"}}>used</span>
                                 <Checkbox disabled defaultChecked={true}></Checkbox>
@@ -578,7 +578,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
         // hack to re-render number of actions when train player is used
         console.log(franchise.action.numberOfActions)
 
-        if (store.User == undefined || store.User.franchise == undefined || store.User.franchise.action == undefined) return <div>loading</div>;
+        if (store.User?.franchise?.action === undefined) return <div>loading</div>;
         else {
             return (
                 <div>

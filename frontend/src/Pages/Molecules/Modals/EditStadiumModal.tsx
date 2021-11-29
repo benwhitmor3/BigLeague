@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Modal, Space, Button, Card} from 'antd';
+import {Modal, Space, Button} from 'antd';
 import {observer} from "mobx-react";
 import {StoreContext} from "../../../models";
 import {useForm} from "react-hook-form";
@@ -174,10 +174,10 @@ export const EditStadiumModal: React.FunctionComponent<IVisible> = observer(({ed
                     // }
                     // onCancel={() => setEditStadiumVisible(false)}
                     footer={[
-                        <Button style={{...buttonStyles, ...{width: '100px'}}} onClick={() => setEditStadiumVisible(false)}>
+                        <Button key={1} style={{...buttonStyles, ...{width: '100px'}}} onClick={() => setEditStadiumVisible(false)}>
                             Cancel
                         </Button>,
-                        <Button style={{...buttonStyles, ...{width: '100px'}}} onClick={() => onSubmit()}>
+                        <Button key={2} style={{...buttonStyles, ...{width: '100px'}}} onClick={() => onSubmit()}>
                             Confirm
                         </Button>,
                     ]}

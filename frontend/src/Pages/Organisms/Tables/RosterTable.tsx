@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Tag, Space, Alert, Checkbox, Row, Col} from 'antd';
+import {Table, Tag, Space, Alert} from 'antd';
 import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../../../models";
 import {observer} from "mobx-react";
 import {colour, suit_icon, _to_fixed, _lineup, insertArray} from '../../Utils/tablefunctions'
@@ -84,7 +84,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: 'tOption',
                 key: 'tOption',
                 render: (tOption: number, record: any) => (
-                    (record.tOption == 0) ? (
+                    (record.tOption === 0) ? (
                         <Space size="middle">
                             <Tag color={"#FFB4AD"} style={{color: "#000000", border: "2px solid #FFB4AD"}}
                                  onClick={() => {
@@ -104,7 +104,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                                                  "grade": undefined,
                                                  "lineup": undefined,
                                                  "franchiseId": undefined,
-                                                 "trainer": false,
+                                                 "trainer": record.trainer,
                                                  "year": record.year,
                                                  "leagueId": store.User.franchise.league.id
                                              }
@@ -127,7 +127,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: 'pOption',
                 key: 'pOption',
                 render: (pOption: number, record: any) => (
-                    (record.pOption == 0) ? (
+                    (record.pOption === 0) ? (
                         <Space size="middle">
                             <Tag color={"#e96879"} style={{color: "#ffffff", border: "2px solid #e96879"}}>
                                 Active
@@ -144,7 +144,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: 'renew',
                 key: 'renew',
                 render: (renew: string, record: any) => (
-                    (record.renew == "repeat" && record.contract == 1) ? (
+                    (record.renew === "repeat" && record.contract === 1) ? (
                         <Space size="middle">
                             <Tag color={"#FFB4AD"} style={{color: "#000000", border: "2px solid #FFB4AD"}}
                                  onClick={() => {
@@ -177,7 +177,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                             </Tag>
                         </Space>
                     ) : (
-                    (record.renew == "non-repeat" && record.contract == 1) ? (
+                    (record.renew === "non-repeat" && record.contract === 1) ? (
                         <Space size="middle">
                             <Tag color={"#FFB4AD"} style={{color: "#ffffff", border: "2px solid #FFB4AD"}}
                                  onClick={() => {
@@ -317,7 +317,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
             else return non_scouter_columns
             }
 
-        if (store.User == undefined || store.User.franchise == undefined) return <div>loading</div>;
+        if (store.User?.franchise === undefined) return <div>loading</div>;
         else {
             return (
                 <div>

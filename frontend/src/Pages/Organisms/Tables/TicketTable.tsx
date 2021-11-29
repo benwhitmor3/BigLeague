@@ -22,7 +22,7 @@ type priceConfig = {
 export const TicketTable: React.FunctionComponent<IFranchise> = observer(({franchise}: IFranchise) => {
 
         const store = useContext(StoreContext)
-        const {register, handleSubmit, errors} = useForm<priceConfig>();
+        const {register, handleSubmit} = useForm<priceConfig>();
 
         // get franchise season set and filter to most current season
         const [season, setSeason] = useState<any>(franchise.seasonSet.filter(function (season: any) {
@@ -146,7 +146,7 @@ export const TicketTable: React.FunctionComponent<IFranchise> = observer(({franc
                 dataIndex: 'advertising',
                 key: 'advertising',
                 render: (advertising: number) => (
-                    (season.ticketPrice > 0 && season.boxPrice > 0 || advertising > 1) ? (
+                    ((season.ticketPrice > 0 && season.boxPrice > 0) || advertising > 1) ? (
                         <span>{advertising}</span>
                     ) : (
                         <div>

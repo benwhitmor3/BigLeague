@@ -34,7 +34,7 @@ export const UnsignedPlayerIcon: React.FunctionComponent = observer(() => {
                           d="M27.366 13.772L22.014 8.42a3.14 3.14 0 0 0-4.442 0l-6.115 6.115a3.14 3.14 0 0 0 0 4.442l5.352 5.352 10.557-10.557z"></path>
                     <path d="M58.311 60.153l4.879-4.878-1.475-7.154-5.279 5.279-5.278 5.278z" fill="#f5e6c8"></path>
                     <path d="M64.457 61.42l-1.267-6.145-4.879 4.878z" fill="#333"></path>
-                    <path d="M52.477 49.441L26.249 23.212" stroke-width="1.941" stroke="#333" fill="none"></path>
+                    <path d="M52.477 49.441L26.249 23.212" strokeWidth="1.941" stroke="#333" fill="none"></path>
                 </g>
             </g>
         </svg>

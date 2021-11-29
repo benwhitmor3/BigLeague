@@ -1,7 +1,5 @@
 import {Instance} from "mobx-state-tree"
 import {FranchiseTypeModelBase} from "./FranchiseTypeModel.base"
-import {PlayerTypeModelType} from "./PlayerTypeModel";
-import {ActionTypeModelType} from "./ActionTypeModel";
 import {SeasonTypeModelType} from "./SeasonTypeModel";
 
 /* The TypeScript type of an instance of FranchiseTypeModel */
@@ -26,13 +24,13 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
     .views(self => ({
         get suitBonus() {
             let suitList = self.playerSet.map(function (player, index) {
-                if (player.lineup == "starter")
+                if (player.lineup === "starter")
                     return player.suit;
             });
-            let spades = suitList.filter(x => x == "spade").length
-            let hearts = suitList.filter(x => x == "heart").length
-            let diamonds = suitList.filter(x => x == "diamond").length
-            let clubs = suitList.filter(x => x == "club").length
+            let spades = suitList.filter(x => x === "spade").length
+            let hearts = suitList.filter(x => x === "heart").length
+            let diamonds = suitList.filter(x => x === "diamond").length
+            let clubs = suitList.filter(x => x === "club").length
 
             let suitBonus = 0
 
@@ -54,7 +52,7 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             return suitBonus
         },
         get epv() {
-            let epv = self.playerSet.map(function (player) {
+            let epv = self.playerSet.map((player) => {
                 if (player.lineup === "starter")
                     return player.epv;
             });
@@ -62,7 +60,7 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             return epv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
         },
         get sEpv() {
-            let sEpv = self.playerSet.map(function (player) {
+            let sEpv = self.playerSet.map((player) => {
                 if (player.lineup === "starter")
                     return player.sEpv;
             });
@@ -70,7 +68,7 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             return sEpv.reduce((accumulator, currentValue) => ((accumulator || 0) + (currentValue || 0)), 0)
         },
         get meanAge() {
-            let ages: any = self.playerSet.map(function (player) {
+            let ages: any = self.playerSet.map((player) => {
                 return player.age;
             });
 
@@ -79,7 +77,7 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
             return meanAge
         },
         get salaries() {
-            let salaries = self.playerSet.map(function (player) {
+            let salaries = self.playerSet.map((player) => {
                 return player.salary;
             });
 
@@ -95,33 +93,33 @@ export const FranchiseTypeModel = FranchiseTypeModelBase
                 : self.seasonSet[self.seasonSet.length - 2].wins
         },
         get lineup() {
-            let lineup = self.playerSet.map(function (player) {
+            let lineup = self.playerSet.map((player) => {
                 return player.lineup;
             });
             return lineup
         },
         get contracts() {
-            let contracts = self.playerSet.map(function (player) {
+            let contracts = self.playerSet.map((player) => {
                 return player.contract
             });
             return contracts
         },
         get starters() {
-            let starters = self.playerSet.filter(function (player) {
+            let starters = self.playerSet.filter((player) => {
                 if (player.lineup === "starter")
                     return player;
             });
             return starters
         },
         get unsignedPlayers() {
-            let unsignedPlayers = self.playerSet.filter(function (player) {
+            let unsignedPlayers = self.playerSet.filter((player) => {
                 if (player.contract === null)
                     return player;
             });
             return unsignedPlayers
         },
         get unsetPlayers() {
-            let unsetPlayers = self.playerSet.filter(function (player) {
+            let unsetPlayers = self.playerSet.filter((player) => {
                 if (player.lineup === null)
                     return player;
             });

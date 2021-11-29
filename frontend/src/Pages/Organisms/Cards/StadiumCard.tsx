@@ -1,6 +1,6 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {observer} from 'mobx-react'
-import {FranchiseTypeModelType, StoreContext} from "../../../models";
+import {FranchiseTypeModelType} from "../../../models";
 import {Statistic, Row, Col, Card, Tag, Space} from 'antd';
 import {EditOutlined} from "@ant-design/icons";
 import EditStadiumModal from "../../Molecules/Modals/EditStadiumModal";
@@ -13,7 +13,6 @@ interface IFranchise {
 
 export const StadiumCard: React.FunctionComponent<IFranchise> = observer(({franchise}: IFranchise) => {
 
-    const store = useContext(StoreContext)
     const [editStadiumVisible, setEditStadiumVisible] = useState<boolean>(false)
 
     return (

@@ -30,7 +30,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'epv',
                 key: 'epv',
                 sorter: (a: any, b: any) => a.epv - b.epv,
-                render: (epv: number) => <text>{epv.toFixed(1)}</text>,
+                render: (epv: number) => <span>{epv.toFixed(1)}</span>,
             },
             {
                 title: 'Suit',
@@ -163,12 +163,12 @@ export const DraftTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'sEpv',
                 key: 'sEpv',
                 sorter: (a: any, b: any) => a.sEpv - b.sEpv,
-                render: (sEpv: number) => <text>{sEpv.toFixed(1)}</text>,
+                render: (sEpv: number) => <span>{sEpv.toFixed(1)}</span>,
             }
 
 
         const columns = () => {
-            if (store.User.franchise.gm !== null)
+            if (store.User.franchise.gm != null)
                 if (store.User.franchise.gm.trait === "SCOUTER") {
                     let scouter_columns = non_scouter_columns
                     insertArray(non_scouter_columns, 3, sEPV_column)
@@ -182,7 +182,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
         // need to make observable to update table (draftClass not being observed by ant d table)
         let draftClass: IObservableArray<PlayerTypeModelType> = observable(store.User.franchise.league.draftClass)
 
-        if (store.User == undefined || store.User.franchise == undefined) return <div> loading</div>;
+        if (store.User?.franchise === undefined) return <div> loading</div>;
         else {
             return (
                 <Table

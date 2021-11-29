@@ -18,7 +18,7 @@ export const UnsetPlayerIcon: React.FunctionComponent = observer(() => {
                 <circle fill="#f5e6c8" r="21.25" cy="31.875" cx="50"></circle>
             </g>
             <g>
-                <circle stroke-miterlimit="10" stroke-width="4" stroke="#000" fill="#fff" r="14.738" cy="69.814"
+                <circle strokeMiterlimit="10" strokeWidth="4" stroke="#000" fill="#fff" r="14.738" cy="69.814"
                         cx="69.793"></circle>
             </g>
             <g>

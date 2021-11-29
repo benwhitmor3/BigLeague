@@ -1,4 +1,3 @@
-import React from 'react';
 import 'antd/dist/antd.css';
 import {FranchiseTypeModelType, LeagueTypeModelType} from "../../../models";
 import {lineupError, rosterError, staffError, starterError, unsignedError} from "../../Atoms/notificationerrors";

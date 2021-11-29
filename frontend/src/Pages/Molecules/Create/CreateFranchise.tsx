@@ -4,7 +4,6 @@ import {StoreContext} from "../../../models";
 import {useForm} from "react-hook-form";
 import {Alert, Card, Space} from "antd";
 import {buttonStyles, cardStyles, formStyles, inputStyles, labelStyles} from "./CreateStyles";
-import { useHistory } from "react-router-dom";
 
 type franchiseConfig = {
     franchiseName: any;
@@ -17,7 +16,6 @@ interface ICreate {
 export const CreateFranchise: React.FunctionComponent<ICreate> = observer(({setFranchise}: ICreate) => {
 
         const store = useContext(StoreContext)
-        const history = useHistory();
         const {register, handleSubmit, errors} = useForm<franchiseConfig>();
         const onSubmit = handleSubmit(({franchiseName}: franchiseConfig) => {
             console.log(franchiseName);

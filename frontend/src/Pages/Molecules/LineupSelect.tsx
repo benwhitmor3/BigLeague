@@ -13,22 +13,20 @@ interface ILineup {
 
 const LineupSelect: React.FunctionComponent<ILineup> = observer(({current_lineup, record, setRosterAlert} : ILineup) => {
 
-            const store = useContext(StoreContext)
+            const store = useContext(StoreContext);
 
             const [selected, setSelected] = useState(current_lineup);
 
             const submitLineup = (updated_lineup: any) => {
                 // get current lineup array
-                let lineupArray: Array<string> = store.User.franchise.playerSet.map((p: PlayerTypeModelType) =>
+                let lineupArray: Array<string> = record.franchise.playerSet.map((p: PlayerTypeModelType) =>
                     p.lineup
-                )
+                );
                 // add updated_lineup selection
-                lineupArray.push(updated_lineup)
+                lineupArray.push(updated_lineup);
                 // if legal lineup run mutation
-                if (lineupArray.filter(x => x == "starter").length <= 5 && lineupArray.filter(x => x == "rotation").length <= 3) {
+                if (lineupArray.filter(x => x === "starter").length <= 5 && lineupArray.filter(x => x === "rotation").length <= 3) {
                     setSelected(updated_lineup);
-                    console.log(updated_lineup)
-                    console.log(record)
                     store.mutateCreatePlayer({
                             "playerInput": {
                                 "name": record.name,
@@ -43,8 +41,8 @@ const LineupSelect: React.FunctionComponent<ILineup> = observer(({current_lineup
                                 "renew": record.renew,
                                 "salary": record.salary,
                                 "grade": record.grade,
-                                "franchiseId": store.User.franchise.id,
-                                "trainer": false,
+                                "franchiseId": record.franchise.id,
+                                "trainer": record.trainer,
                                 "year": record.year,
                                 "lineup": updated_lineup,
                                 "leagueId": store.User.franchise.league.id
@@ -57,7 +55,7 @@ const LineupSelect: React.FunctionComponent<ILineup> = observer(({current_lineup
                 else {
                     setRosterAlert(true)
                 }
-            }
+            };
 
             let other_values = ["starter", "rotation", "bench"].filter(x => ![current_lineup].includes(x));
 
@@ -75,11 +73,11 @@ const LineupSelect: React.FunctionComponent<ILineup> = observer(({current_lineup
                     },
                         {value: other_values[1], label: other_values[1]}, {value: other_values[2], label: other_values[2]}];
                 }
-            }
+            };
 
             return <Select options={options(other_values)} value={selected}
                            onChange={(updated_lineup: any) => submitLineup(updated_lineup)}/>
         }
-)
+);
 
 export default LineupSelect;

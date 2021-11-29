@@ -59,11 +59,11 @@ export const SignPlayersButton: React.FunctionComponent = observer(() => {
                                         }
                                       }`
                     )
-                    setTimeout(() => {setLoading(false)}, 1500);
+                    setTimeout(() => {setLoading(false)}, 1000);
                 })
                 .catch(err => {
                     console.log(err)
-                    setTimeout(() => {setLoading(false)}, 1500);
+                    setTimeout(() => {setLoading(false)}, 1000);
                 })
         };
 

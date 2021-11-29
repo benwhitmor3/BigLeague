@@ -26,8 +26,8 @@ export const SimSeasonButton: React.FunctionComponent = observer(() => {
             store.User.franchise.league.franchiseSet.forEach((franchise: FranchiseTypeModelType) =>
                 simSeasonChecker(franchise, store.User.league))
             //checks if user team has ticket pricing, if check fails, sets seasonSim to false
-            if (store.User.franchise.seasonSet[store.User.franchise.seasonSet.length - 1].ticketPrice == 0
-                || store.User.franchise.seasonSet[store.User.franchise.seasonSet.length - 1].boxPrice == 0) {
+            if (store.User.franchise.seasonSet[store.User.franchise.seasonSet.length - 1].ticketPrice === 0
+                || store.User.franchise.seasonSet[store.User.franchise.seasonSet.length - 1].boxPrice === 0) {
                 store.User.league.setSeasonSimCheck(false)
                 return ticketError(store.User.franchise.franchise);
             }

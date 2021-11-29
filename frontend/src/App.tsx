@@ -101,7 +101,7 @@ const App: React.FunctionComponent = observer(() => {
                         </Layout>
             </div>;
     }
-    if (loading || store.User == undefined) return <div><SmallLoading animation="ld ld-bounce"/></div>;
+    if (loading || store.User === undefined) return <div><SmallLoading animation="ld ld-bounce"/></div>;
     else {
         return (
             <div>

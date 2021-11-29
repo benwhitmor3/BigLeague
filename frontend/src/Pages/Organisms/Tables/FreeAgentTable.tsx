@@ -33,7 +33,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'epv',
                 key: 'epv',
                 sorter: (a: any, b: any) => a.epv - b.epv,
-                render: (epv: number) => <text>{epv.toFixed(1)}</text>,
+                render: (epv: number) => <span>{epv.toFixed(1)}</span>,
             },
             {
                 title: 'Suit',
@@ -64,40 +64,12 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                 ],
                 onFilter: (value: any, record: any) => record.suit.indexOf(value) === 0,
             },
-            //             {
-            //     title: 'Contract',
-            //     dataIndex: 'contract',
-            //     key: 'contract',
-            //     sorter: (a: any, b: any) => a.contract - b.contract,
-            // },
-            // {
-            //     title: 'Team Option',
-            //     dataIndex: 'tOption',
-            //     key: 'tOption',
-            // },
-            // {
-            //     title: 'Player Option',
-            //     dataIndex: 'pOption',
-            //     key: 'pOption',
-            // },
-            // {
-            //     title: 'Renew',
-            //     dataIndex: 'renew',
-            //     key: 'renew',
-            // },
-            // {
-            //     title: 'Salary',
-            //     dataIndex: 'salary',
-            //     key: 'salary',
-            //     sorter: (a: any, b: any) => a.salary - b.salary,
-            //     render: (salary: number) => <text>{_to_fixed(salary)}</text>,
-            // },
             {
                 title: 'Grade',
                 dataIndex: 'grade',
                 key: 'grade',
                 sorter: (a: any, b: any) => a.grade - b.grade,
-                render: (grade: number) => <text>{_to_fixed(grade)}</text>,
+                render: (grade: number) => <span>{_to_fixed(grade)}</span>,
             },
             {
                 title: 'Franchise',
@@ -135,7 +107,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                 dataIndex: 'sEpv',
                 key: 'sEpv',
                 sorter: (a: any, b: any) => a.sEpv - b.sEpv,
-                render: (sEpv: number) => <text>{sEpv.toFixed(1)}</text>,
+                render: (sEpv: number) => <span>{sEpv.toFixed(1)}</span>,
             }
 
 
@@ -154,7 +126,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
         // need to make observable to update table (draftClass not being observed by ant d table)
         let freeAgentClass: IObservableArray<PlayerTypeModelType> = observable(store.User.franchise.league.freeAgentClass)
 
-        if (store.User == undefined || store.User.franchise == undefined) return <div> loading</div>;
+        if (store.User === undefined || store.User.franchise === undefined) return <div> loading</div>;
         else {
             return (
                 <div>

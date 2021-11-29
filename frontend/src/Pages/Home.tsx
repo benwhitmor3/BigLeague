@@ -12,7 +12,7 @@ export const Home: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-        if (store.User == undefined) return (
+        if (store.User === undefined) return (
             <Spin/>
         )
         else if (store.User.league && !store.User.franchise) return (

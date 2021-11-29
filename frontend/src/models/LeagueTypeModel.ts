@@ -34,37 +34,37 @@ export const LeagueTypeModel = LeagueTypeModelBase
     })
     .views(self => ({
         franchise(franchiseName: string) {
-            let franchise = self.franchiseSet.find(function (franchise, index) {
-                if (franchise.franchise == franchiseName)
+            let franchise = self.franchiseSet.find((franchise) => {
+                if (franchise.franchise === franchiseName)
                     return true;
             });
             return franchise
         },
         player(playerName: string) {
-            let player = self.playerSet.find(function (player, index) {
-                if (player.name == playerName)
+            let player = self.playerSet.find((player) => {
+                if (player.name === playerName)
                     return true;
             });
             return player
         },
         franchiseplayers(franchiseName: string) {
-            let franchiseplayers = self.playerSet.filter(function (player: any, index: any) {
+            let franchiseplayers = self.playerSet.filter((player) => {
                 if (player.franchise)
-                    if (player.franchise.franchise == franchiseName)
+                    if (player.franchise.franchise === franchiseName)
                         return true;
             });
             return franchiseplayers
         },
         get draftClass() {
             let draftClass = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year == 1)
+                if (player.year === 1)
                     return player
             })
             return draftClass
         },
         get bestDraftPlayer() {
             let draftClass = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year == 1 && player.franchise == null)
+                if (player.year === 1 && player.franchise == null)
                     return player
             })
             let bestDraftPlayer = draftClass.sort(function (a, b) {
@@ -75,7 +75,7 @@ export const LeagueTypeModel = LeagueTypeModelBase
         },
         get freeAgentClass() {
             let freeAgentClass = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year != 1 && player.contract == null)
+                if (player.year !== 1 && player.contract == null)
                     return player
             })
             return freeAgentClass

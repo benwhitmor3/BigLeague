@@ -17,12 +17,12 @@ export const Franchise: React.FunctionComponent = observer(() => {
         }
     }, [store.User])
 
-    if (store.User?.league == undefined) return (
+    if (store.User?.league === undefined) return (
             <h1 className="ld ld-jump-alt-in" style={{textAlign: 'center', marginTop: '40px', fontSize: '32px'}}>
                 Missing League
             </h1>
         );
-    else if (store.User?.franchise == null)
+    else if (store.User?.franchise === null)
         return <CreateFranchise setFranchise={setFranchise}/>;
     else if (store.User.franchise.league.franchiseSet.length <= 1)
         return <CreateBots/>;

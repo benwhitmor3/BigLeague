@@ -1,9 +1,8 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
-import {Button, Progress} from 'antd';
+import {Button} from 'antd';
 import {observer} from "mobx-react";
 import {FranchiseTypeModelType, StoreContext} from "../../../models";
-import SmallLoading from "../../Atoms/Loading/SmallLoading";
 import {simButtonStyles} from "./SimButtonStyles";
 import {mutateCreatePlayerQuery} from "../../Utils/queries";
 
@@ -11,7 +10,6 @@ export const DraftButton: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-        const [loading, setLoading] = useState<boolean>(false)
 
         const draftSim = (franchise: FranchiseTypeModelType, player: any) => {
             store.mutateCreatePlayer({
@@ -47,12 +45,6 @@ export const DraftButton: React.FunctionComponent = observer(() => {
         }
 
 
-        if (loading) return (
-            <div>
-                <SmallLoading animation="ld ld-bounce"/>
-            </div>
-        )
-        else {
             return (
                 <div>
                     {store.User.league.bestDraftPlayer ?
@@ -62,7 +54,6 @@ export const DraftButton: React.FunctionComponent = observer(() => {
                         null}
                 </div>
             );
-        }
     }
 )
 

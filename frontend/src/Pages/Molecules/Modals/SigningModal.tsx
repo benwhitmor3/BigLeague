@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Tag, Input, Modal, Select, Button, Space} from 'antd';
+import {Tag, Input, Modal, Select, Button} from 'antd';
 import {observer} from "mobx-react";
 import CSS from "csstype";
 import {StoreContext} from "../../../models";
@@ -47,7 +47,6 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
         const sign_player = () => {
             if (gradecolour == '#73d13d') {
                 console.log("PLAYER SIGNED!");
-                console.log(selectedplayer)
                 store.mutateCreatePlayer({
                         "playerInput": {
                             "name": selectedplayer.name,
@@ -77,7 +76,6 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
 
             } else {
                 console.log("PLAYER REJECTED!");
-                console.log(selectedplayer)
             }
         }
 
@@ -97,9 +95,9 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                 // set initial base salary
                 grade = (salary * (contractlength + 1)) / epv;
                 // adjust for renewal
-                if (renewal == "repeat") {
+                if (renewal === "repeat") {
                     grade -= 2
-                } else if (renewal == "non-repeat") {
+                } else if (renewal === "non-repeat") {
                     grade -= 1
                 }
                 // adjust for t_option
@@ -120,7 +118,7 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                 }
 
                if (store.User.franchise.gm !== null)
-                   if (store.User.franchise.gm.trait == "RECRUITER") {
+                   if (store.User.franchise.gm.trait === "RECRUITER") {
                    // set grade after all adjustments + 2 for recruiter bonus
                        grade = grade + 2
                        setOfferGrade(grade )
@@ -148,10 +146,10 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                     closable={false}
                     visible={visible}
                     footer={[
-                        <Button style={{...buttonStyles, ...{width: '100px'}}} onClick={() => setVisible(false)}>
+                        <Button key={1} style={{...buttonStyles, ...{width: '100px'}}} onClick={() => setVisible(false)}>
                             Cancel
                         </Button>,
-                        <Button style={{...buttonStyles, ...{width: '100px'}}} onClick={() => sign_player()}>
+                        <Button key={2} style={{...buttonStyles, ...{width: '100px'}}} onClick={() => sign_player()}>
                             Confirm
                         </Button>,
                     ]}

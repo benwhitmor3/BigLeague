@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Button, Progress} from 'antd';
+import {Button} from 'antd';
 import {observer} from "mobx-react";
 import axios from "axios";
 import {StoreContext} from "../../../models";
@@ -69,11 +69,11 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
                                         }
                                       }`
                     )
-                    setTimeout(() => {setLoading(false)}, 1500);
+                    setTimeout(() => {setLoading(false)}, 1000);
                 })
                 .catch(err => {
                     console.log(err)
-                    setTimeout(() => {setLoading(false)}, 1500);
+                    setTimeout(() => {setLoading(false)}, 1000);
                 })
         };
 
