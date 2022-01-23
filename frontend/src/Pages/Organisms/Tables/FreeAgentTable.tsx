@@ -6,7 +6,6 @@ import {observer} from "mobx-react";
 import {colour, suit_icon, insertArray, _to_fixed} from '../../Utils/tablefunctions'
 import {IObservableArray, observable, toJS} from 'mobx';
 import SigningModal from "../../Molecules/Modals/SigningModal";
-import FreeAgencyButton from "../../Molecules/SimulationButtons/FreeAgentButton";
 import {tableStyles} from "./TableStyles";
 
 export const FreeAgentTable: React.FunctionComponent = observer(() => {
@@ -130,7 +129,6 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
         else {
             return (
                 <div>
-                <FreeAgencyButton/>
                 <SigningModal visible={visible} setVisible={setVisible} selectedplayer={selectedPlayer}/>
                 <Table
                     rowKey="id"

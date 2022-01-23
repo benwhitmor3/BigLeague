@@ -3,7 +3,6 @@ import 'antd/dist/antd.css';
 import {Card} from 'antd';
 import {FranchiseTypeModelType, StoreContext} from "../../models";
 import {observer} from "mobx-react";
-import {cardStyles} from "../Organisms/Cards/CardStyles";
 
 export const DraftOrder: React.FunctionComponent = observer(() => {
 
@@ -28,7 +27,6 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
         else {
             return (
                 <div>
-
                     {store.User.league.draftOrder ? store.User.league.draftOrder.map((franchise: FranchiseTypeModelType, index: number) => {
                             let number = (index + 1)
                             return <Card

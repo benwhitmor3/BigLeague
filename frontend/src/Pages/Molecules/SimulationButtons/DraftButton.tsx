@@ -51,7 +51,10 @@ export const DraftButton: React.FunctionComponent = observer(() => {
                     <Button style={simButtonStyles} onClick={() => draftSim(store.User.league.draftingFranchise, store.User.league.bestDraftPlayer)} block>
                         Draft Sim
                     </Button> :
-                        null}
+                    <h1 style={{textAlign: 'center'}}>
+                    Go to the Offseason page
+                    </h1>
+                    }
                 </div>
             );
     }

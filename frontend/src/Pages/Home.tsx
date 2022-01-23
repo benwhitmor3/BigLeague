@@ -12,6 +12,7 @@ export const Home: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
+
         if (store.User === undefined) return (
             <Spin/>
         )
@@ -22,11 +23,11 @@ export const Home: React.FunctionComponent = observer(() => {
             </div>
         )
         else if (store.User.league?.franchiseSet?.length > 1) return (
-            <div className="ld ld-slide-rtl-in">
-                <h1>Welcome to, {store.User.league?.leagueName}!</h1>
-                <h1>Good luck this season, {store.User.franchise?.franchise}!</h1>
-                <p>Please read the instructions to guide you on your way to victory</p>
-                <BigLoading animation="ld ld-bounce"/>
+                <div className="ld ld-slide-rtl-in">
+                            <h1>Welcome to, {store.User.league?.leagueName}!</h1>
+                            <h1>Good luck this season, {store.User.franchise?.franchise}!</h1>
+                            <p>Please read the instructions to guide you on your way to victory</p>
+                    <BigLoading animation="ld ld-bounce"/>
             </div>
         )
         else {

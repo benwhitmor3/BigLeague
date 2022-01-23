@@ -12,11 +12,11 @@ export const BigLoading: React.FunctionComponent<IAnimation> = observer(({animat
             <div className="overlay"
                  style={{
                      opacity: '1',
-                     width: '100%',
+                     width: '80%',
                      height: '100%',
                      zIndex: 100,
                      top: '20%',
-                     left: '0',
+                     left: '10%',
                      position: 'fixed',
                      textAlign: 'center',
                  }}>
