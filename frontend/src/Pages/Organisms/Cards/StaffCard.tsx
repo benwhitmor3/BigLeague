@@ -40,9 +40,13 @@ export const StaffCard: React.FunctionComponent<IFranchise> = observer(({franchi
                             )}
                         </Select>
                     </Col>
-                    <Col span={6} offset={6}>
+                    <Col span={6} offset={0}>
                         <Statistic title="City"
                                    value={franchise.stadium ? franchise.stadium.city.city : "None"}/>
+                    </Col>
+                    <Col span={6} offset={0}>
+                        <Statistic title="CityValue"
+                                   value={franchise.stadium ? franchise.stadium.city.cityValue : "None"}/>
                     </Col>
                 </Row>
                 <Row gutter={[0, 0]}>

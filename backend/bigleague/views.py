@@ -117,8 +117,7 @@ def league_generation_view(request):
             if int(len(league.city_set.all())) > 0:
                 print("PlayerHistory already has " + str(len(league.city_set.all())) + " cities")
             else:
-                gen_city(league, 10)
-
+                gen_city(league, 20)
             if int(len(league.gm_set.all())) > 0:
                 print("PlayerHistory already has " + str(len(league.gm_set.all())) + " gms")
             else:

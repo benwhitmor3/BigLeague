@@ -101,7 +101,44 @@ const App: React.FunctionComponent = observer(() => {
                         </Layout>
             </div>;
     }
-    if (loading || store.User === undefined) return <div><SmallLoading animation="ld ld-bounce"/></div>;
+    else if (loading || store.User === undefined) return <div><SmallLoading animation="ld ld-bounce"/></div>;
+    else if (!store.User?.league || !store.User?.franchise || store.User?.franchise.seasonSet.length === 0) {
+        return (
+            <div>
+                <Layout className='layout'>
+                    <Router>
+                        <Header style={{backgroundColor: '#EFF5FA'}}>
+                            <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
+                                <Menu.Item key="1"><Link to="/Home">Home</Link></Menu.Item>
+                                <Menu.Item key="2"><Link to="/Franchise">Franchise</Link></Menu.Item>
+                                <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
+                                {isLoggedIn ? (
+                                        <Menu.Item key="11" style={{float: 'right'}} onClick={() => {
+                                            deleteToken()
+                                        }}>Logout
+                                            <a href="/Login"/></Menu.Item>)
+                                    :
+                                    (<Menu.Item key="12" style={{float: 'right'}}>Login<a href="/Login"/></Menu.Item>)
+                                }
+                            </Menu>
+                        </Header>
+                        <Content style={{margin: '0px'}}>
+                            <div className="site-layout-content">
+                                <Switch>
+                                    <Route exact path='/Home' component={Home}/>
+                                    <Route exact path='/Franchise' component={Franchise}/>w
+                                    <Route exact path='/Login' component={LoginForm}/>
+                                    <Route exact path='/Register' component={SignupForm}/>
+                                </Switch>
+                            </div>
+                        </Content>
+
+                        <Footer style={{textAlign: 'center'}}>The Big League ©2021 Created by Ben Whitmore</Footer>
+                    </Router>
+                </Layout>
+            </div>
+        )
+    }
     else {
         return (
             <div>

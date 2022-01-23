@@ -38,8 +38,9 @@ def gen_franchise(league, num_of_franchises=7):
 
 def gen_city(league, num_of_cities=8):
     """generates cities based on list of cities and city values"""
-    cities = ["Los Angeles", "Chicago", "New York", "Phoenix", "Indianapolis", "Philadelphia", "Houston",
-              "San Antonio", "Denver", "Boston", "Las Vegas", "Seattle", "Atalanta", "San Diego"]
+    cities = ["Los Angeles", "New York", "London", "Chicago", "San Francisco", "Washington", "Phoenix", "Indianapolis",
+              "Philadelphia", "Houston", "Dallas", "Denver", "Boston", "Las Vegas", "Seattle",
+              "Atlanta", "Miami", "Toronto", "Vancouver", "Detroit"]
     values = [5, 6, 7, 8, 9, 10, 11, 12]
     cities_list = random.sample(cities, k=num_of_cities)
     for city in cities_list:

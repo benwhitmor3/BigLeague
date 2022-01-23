@@ -196,7 +196,7 @@ def simulate_season(league, season):
     # simulated season
     for series in league_schedule:
         # games per series
-        games = 14
+        games = 7
         while games > 0:
             results["game" + str(len(results) + 1)] = (simulate_game(series[0], series[1]))
             games -= 1

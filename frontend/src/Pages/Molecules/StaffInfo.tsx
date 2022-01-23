@@ -13,7 +13,7 @@ export const StaffInfo: React.FunctionComponent = observer(() => {
             <Typography>
                 <Title level={2}>GMs</Title>
                 <Paragraph>
-                    GMs play a similar role on a Big Leagues team as they do in other professional sports, they set the
+                    GMs play a similar role for a Big League franchise as they do in other professional sports, they set the
                     tone and mission of the franchise. Unlike other hires, owners do not need to worry about the market
                     for GMs. Instead, at the start of each season, owners simply choose which GM trait they are setting
                     for their franchise. Those traits are as follows:
@@ -30,7 +30,7 @@ export const StaffInfo: React.FunctionComponent = observer(() => {
                             <Text><Text strong>Recruiter:</Text> Provides a +2 bonus to all player contracts</Text>
                         </li>
                         <li>
-                            <Text><Text strong>Scouter:</Text> Reduce EPV error by 50%</Text>
+                            <Text><Text strong>Scouter:</Text> Unlocks S EPV (a reduced EPV error by 50%)</Text>
                         </li>
                         <li>
                             <Text><Text strong>Suitor:</Text> Disables all suit effects on players</Text>
