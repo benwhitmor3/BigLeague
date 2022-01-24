@@ -44,37 +44,37 @@ export const StaffInfo: React.FunctionComponent = observer(() => {
                 <Title level={2}>Coaches</Title>
                 <Paragraph>
                     Each team is required to hire a coach from the pool of available coaches. Each coach is different,
-                    and has two of nine possible attributes which modify your team’s performance. Those attributes are
+                    and has two of eight possible attributes which modify your team’s performance. Those attributes are
                     as follows:
                 </Paragraph>
                 <ul>
-                    <li>
-                        <Text><Text strong>Clutch:</Text> Adds +6 to the score in all losing games</Text>
-                    </li>
-                    <li>
-                        <Text><Text strong>Fame: </Text> Adds a +5 bonus to your fan index</Text>
-                    </li>
-                    <li>
-                        <Text><Text strong>Focus:</Text> Reduces the S.D. for each player by 2</Text>
-                    </li>
-                    <li>
-                        <Text><Text strong>Guts:</Text> Increases the S.D. for each player by 5</Text>
-                    </li>
-                    <li>
-                        <Text><Text strong>Road:</Text> Negates the opponents home-field advantage</Text>
-                    </li>
-                    <li>
-                        <Text><Text strong>Substitution:</Text> Calls in a bench player at 1 S.D. below expected
-                            value</Text>
-                    </li>
-                    <li>
-                        <Text><Text strong>Teamwork:</Text> Adds +3 to sum of player values for all games</Text>
-                    </li>
-                    <li>
-                        <Text><Text strong>Underdog:</Text> Adds 40% of the difference in player values to our
-                            value</Text>
-                    </li>
-                </ul>
+                        <li>
+                            <Text><Text strong>Clutch: </Text> Adds +6 to the score in all losing games</Text>
+                        </li>
+                        <li>
+                            <Text><Text strong>Fame: </Text> Adds a +5 bonus to your fan index</Text>
+                        </li>
+                        <li>
+                            <Text><Text strong>Focus:</Text> Reduces the S.D. for each player to 2</Text>
+                        </li>
+                        <li>
+                            <Text><Text strong>Guts:</Text> Increases the S.D. for each player by 5</Text>
+                        </li>
+                        <li>
+                            <Text><Text strong>Road:</Text> Negates the opponents home-field advantage</Text>
+                        </li>
+                        <li>
+                            <Text><Text strong>Substitution:</Text> Calls in a rotation player at 1 S.D. below expected
+                                value</Text>
+                        </li>
+                        <li>
+                            <Text><Text strong>Teamwork:</Text> Adds +3 to sum of player values for all games</Text>
+                        </li>
+                        <li>
+                            <Text><Text strong>Underdog:</Text> Adds 40% of difference in starter PVs when an
+                                underdog</Text>
+                        </li>
+                    </ul>
                 <Divider/>
             </Typography>
             </Card>

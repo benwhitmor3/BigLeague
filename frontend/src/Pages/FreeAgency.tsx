@@ -30,7 +30,7 @@ export const FreeAgency: React.FunctionComponent = observer(() => {
             <div data-intro="Click here to simulate free agency." data-step={1} className="card-demo">
             <FreeAgencyButton/>
             </div>
-            <div data-intro="Offer contracts to free agents to outbid other franchises." data-step={2} className="card-demo">
+            <div data-intro="After you have simulated free agency outbid other franchises to sign players." data-step={2} className="card-demo">
             <FreeAgentTable/>
             </div>
             </div>

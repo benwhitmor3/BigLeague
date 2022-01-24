@@ -492,7 +492,7 @@ def apply_actions(league, season_num):
             stadium.save()
             season.expenses += 50000000
             season.save()
-            franchise.action.easy_runs_complete = True
+            franchise.action.fan_factor_complete = True
         # promotions
         if franchise.action.fan_night:
             season.fan_index += 6
