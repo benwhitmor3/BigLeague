@@ -61,10 +61,41 @@ export const SimSeasonButton: React.FunctionComponent = observer(() => {
                 })
         };
 
+        const leagueReset = () => {
+
+            // reset league request
+            const data = new FormData();
+            data.append("league_id", store.User.franchise.league.id)
+            setLoading(true)
+            axios.post('http://127.0.0.1:8000/league_reset', data)
+                .then(res => {
+                    console.log(res.data)
+                    store.queryUser(
+                    {email: email},
+                    userQuery
+                    )
+                    setLoading(false)
+                })
+                .catch(err => {
+                    console.log(err)
+                    setLoading(false)
+                })
+        };
+
         if (loading) return (
             <div>
                 <BigLoading animation="ld ld-bounce"/>
             </div>
+        )
+        else if (store.User.franchise.seasonSet.length === 11) return (
+            <div>
+                <h1 style={{textAlign: 'center'}}>
+                    Your Big League Journey Has Concluded
+                </h1>
+                <Button style={simButtonStyles} onClick={() => leagueReset()} block>
+                        Click Here To Reset!
+                </Button>
+                </div>
         )
         else {
             return (

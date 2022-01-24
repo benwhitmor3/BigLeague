@@ -107,7 +107,7 @@ const App: React.FunctionComponent = observer(() => {
             <div>
                 <Layout className='layout'>
                     <Router>
-                        <Header style={{backgroundColor: '#EFF5FA'}}>
+                        <Header style={{backgroundColor: '#12263A'}}>
                             <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
                                 <Menu.Item key="1"><Link to="/Home">Home</Link></Menu.Item>
                                 <Menu.Item key="2"><Link to="/Franchise">Franchise</Link></Menu.Item>

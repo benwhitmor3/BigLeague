@@ -41,6 +41,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('league_generation', csrf_exempt(league_generation_view), name='league_generation'),
     path('season_sim', csrf_exempt(season_simulation_view), name='season_sim'),
+    path('league_reset', csrf_exempt(league_reset_view), name='league_reset'),
     path('set_lineup', csrf_exempt(set_lineup_view), name='set_lineup'),
     path('set_staff', csrf_exempt(set_staff_view), name='set_staff'),
     path('sign_players', csrf_exempt(sign_players_view), name='sign_players'),

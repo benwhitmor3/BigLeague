@@ -216,3 +216,15 @@ def season_simulation_view(request):
             gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
 
         return HttpResponse(request)
+
+
+def league_reset_view(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    if request.method == 'POST':
+        league_id = request.POST.get('league_id')
+        league = League.objects.get(id=league_id)
+
+        with transaction.atomic():
+            league.delete()
+
+        return HttpResponse(request)

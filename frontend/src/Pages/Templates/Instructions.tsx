@@ -80,7 +80,7 @@ export const Instructions: React.FunctionComponent = observer(() => {
                     your franchise’s finances and resources. This means building a stadium, setting ticket prices, and
                     selecting actions which can produce a wide range of benefits from upgrading your stadium to
                     improving your players. On the financial side, you will also have to negotiate contracts with
-                    players and maintain your stadium. In total, 10 seasons can be played, hundreds of players will
+                    players and maintain your stadium. In total, ten seasons can be played, hundreds of players will
                     come through the ranks, and billions of dollars will be made. Good luck!
                     <Divider/>
                     <Title level={4}>Cities</Title>
