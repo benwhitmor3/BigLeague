@@ -84,9 +84,15 @@ const SignupForm: React.FunctionComponent = observer(() => {
         const handleSignup = (e: any, data: any) => {
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if (re.test(state.email) && state.username.length < 30 && state.password) {
-
+                // this is for switching local between react and backend static local (3000 vs. 8000)
+                let link = '';
+                if (window.location.port === '3000') {
+                    link = window.location.hostname + ':8000'
+                } else {
+                    link = window.location.host
+                }
                 e.preventDefault();
-                fetch('http://localhost:8000/users/', {
+                fetch(window.location.protocol + "//" + link + '/users/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

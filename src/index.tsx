@@ -12,7 +12,7 @@ import { StoreContext } from './models'
 
 
 const rootStore = RootStore.create(undefined, {
-  gqlHttpClient: createHttpClient('http://127.0.0.1:8000/graphql/')})
+  gqlHttpClient: createHttpClient(window.location.protocol + "//" + window.location.host + '/graphql/')})
 
 const render = () => {
   ReactDOM.render(

@@ -43,7 +43,13 @@ const App: React.FunctionComponent = observer(() => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            fetch(window.location.protocol + "//" + window.location.host + '/current_user/', {
+            let link = '';
+                if (window.location.port === '3000') {
+                    link = window.location.hostname + ':8000'
+                } else {
+                    link = window.location.host
+                }
+            fetch(window.location.protocol + "//" + link + '/current_user/', {
                 headers: {
                     Authorization: `JWT ${localStorage.getItem('token')}`
                 }
