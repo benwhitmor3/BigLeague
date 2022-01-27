@@ -15,11 +15,17 @@ export const FreeAgencyButton: React.FunctionComponent = observer(() => {
         const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
 
         const signFreeAgents = () => {
+            let link = '';
+            if (window.location.port === '3000') {
+                link = window.location.hostname + ':8000'
+            } else {
+                link = window.location.host
+            }
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
             data.append("season", store.User.franchise.seasonSet.length)
             setLoading(true)
-            axios.post('http://127.0.0.1:8000/free_agency', data)
+            axios.post(window.location.protocol + "//" + link + '/free_agency', data)
                 .then(res => {
                     console.log(res.data)
                     store.queryUser(

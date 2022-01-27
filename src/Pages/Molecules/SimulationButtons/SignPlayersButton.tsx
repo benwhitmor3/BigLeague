@@ -6,8 +6,6 @@ import axios from "axios";
 import {StoreContext} from "../../../models";
 import {simButtonStyles} from "./SimButtonStyles";
 import SmallLoading from "../../Atoms/Loading/SmallLoading";
-import BigLoading from "../../Atoms/Loading/BigLoading";
-
 
 
 export const SignPlayersButton: React.FunctionComponent = observer(() => {
@@ -18,14 +16,20 @@ export const SignPlayersButton: React.FunctionComponent = observer(() => {
         const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
 
         const signPlayers = () => {
+            let link = '';
+            if (window.location.port === '3000') {
+                link = window.location.hostname + ':8000'
+            } else {
+                link = window.location.host
+            }
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
             setLoading(true)
-            axios.post('http://127.0.0.1:8000/sign_players', data)
+            axios.post(window.location.protocol + "//" + link + '/sign_players', data)
                 .then(res => {
                     console.log(res.data)
                     store.queryUser(
-                    {email: email},
+                        {email: email},
                         `__typename
                                       id
                                       franchise{
@@ -59,11 +63,15 @@ export const SignPlayersButton: React.FunctionComponent = observer(() => {
                                         }
                                       }`
                     )
-                    setTimeout(() => {setLoading(false)}, 1000);
+                    setTimeout(() => {
+                        setLoading(false)
+                    }, 1000);
                 })
                 .catch(err => {
                     console.log(err)
-                    setTimeout(() => {setLoading(false)}, 1000);
+                    setTimeout(() => {
+                        setLoading(false)
+                    }, 1000);
                 })
         };
 

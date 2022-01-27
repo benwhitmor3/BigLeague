@@ -18,11 +18,17 @@ export const CreateBots: React.FunctionComponent = observer(() => {
         const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
 
         const createBots = () => {
+            let link = '';
+            if (window.location.port === '3000') {
+                link = window.location.hostname + ':8000'
+            } else {
+                link = window.location.host
+            }
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
             data.append("num_of_franchises", numberOfFranchises)
             setLoading(true)
-            axios.post('http://127.0.0.1:8000/league_generation', data)
+            axios.post(window.location.protocol + "//" + link + '/league_generation', data)
                 .then(res => {
                     console.log(res.data);
                     store.queryUser(

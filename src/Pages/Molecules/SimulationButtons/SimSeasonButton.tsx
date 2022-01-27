@@ -41,12 +41,18 @@ export const SimSeasonButton: React.FunctionComponent = observer(() => {
                 return
             }
 
+            let link = '';
+            if (window.location.port === '3000') {
+                link = window.location.hostname + ':8000'
+            } else {
+                link = window.location.host
+            }
             // season sim request
             const data = new FormData();
             data.append("league_id", store.User.franchise.league.id)
             data.append("season", store.User.franchise.seasonSet.length)
             setLoading(true)
-            axios.post('http://127.0.0.1:8000/season_sim', data)
+            axios.post(window.location.protocol + "//" + link + '/season_sim', data)
                 .then(res => {
                     console.log(res.data)
                     store.queryUser(

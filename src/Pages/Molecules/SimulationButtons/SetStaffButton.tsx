@@ -16,10 +16,16 @@ export const SetStaffButton: React.FunctionComponent = observer(() => {
         const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
 
         const setLineups = () => {
+            let link = '';
+            if (window.location.port === '3000') {
+                link = window.location.hostname + ':8000'
+            } else {
+                link = window.location.host
+            }
             const data = new FormData();
             data.append("franchise_id", store.User.franchise.id)
             setLoading(true)
-            axios.post('http://127.0.0.1:8000/set_staff', data)
+            axios.post(window.location.protocol + "//" + link + '/set_staff', data)
                 .then(res => {
                     console.log(res.data)
                     store.queryUser(
