@@ -12,33 +12,34 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/intro.js": "^3.0.2",
     "@types/react-pdf": "^5.0.9",
-    "@types/react-router-dom": "^5.1.5",
+    "@types/react-router": "^5.1.18",
+    "@types/react-router-dom": "^5.3.3",
     "animejs": "^3.2.1",
     "antd": "^4.6.1",
     "axios": "^0.20.0",
-    "create-react-class": "^15.6.3",
-    "graphql-request": "^3.0.0",
+    "create-react-class": "^15.7.0",
+    "graphql-request": "^3.7.0",
     "intro.js": "^4.3.0",
     "javascript-lp-solver": "^0.4.24",
-    "mobx": "^5.15.6",
-    "mobx-react": "^6.2.5",
-    "mobx-state-tree": "^3.17.2",
+    "mobx": "^5.15.7",
+    "mobx-react": "^6.3.1",
+    "mobx-state-tree": "^3.17.3",
     "mst-gql": "^0.12.5",
     "rc-queue-anim": "^2.0.0",
     "rc-texty": "^0.2.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-hook-form": "^6.5.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-hook-form": "^6.15.8",
     "react-icons": "^3.11.0",
     "react-input-autosize": "1.2.0",
     "react-pdf": "^5.6.0",
     "react-redux": "latest",
-    "react-router-dom": "latest",
-    "react-scripts": "^3.4.3",
+    "react-router-dom": "^6.2.1",
+    "react-scripts": "^3.4.4",
     "react-spring": "^9.3.0",
-    "react-table": "^7.5.0",
+    "react-table": "^7.7.0",
     "react-virtualized-collapsible": "^0.1.6",
-    "typescript": "^4.0.2"
+    "typescript": "^4.5.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -62,7 +63,7 @@
     ]
   },
   "devDependencies": {
-    "@material-ui/icons": "^4.9.1",
-    "match-sorter": "^4.2.0"
+    "@material-ui/icons": "^4.11.2",
+    "match-sorter": "^4.2.1"
   }
 }

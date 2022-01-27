@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import './index.css';
-// @ts-ignore
-import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom';
 import 'antd/dist/antd.css';
 import {Layout, Menu} from 'antd';
 import './App.css'
@@ -44,7 +43,7 @@ const App: React.FunctionComponent = observer(() => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            fetch('http://localhost:8000/current_user/', {
+            fetch(window.location.protocol + "//" + window.location.host + '/current_user/', {
                 headers: {
                     Authorization: `JWT ${localStorage.getItem('token')}`
                 }
@@ -90,10 +89,10 @@ const App: React.FunctionComponent = observer(() => {
                                 </Header>
                                 <Content style={{margin: '0px'}}>
                                     <div className="site-layout-content">
-                                        <Switch>
-                                            <Route exact path='/Register' component={SignupForm}/>
-                                            <Route path='/' component={LoginForm}/>
-                                        </Switch>
+                                        <Routes>
+                                            <Route path='/Register' element={<SignupForm/>}/>
+                                            <Route path='/Login' element={<LoginForm/>}/>
+                                        </Routes>
                                     </div>
                                 </Content>
                                 <Footer style={{textAlign: 'center'}}>The Big League ©2021 Created by Ben Whitmore</Footer>
@@ -111,7 +110,7 @@ const App: React.FunctionComponent = observer(() => {
                             <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
                                 <Menu.Item key="1"><Link to="/Home">Home</Link></Menu.Item>
                                 <Menu.Item key="2"><Link to="/Franchise">Franchise</Link></Menu.Item>
-                                <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
+                                <Menu.Item key="10" style={{position: 'absolute', top: 0, right: 0}}>Register<a href="/Register"/></Menu.Item>
                                 {isLoggedIn ? (
                                         <Menu.Item key="11" style={{float: 'right'}} onClick={() => {
                                             deleteToken()
@@ -124,12 +123,12 @@ const App: React.FunctionComponent = observer(() => {
                         </Header>
                         <Content style={{margin: '0px'}}>
                             <div className="site-layout-content">
-                                <Switch>
-                                    <Route exact path='/Home' component={Home}/>
-                                    <Route exact path='/Franchise' component={Franchise}/>w
-                                    <Route exact path='/Login' component={LoginForm}/>
-                                    <Route exact path='/Register' component={SignupForm}/>
-                                </Switch>
+                                <Routes>
+                                    <Route  path='/Home' element={<Home/>}/>
+                                    <Route  path='/Franchise' element={<Franchise/>}/>w
+                                    <Route  path='/Login' element={<LoginForm/>}/>
+                                    <Route  path='/Register' element={<SignupForm/>}/>
+                                </Routes>
                             </div>
                         </Content>
 
@@ -168,19 +167,19 @@ const App: React.FunctionComponent = observer(() => {
                         </Header>
                         <Content style={{margin: '0px'}}>
                             <div className="site-layout-content">
-                                <Switch>
-                                    <Route exact path='/Home' component={Home}/>
-                                    <Route exact path='/Franchise' component={Franchise}/>w
-                                    <Route exact path='/Staff' component={Staff}/>
-                                    <Route exact path='/OffSeason' component={OffSeason}/>
-                                    <Route exact path='/Draft' component={Draft}/>
-                                    <Route exact path='/FreeAgency' component={FreeAgency}/>
-                                    <Route exact path='/PlayerHistory' component={PlayerHistory}/>
-                                    <Route exact path='/Season' component={Season}/>
-                                    <Route exact path='/Leaderboard' component={Leaderboard}/>
-                                    <Route exact path='/Login' component={LoginForm}/>
-                                    <Route exact path='/Register' component={SignupForm}/>
-                                </Switch>
+                                <Routes>
+                                    <Route path='/Home' element={<Home/>}/>
+                                    <Route path='/Franchise' element={<Franchise/>}/>w
+                                    <Route path='/Staff' element={<Staff/>}/>
+                                    <Route path='/OffSeason' element={<OffSeason/>}/>
+                                    <Route path='/Draft' element={<Draft/>}/>
+                                    <Route path='/FreeAgency' element={<FreeAgency/>}/>
+                                    <Route path='/PlayerHistory' element={<PlayerHistory/>}/>
+                                    <Route path='/Season' element={<Season/>}/>
+                                    <Route path='/Leaderboard' element={<Leaderboard/>}/>
+                                    <Route path='/Login' element={<LoginForm/>}/>
+                                    <Route path='/Register' element={<SignupForm/>}/>
+                                </Routes>
                             </div>
                         </Content>
 

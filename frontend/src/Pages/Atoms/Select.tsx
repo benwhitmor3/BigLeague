@@ -22,6 +22,7 @@ export function Select<T extends OptionValue>(props: Props<T>) {
     props.onChange(selectedOption.value);
   }
   return (
+        // @ts-ignore
     <select style={props.style} value={props.value} onChange={handleOnChange}>
       {props.options.map(option => (
         <option key={option.value} value={option.value}>

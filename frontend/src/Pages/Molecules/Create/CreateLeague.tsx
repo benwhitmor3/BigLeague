@@ -4,7 +4,7 @@ import {StoreContext} from "../../../models";
 import {useForm} from "react-hook-form";
 import {Alert, Card, Space} from "antd";
 import {labelStyles, formStyles, buttonStyles, inputStyles, cardStyles} from "./CreateStyles";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 type leagueConfig = {
@@ -15,7 +15,7 @@ type leagueConfig = {
 export const CreateLeague: React.FunctionComponent = observer(() => {
 
     const store = useContext(StoreContext)
-    const history = useHistory();
+    const navigate = useNavigate();
     const {register, handleSubmit, errors} = useForm<leagueConfig>();
     const onSubmit = handleSubmit(({leagueName, email}: leagueConfig) => {
         console.log(leagueName, email);
@@ -38,7 +38,7 @@ export const CreateLeague: React.FunctionComponent = observer(() => {
                 }   
                 `,
             undefined
-        ).then(() => history.push('/Franchise'))
+        ).then(() => navigate('/Franchise'))
     });
 
     return (

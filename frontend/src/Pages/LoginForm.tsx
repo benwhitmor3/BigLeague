@@ -1,6 +1,6 @@
 import React, {useReducer, useContext} from 'react';
 import {Alert, Button, Card, Input, Space} from 'antd';
-import { useHistory } from "react-router-dom";
+import {useNavigate} from 'react-router-dom';
 import {StoreContext} from "../models";
 import {observer} from "mobx-react";
 import {buttonStyles} from "./Molecules/Create/CreateStyles";
@@ -46,13 +46,20 @@ const reducer = (state: State, action: Action): State => {
 
 const LoginForm: React.FunctionComponent = observer(() => {
     const [state, dispatch] = useReducer(reducer, initialState);
-    const history = useHistory();
+    const navigate = useNavigate();
+
     const store = useContext(StoreContext)
 
     const handleLogin = (e: any, data: any) => {
-
+        // this is for switching local between react and backend static local (3000 vs. 8000)
+        let link = '';
+        if (window.location.port === '3000') {
+            link = window.location.hostname + ':8000'
+        } else {
+            link = window.location.host
+        }
         e.preventDefault();
-        fetch('http://localhost:8000/token-auth/', {
+        fetch(window.location.protocol + "//" + link + '/token-auth/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -71,7 +78,7 @@ const LoginForm: React.FunctionComponent = observer(() => {
                 localStorage.setItem('email', json.user.email);
                 store.setUser(json.user.email).then(r => console.log("SET USER"));
                 store.setIsLoggedIn(true)
-                history.push('/Home');
+                navigate('/Home');
             })
             .catch((response) => {
                 console.log(response.status, response.statusText);
@@ -113,6 +120,7 @@ const LoginForm: React.FunctionComponent = observer(() => {
                     <Button
                         size="large"
                         color="primary"
+                        // @ts-ignore
                         style={buttonStyles}
                         onClick={(e) => handleLogin(e, state)}>
                         Login
