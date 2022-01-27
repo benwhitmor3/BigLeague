@@ -45,7 +45,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "relocate": "react-scripts build && rm -rf ../deployment/build && mv -f build ../deployment",
+    "relocate": "react-scripts build && rm -rf ./big-league/build && mv -f build ./big-league",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
