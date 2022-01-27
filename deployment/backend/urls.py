@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import routers
 from bigleague.views import *
@@ -53,4 +53,5 @@ urlpatterns = [
     path('token-auth/', obtain_jwt_token),
     path('current_user/', current_user),
     path('users/', UserList.as_view()),
+    re_path(r'^(?:.*)/?$', csrf_exempt(render_react), name='react')
     ]

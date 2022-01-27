@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.http import HttpResponse
+from django.shortcuts import render
 from rest_framework import viewsets
 from .simulation_functions import off_season, simulate_season
 from .bot_functions import sign_players, set_lineup, set_staff, free_agency
@@ -18,6 +19,10 @@ from .serializers import UserSerializer, UserSerializerWithToken
 # class UserView(viewsets.ModelViewSet):
 #     queryset = User.objects.all()
 #     serializer_class = UserSerializer
+
+
+def render_react(request):
+    return render(request, "index.html")
 
 
 @api_view(['GET'])
