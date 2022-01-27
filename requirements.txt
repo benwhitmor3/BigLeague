@@ -27,10 +27,10 @@ gunicorn==20.1.0
 idna==2.8
 names==0.3.0
 numpy==1.17.3
-pandas==0.25.1
+pandas==1.2.4
 promise==2.3
 psycopg2==2.8.6
-psycopg2-binary==2.9.3
+# psycopg2-binary==2.9.3
 PuLP==2.5.1
 pycparser==2.19
 PyJWT==1.7.1
