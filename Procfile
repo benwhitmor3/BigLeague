@@ -1,2 +1,2 @@
-release: python manage.py migrate
-web: gunicorn backend.wsgi --log-file -
+release: python big-league/manage.py migrate
+web: gunicorn --pythonpath big-league backend.wsgi --log-file -
