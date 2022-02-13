@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Checkbox, Button} from 'antd';
+import {Table, Checkbox, Button, Popconfirm} from 'antd';
 import {ActionTypeModelType, FranchiseTypeModelType, StoreContext} from "../../../models";
 import {observer} from "mobx-react";
 import {IObservableArray, observable} from "mobx";
@@ -566,10 +566,17 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                 key: "Confirm",
                 fixed: 'right',
                 render: () => (
-                    <Button style={{...buttonStyles, ...{marginBottom: '12px', marginTop: '10px'}}}
-                            onClick={() => actionChecker(franchise)}>
+                    <Popconfirm
+                        title="Are you sure to choose these actions?"
+                        onConfirm={() => actionChecker(franchise)}
+                        okText="Yes"
+                        cancelText="No"
+                        placement="left"
+                    >
+                    <Button style={{...buttonStyles, ...{marginBottom: '12px', marginTop: '10px'}}}>
                         Confirm
                     </Button>
+                    </Popconfirm>
                 ),
             }
         ];

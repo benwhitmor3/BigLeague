@@ -45,18 +45,20 @@ export const DraftButton: React.FunctionComponent = observer(() => {
         }
 
 
-            return (
-                <div>
-                    {store.User.league.bestDraftPlayer ?
-                    <Button style={simButtonStyles} onClick={() => draftSim(store.User.league.draftingFranchise, store.User.league.bestDraftPlayer)} block>
+        return (
+            <div>
+                {store.User.league.bestDraftPlayer ?
+                    <Button style={simButtonStyles}
+                            onClick={() => draftSim(store.User.league.draftingFranchise, store.User.league.bestDraftPlayer)}
+                            block>
                         Draft Sim
                     </Button> :
                     <h1 style={{textAlign: 'center'}}>
-                    Go to the Offseason page
+                        Go to OffSeason
                     </h1>
-                    }
-                </div>
-            );
+                }
+            </div>
+        );
     }
 )
 

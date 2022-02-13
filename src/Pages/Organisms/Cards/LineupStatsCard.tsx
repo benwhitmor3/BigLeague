@@ -35,7 +35,7 @@ export const LineupStatsCard: React.FunctionComponent<IFranchise> = observer(({f
                     <Statistic title="Mean Age" precision={2} value={franchise.meanAge}/>
                 </Col>
                 <Col span={4} offset={0}>
-                    <Statistic title="Salaries" prefix={'$'} precision={2}
+                    <Statistic title="Salaries (m)" prefix={'$'} precision={2}
                                value={franchise.salaries}/>
                 </Col>
             </Row>

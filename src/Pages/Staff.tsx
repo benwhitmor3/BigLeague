@@ -25,7 +25,8 @@ export const Staff: React.FunctionComponent = observer(() => {
             <div>
                 <Row gutter={[0,24]}>
                     <Col span={24}>
-                        <div data-intro="Each season you will sign a General Manager and Coach to help your team."
+                        <div data-intro="Each season you will sign a General Manager and Coach to help your team.
+                        They have unique traits and attributes."
                              data-step={1} className="card-demo">
                         <StaffInfo/>
                         </div>
@@ -33,7 +34,7 @@ export const Staff: React.FunctionComponent = observer(() => {
                 </Row>
                 <Row>
                     <Col span={24}>
-                        <div data-intro="Click to simulate bot staff signings." data-step={2} className="card-demo">
+                        <div data-intro="Click here to simulate opponent staff signings." data-step={2} className="card-demo">
                         <SetStaffButton/>
                         </div>
                     </Col>

@@ -97,7 +97,7 @@ export const SetStaffButton: React.FunctionComponent = observer(() => {
             return (
                 <div>
                     <Button style={simButtonStyles} onClick={() => setLineups()} block>
-                        Set Bots Staff
+                        Set Opponent Staff
                     </Button>
                 </div>
             );

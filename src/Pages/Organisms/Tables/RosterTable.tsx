@@ -218,7 +218,7 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
                 ),
             },
             {
-                title: 'Salary',
+                title: 'Salary (m)',
                 dataIndex: 'salary',
                 key: 'salary',
                 sorter: (a: any, b: any) => a.salary - b.salary,

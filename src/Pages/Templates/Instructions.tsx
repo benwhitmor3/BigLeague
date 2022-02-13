@@ -1,14 +1,30 @@
 import React from 'react';
 import {observer} from 'mobx-react'
-import {Typography, Divider, Card, Col, Row, List, Tag, Image} from 'antd';
+import {Typography, Divider, Card, Col, Row, List, Tag, Image, Button} from 'antd';
 import PlayerDistribution from "../../assets/PlayerDistribution.png"
 import DevelopmentDistribution from "../../assets/DevelopmentDistribution.png"
 import Actions from "../../assets/Actions.png"
 import {colour, suit_icon} from "../Utils/tablefunctions";
+import {useNavigate} from 'react-router-dom';
+import CSS from "csstype";
 
 const {Title, Paragraph, Text} = Typography;
 
+export const beginButtonStyles: CSS.Properties = {
+    backgroundColor: '#7395aa',
+    marginTop: '20px',
+    marginBottom: '20px',
+    border: '0px',
+    borderRadius: '2px',
+    fontSize: '16px',
+    color: '#ffffff',
+    boxShadow: 'rgba(27, 31, 35, .3) 0 1px 0',
+    verticalAlign: 'middle',
+    cursor: 'pointer'
+};
+
 export const Instructions: React.FunctionComponent = observer(() => {
+    const navigate = useNavigate();
 
     const cities = [
         {city: "Los Angeles"},
@@ -525,6 +541,9 @@ export const Instructions: React.FunctionComponent = observer(() => {
                     category. The costs of each action are described in the table above.
                 </Typography>
             </Card>
+            <Button style={beginButtonStyles} onClick={() => navigate('/Franchise')} block>
+                        Begin Your Journey
+            </Button>
         </div>
     );
 })

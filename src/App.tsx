@@ -116,8 +116,8 @@ const App: React.FunctionComponent = observer(() => {
                             <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
                                 <Menu.Item key="1"><Link to="/Home">Home</Link></Menu.Item>
                                 <Menu.Item key="2"><Link to="/Franchise">Franchise</Link></Menu.Item>
-                                <Menu.Item key="10" style={{position: 'absolute', top: 0, right: 0}}>Register<a href="/Register"/></Menu.Item>
-                                {isLoggedIn ? (
+                                <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
+                                {store.isLoggedIn ? (
                                         <Menu.Item key="11" style={{float: 'right'}} onClick={() => {
                                             deleteToken()
                                         }}>Logout

@@ -21,13 +21,14 @@ export const DraftTemplate: React.FunctionComponent = observer(() => {
     return (
         <div>
             <div data-intro="Welcome to the draft! This represents the order of picks." data-step={1} className="card-demo">
-                <div data-intro="This simulates the next pick in the draft." data-step={2} className="card-demo">
+                <div data-intro="This simulates an opponent's pick in the draft." data-step={2} className="card-demo">
                     <DraftButton/>
                 </div>
                 <BestDraftPlayer/>
                 <DraftOrder/>
             </div>
-            <div data-intro="Here are the players available to draft. Click draft prospect to select a player for your team."
+            <div data-intro="Here are the players available to draft. Click the draft prospect button to select a
+            player for your team."
                 data-step={3} className="card-demo">
                 <DraftTable/>
             </div>

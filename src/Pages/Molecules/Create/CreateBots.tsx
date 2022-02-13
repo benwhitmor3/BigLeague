@@ -64,7 +64,7 @@ export const CreateBots: React.FunctionComponent = observer(() => {
                     </div>
                         <Button style={buttonStyles}
                                 onClick={() => createBots()}>
-                            Create Bots
+                            Create Opponents
                         </Button>
                 </Card>
                 </div>

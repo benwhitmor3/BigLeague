@@ -43,7 +43,7 @@ export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({fr
                         <Col span={12}>
                             <div
                                 data-intro="Congratulations! Your stadium has been built. To renovate the stadium or
-                                reconfigure seating please click the edit button."
+                                reconfigure seating click the edit button."
                                 data-step={1} className="card-demo">
                                 <StadiumCard franchise={franchise}/>
                             </div>
@@ -52,7 +52,7 @@ export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({fr
                     <Row>
                         <Col span={24}>
                             <div data-intro="Franchise statistics are displayed here. Each season you will need to set
-                            advertising and prices. Choose carefully!"
+                            advertising and prices. Choose wisely!"
                             data-step={3} className="card-demo">
                                 <TicketTable franchise={franchise}/>
                             </div>
@@ -76,7 +76,7 @@ export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({fr
             </Row>
             <Row gutter={[0, 24]}>
                 <Col span={24}>
-                    <div data-intro="Your roster. Contracts and lineups will be set here." data-step={5} className="card-demo"
+                    <div data-intro="Your team roster. Contracts and lineups will be set here." data-step={5} className="card-demo"
                          >
                         <RosterTable franchise={franchise}/>
                     </div>

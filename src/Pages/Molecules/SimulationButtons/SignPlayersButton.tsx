@@ -85,7 +85,7 @@ export const SignPlayersButton: React.FunctionComponent = observer(() => {
             return (
                 <div>
                     <Button style={simButtonStyles} onClick={() => signPlayers()} block>
-                        Sign Bots Players
+                        Sign Opponent Players
                     </Button>
                 </div>
             );

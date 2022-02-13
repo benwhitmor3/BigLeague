@@ -18,6 +18,8 @@ const LineupSelect: React.FunctionComponent<ILineup> = observer(({current_lineup
             const [selected, setSelected] = useState(current_lineup);
 
             const submitLineup = (updated_lineup: any) => {
+                // hides roster alert if previously true
+                setRosterAlert(false)
                 // get current lineup array
                 let lineupArray: Array<string> = record.franchise.playerSet.map((p: PlayerTypeModelType) =>
                     p.lineup

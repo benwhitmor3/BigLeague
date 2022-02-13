@@ -93,7 +93,7 @@ export const SetLineupsButton: React.FunctionComponent = observer(() => {
             return (
                 <div>
                     <Button style={simButtonStyles} onClick={() => setLineups()} block>
-                        Set Bots Lineups
+                        Set Opponent Lineups
                     </Button>
                 </div>
             );
