@@ -5,6 +5,7 @@ import {useForm} from "react-hook-form";
 import {Alert, Card, Space} from "antd";
 import {Select} from "../../Atoms/Select";
 import {buttonStyles, cardStyles, formStyles, inputStyles, labelStyles} from "./CreateStyles";
+import introJs from "intro.js";
 
 type stadiumConfig = {
     stadiumName: string;

@@ -25,6 +25,7 @@ const {Header, Content, Footer} = Layout;
 
 const App: React.FunctionComponent = observer(() => {
 
+    // local isLoggedIn used as store.IsLoggedIn may not be available
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(localStorage.getItem('token') ? true : false)
     const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
 
@@ -71,9 +72,12 @@ const App: React.FunctionComponent = observer(() => {
                 .catch(() => {
                     console.log('not logged in');
                     store.setIsLoggedIn(false)
+                    setIsLoggedIn(false)
+                    localStorage.removeItem("email")
+                    localStorage.removeItem("token")
                 });
         }
-    }, [store.isLoggedIn, ]);
+    }, [store.isLoggedIn, email]);
 
 
     if (!store.isLoggedIn) {
@@ -83,7 +87,7 @@ const App: React.FunctionComponent = observer(() => {
                                 <Header style={{backgroundColor: '#12263A'}}>
                                     <Menu theme="dark" mode="horizontal" style={{backgroundColor: 'inherit', color: '#12263A'}}>
                                         <Menu.Item key="13" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
-                                        {isLoggedIn ? (
+                                        {store.isLoggedIn ? (
                                                 <Menu.Item key="14" style={{float: 'right'}} onClick={() => {
                                                     deleteToken()
                                                 }}>Logout
@@ -98,6 +102,7 @@ const App: React.FunctionComponent = observer(() => {
                                         <Routes>
                                             <Route path='/Register' element={<SignupForm/>}/>
                                             <Route path='/Login' element={<LoginForm/>}/>
+                                            <Route path='/*' element={<LoginForm/>}/>
                                         </Routes>
                                     </div>
                                 </Content>
@@ -161,7 +166,7 @@ const App: React.FunctionComponent = observer(() => {
                                 <Menu.Item key="8"><Link to="/Season">Season</Link></Menu.Item>
                                 <Menu.Item key="9"><Link to="/Leaderboard">Leaderboard</Link></Menu.Item>
                                 <Menu.Item key="10" style={{float: 'right'}}>Register<a href="/Register"/></Menu.Item>
-                                {isLoggedIn ? (
+                                {store.isLoggedIn ? (
                                         <Menu.Item key="11" style={{float: 'right'}} onClick={() => {
                                             deleteToken()
                                         }}>Logout

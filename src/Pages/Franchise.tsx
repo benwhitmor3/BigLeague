@@ -18,7 +18,7 @@ export const Franchise: React.FunctionComponent = observer(() => {
             setFranchise(store.User.franchise)
         }
         if (!store.User.league) {
-            introJs().start()
+            introJs().start();
         }
     }, [store.User])
 
@@ -36,9 +36,19 @@ export const Franchise: React.FunctionComponent = observer(() => {
             </div>
         )
     else if (store.User?.franchise === null)
-        return <CreateFranchise setFranchise={setFranchise}/>;
+        return (
+            <div
+                data-step={1} className="card-demo">
+                <CreateFranchise setFranchise={setFranchise}/>;
+            </div>
+        )
     else if (store.User.franchise.league.franchiseSet.length <= 1)
-        return <CreateBots/>;
+        return (
+            <div
+                data-step={1} className="card-demo">
+                <CreateBots/>;
+            </div>
+        )
     else {
         return <FranchiseCards franchise={franchise} setFranchise={setFranchise}/>
     }

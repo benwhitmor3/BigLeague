@@ -84,10 +84,7 @@ export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({fr
             </Row>
                 </div>
                 :
-                <div data-title="Welcome to the Big League!" data-intro="Please create your stadium here."
-                     className="card-demo">
                         <CreateStadium/>
-                </div>
             }
         </div>
     );

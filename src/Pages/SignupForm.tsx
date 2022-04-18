@@ -1,7 +1,9 @@
-import React, {useReducer, useEffect} from 'react';
+import React, {useReducer, useEffect, useContext} from 'react';
 import {Alert, Button, Card, Input, Space} from 'antd';
 import {observer} from "mobx-react";
 import {buttonStyles} from "./Molecules/Create/CreateStyles";
+import {useNavigate} from "react-router";
+import {StoreContext} from "../models";
 
 //state type (using redux for practice)
 type State = {
@@ -66,6 +68,9 @@ const reducer = (state: State, action: Action): State => {
 
 const SignupForm: React.FunctionComponent = observer(() => {
         const [state, dispatch] = useReducer(reducer, initialState);
+        const navigate = useNavigate();
+
+        const store = useContext(StoreContext)
 
         useEffect(() => {
             if (state.username.trim() && state.password.trim()) {
@@ -107,6 +112,10 @@ const SignupForm: React.FunctionComponent = observer(() => {
                     })
                     .then(json => {
                         localStorage.setItem('token', json.token);
+                        localStorage.setItem('email', state.email);
+                        store.setUser(state.email).then(r => console.log("SET USER"));
+                        store.setIsLoggedIn(true)
+                        navigate('/Home');
                         dispatch({type: 'setIsSuccess', payload: true})
                     })
                     .catch((response) => {
