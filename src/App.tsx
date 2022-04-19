@@ -28,6 +28,7 @@ const App: React.FunctionComponent = observer(() => {
     // local isLoggedIn used as store.IsLoggedIn may not be available
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(localStorage.getItem('token') ? true : false)
     const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
+    const [year, setYear] = useState<number>( new Date().getFullYear() );
 
     const deleteToken = () => {
         localStorage.removeItem("email")
@@ -106,7 +107,7 @@ const App: React.FunctionComponent = observer(() => {
                                         </Routes>
                                     </div>
                                 </Content>
-                                <Footer style={{textAlign: 'center'}}>The Big League ©2021 Created by Ben Whitmore</Footer>
+                                <Footer style={{textAlign: 'center'}}>© {year} The Big League </Footer>
                             </Router>
                         </Layout>
             </div>;
@@ -143,7 +144,7 @@ const App: React.FunctionComponent = observer(() => {
                             </div>
                         </Content>
 
-                        <Footer style={{textAlign: 'center'}}>The Big League ©2021 Created by Ben Whitmore</Footer>
+                        <Footer style={{textAlign: 'center'}}>© {year} The Big League </Footer>
                     </Router>
                 </Layout>
             </div>
@@ -194,7 +195,7 @@ const App: React.FunctionComponent = observer(() => {
                             </div>
                         </Content>
 
-                        <Footer style={{textAlign: 'center'}}>The Big League ©2021 Created by Ben Whitmore</Footer>
+                        <Footer style={{textAlign: 'center'}}>© {year} The Big League </Footer>
                     </Router>
                 </Layout>
             </div>
