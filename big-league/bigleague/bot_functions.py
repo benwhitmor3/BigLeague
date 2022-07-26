@@ -288,8 +288,7 @@ def set_ticket_price(prev_season, current_season, franchise):
         if revenue > revenue_max['revenue']:
             revenue_max = {'revenue': revenue, 'price': max_price, 'demand': demand}
 
-    # current_season.ticket_price = revenue_max['price']
-    current_season.ticket_price = 199
+    current_season.ticket_price = revenue_max['price']
     current_season.save()
 
 
@@ -325,8 +324,7 @@ def set_box_price(prev_season, current_season, franchise):
         if revenue > revenue_max['revenue']:
             revenue_max = {'revenue': revenue, 'price': max_price, 'demand': demand}
 
-    # current_season.box_price = revenue_max['price']
-    current_season.box_price = 199000
+    current_season.box_price = revenue_max['price']
     current_season.save()
 
 
