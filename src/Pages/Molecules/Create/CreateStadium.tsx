@@ -156,7 +156,7 @@ export const CreateStadium: React.FunctionComponent = observer(() => {
 
 
                 </form>
-            );
+            )
         }
     }
 )
