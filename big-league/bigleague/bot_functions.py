@@ -11,7 +11,7 @@ def set_lineup(franchise):
         player.save()
     for player in Player.objects.filter(franchise=franchise).order_by('-pv')[5:8]:
         player.lineup = "rotation"
-        player.save().
+        player.save()
     for player in Player.objects.filter(franchise=franchise).order_by('-pv')[8:]:
         player.lineup = "bench"
         player.save()
@@ -268,7 +268,6 @@ def set_ticket_price(prev_season, current_season, franchise):
 
     # declare price variable to maximize
     price = p.LpVariable("price", 0)
-
 
     # loop through stadium seats in intervals of 1000 and find revenue max for each
     for seats in numpy.arange(0, franchise.stadium.seats + 1000, 1000):
