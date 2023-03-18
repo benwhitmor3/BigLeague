@@ -3,7 +3,6 @@ import 'antd/dist/antd.css';
 import {Card, Col, Row, Statistic, Badge, Divider} from 'antd';
 import {observer} from "mobx-react";
 import {FranchiseTypeModelType, StoreContext} from "../../models";
-import {useTrail, animated} from 'react-spring'
 import MissingStartersIcon from "../Atoms/Icons/MissingStartersIcon";
 import StartersIcon from "../Atoms/Icons/StartersIcon";
 import UnsetPlayerIcon from "../Atoms/Icons/UnsetPlayerIcon";
@@ -97,19 +96,14 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
 
         // used for animation of franchises
         const [on, toggle] = useState(false);
-        const springs = useTrail(store.User.league.franchiseSet.length, {
-            to: {opacity: on ? 1 : 0.5},
-            config: {tension: 300}
-        });
+        // const springs = useTrail(store.User.league.franchiseSet.length, {
+        //     to: {opacity: on ? 1 : 0.5},
+        //     config: {tension: 300}
+        // });
 
         return (
             <Col span={24}>
-                {springs.map((animation, index) => (
-                    <animated.div style={{
-                        ...animation
-                    }}
-                                  key={index}>
-                        <Divider/>
+                {store.User.league.franchiseSet.length.map((index: any) => (
                         <Row>
                             <Col span={7} offset={0}>
                                  <Badge.Ribbon color={missingStaffColor(store.User.league.franchiseSet[index])}
@@ -161,7 +155,6 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
                                 </Badge.Ribbon>
                             </Col>
                         </Row>
-                    </animated.div>
                 ))}
             </Col>
         )

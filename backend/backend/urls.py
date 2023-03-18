@@ -19,7 +19,10 @@ from django.urls import path, include
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import routers
 from bigleague.views import *
-from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from graphene_django.views import GraphQLView
 from .schema import schema
 
@@ -50,7 +53,8 @@ urlpatterns = [
         graphiql=True,
         schema=schema
     ))),
-    path('token-auth/', obtain_jwt_token),
+    path('token-auth/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token-auth/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('current_user/', current_user),
     path('users/', UserList.as_view()),
     ]

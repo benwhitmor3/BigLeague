@@ -74,9 +74,10 @@ const LoginForm: React.FunctionComponent = observer(() => {
             })
             .then(json => {
                 console.log(json)
-                localStorage.setItem('token', json.token);
-                localStorage.setItem('email', json.user.email);
-                store.setUser(json.user.email).then(r => console.log("SET USER"));
+                localStorage.setItem('token', json.access);
+                localStorage.setItem('refresh', json.refresh);
+                localStorage.setItem('email', data.email);
+                store.setUser(data.email).then(() => console.log("SET USER"));
                 store.setIsLoggedIn(true)
                 navigate('/Home');
             })

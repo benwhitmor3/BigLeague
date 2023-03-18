@@ -5,7 +5,6 @@ import {useForm} from "react-hook-form";
 import {Alert, Card, Space} from "antd";
 import {Select} from "../../Atoms/Select";
 import {buttonStyles, cardStyles, formStyles, inputStyles, labelStyles} from "./CreateStyles";
-import introJs from "intro.js";
 
 type stadiumConfig = {
     stadiumName: string;
@@ -110,6 +109,7 @@ export const CreateStadium: React.FunctionComponent = observer(() => {
                             <input name="seats" type="number" style={inputStyles} onChange={event => {
                                 setSeats(event.target.valueAsNumber)
                             }} ref={register({
+                                valueAsNumber: true,
                                 required: {
                                     value: true,
                                     message: "Seats is a required field",
@@ -125,6 +125,7 @@ export const CreateStadium: React.FunctionComponent = observer(() => {
                             <input name="boxes" type="number" style={inputStyles} onChange={event => {
                                 setBoxes(event.target.valueAsNumber)
                             }} ref={register({
+                                valueAsNumber: true,
                                 required: {
                                     value: true,
                                     message: "Boxes is a required field",

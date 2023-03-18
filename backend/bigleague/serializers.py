@@ -1,6 +1,6 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User, Franchise, League, City, Stadium, GM, Coach, Player, Action, Season
-from rest_framework_jwt.settings import api_settings
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,13 +16,15 @@ class UserSerializerWithToken(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     def get_token(self, obj):
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-        payload = jwt_payload_handler(obj)
-        token = jwt_encode_handler(payload)
-        print(token)
-        return token
+        tokens = RefreshToken.for_user(obj)
+        refresh = str(tokens)
+        access = str(tokens.access_token)
+        data = {
+            "refresh": refresh,
+            "access": access,
+        }
+        print(data)
+        return data
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
