@@ -20,10 +20,10 @@ interface IFranchise {
 export const FranchiseCards: React.FunctionComponent<IFranchise> = observer(({franchise, setFranchise}: IFranchise) => {
 
     useEffect(() => {
+        // if first season show tutorial
         if (franchise.seasonSet.length === 1) {
             introJs().start()
         }
-        console.log("Don't show tutorial")
     }, [franchise.stadium, franchise.seasonSet])
 
     return (

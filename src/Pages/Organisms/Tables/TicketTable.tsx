@@ -152,6 +152,7 @@ export const TicketTable: React.FunctionComponent<IFranchise> = observer(({franc
                         <div>
                             <form onSubmit={onSubmit}>
                             <input name="advertising" type="number" max={10} style={inputStyles} ref={register({
+                                valueAsNumber: true,
                                 required: {
                                     value: true,
                                     message: "Advertising is a required field",
@@ -182,6 +183,7 @@ export const TicketTable: React.FunctionComponent<IFranchise> = observer(({franc
                         <div>
                             <form onSubmit={onSubmit}>
                             <input name="ticketPrice" type="number" style={inputStyles} ref={register({
+                                valueAsNumber: true,
                                 required: {
                                     value: true,
                                     message: "Ticket Price is a required field",
@@ -214,6 +216,7 @@ export const TicketTable: React.FunctionComponent<IFranchise> = observer(({franc
                         <div>
                             <form onSubmit={onSubmit}>
                             <input name="boxPrice" type="number" style={inputStyles} ref={register({
+                                valueAsNumber: true,
                                 required: {
                                     value: true,
                                     message: "Ticket Price is a required field",

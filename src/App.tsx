@@ -25,7 +25,7 @@ const {Header, Content, Footer} = Layout;
 
 const App: React.FunctionComponent = observer(() => {
 
-    // local isLoggedIn used as store.IsLoggedIn may not be available
+    // need local isLoggedIn used as store. IsLoggedIn may not be available on refresh
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(localStorage.getItem('token') ? true : false)
     const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
     const [year, setYear] = useState<number>( new Date().getFullYear() );
@@ -33,6 +33,7 @@ const App: React.FunctionComponent = observer(() => {
     const deleteToken = () => {
         localStorage.removeItem("email")
         localStorage.removeItem("token")
+        localStorage.removeItem("refresh")
     }
 
     const {store, error, loading, data} = useQuery((store) =>
@@ -43,7 +44,7 @@ const App: React.FunctionComponent = observer(() => {
         )
     )
 
-    useEffect(() => {
+    const getCurrentUser = () => {
         if (isLoggedIn) {
             let link = '';
             if (window.location.port === '3000') {
@@ -53,12 +54,11 @@ const App: React.FunctionComponent = observer(() => {
             }
             fetch(window.location.protocol + "//" + link + '/current_user/', {
                 headers: {
-                    Authorization: `JWT ${localStorage.getItem('token')}`
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             })
                 .then(res => {
                     if (res.ok) {
-                        setIsLoggedIn(true)
                         return res.json();
                     }
                     return Promise.reject(res)
@@ -66,22 +66,59 @@ const App: React.FunctionComponent = observer(() => {
                 .then(json => {
                     console.log(json)
                     localStorage.setItem('email', json.email);
-                    store.setUser(json.email).then(r => console.log("SET USER"));
-                    store.setIsLoggedIn(true)
-                    setIsLoggedIn(true)
+                    store.setUser(json.email);
                 })
-                .catch(() => {
-                    console.log('not logged in');
+                .catch((response) => {
+                    console.log("failed to get current user", response.status, response.statusText);
                     store.setIsLoggedIn(false)
                     setIsLoggedIn(false)
-                    localStorage.removeItem("email")
-                    localStorage.removeItem("token")
-                });
+                    deleteToken()
+                })
         }
+    }
+
+
+    const handleRefresh = () => {
+        // this is for switching local between react and backend static local (3000 vs. 8000)
+        let link: string;
+        if (window.location.port === '3000') {
+            link = window.location.hostname + ':8000'
+        } else {
+            link = window.location.host
+        }
+        fetch(window.location.protocol + "//" + link + '/token-auth/refresh', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"refresh": localStorage.getItem("refresh")})
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                }
+                return Promise.reject(res)
+            })
+            .then(json => {
+                console.log(json)
+                localStorage.setItem('token', json.access);
+                localStorage.setItem('refresh', json.refresh);
+                getCurrentUser()
+            })
+            .catch((response) => {
+                console.log("failed to refresh token", response.status, response.statusText);
+                store.setIsLoggedIn(false)
+                setIsLoggedIn(false)
+                deleteToken()
+            });
+    };
+
+    useEffect(() => {
+       handleRefresh()
     }, [store.isLoggedIn, email]);
 
 
-    if (!store.isLoggedIn) {
+    if (!store.isLoggedIn && !isLoggedIn) {
         return <div>
                         <Layout className='layout'>
                             <Router>
