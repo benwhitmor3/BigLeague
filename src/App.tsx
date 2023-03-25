@@ -25,7 +25,7 @@ const {Header, Content, Footer} = Layout;
 
 const App: React.FunctionComponent = observer(() => {
 
-    // need local isLoggedIn used as store.IsLoggedIn may not be available on refresh
+    // need local isLoggedIn used as store. IsLoggedIn may not be available on refresh
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(localStorage.getItem('token') ? true : false)
     const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
     const [year, setYear] = useState<number>( new Date().getFullYear() );
@@ -59,7 +59,6 @@ const App: React.FunctionComponent = observer(() => {
             })
                 .then(res => {
                     if (res.ok) {
-                        setIsLoggedIn(true)
                         return res.json();
                     }
                     return Promise.reject(res)
@@ -67,16 +66,13 @@ const App: React.FunctionComponent = observer(() => {
                 .then(json => {
                     console.log(json)
                     localStorage.setItem('email', json.email);
-                    store.setUser(json.email).then(r => console.log("SET USER"));
-                    store.setIsLoggedIn(true)
-                    setIsLoggedIn(true)
+                    store.setUser(json.email);
                 })
-                .catch(() => {
+                .catch((response) => {
+                    console.log("failed to get current user", response.status, response.statusText);
                     store.setIsLoggedIn(false)
                     setIsLoggedIn(false)
-                    localStorage.removeItem("email")
-                    localStorage.removeItem("token")
-                    localStorage.removeItem("refresh")
+                    deleteToken()
                 })
         }
     }
@@ -110,7 +106,10 @@ const App: React.FunctionComponent = observer(() => {
                 getCurrentUser()
             })
             .catch((response) => {
-                console.log(response.status, response.statusText);
+                console.log("failed to refresh token", response.status, response.statusText);
+                store.setIsLoggedIn(false)
+                setIsLoggedIn(false)
+                deleteToken()
             });
     };
 
@@ -119,7 +118,7 @@ const App: React.FunctionComponent = observer(() => {
     }, [store.isLoggedIn, email]);
 
 
-    if (!store.isLoggedIn) {
+    if (!store.isLoggedIn && !isLoggedIn) {
         return <div>
                         <Layout className='layout'>
                             <Router>

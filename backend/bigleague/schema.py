@@ -342,7 +342,6 @@ class UpdateActionMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(self, info, action_input=None):
-        print(action_input)
         franchise = Franchise.objects.get(pk=action_input.franchise_id)
         obj, action = Action.objects.update_or_create(
             franchise=franchise,
