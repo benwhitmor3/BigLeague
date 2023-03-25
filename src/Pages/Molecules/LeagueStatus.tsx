@@ -103,52 +103,52 @@ export const LeagueStatus: React.FunctionComponent = observer(() => {
 
         return (
             <Col span={24}>
-                {store.User.league.franchiseSet.length.map((index: any) => (
+                {store.User.league.franchiseSet.map((franchise: any) => (
                         <Row>
                             <Col span={7} offset={0}>
-                                 <Badge.Ribbon color={missingStaffColor(store.User.league.franchiseSet[index])}
-                                              text={missingStaff(store.User.league.franchiseSet[index])}>
+                                 <Badge.Ribbon color={missingStaffColor(franchise)}
+                                              text={missingStaff(franchise)}>
                                 <Card bordered={false}
-                                      key={store.User.league.franchiseSet[index].id}
+                                      key={franchise.id}
                                       style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}}
                                 >
                                     <Statistic title="Franchise"
-                                               value={store.User.league.franchiseSet[index] ? store.User.league.franchiseSet[index].franchise : "None"}/>
+                                               value={franchise ? franchise.franchise : "None"}/>
                                 </Card>
                                  </Badge.Ribbon>
                             </Col>
                             <Col span={7} offset={1}>
-                                <Badge.Ribbon color={unsignedPlayerColor(store.User.league.franchiseSet[index])}
-                                              text={unsignedPlayer(store.User.league.franchiseSet[index])}>
+                                <Badge.Ribbon color={unsignedPlayerColor(franchise)}
+                                              text={unsignedPlayer(franchise)}>
                                     <Card bordered={false}
-                                          key={store.User.league.franchiseSet[index].id}
+                                          key={franchise.id}
                                           style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}}
                                     >
                                         <Row>
                                             <Col span={12}>
                                                 <Statistic title="General Manager"
-                                                           value={store.User.league.franchiseSet[index].gm ? store.User.league.franchiseSet[index]?.gm?.trait?.toLowerCase() : "None"}/>
+                                                           value={franchise.gm ? franchise?.gm?.trait?.toLowerCase() : "None"}/>
                                             </Col>
                                             <Col span={12}>
-                                                {unsignedPlayerLogic(store.User.league.franchiseSet[index])}
+                                                {unsignedPlayerLogic(franchise)}
                                             </Col>
                                         </Row>
                                     </Card>
                                 </Badge.Ribbon>
                             </Col>
                             <Col span={7} offset={1}>
-                                <Badge.Ribbon color={unsetPlayerColor(store.User.league.franchiseSet[index])}
-                                              text={unsetPlayers(store.User.league.franchiseSet[index])}>
+                                <Badge.Ribbon color={unsetPlayerColor(franchise)}
+                                              text={unsetPlayers(franchise)}>
                                     <Card bordered={false}
-                                          key={store.User.league.franchiseSet[index].id}
+                                          key={franchise.id}
                                           style={{boxShadow: 'rgba(9, 30, 66, 0.2) 0px 1px 1px, rgba(9, 30, 66, 0.1) 0px 0px 1px 1px'}}>
                                         <Row>
                                             <Col span={12}>
                                                 <Statistic title="Coach"
-                                                           value={store.User.league.franchiseSet[index].coach ? store.User.league.franchiseSet[index].coach?.name?.toLowerCase() : "None"}/>
+                                                           value={franchise.coach ? franchise.coach?.name?.toLowerCase() : "None"}/>
                                             </Col>
                                             <Col span={12}>
-                                                {unsetPlayerLogic(store.User.league.franchiseSet[index])}
+                                                {unsetPlayerLogic(franchise)}
                                             </Col>
                                         </Row>
                                     </Card>

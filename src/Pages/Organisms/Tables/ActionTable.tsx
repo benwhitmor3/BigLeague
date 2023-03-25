@@ -175,7 +175,7 @@ export const ActionTable: React.FunctionComponent<IFranchise> = observer(({franc
                                           beerGarden
                                           namingRights
                                           eventPlanning
-                                        \t}
+                                          }
                                          league{
                                           __typename
                                           id
