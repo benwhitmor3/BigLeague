@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models import Sum
 
 
 class MyUserManager(BaseUserManager):
@@ -69,6 +70,40 @@ class Franchise(models.Model):
     def __str__(self):
         return self.franchise
 
+    def starters(self):
+        return self.player_set.filter(lineup=Lineup.STARTER)
+
+    def starters_pv_sum(self):
+        return self.starters().aggregate(Sum('pv'))['pv__sum']
+
+    def rotations(self):
+        return self.player_set.filter(lineup=Lineup.ROTATION)
+
+    def suit_bonus(self):
+        if self.gm.trait == Trait.SUITOR:
+            return 0
+
+        spades = self.starters().filter(suit=Suit.SPADE).count()
+        hearts = self.starters().filter(suit=Suit.HEART).count()
+        diamonds = self.starters().filter(suit=Suit.DIAMOND).count()
+        clubs = self.starters().filter(suit=Suit.CLUB).count()
+        suit_bonus = 0
+        # spade adjustment
+        if spades <= 1:
+            suit_bonus += 0
+        else:
+            suit_bonus -= spades * (spades - 1)
+        # heart adjustment
+        suit_bonus += hearts * (5 - hearts)
+        # diamond adjustment
+        if diamonds > 0:
+            suit_bonus += 2 - (diamonds - 1)
+        # club adjustment
+        suit_bonus += (spades * clubs)
+
+        return suit_bonus
+
+
 
 class League(models.Model):
     league_name = models.CharField(max_length=25, unique=True)
@@ -76,6 +111,20 @@ class League(models.Model):
 
     def __str__(self):
         return self.league_name
+
+    def schedule(self):
+        franchises = self.franchise_set.all()
+        schedule = []
+        # everybody plays each other once schedule
+        for base in range(0, franchises.count()):
+            for other in range(base + 1, franchises.count()):
+                schedule.append([franchises[base], franchises[other]])
+        return schedule
+
+    def player_epv_by_percentile(self, percentile):
+        players_by_epv_ascending = self.player_set.all().order_by('epv').values_list('epv', flat=True)
+        epv_percentile_index = int(percentile / 100 * self.player_set.count())
+        return players_by_epv_ascending[epv_percentile_index]
 
 
 class City(models.Model):
@@ -102,6 +151,11 @@ class Stadium(models.Model):
 
     def __str__(self):
         return self.stadium_name
+
+    def home_field_advantage_factor(self, opponent: Franchise) -> int:
+        if opponent.coach.attribute_one == Attribute.ROAD or opponent.coach.attribute_two == Attribute.ROAD:
+            return 0
+        return self.home_field_advantage
 
 
 class Trait(models.TextChoices):
@@ -149,6 +203,36 @@ class Coach(models.Model):
     def __str__(self):
         return self.name
 
+    def standard_deviation_factor(self):
+        if self.attribute_one == Attribute.GUTS or self.attribute_two == Attribute.GUTS:
+            return 14
+        elif self.attribute_one == Attribute.FOCUS or self.attribute_two == Attribute.FOCUS:
+            return 7
+        return 9
+
+    def substitution_factor(self):
+        if self.attribute_one == Attribute.SUBSTITUTION or self.attribute_two == Attribute.SUBSTITUTION:
+            return 1
+        return 2
+
+    def underdog_factor(self, home_points, opponent):
+        if self.attribute_one == Attribute.UNDERDOG or self.attribute_two == Attribute.UNDERDOG:
+            if self.franchise.starters_pv_sum() < opponent.starters_pv_sum():
+                return home_points + 0.4 * (opponent.starters_pv_sum() - self.franchise.starters_pv_sum())
+        return 0
+
+    def teamwork_factor(self):
+        if self.attribute_one == Attribute.TEAMWORK and self.attribute_two == Attribute.TEAMWORK:
+            return 6
+        if self.attribute_one == Attribute.TEAMWORK or self.attribute_two == Attribute.TEAMWORK:
+            return 3
+        return 0
+
+    def clutch_factor(self, team_points, opponent_points):
+        if self.attribute_one == Attribute.CLUTCH or self.attribute_two == Attribute.CLUTCH:
+            if team_points < opponent_points:
+                return 6
+        return 0
 
 class Suit(models.TextChoices):
     DIAMOND = 'diamond', 'diamond'
@@ -194,6 +278,65 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+    def poor_performance(self, points_scored):
+        standard_deviation_factor = self.franchise.coach.standard_deviation_factor()
+        substitution_factor = self.franchise.coach.substitution_factor()
+        if points_scored < (self.pv - substitution_factor * standard_deviation_factor):
+            return True
+        return False
+
+    def salary_demand(self):
+        """Identical to Goegan salaries except:
+        1) division for contracts + 1 to help alleviate high salaries for shorter contracts.
+        2) "repeat" takes 2 points from grade instead of 4. "non-repeat" takes 1 point from grade instead of 2."""
+        grade = 5
+        if self.franchise.gm.trait == Trait.RECRUITER:
+            grade = 3
+
+        if self.contract != 0:
+            salary = grade * (self.epv / (self.contract + 1))
+            if self.renew == "repeat":
+                salary += 2 * (self.epv / (self.contract + 1))
+            elif self.renew == "non-repeat":
+                salary += 1 * (self.epv / (self.contract + 1))
+            if self.t_option != 0:
+                salary += ((self.contract - self.t_option) if self.t_option is not None else 0) * (
+                        self.epv / (self.contract + 1))
+            if self.p_option != 0:
+                salary -= 0.5 * ((self.contract - self.p_option) if self.p_option is not None else 0) * (
+                        self.epv / (self.contract + 1))
+            if self.age >= 27:
+                salary -= (self.age - 26) * (self.epv / (self.contract + 1))
+        else:
+            salary = None
+
+        return salary
+
+    def player_contract_grade(self):
+        """Identical to Goegan salaries except:
+        1) division for contracts + 1 to help alleviate high salaries for shorter contracts.
+        2) "repeat" takes 2 points from grade instead of 4. "non-repeat" takes 1 point from grade instead of 2."""
+        if self.contract != 0:
+            grade = (self.salary * (self.contract + 1)) / self.epv
+            if self.renew == "repeat":
+                grade -= 2
+            elif self.renew == "non-repeat":
+                grade -= 1
+            if self.t_option:
+                if self.t_option > 0:
+                    grade -= (self.contract - self.t_option)
+            if self.p_option:
+                if self.p_option > 0:
+                    grade += 0.5 * (self.contract - self.p_option)
+            if self.age >= 27:
+                grade += self.age - 26
+        else:
+            grade = None
+
+        if self.franchise.gm.trait == "recruiter":
+            grade += 2
+
+        return grade
 
 class PlayerHistory(models.Model):
     season = models.IntegerField(default=1)

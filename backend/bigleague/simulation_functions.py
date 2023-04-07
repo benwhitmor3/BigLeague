@@ -7,41 +7,54 @@ from .bot_functions import set_actions, set_advertising, set_ticket_price, set_b
 from .models import *
 
 
+def simulate_game(home, away):
+    def sim_player_points(players) -> list:
+        points_list = []
+        for player in players:
+            simmed_points = random.gauss(player.pv, player.franchise.coach.standard_deviation_factor())
+            points_list.append(simmed_points)
+        return points_list
+
+    def generate_team_points(franchise):
+
+        starter_points_list = sim_player_points(franchise.starters())
+        rotation_points_list = sim_player_points(franchise.rotations())
+
+        team_points = sum(starter_points_list)
+        rotation_points_list.sort()  # this is done so can get max rotation points with the first substitution
+        for starter, starter_points in zip(franchise.starters(), starter_points_list):
+            if rotation_points_list:
+                if starter.poor_performance(starter_points) and starter_points < rotation_points_list[-1]:
+                    team_points += rotation_points_list[-1] - starter_points
+                del rotation_points_list[-1]
+        return team_points
+
+    ''''___________________________________Base Team Points____________________________________'''''
+
+    home_points = generate_team_points(home)
+    home_points += home.suit_bonus()
+    away_points = generate_team_points(away)
+    away_points += away.suit_bonus()
+
+    '''__________________________more post_points coaching factors applied_______________________'''
+
+    # underdog coach factor
+    home_points += home.coach.underdog_factor(home_points, away)
+    away_points += away.coach.underdog_factor(away_points, home)
+    # teamwork coach factor
+    home_points += home.coach.teamwork_factor()
+    away_points += away.coach.teamwork_factor()
+    # home field advantage
+    home_points += home.stadium.home_field_advantage_factor(away)
+    # clutch coach factor
+    home_points += home.coach.clutch_factor(home_points, away_points)
+    away_points += away.coach.clutch_factor(away_points, home_points)
+
+    return {str(home): home_points, str(away): away_points}
+
+
 def simulate_season(league, season):
     """This simulates a season for a league"""
-
-    '''_____________________________________schedule_function___________________________________'''
-    def schedule_creation():
-        franchises = Franchise.objects.filter(league=league)
-        schedule = []
-        # everybody plays each other once schedule
-        for base in range(0, franchises.count()):
-            for other in range(base + 1, franchises.count()):
-                schedule.append([franchises[base], franchises[other]])
-        return schedule
-
-    '''_____________________________________suit_function___________________________________'''
-    def suit_bonus(suit_list):
-        suit_bonus = 0
-        spades = suit_list.count("spade")
-        hearts = suit_list.count("heart")
-        diamonds = suit_list.count("diamond")
-        clubs = suit_list.count("club")
-
-        # spade adjustment
-        if spades <= 1:
-            suit_bonus += 0
-        else:
-            suit_bonus -= spades * (spades - 1)
-        # heart adjustment
-        suit_bonus += hearts * (5 - hearts)
-        # diamond adjustment
-        if diamonds > 0:
-            suit_bonus += 2 - (diamonds - 1)
-        # club adjustment
-        suit_bonus += (spades * clubs)
-
-        return suit_bonus
 
     '''_____________________________________fan_functions___________________________________'''
     def fan_base(city_value, ppg, wins, losses, championships, bonuses, penalties):
@@ -50,148 +63,13 @@ def simulate_season(league, season):
     def fan_index(curr_fan_base, prev_fan_index):
         return (0.7 * curr_fan_base) + (0.4 * prev_fan_index)
 
-    '''_____________________________________simulation_functions___________________________________'''
-    def simulate_game(home, away):
-
-        ''''___________________________________Home____________________________________'''''
-        # focus/guts coach factor
-        if home.coach.attribute_one == 'guts' or home.coach.attribute_two == 'guts':
-            sd = 14
-        elif home.coach.attribute_one == 'focus' or home.coach.attribute_two == 'focus':
-            sd = 7
-        else:
-            sd = 9
-
-        starters = Player.objects.filter(franchise=home, lineup='starter')
-        rotation = Player.objects.filter(franchise=home, lineup='rotation')
-
-        # sum franchise pv starter_value (used for underdog coach)
-        home_starters_pv = Player.objects.filter(franchise=home, lineup='starter').aggregate(Sum('pv'))['pv__sum']
-        suit_list = Player.objects.filter(franchise=home, lineup='starter').values_list('suit', flat=True)
-
-        # Starters
-        starter_points = []
-        for starter in starters:
-            starter_points.append(random.gauss(starter.pv, sd))
-
-        # Rotation
-        rotation_points = []
-        for r in rotation:
-            rotation_points.append(random.gauss(r.pv, sd))
-        rotation_points.sort()  # this is done so can get max rotation points with the first substitution
-
-        # substitution coach factor
-        if home.coach.attribute_one == 'substitution' or home.coach.attribute_two == 'substitution':
-            substitution = 1
-        else:
-            substitution = 2
-
-        # if rotation points available, if starter is below sd threshold and lower than rotation option,
-        # then replace relevant starter_points
-        for idx, player in enumerate(zip(starter_points, starters)):
-            if rotation_points:
-                if player[0] < (player[1].pv - (substitution * sd)) and player[0] < rotation_points[-1]:
-                    starter_points[idx] = rotation_points[-1]
-                    del rotation_points[-1]
-
-        # suitor GM factor
-        if home.gm.trait == 'suitor':
-            home_points = sum(starter_points)
-        else:
-            # needs list as passes queryset
-            home_points = sum(starter_points) + suit_bonus(list(suit_list))
-
-        '''___________________________________Away____________________________________'''
-        # focus/guts coach factor
-        if away.coach.attribute_one == 'guts' or away.coach.attribute_two == 'guts':
-            sd = 14
-        elif away.coach.attribute_one == 'focus' or away.coach.attribute_two == 'focus':
-            sd = 7
-        else:
-            sd = 9
-
-        starters = Player.objects.filter(franchise=away, lineup='starter')
-        rotation = Player.objects.filter(franchise=away, lineup='rotation')
-
-        # sum franchise pv starter_value (used for underdog coach)
-        away_starters_pv = Player.objects.filter(franchise=away, lineup='starter').aggregate(Sum('pv'))['pv__sum']
-        suit_list = Player.objects.filter(franchise=away, lineup='starter').values_list('suit', flat=True)
-
-        # Starters
-        starter_points = []
-        for starter in starters:
-            starter_points.append(random.gauss(starter.pv, sd))
-
-        # Rotation
-        rotation_points = []
-        for r in rotation:
-            rotation_points.append(random.gauss(r.pv, sd))
-        rotation_points.sort()  # this is done so can get max rotation points with the first substitution
-
-        # substitution coach factor
-        if away.coach.attribute_one == 'substitution' or away.coach.attribute_two == 'substitution':
-            substitution = 1
-        else:
-            substitution = 2
-
-        # if rotation points available, if starter is below sd threshold and lower than rotation option,
-        # then replace relevant starter_points
-        for idx, player in enumerate(zip(starter_points, starters)):
-            if rotation_points:
-                if player[0] < (player[1].pv - (substitution * sd)) and player[0] < rotation_points[-1]:
-                    starter_points[idx] = rotation_points[-1]
-                    del rotation_points[-1]
-
-        # suitor GM factor
-        if away.gm.trait == 'suitor':
-            away_points = sum(starter_points)
-        else:
-            # needs list as passes queryset
-            away_points = sum(starter_points) + suit_bonus(list(suit_list))
-
-        '''__________________________more post_points coaching factors applied_______________________'''
-
-        # underdog coach factor
-        if home.coach.attribute_one == 'underdog' or home.coach.attribute_two == 'underdog':
-            if home_starters_pv < away_starters_pv:
-                home_points = home_points + 0.4 * (away_starters_pv - home_starters_pv)
-        if away.coach.attribute_one == 'underdog' or away.coach.attribute_two == 'underdog':
-            if away_starters_pv < home_starters_pv:
-                away_points = away_points + 0.4 * (home_starters_pv - away_starters_pv)
-
-        # teamwork coach factor
-        if home.coach.attribute_one == 'teamwork' or home.coach.attribute_two == 'teamwork':
-            home_points += 3
-            if home.coach.attribute_one == 'teamwork' and home.coach.attribute_two == 'teamwork':
-                home_points += 3
-        if away.coach.attribute_one == 'teamwork' or away.coach.attribute_two == 'teamwork':
-            away_points += 3
-            if away.coach.attribute_one == 'teamwork' and away.coach.attribute_two == 'teamwork':
-                away_points += 3
-
-        # home field advantage
-        home_points += home.stadium.home_field_advantage
-        # road coach factor for away team
-        if away.coach.attribute_one == 'road' or away.coach.attribute_two == 'road':
-            home_points -= home.stadium.home_field_advantage
-
-        # clutch coach factor
-        if home.coach.attribute_one == 'clutch' or home.coach.attribute_two == 'clutch':
-            if home_points < away_points:
-                home_points += 6
-        if away.coach.attribute_one == 'clutch' or away.coach.attribute_two == 'clutch':
-            if away_points < home_points:
-                away_points += 6
-
-        return {str(home): home_points, str(away): away_points}
-
     '''Simulation Starts Here'''
     # set actions for bots
     set_actions(league, season)
     # apply actions selected by league
     apply_actions(league, season)
     # create league schedule
-    league_schedule = schedule_creation()
+    league_schedule = league.schedule()
     results = {}
     # simulated season
     for series in league_schedule:
@@ -229,11 +107,13 @@ def simulate_season(league, season):
         if season == 1:
             prev_season = current_season
         else:
-            prev_season = Season.objects.get(franchise__franchise=franchise, franchise__league=league, season=(season - 1))
+            prev_season = Season.objects.get(franchise__franchise=franchise, franchise__league=league,
+                                             season=(season - 1))
 
         current_season.championships = prev_season.championships
         # get champion
-        if franchise == Season.objects.filter(franchise__league=league, season=season).order_by('-wins', '-ppg')[0].franchise:
+        if franchise == Season.objects.filter(franchise__league=league, season=season).order_by('-wins', '-ppg')[
+            0].franchise:
             current_season.championships = prev_season.championships + 1
         # calculate fan base
         current_season.fan_base = fan_base(franchise.stadium.city.city_value, current_season.ppg, current_season.wins,
@@ -385,9 +265,10 @@ def contract_option_true(league):
 def renewal_true(league):
     """Determines if a renewal will be activated——based on pv threshold (top 20%)."""
     num_of_players = Player.objects.filter(league=league).count()
-    pv_threshold = Player.objects.filter(league=league).order_by("-pv")[int(0.2*num_of_players)].pv
+    pv_threshold = Player.objects.filter(league=league).order_by("-pv")[int(0.2 * num_of_players)].pv
     # apply to all players in league with a bot franchise, one year left, and a renewable contract
-    for player in Player.objects.filter(league=league, franchise__user=None, contract=1, renew__in=["non-repeat", "repeat"]):
+    for player in Player.objects.filter(league=league, franchise__user=None, contract=1,
+                                        renew__in=["non-repeat", "repeat"]):
         if player.pv > pv_threshold:
             if player.renew == "repeat":
                 player.contract += 1

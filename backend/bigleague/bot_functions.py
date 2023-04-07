@@ -22,10 +22,10 @@ def set_staff(league, franchise):
     if franchise.gm is None:
         # if franchise has fewer than 4 players on roster
         if franchise.player_set.count() < 4:
-            options = ['scouter'] * 3 + ['recruiter'] * 3 + ['trainer']
+            options = 3 * ['scouter'] + 3 * ['recruiter'] + ['trainer']
             franchise.gm = GM.objects.get(league=league, trait=random.choice(options))
         # if franchise has more than than 3 spades
-        elif franchise.player_set.filter(suit='spade').count() > 3:
+        elif franchise.player_set.filter(suit=Suit.SPADE).count() > 3:
             options = ['suitor']
             franchise.gm = GM.objects.get(league=league, trait=random.choice(options))
         # if franchise has more than 3 young players (22 and younger)
@@ -34,7 +34,7 @@ def set_staff(league, franchise):
             franchise.gm = GM.objects.get(league=league, trait=random.choice(options))
         # if franchise has won a championship
         elif franchise.season_set.filter(championships__gt=0).count() > 1:
-            options = ['promoter'] * 3 + ['facilitator'] * 3 + ['scouter'] + ['recruiter'] + ['trainer']
+            options = 3 * ['promoter'] + 3 * ['facilitator'] + ['scouter'] + ['recruiter'] + ['trainer']
             franchise.gm = GM.objects.get(league=league, trait=random.choice(options))
         else:
             options = ['promoter'] + ['facilitator'] + ['suitor'] + ['scouter'] + ['recruiter'] + ['trainer']
@@ -45,93 +45,39 @@ def set_staff(league, franchise):
     franchise.save()
 
 
-def calculate_salary(franchise, player):
-    """Identical to Goegan salaries except:
-    1) division for contracts + 1 to help alleviate high salaries for shorter contracts.
-    2) "repeat" takes 2 points from grade instead of 4. "non-repeat" takes 1 point from grade instead of 2."""
-
-    # GM Recruiter
-    if franchise.gm.trait == "recruiter":
-        grade = 3
-    else:
-        grade = 5
-
-    if player.contract != 0:
-        salary = grade * (player.epv / (player.contract + 1))
-        if player.renew == "repeat":
-            salary += 2 * (player.epv / (player.contract + 1))
-        elif player.renew == "non-repeat":
-            salary += 1 * (player.epv / (player.contract + 1))
-        if player.t_option != 0:
-            salary += ((player.contract - player.t_option) if player.t_option is not None else 0) * (
-                    player.epv / (player.contract + 1))
-        if player.p_option != 0:
-            salary -= 0.5 * ((player.contract - player.p_option) if player.p_option is not None else 0) * (
-                    player.epv / (player.contract + 1))
-        if player.age >= 27:
-            salary -= (player.age - 26) * (player.epv / (player.contract + 1))
-    else:
-        salary = None
-
-    return salary
-
-
-def calculate_grade(franchise, player):
-    """Identical to Goegan salaries except:
-    1) division for contracts + 1 to help alleviate high salaries for shorter contracts.
-    2) "repeat" takes 2 points from grade instead of 4. "non-repeat" takes 1 point from grade instead of 2."""
-
-    if player.contract != 0:
-        grade = (player.salary * (player.contract + 1)) / player.epv
-        if player.renew == "repeat":
-            grade -= 2
-        elif player.renew == "non-repeat":
-            grade -= 1
-        if player.t_option:
-            if player.t_option > 0:
-                grade -= (player.contract - player.t_option)
-        if player.p_option:
-            if player.p_option > 0:
-                grade += 0.5 * (player.contract - player.p_option)
-        if player.age >= 27:
-            grade += player.age - 26
-    else:
-        grade = None
-
-    # GM Recruiter
-    if franchise.gm.trait == "recruiter":
-        grade += 2
-
-    return grade
-
-
 def sign_players(franchise):
-    """Sign players for bots, uses epv threshold (top 20%, top 40%) to determine contract.
+    """Sign players for bots, uses epv threshold (80th, 60th percentile) to determine contract.
     Better players get longer, player-friendly contracts"""
 
-    total_players = Player.objects.filter(league=franchise.league).count()
-    first_epv_threshold = Player.objects.filter(league=franchise.league).order_by('-epv')[int(0.2*total_players)].epv
-    second_epv_threshold = Player.objects.filter(league=franchise.league).order_by('-epv')[int(0.4*total_players)].epv
+    def good_contract():
+        return random.choice([3, 4, 4, 4, 5, 5, 5, 5, 5, 5])
+
+    def average_contract():
+        return random.choice([2, 3, 3, 4, 4, 4, 5, 5, 5, 5])
+
+    def random_contract():
+        return random.choice([1, 2, 3, 4, 5])
+
+    eighty_percentile_epv = franchise.league.player_epv_by_percentile(80)
+    sixty_percentile_epv = franchise.league.player_epv_by_percentile(60)
 
     # filter for players on a team without a contract
     for player in Player.objects.filter(franchise=franchise, contract__isnull=True):
         # set contract
-        if player.epv > first_epv_threshold:
-            options = [3, 4, 4, 4, 5, 5, 5, 5, 5, 5]
-            player.contract = random.choice(options)
-        elif player.epv > second_epv_threshold:
-            options = [2, 3, 3, 4, 4, 4, 5, 5, 5, 5]
-            player.contract = random.choice(options)
+        if player.epv > eighty_percentile_epv:
+            player.contract = good_contract()
+        elif player.epv > sixty_percentile_epv:
+            player.contract = average_contract()
         else:
-            player.contract = random.randint(1, 5)
+            player.contract = random_contract()
         # set t_option and p_option
         if player.contract == 5:
-            if player.epv > first_epv_threshold:
+            if player.epv > eighty_percentile_epv:
                 options = [None, None, None, None, None, None, None, None, 4, 4]
                 player.t_option = random.choice(options)
                 options = [None, None, None, None, None, None, None, 3, 4, 4]
                 player.p_option = random.choice(options)
-            elif player.epv > second_epv_threshold:
+            elif player.epv > sixty_percentile_epv:
                 options = [None, None, None, None, None, None, 3, 3, 4, 4]
                 player.t_option = random.choice(options)
                 options = [None, None, None, None, None, None, 3, 3, 4, 4]
@@ -142,12 +88,12 @@ def sign_players(franchise):
                 options = [None, None, None, None, None, None, None, 3, 4, 4]
                 player.p_option = random.choice(options)
         elif player.contract == 4:
-            if player.epv > first_epv_threshold:
+            if player.epv > eighty_percentile_epv:
                 options = [None, None, None, None, None, None, None, None, 3, 3]
                 player.t_option = random.choice(options)
                 options = [None, None, None, None, None, None, None, 2, 3, 3]
                 player.p_option = random.choice(options)
-            elif player.epv > second_epv_threshold:
+            elif player.epv > sixty_percentile_epv:
                 options = [None, None, None, None, None, None, 2, 2, 3, 3]
                 player.t_option = random.choice(options)
                 options = [None, None, None, None, None, None, 2, 2, 3, 3]
@@ -158,12 +104,12 @@ def sign_players(franchise):
                 options = [None, None, None, None, None, None, 2, 3, 3, 3]
                 player.p_option = random.choice(options)
         elif player.contract == 3:
-            if player.epv > first_epv_threshold:
+            if player.epv > eighty_percentile_epv:
                 options = [None, None, None, None, None, None, None, 2, 2, 2]
                 player.t_option = random.choice(options)
                 options = [None, None, None, None, None, None, 1, 2, 2, 2]
                 player.p_option = random.choice(options)
-            elif player.epv > second_epv_threshold:
+            elif player.epv > sixty_percentile_epv:
                 options = [None, None, None, None, None, None, None, 1, 2, 2]
                 player.t_option = random.choice(options)
                 options = [None, None, None, None, None, None, None, 1, 2, 2]
@@ -186,10 +132,10 @@ def sign_players(franchise):
             if player.age > 23:
                 player.renew = "no"
             else:
-                if player.epv > first_epv_threshold:
+                if player.epv > eighty_percentile_epv:
                     renew_weight = ["no"] * 5 + ["non-repeat"] * 2 + ["repeat"] * 3
                     player.renew = random.choice(renew_weight)
-                elif player.epv > second_epv_threshold:
+                elif player.epv > sixty_percentile_epv:
                     renew_weight = ["no"] * 7 + ["non-repeat"] * 1 + ["repeat"] * 2
                     player.renew = random.choice(renew_weight)
                 else:
@@ -199,10 +145,10 @@ def sign_players(franchise):
             if player.age > 24:
                 player.renew = "no"
             else:
-                if player.epv > first_epv_threshold:
+                if player.epv > eighty_percentile_epv:
                     renew_weight = ["no"] * 5 + ["non-repeat"] * 2 + ["repeat"] * 3
                     player.renew = random.choice(renew_weight)
-                elif player.epv > second_epv_threshold:
+                elif player.epv > sixty_percentile_epv:
                     renew_weight = ["no"] * 8 + ["non-repeat"] * 1 + ["repeat"] * 1
                     player.renew = random.choice(renew_weight)
                 else:
@@ -212,10 +158,10 @@ def sign_players(franchise):
             if player.age > 25:
                 player.renew = "no"
             else:
-                if player.epv > first_epv_threshold:
+                if player.epv > eighty_percentile_epv:
                     renew_weight = ["no"] * 7 + ["non-repeat"] * 2 + ["repeat"] * 1
                     player.renew = random.choice(renew_weight)
-                elif player.epv > second_epv_threshold:
+                elif player.epv > sixty_percentile_epv:
                     renew_weight = ["no"] * 8 + ["non-repeat"] * 2
                     player.renew = random.choice(renew_weight)
                 else:
@@ -225,27 +171,27 @@ def sign_players(franchise):
             if player.age > 26:
                 player.renew = "no"
             else:
-                if player.epv > first_epv_threshold:
+                if player.epv > eighty_percentile_epv:
                     renew_weight = ["no"] * 7 + ["non-repeat"] * 1 + ["repeat"] * 2
                     player.renew = random.choice(renew_weight)
-                elif player.epv > second_epv_threshold:
+                elif player.epv > sixty_percentile_epv:
                     renew_weight = ["no"] * 8 + ["non-repeat"] * 2
                     player.renew = random.choice(renew_weight)
                 else:
                     renew_weight = ["no"] * 9 + ["non-repeat"] * 1
                     player.renew = random.choice(renew_weight)
         else:
-            if player.epv > first_epv_threshold:
+            if player.epv > eighty_percentile_epv:
                 renew_weight = ["no"] * 8 + ["non-repeat"] * 1 + ["repeat"] * 1
                 player.renew = random.choice(renew_weight)
-            elif player.epv > second_epv_threshold:
+            elif player.epv > sixty_percentile_epv:
                 renew_weight = ["no"] * 8 + ["non-repeat"] * 2
                 player.renew = random.choice(renew_weight)
             else:
                 renew_weight = ["no"] * 9 + ["non-repeat"] * 1
                 player.renew = random.choice(renew_weight)
 
-        player.salary = calculate_salary(franchise, player)
+        player.salary = player.salary_demand()
         player.grade = calculate_grade(franchise, player)
         player.save()
 
@@ -276,7 +222,7 @@ def set_ticket_price(prev_season, current_season, franchise):
         prob += (15 * advertising + 200) * (6 * advertising + 2 * fan_index + 3 * grade - price)
         # Define constraints
         prob += price >= 0
-        prob += ((15*advertising + 200) * (6*advertising + 2*fan_index + 3*grade - price)) <= int(seats)
+        prob += ((15 * advertising + 200) * (6 * advertising + 2 * fan_index + 3 * grade - price)) <= int(seats)
 
         status = prob.solve()
         # make sure we got an optimal solution
