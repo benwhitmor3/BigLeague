@@ -49,7 +49,6 @@ const LoginForm: React.FunctionComponent = observer(() => {
     const navigate = useNavigate();
 
     const store = useContext(StoreContext)
-
     const handleLogin = (e: any, data: any) => {
         // this is for switching local between react and backend static local (3000 vs. 8000)
         let link = '';

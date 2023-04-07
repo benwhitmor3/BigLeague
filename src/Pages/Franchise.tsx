@@ -12,7 +12,6 @@ export const Franchise: React.FunctionComponent = observer(() => {
     const store = useContext(StoreContext)
 
     const [franchise, setFranchise] = useState<FranchiseTypeModelType>(store.User?.franchise ? store.User.franchise : null);
-
     useEffect(() => {
         if (store.User) {
             setFranchise(store.User.franchise)

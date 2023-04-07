@@ -112,7 +112,6 @@ const App: React.FunctionComponent = observer(() => {
                 deleteToken()
             });
     };
-
     useEffect(() => {
        handleRefresh()
     }, [store.isLoggedIn, email]);
