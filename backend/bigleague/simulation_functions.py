@@ -1,6 +1,4 @@
-import random
 import pandas as pd
-from django.db.models import Sum
 from .finance import ticket_revenue_per_season, box_revenue_per_season, merchandise_revenue, tv_revenue, \
     stadium_construction, stadium_upkeep, operating_cost, advertising_cost, salary_cost
 from .bot_functions import set_actions, set_advertising, set_ticket_price, set_box_price
@@ -39,8 +37,8 @@ def simulate_game(home, away):
     '''__________________________more post_points coaching factors applied_______________________'''
 
     # underdog coach factor
-    home_points += home.coach.underdog_factor(home_points, away)
-    away_points += away.coach.underdog_factor(away_points, home)
+    home_points += home.coach.underdog_factor(away)
+    away_points += away.coach.underdog_factor(home)
     # teamwork coach factor
     home_points += home.coach.teamwork_factor()
     away_points += away.coach.teamwork_factor()
@@ -168,37 +166,9 @@ def simulate_season(league, season):
 def development(league):
     """Progresses all players after each season. Adds 1 to age and adjusts pv, epv, and s_epv."""
     for player in Player.objects.filter(league=league):
-        # add one year to age
-        player.age += 1
-        # add one year to year
-        player.year += 1
-        # adds 1 pv with s.d. 1 for players 20 or younger
-        if player.age <= 20:
-            player.pv = player.pv + random.gauss(1, 1)
-        # adds 0 pv with s.d. 1 for players 21 to 23
-        elif 21 <= player.age <= 23:
-            player.pv = player.pv + random.gauss(0, 1)
-        # subtracts 1 pv with s.d. 1 for players 24 to 26
-        elif 24 <= player.age <= 26:
-            player.pv = player.pv + random.gauss(-1, 1)
-        # subtracts 2 pv with s.d. 1 for players 27 to 30
-        else:
-            player.pv = player.pv + random.gauss(-2, 1)
-        # adds 1 pv if trainer active
-        if player.trainer:
-            player.pv += 1
-            player.trainer = False
-        # updating epv based on new pv
-        sd = 3
-        player.epv = player.pv + random.gauss(0, sd)
-        # updating s_epv based on new pv
-        sd = 2
-        player.s_epv = player.pv + random.gauss(0, sd)
-
+        player.develop()
         player.save()
-
-        # if player is over 30 years old they retire or if player pv is below 8 they retire
-        if player.age > 30 or player.pv < 8:
+        if player.age > 30 or player.pv < 8:  # retirement criteria
             player.delete()
 
 
@@ -208,12 +178,10 @@ def contract_progression(league):
         # updating contract and option years (once option is zero it can be activated)
         if signed_player.contract > 0:
             signed_player.contract -= 1
-        if signed_player.t_option is not None:
-            if signed_player.t_option > 0:
-                signed_player.t_option -= 1
-        if signed_player.p_option is not None:
-            if signed_player.p_option > 0:
-                signed_player.p_option -= 1
+        if signed_player.t_option is not None and signed_player.t_option > 0:
+            signed_player.t_option -= 1
+        if signed_player.p_option is not None and signed_player.p_option > 0:
+            signed_player.p_option -= 1
         # if contract expires release player from franchise
         if signed_player.contract == 0:
             signed_player.contract = None

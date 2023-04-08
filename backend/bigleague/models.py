@@ -1,3 +1,4 @@
+import random
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -112,6 +113,9 @@ class League(models.Model):
     def __str__(self):
         return self.league_name
 
+    def free_agents(self):
+        return self.player_set.filter(year__gt=1, contract__isnull=True, franchise__isnull=True)
+
     def schedule(self):
         franchises = self.franchise_set.all()
         schedule = []
@@ -215,10 +219,10 @@ class Coach(models.Model):
             return 1
         return 2
 
-    def underdog_factor(self, home_points, opponent):
+    def underdog_factor(self, opponent):
         if self.attribute_one == Attribute.UNDERDOG or self.attribute_two == Attribute.UNDERDOG:
             if self.franchise.starters_pv_sum() < opponent.starters_pv_sum():
-                return home_points + 0.4 * (opponent.starters_pv_sum() - self.franchise.starters_pv_sum())
+                return 0.4 * (opponent.starters_pv_sum() - self.franchise.starters_pv_sum())
         return 0
 
     def teamwork_factor(self):
@@ -278,12 +282,41 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
-    def poor_performance(self, points_scored):
-        standard_deviation_factor = self.franchise.coach.standard_deviation_factor()
-        substitution_factor = self.franchise.coach.substitution_factor()
-        if points_scored < (self.pv - substitution_factor * standard_deviation_factor):
-            return True
-        return False
+    def is_free_agent(self):
+        return True if self.year > 1 and self.contract is None and self.franchise is None else False
+
+    def classification(self):
+        if self.epv > self.franchise.league.player_epv_by_percentile(90):
+            return "superstar"
+        if self.epv > self.franchise.league.player_epv_by_percentile(80):
+            return "allstar"
+        if self.epv > self.franchise.league.player_epv_by_percentile(60):
+            return "good"
+        if self.epv > self.franchise.league.player_epv_by_percentile(40):
+            return "average"
+        return "below_average"
+
+    def develop(self):
+        self.age, self.year = self.age + 1, self.year + 1
+
+        standard_deviation = 1
+        if self.age <= 20:
+            self.pv += random.gauss(1, standard_deviation)
+        elif 21 <= self.age <= 23:
+            self.pv += random.gauss(0, standard_deviation)
+        elif 24 <= self.age <= 26:
+            self.pv += random.gauss(-1, standard_deviation)
+        else:
+            self.pv += random.gauss(-2, standard_deviation)
+
+        if self.trainer:
+            self.pv += 1
+            self.trainer = False
+
+        standard_deviation = 3  # updating epv based on new pv
+        self.epv = self.pv + random.gauss(0, standard_deviation)
+        standard_deviation = 2  # updating s_epv based on new pv
+        self.s_epv = self.pv + random.gauss(0, standard_deviation)
 
     def salary_demand(self):
         """Identical to Goegan salaries except:
@@ -312,7 +345,7 @@ class Player(models.Model):
 
         return salary
 
-    def player_contract_grade(self):
+    def contract_grade(self):
         """Identical to Goegan salaries except:
         1) division for contracts + 1 to help alleviate high salaries for shorter contracts.
         2) "repeat" takes 2 points from grade instead of 4. "non-repeat" takes 1 point from grade instead of 2."""
@@ -337,6 +370,14 @@ class Player(models.Model):
             grade += 2
 
         return grade
+
+    def poor_performance(self, points_scored):
+        standard_deviation_factor = self.franchise.coach.standard_deviation_factor()
+        substitution_factor = self.franchise.coach.substitution_factor()
+        if points_scored < (self.pv - substitution_factor * standard_deviation_factor):
+            return True
+        return False
+
 
 class PlayerHistory(models.Model):
     season = models.IntegerField(default=1)
