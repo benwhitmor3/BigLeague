@@ -55,6 +55,7 @@ def simulate_season(league, season):
     """This simulates a season for a league"""
 
     '''_____________________________________fan_functions___________________________________'''
+
     def fan_base(city_value, ppg, wins, losses, championships, bonuses, penalties):
         return (2 * city_value) + ppg + wins - losses + (3 * championships) + bonuses - penalties
 
@@ -265,117 +266,50 @@ def apply_actions(league, season_num):
     for franchise in Franchise.objects.filter(league=league):
         season = Season.objects.get(franchise__franchise=franchise, franchise__league=league, season=season_num)
         stadium = Stadium.objects.get(franchise=franchise)
-        # stadium improvement actions (permanent)
-        if franchise.action.improved_bathrooms and franchise.action.improved_bathrooms_complete is False:
-            stadium.grade += 1
-            stadium.max_grade += 1
-            stadium.save()
-            season.expenses += 5000000
-            season.save()
-            franchise.action.improved_bathrooms_complete = True
-        if franchise.action.improved_concessions and franchise.action.improved_concessions_complete is False:
-            stadium.grade += 1
-            stadium.max_grade += 1
-            stadium.save()
-            season.expenses += 5000000
-            season.save()
-            franchise.action.improved_concessions_complete = True
-        if franchise.action.jumbotron and franchise.action.jumbotron_complete is False:
-            stadium.grade += 1
-            stadium.max_grade += 1
-            stadium.save()
-            season.expenses += 5000000
-            season.save()
-            franchise.action.jumbotron_complete = True
-        if franchise.action.upscale_bar and franchise.action.upscale_bar_complete is False:
-            stadium.grade += 1
-            stadium.max_grade += 1
-            stadium.save()
-            season.expenses += 5000000
-            season.save()
-            franchise.action.upscale_bar_complete = True
-        if franchise.action.hall_of_fame and franchise.action.hall_of_fame_complete is False:
-            stadium.grade += 2
-            stadium.max_grade += 2
-            stadium.save()
-            season.expenses += 10000000
-            season.save()
-            franchise.action.hall_of_fame_complete = True
-        if franchise.action.improved_seating and franchise.action.improved_seating_complete is False:
-            stadium.grade += 2
-            stadium.max_grade += 2
-            stadium.save()
-            season.expenses += 10000000
-            season.save()
-            franchise.action.improved_seating_complete = True
-        if franchise.action.improved_sound and franchise.action.improved_sound_complete is False:
-            stadium.grade += 2
-            stadium.max_grade += 2
-            stadium.save()
-            season.expenses += 10000000
-            season.save()
-            franchise.action.improved_sound_complete = True
-        if franchise.action.party_deck and franchise.action.party_deck_complete is False:
-            stadium.grade += 2
-            stadium.max_grade += 2
-            stadium.save()
-            season.expenses += 10000000
-            season.save()
-            franchise.action.party_deck_complete = True
-        if franchise.action.wi_fi and franchise.action.wi_fi_complete is False:
-            stadium.grade += 2
-            stadium.max_grade += 2
-            stadium.save()
-            season.expenses += 10000000
-            season.save()
-            franchise.action.wi_fi_complete = True
-        # home field advantages
-        if franchise.action.easy_runs and franchise.action.easy_runs_complete is False:
-            stadium.home_field_advantage += 1
-            stadium.save()
-            season.expenses += 20000000
-            season.save()
-            franchise.action.easy_runs_complete = True
-        if franchise.action.fan_factor and franchise.action.fan_factor_complete is False:
-            stadium.home_field_advantage += 1
-            stadium.save()
-            season.expenses += 50000000
-            season.save()
-            franchise.action.fan_factor_complete = True
-        # promotions
-        if franchise.action.fan_night:
-            season.fan_index += 6
-            season.expenses += 2000000
-            season.save()
-            franchise.action.fan_night = False
-        if franchise.action.family_game:
-            season.fan_index += 6
-            season.expenses += 2000000
-            season.save()
-            franchise.action.family_game = False
-        if franchise.action.door_prizes:
-            season.fan_index += 6
-            season.expenses += 2000000
-            season.save()
-            franchise.action.door_prizes = False
-        if franchise.action.mvp_night:
-            season.fan_index += 10
-            season.expenses += 5000000
-            season.save()
-            franchise.action.mvp_night = False
-        if franchise.action.parade_of_champions:
-            season.fan_index += 10
-            season.expenses += 5000000
-            season.save()
-            franchise.action.parade_of_champions = False
-        # Concessions and Revenue
+
+        available_actions = {  # dictionaries are ordered as of python 3.7
+            # stadium improvements
+            "improved_bathrooms": {"type": "stadium", "boost": 1, "cost": 5000000},
+            "improved_concessions": {"type": "stadium", "boost": 1, "cost": 5000000},
+            "jumbotron": {"type": "stadium", "boost": 1, "cost": 5000000},
+            "upscale_bar": {"type": "stadium", "boost": 1, "cost": 5000000},
+            "hall_of_fame": {"type": "stadium", "boost": 2, "cost": 10000000},
+            "improved_seating": {"type": "stadium", "boost": 2, "cost": 10000000},
+            "improved_sound": {"type": "stadium", "boost": 2, "cost": 10000000},
+            "party_deck": {"type": "stadium", "boost": 2, "cost": 10000000},
+            "wi_fi": {"type": "stadium", "boost": 2, "cost": 10000000},
+            # home field improvements
+            "easy_runs": {"type": "home_field", "boost": 1, "cost": 20000000},
+            "fan_factor": {"type": "home_field", "boost": 1, "cost": 50000000},
+            # promoter improvements
+            "fan_night": {"type": "promotion", "boost": 6, "cost": 2000000},
+            "family_game": {"type": "promotion", "boost": 6, "cost": 2000000},
+            "door_prizes": {"type": "promotion", "boost": 6, "cost": 2000000},
+            "mvp_night": {"type": "promotion", "boost": 10, "cost": 5000000},
+            "parade_of_champions": {"type": "promotion", "boost": 10, "cost": 5000000}
+        }
+        for action_name, action_effect in available_actions.items():
+            action = getattr(franchise.action, action_name)
+            # use default False for reusable actions without _complete field
+            action_complete = getattr(franchise.action, action_name + "_complete", False)
+            if action is True and action_complete is False:
+                boost, cost = action_effect["boost"], action_effect["cost"]
+                if action_effect["type"] == "stadium":
+                    stadium.grade += boost
+                    stadium.max_grade += boost
+                if action_effect["type"] == "home_field":
+                    stadium.home_field_advantage += boost
+                if action_effect["type"] == "promotion":
+                    season.fan_index += boost
+                season.expenses += cost
+                setattr(franchise.action, action_name + "_complete", True)
+
+        # Concessions and Revenue (custom effects — hard to write clean function)
         if franchise.action.fan_favourites:
             stadium.grade += 1
             stadium.max_grade += 1
-            stadium.save()
             season.fan_index += 1
             season.expenses += 10000000
-            season.save()
             franchise.action.fan_favourites = False
         if franchise.action.gourmet_restaurant and franchise.action.gourmet_restaurant_complete is False:
             season.revenue += int(random.gauss(10000000, 5000000))
@@ -405,10 +339,10 @@ def apply_actions(league, season_num):
         # reset number of actions to 2
         franchise.action.number_of_actions = 2
 
-        franchise.save()
-        franchise.action.save()
         stadium.save()
         season.save()
+        franchise.action.save()
+        franchise.save()
 
 
 def off_season(league):

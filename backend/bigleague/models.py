@@ -105,7 +105,6 @@ class Franchise(models.Model):
         return suit_bonus
 
 
-
 class League(models.Model):
     league_name = models.CharField(max_length=25, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, to_field="username", db_column="username")
@@ -181,6 +180,20 @@ class GM(models.Model):
     def __str__(self):
         return self.trait
 
+    def facilitator_factor(self):
+        if self.trait == Trait.FACILITATOR:
+            return 2
+        return 0
+
+    def trainer_factor(self, franchise):
+        if self.trait == Trait.TRAINER:
+            players = franchise.player_set.filter(trainer=False).order_by('-pv')[0:franchise.action.number_of_actions]
+            for player in players:
+                player.trainer = True
+                player.save()
+                franchise.action.number_of_actions -= 1
+            franchise.action.save()
+
 
 class Attribute(models.TextChoices):
     TEAMWORK = 'teamwork', 'teamwork'
@@ -237,6 +250,7 @@ class Coach(models.Model):
             if team_points < opponent_points:
                 return 6
         return 0
+
 
 class Suit(models.TextChoices):
     DIAMOND = 'diamond', 'diamond'
@@ -446,6 +460,9 @@ class Action(models.Model):
 
     def __str__(self):
         return self.franchise.franchise
+
+    # def action_simulator(self, franchise):
+    #     print(franchise)
 
 
 class Season(models.Model):
