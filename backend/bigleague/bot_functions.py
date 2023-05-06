@@ -12,7 +12,7 @@ def set_lineup(franchise: Franchise):
         NOTE: could maximize by pv_sum instead of epv_sum to make bot lineups better
     """
 
-    def calculate_suit_bonus_and_epv_sum(test_lineup: tuple[Player]) -> tuple[int, int]:
+    def estimated_ppg(test_lineup: tuple[Player]) -> tuple[int, int]:
         suit_bonus, epv_sum = 0, 0
         suit_counter = {'spade': 0, 'heart': 0, 'diamond': 0, 'club': 0}
         for player in test_lineup:
@@ -31,7 +31,7 @@ def set_lineup(franchise: Franchise):
             suit_bonus += 2 - (diamonds - 1)
         # club adjustment
         suit_bonus += (spades * clubs)
-        return suit_bonus, epv_sum
+        return suit_bonus + epv_sum
 
     def suitor_set_lineup():
         players_sorted_by_epv = franchise.player_set.all().order_by('-epv')
@@ -46,13 +46,13 @@ def set_lineup(franchise: Franchise):
             bench_player.save()
 
     def non_suitor_set_lineup():
-        max_ppg = 0
+        max_points = 0
         for lineup_combination in combinations(franchise.player_set.all(), 5):
-            suit_bonus, epv_sum = calculate_suit_bonus_and_epv_sum(lineup_combination)
-            if suit_bonus + epv_sum > max_ppg:
-                max_ppg = suit_bonus + epv_sum
+            estimated_points = estimated_ppg(lineup_combination)
+            if estimated_points > max_points:
+                max_points = estimated_points
                 best_lineup = lineup_combination
-        for player in franchise.player_set.all():  # reset lineups first for .exclude()
+        for player in franchise.player_set.all():  # reset lineups first for .exclude() filter below
             player.lineup = None
             player.save()
         for starting_player in best_lineup:

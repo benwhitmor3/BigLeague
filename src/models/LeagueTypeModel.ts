@@ -62,6 +62,20 @@ export const LeagueTypeModel = LeagueTypeModelBase
             })
             return draftClass
         },
+        get draftClassDrafted() {
+            let draftClassDrafted = self.playerSet.filter((player: PlayerTypeModelType) => {
+                if (player.year === 1 && player.franchise)
+                    return player
+            }).length
+            return draftClassDrafted
+        },
+        get draftClassRemaining(){
+            let draftClassRemaining = self.playerSet.filter((player: PlayerTypeModelType) => {
+                if (player.year === 1 && player.franchise == null)
+                    return player
+            }).length
+            return draftClassRemaining
+        },
         get bestDraftPlayer() {
             let draftClass = self.playerSet.filter((player: PlayerTypeModelType) => {
                 if (player.year === 1 && player.franchise == null)

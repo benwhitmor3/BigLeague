@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
 import {Button} from 'antd';
 import {observer} from "mobx-react";
-import {FranchiseTypeModelType, StoreContext} from "../../../models";
+import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../../../models";
 import {simButtonStyles} from "./SimButtonStyles";
 import {mutateCreatePlayerQuery} from "../../Utils/queries";
 
@@ -10,6 +10,35 @@ export const DraftButton: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
+
+        const draftSimRepeat = (franchise: FranchiseTypeModelType, player: any) => {
+
+            let numOfPicks: number
+            let currentTeamIndex: number = store.User.league.draftOrder.indexOf(franchise)
+            let userTeamIndex: number = store.User.league.draftOrder.indexOf(store.User.franchise)
+
+            if (userTeamIndex > currentTeamIndex) {
+                numOfPicks = userTeamIndex - currentTeamIndex
+            } else {
+                numOfPicks = Math.abs(store.User.league.franchiseSet.length - currentTeamIndex + userTeamIndex)
+            }
+
+            if (store.User.league.draftClassRemaining < numOfPicks) {
+                numOfPicks = store.User.league.draftClassRemaining
+            }
+
+            for (let i = 0; i < numOfPicks; i++) {
+                draftRepeater(i);
+            }
+
+            function draftRepeater(i: any) {
+                setTimeout(function () {
+                    franchise = store.User.league.draftingFranchise
+                    player = store.User.league.bestDraftPlayer
+                    draftSim(franchise, player)
+                }, 650 * i);
+            }
+        }
 
         const draftSim = (franchise: FranchiseTypeModelType, player: any) => {
             store.mutateCreatePlayer({
@@ -34,7 +63,7 @@ export const DraftButton: React.FunctionComponent = observer(() => {
                     }
                 }, mutateCreatePlayerQuery,
                 undefined
-            );
+            )
             try {
                 // make next franchise in draft order draftingFranchise
                 store.User.league.setDraftingFranchise(store.User.league.draftOrder[store.User.league.draftOrder.indexOf(franchise) + 1])
@@ -49,10 +78,11 @@ export const DraftButton: React.FunctionComponent = observer(() => {
             <div>
                 {store.User.league.bestDraftPlayer ?
                     <Button style={simButtonStyles}
-                            onClick={() => draftSim(store.User.league.draftingFranchise, store.User.league.bestDraftPlayer)}
+                            onClick={() => draftSimRepeat(store.User.league.draftingFranchise, store.User.league.bestDraftPlayer)}
                             block>
                         Draft Sim
-                    </Button> :
+                    </Button>
+                    :
                     <h1 style={{textAlign: 'center'}}>
                         Go to OffSeason
                     </h1>

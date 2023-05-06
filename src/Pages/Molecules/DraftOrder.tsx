@@ -17,8 +17,11 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
         }
 
         useEffect(() => {
-            if (!store.User.franchise.league.draftingFranchise) {
-                store.User.franchise.league.setDraftingFranchise(store.User.league.draftOrder[0])
+            if (!store.User.league.draftingFranchise) {
+                let idx = store.User.league.draftClassDrafted % store.User.league.franchiseSet.length
+                // make next franchise in draft order based on how many players already drafted
+                // using remained to deal with seocnd round of draft
+                store.User.league.setDraftingFranchise(store.User.league.draftOrder[idx])
             }
         }, [])
 
@@ -28,20 +31,20 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
             return (
                 <div>
                     {store.User.league.draftOrder ? store.User.league.draftOrder.map((franchise: FranchiseTypeModelType, index: number) => {
-                            let number = (index + 1)
-                            return <Card
-                                hoverable
-                                onClick={() =>
-                                    store.User.league.setDraftingFranchise(franchise)
-                                }
-                                key={index} style={{
-                                width: '12.5%', marginTop: '20px', marginBottom: '20px', display: 'inline-flex',
-                                border: draft_order_border(franchise.franchise)
-                            }}>
-                                <span>{number + ' ' + franchise.franchise}</span>
-                                <span>{" –– Players: " + store.User.league.franchiseplayers(franchise.franchise).length}</span>
-                            </Card>
-                        }
+                                let number = (index + 1)
+                                return <Card
+                                    hoverable
+                                    onClick={() =>
+                                        store.User.league.setDraftingFranchise(franchise)
+                                    }
+                                    key={index} style={{
+                                    width: '12.5%', marginTop: '20px', marginBottom: '20px', display: 'inline-flex',
+                                    border: draft_order_border(franchise.franchise)
+                                }}>
+                                    <span>{number + ' ' + franchise.franchise}</span>
+                                    <span>{" –– Players: " + store.User.league.franchiseplayers(franchise.franchise).length}</span>
+                                </Card>
+                            }
                         )
                         : null
                     }

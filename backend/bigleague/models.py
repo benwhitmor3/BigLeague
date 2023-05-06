@@ -251,6 +251,14 @@ class Coach(models.Model):
                 return 6
         return 0
 
+    def fame_factor(self):
+        fan_index_boost = 0
+        if self.attribute_one == 'fame':
+            fan_index_boost += 5
+        if self.attribute_two == 'fame':
+            fan_index_boost += 5
+        return fan_index_boost
+
 
 class Suit(models.TextChoices):
     DIAMOND = 'diamond', 'diamond'
@@ -331,6 +339,20 @@ class Player(models.Model):
         self.epv = self.pv + random.gauss(0, standard_deviation)
         standard_deviation = 2  # updating s_epv based on new pv
         self.s_epv = self.pv + random.gauss(0, standard_deviation)
+
+    def reset(self):
+        reset_attributes = {
+            "contract": None,
+            "p_option": None,
+            "t_option": None,
+            "renew": None,
+            "grade": None,
+            "salary": None,
+            "lineup": None,
+            "franchise": None,
+        }
+        for attribute, reset_value in reset_attributes.items():
+            setattr(self, attribute, reset_value)
 
     def salary_demand(self):
         """Identical to Goegan salaries except:

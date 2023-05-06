@@ -1,6 +1,6 @@
 import pandas as pd
-from .finance import ticket_revenue_per_season, box_revenue_per_season, merchandise_revenue, tv_revenue, \
-    stadium_construction, stadium_upkeep, operating_cost, advertising_cost, salary_cost
+from .expense_functions import season_expenses
+from .revenue_functions import season_revenue
 from .bot_functions import set_actions, set_advertising, set_ticket_price, set_box_price
 from .models import *
 
@@ -51,16 +51,17 @@ def simulate_game(home, away):
     return {str(home): home_points, str(away): away_points}
 
 
-def simulate_season(league, season):
+def simulate_season(league: League, season: int):
     """This simulates a season for a league"""
 
     '''_____________________________________fan_functions___________________________________'''
 
-    def fan_base(city_value, ppg, wins, losses, championships, bonuses, penalties):
-        return (2 * city_value) + ppg + wins - losses + (3 * championships) + bonuses - penalties
+    def fan_base(curr_season: Season, city_value: int) -> float:
+        return (2 * city_value) + curr_season.ppg + curr_season.wins - curr_season.losses \
+               + (3 * curr_season.championships) + curr_season.bonuses - curr_season.penalties
 
-    def fan_index(curr_fan_base, prev_fan_index):
-        return (0.7 * curr_fan_base) + (0.4 * prev_fan_index)
+    def fan_index(prev_season: Season, curr_season: Season) -> float:
+        return (0.7 * curr_season.fan_base) + (0.4 * prev_season.fan_index)
 
     '''Simulation Starts Here'''
     # set actions for bots
@@ -104,47 +105,35 @@ def simulate_season(league, season):
     for franchise in Franchise.objects.filter(league=league):
         current_season = Season.objects.get(franchise__franchise=franchise, franchise__league=league, season=season)
         if season == 1:
-            prev_season = current_season
+            previous_season = current_season
         else:
-            prev_season = Season.objects.get(franchise__franchise=franchise, franchise__league=league,
+            previous_season = Season.objects.get(franchise__franchise=franchise, franchise__league=league,
                                              season=(season - 1))
 
-        current_season.championships = prev_season.championships
+        current_season.championships = previous_season.championships
         # get champion
         if franchise == Season.objects.filter(franchise__league=league, season=season).order_by('-wins', '-ppg')[
             0].franchise:
-            current_season.championships = prev_season.championships + 1
+            current_season.championships = previous_season.championships + 1
         # calculate fan base
-        current_season.fan_base = fan_base(franchise.stadium.city.city_value, current_season.ppg, current_season.wins,
-                                           current_season.losses, current_season.championships, current_season.bonuses,
-                                           current_season.penalties)
+        current_season.fan_base = fan_base(current_season, franchise.stadium.city.city_value)
         # calculate fan index
-        current_season.fan_index = fan_index(current_season.fan_base, prev_season.fan_index)
+        current_season.fan_index = fan_index(previous_season, current_season)
         # apply fame coaching boost
-        if franchise.coach.attribute_one == 'fame':
-            current_season.fan_index += 5
-        if franchise.coach.attribute_two == 'fame':
-            current_season.fan_index += 5
+        current_season.fan_index += franchise.coach.fame_factor()
         # set advertising and prices for bot teams
         if current_season.franchise.user is None:
             current_season.advertising = set_advertising()
             current_season.save()
-            set_ticket_price(prev_season, current_season, franchise)
-            set_box_price(prev_season, current_season, franchise)
+            set_ticket_price(previous_season, current_season, franchise)
+            set_box_price(previous_season, current_season, franchise)
+
         # calculate season revenue
-        current_season.revenue += ticket_revenue_per_season(current_season.ticket_price, games_played,
-                                                            current_season.advertising, current_season.fan_index,
-                                                            franchise.stadium, current_season) \
-                                  + box_revenue_per_season(current_season.box_price, current_season.advertising,
-                                                           prev_season.fan_index, franchise.stadium, current_season) \
-                                  + merchandise_revenue(current_season.advertising, current_season.fan_index) \
-                                  + tv_revenue(league, season, games_played)
+        current_season.revenue += season_revenue(franchise, previous_season, current_season, season, games_played)
+
         # calculate season expenses
-        current_season.expenses += stadium_construction(franchise, season) \
-                                   + stadium_upkeep(franchise, season) \
-                                   + operating_cost() \
-                                   + advertising_cost(current_season.advertising) \
-                                   + salary_cost(franchise)
+        current_season.expenses += season_expenses(franchise, current_season, season)
+
         current_season.save()
 
     '''Player Stats Logged for Historicals'''
@@ -185,14 +174,7 @@ def contract_progression(league):
             signed_player.p_option -= 1
         # if contract expires release player from franchise
         if signed_player.contract == 0:
-            signed_player.contract = None
-            signed_player.p_option = None
-            signed_player.t_option = None
-            signed_player.renew = None
-            signed_player.grade = None
-            signed_player.salary = None
-            signed_player.lineup = None
-            signed_player.franchise = None
+            signed_player.reset()
         signed_player.save()
 
 
@@ -208,26 +190,12 @@ def contract_option_true(league):
     # player option
     for player in Player.objects.filter(league=league, p_option=0):
         if (player.salary / player.epv) < salary_per_epv * 0.75:
-            player.contract = None
-            player.p_option = None
-            player.t_option = None
-            player.renew = None
-            player.grade = None
-            player.salary = None
-            player.lineup = None
-            player.franchise = None
+            player.reset()
             player.save()
     # team option (bot franchises only)
     for player in Player.objects.filter(league=league, franchise__user=None, t_option=0):
         if (player.salary / player.epv) > salary_per_epv * 1.25:
-            player.contract = None
-            player.p_option = None
-            player.t_option = None
-            player.renew = None
-            player.grade = None
-            player.salary = None
-            player.lineup = None
-            player.franchise = None
+            player.reset()
             player.save()
 
 

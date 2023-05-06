@@ -15,8 +15,8 @@ def gen_franchise(league, num_of_franchises=7):
                        "Warriors", "Wild"]
     franchise_list = random.sample(franchise_names, k=num_of_franchises)
     cities = City.objects.filter(league=league)
-    for franchise_name in franchise_list:
-        franchise = Franchise.objects.create(franchise=franchise_name, league=league)
+    for idx, franchise_name in enumerate(franchise_list):
+        franchise = Franchise.objects.create(franchise=franchise_name, league=league, draft_position=idx)
         Stadium.objects.create(
             stadium_name=franchise_name + ' stadium',
             seats=random.randint(30000, 100000),
