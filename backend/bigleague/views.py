@@ -247,4 +247,3 @@ def league_reset_view(request):
         # return HttpResponse(request)
         # ADDED FOR DEPLOYMENT
         return HttpResponse(request, content_type='application/javascript')
-

@@ -20,6 +20,14 @@ from .serializers import UserSerializer, UserSerializerWithToken
 #     serializer_class = UserSerializer
 
 
+from django.shortcuts import render
+
+
+def render_react(request):
+    return render(request, "index.html")
+
+
+
 @api_view(['GET'])
 def current_user(request):
     """

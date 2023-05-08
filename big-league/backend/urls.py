@@ -13,10 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 from django.contrib import admin
 from django.urls import path, include
 from django.views.decorators.csrf import csrf_exempt
@@ -43,6 +39,7 @@ router.register(r'actions', ActionView, 'action_view')
 router.register(r'seasons', SeasonView, 'season_view')
 
 urlpatterns = [
+    path('', render_react),  # add the view to the url
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('league_generation', csrf_exempt(league_generation_view), name='league_generation'),
