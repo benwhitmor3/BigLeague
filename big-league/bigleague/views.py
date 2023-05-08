@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.http import HttpResponse
+from django.shortcuts import render
 from rest_framework import viewsets
 from .simulation_functions import off_season, simulate_season
 from .bot_functions import sign_players, set_lineup, set_staff, free_agency
@@ -20,12 +21,8 @@ from .serializers import UserSerializer, UserSerializerWithToken
 #     serializer_class = UserSerializer
 
 
-from django.shortcuts import render
-
-
 def render_react(request):
     return render(request, "index.html")
-
 
 
 @api_view(['GET'])
@@ -146,8 +143,6 @@ def league_generation_view(request):
             else:
                 gen_franchise(league, num_of_franchises - 1)
 
-        # return HttpResponse(request)
-        # ADDED FOR DEPLOYMENT
         return HttpResponse(request, content_type='application/javascript')
 
 
@@ -164,10 +159,7 @@ def sign_players_view(request):
             for franchise in franchises:
                 sign_players(franchise)
 
-        # return HttpResponse(request)
-        # ADDED FOR DEPLOYMENT
         return HttpResponse(request, content_type='application/javascript')
-
 
 
 def set_lineup_view(request):
@@ -183,10 +175,7 @@ def set_lineup_view(request):
             for franchise in franchises:
                 set_lineup(franchise)
 
-        # return HttpResponse(request)
-        # ADDED FOR DEPLOYMENT
         return HttpResponse(request, content_type='application/javascript')
-
 
 
 def set_staff_view(request):
@@ -202,10 +191,7 @@ def set_staff_view(request):
             for franchise in franchises:
                 set_staff(league, franchise)
 
-        # return HttpResponse(request)
-        # ADDED FOR DEPLOYMENT
         return HttpResponse(request, content_type='application/javascript')
-
 
 
 def free_agency_view(request):
@@ -219,10 +205,7 @@ def free_agency_view(request):
         with transaction.atomic():
             free_agency(league, int(season))
 
-        # return HttpResponse(request)
-        # ADDED FOR DEPLOYMENT
         return HttpResponse(request, content_type='application/javascript')
-
 
 
 def season_simulation_view(request):
@@ -237,10 +220,7 @@ def season_simulation_view(request):
             off_season(league)
             gen_player(league, Franchise.objects.filter(league=league).count() * 2, rookies=True)
 
-        # return HttpResponse(request)
-        # ADDED FOR DEPLOYMENT
         return HttpResponse(request, content_type='application/javascript')
-
 
 
 def league_reset_view(request):
@@ -252,7 +232,4 @@ def league_reset_view(request):
         with transaction.atomic():
             league.delete()
 
-        # return HttpResponse(request)
-        # ADDED FOR DEPLOYMENT
         return HttpResponse(request, content_type='application/javascript')
-
