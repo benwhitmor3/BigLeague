@@ -125,7 +125,7 @@ def sign_player(player: Player):
 
         return random.choice([1, 1, 1, 2, 2, 2, 3, 3, 3, 3])  # below_average
 
-    def generate_team_option(_player: Player) -> str | None:
+    def generate_team_option(_player: Player):
         classification = _player.classification()
         if classification == "allstar":
             return random.choice(8 * [None] + 2 * [None if _player.contract - 1 <= 0 else _player.contract - 1])
@@ -134,7 +134,7 @@ def sign_player(player: Player):
                                                                                                   _player.contract - 1]])
         return None  # below_average or superstar
 
-    def generate_player_option(_player: Player) -> int | None:
+    def generate_player_option(_player: Player):
         classification = _player.classification()
         if classification == "superstar":
             return random.choice(4 * [None] + 3 * [None if option <= 0 else option for option in [_player.contract - 2,
@@ -143,7 +143,7 @@ def sign_player(player: Player):
             return random.choice(8 * [None] + 2 * [None if _player.contract - 1 <= 0 else _player.contract - 1])
         return None  # average or below_average
 
-    def generate_player_renewal(_player: Player) -> str:
+    def generate_player_renewal(_player: Player):
         classification = _player.classification()
         if (_player.age + _player.contract) >= 30:
             return "no"
