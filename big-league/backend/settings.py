@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from datetime import timedelta
 # ADDED FOR DEPLOYMENT
-import django_heroku
+import django_on_heroku
 import dotenv
 import dj_database_url
 
@@ -34,9 +34,9 @@ DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 SECRET_KEY = '%bck1tqw86n+@j-qa85x700(#brnl)nl586p0*_+1c4&$=7s__'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 # ADDED FOR DEPLOYMENT
-DEBUG = False
+# DEBUG = False
 
 # ALLOWED_HOSTS = []
 # ADDED FOR DEPLOYMENT
@@ -84,6 +84,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# ADDED FOR DEPLOYMENT!
+STATIC_URL = '/static/'
+
+# ADDED FOR DEPLOYMENT!
+STATICFILES_DIRS = [
+    # Tell Django where to look for React's static files (css, js)
+    os.path.join(BASE_DIR, "build/static"),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# ADDED FOR DEPLOYMENT
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -184,16 +196,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-
-# ADDED FOR DEPLOYMENT!
-STATICFILES_DIRS = [
-    # Tell Django where to look for React's static files (css, js)
-    os.path.join(BASE_DIR, "build/static"),
-]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-
 # If this is used as TRUE then `CORS_ORIGIN_WHITELIST` will not have any effect, use as false with whitelist
 CORS_ORIGIN_ALLOW_ALL = False
 
@@ -205,7 +207,7 @@ CORS_ORIGIN_WHITELIST = (
      )
 
 # ADDED FOR DEPLOYMENT
-django_heroku.settings(locals())
+django_on_heroku.settings(locals())
 # Add these at the very last line of settings.py
 options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
