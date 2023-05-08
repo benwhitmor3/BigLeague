@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from datetime import timedelta
 # ADDED FOR DEPLOYMENT
-import django_on_heroku
+import django_heroku
 import dotenv
 import dj_database_url
 
@@ -207,7 +207,7 @@ CORS_ORIGIN_WHITELIST = (
      )
 
 # ADDED FOR DEPLOYMENT
-django_on_heroku.settings(locals())
+django_heroku.settings(locals())
 # Add these at the very last line of settings.py
 options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
