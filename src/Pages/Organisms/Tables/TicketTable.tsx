@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
-import {Table, Select, Row, Col} from 'antd';
+import {Table, Select, Row, Col, Popconfirm, Button} from 'antd';
 import {observer} from "mobx-react";
 import {IObservableArray, observable, toJS} from 'mobx';
 import {FranchiseTypeModelType, SeasonTypeModelType, StoreContext} from "../../../models";
@@ -240,11 +240,17 @@ export const TicketTable: React.FunctionComponent<IFranchise> = observer(({franc
                 title: 'Confirm',
                 key: 'confirm',
                 render: () => (
-                        <div>
-                            <form onSubmit={onSubmit}>
-                            <input type="submit" style={buttonStyles} value="Confirm"/>
-                            </form>
-                        </div>
+                    <Popconfirm
+                        title="Are you sure to choose these prices?"
+                        onConfirm={() => onSubmit()}
+                        okText="Yes"
+                        cancelText="No"
+                        placement="left"
+                    >
+                        <Button style={{...buttonStyles, ...{marginBottom: '12px', marginTop: '10px'}}}>
+                            Confirm
+                        </Button>
+                    </Popconfirm>
                 ),
             },
         ];

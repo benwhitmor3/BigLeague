@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
 import {Button} from 'antd';
 import {observer} from "mobx-react";
-import {FranchiseTypeModelType, PlayerTypeModelType, StoreContext} from "../../../models";
+import {FranchiseTypeModelType, StoreContext} from "../../../models";
 import {simButtonStyles} from "./SimButtonStyles";
 import {mutateCreatePlayerQuery} from "../../Utils/queries";
 

@@ -94,6 +94,13 @@ export const LeagueTypeModel = LeagueTypeModelBase
             })
             return freeAgentClass
         },
+        get freeAgentClassSigned() {
+            let freeAgentClassSigned = self.playerSet.filter((player: PlayerTypeModelType) => {
+                if (player.year !== 1 && player.contract == null && player.franchise)
+                    return player
+            })
+            return freeAgentClassSigned
+        },
         get draftOrder() {
             let draftOrder = self.franchiseSet.sort(function (a, b) {
                 // @ts-ignore

@@ -75,28 +75,6 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                 dataIndex: ["franchise", "franchise"],
                 key: "franchise",
             },
-             {
-                title: 'Action',
-                key: 'action',
-                render: (record: PlayerTypeModelType) => (
-
-                    (record.contract) ? (
-                        <Space size="middle">
-                            <Tag color={"#89dc0d"} style={{ color: "#000000", border: "3px solid #89dc0d"}}>
-                            Signed
-                            </Tag>
-                        </Space>
-                    ) : (
-                        <Space size="middle">
-                            <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝 </span>}
-                                 color={"#ffe479"} style={{ color: "#000000", border: "3px solid #ffe479", cursor: "pointer"}}
-                                 onClick={() => {setSelectedPlayer(record); setVisible(true)}}>
-                            Offer Contract
-                            </Tag>
-                        </Space>
-                    )
-                ),
-            },
         ];
 
 
@@ -109,9 +87,37 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                 render: (sEpv: number) => <span>{sEpv.toFixed(1)}</span>,
             }
 
+        let actionColumn =
+                {
+                    title: 'Action',
+                    key: 'action',
+                    render: (record: PlayerTypeModelType) => (
+
+                        (record.contract) ? (
+                            <Space size="middle">
+                                <Tag color={"#89dc0d"} style={{ color: "#000000", border: "3px solid #89dc0d"}}>
+                                    Signed
+                                </Tag>
+                            </Space>
+                        ) : (
+                            <Space size="middle">
+                                <Tag icon={<span style={{marginRight: '3px'}} role="img" aria-label="player"> 📝 </span>}
+                                     color={"#ffe479"} style={{ color: "#000000", border: "3px solid #ffe479", cursor: "pointer"}}
+                                     onClick={() => {setSelectedPlayer(record); setVisible(true)}}>
+                                    Offer Contract
+                                </Tag>
+                            </Space>
+                        )
+                    ),
+                }
+
 
         const columns = () => {
             if (store.User.franchise.gm !== null)
+                if (store.User.franchise.league.freeAgentClassSigned.length > 0) {
+                    insertArray(non_scouter_columns, 6, actionColumn)
+                }
+
                 if (store.User.franchise.gm.trait === "SCOUTER") {
                     let scouter_columns = non_scouter_columns
                     insertArray(non_scouter_columns, 3, sEPV_column)
@@ -119,7 +125,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                 } else {
                     return non_scouter_columns
                 }
-            else return non_scouter_columns
+            return non_scouter_columns
         }
 
         // need to make observable to update table (draftClass not being observed by ant d table)

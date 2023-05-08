@@ -160,7 +160,7 @@ export const SigningModal: React.FunctionComponent<IVisible> = observer(({visibl
                     <Input min={0} type="number" onChange={event => {
                         setSalary(event.target.valueAsNumber)
                     }} name="salary" style={formStyles}/>
-                    <span>million</span>
+                    <span>million / yr</span>
                     <br/>
                     <label>Contract Length: </label>
                     <Select defaultValue={contractlength} style={selectStyles} options={[

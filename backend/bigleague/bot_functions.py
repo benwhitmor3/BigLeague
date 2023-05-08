@@ -96,8 +96,13 @@ def set_staff(league, franchise):
     franchise.save()
 
 
-def sign_players(franchise):
-    """Sign players for bots, uses player classification method to determine contract
+def sign_players(franchise: Franchise):
+    for player in Player.objects.filter(franchise=franchise, contract__isnull=True):
+        sign_player(player)
+
+
+def sign_player(player: Player):
+    """Sign player for bots, uses player classification method to determine contract
     Better players get longer, player-friendly contracts"""
 
     def generate_contract_length(_player: Player) -> int:
@@ -153,16 +158,15 @@ def sign_players(franchise):
 
         return random.choice(8 * ["no"] + ["non-repeat"] + ["repeat"])
 
-    for player in Player.objects.filter(franchise=franchise, contract__isnull=True):
-        player.contract = generate_contract_length(player)  # contract length must be set first
-        player.t_option = generate_team_option(player)
-        player.p_option = generate_player_option(player)
-        player.renew = generate_player_renewal(player)
+    player.contract = generate_contract_length(player)  # contract length must be set first
+    player.t_option = generate_team_option(player)
+    player.p_option = generate_player_option(player)
+    player.renew = generate_player_renewal(player)
 
-        player.salary = player.salary_demand()
-        player.grade = player.contract_grade()
+    player.salary = player.salary_demand()
+    player.grade = player.contract_grade()
 
-        player.save()
+    player.save()
 
 
 def set_advertising():
@@ -254,8 +258,7 @@ def free_agency(league, season):
         while franchise.player_set.count() < 5:
             best_available_player: Player = league.free_agents().order_by("-pv")[0]
             best_available_player.franchise = franchise
-            best_available_player.grade = 99.99  # setting this to prevent outbidding by user team
-            best_available_player.save()
+            sign_player(best_available_player)
 
         # now that franchises have 5 players pick additional free agents with chance
         chance = random.randint(0, 100)

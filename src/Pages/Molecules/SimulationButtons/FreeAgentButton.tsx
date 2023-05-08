@@ -15,7 +15,7 @@ export const FreeAgencyButton: React.FunctionComponent = observer(() => {
         const email: any = localStorage.getItem('email') ? localStorage.getItem('email') : '';
 
         const signFreeAgents = () => {
-            let link = '';
+            let link;
             if (window.location.port === '3000') {
                 link = window.location.hostname + ':8000'
             } else {
@@ -116,9 +116,12 @@ export const FreeAgencyButton: React.FunctionComponent = observer(() => {
         else {
             return (
                 <div>
+                    {(store.User.league.freeAgentClassSigned.length > 0) ?
+                        null :
                     <Button style={simButtonStyles} onClick={() => signFreeAgents()} block>
                         Sim Free Agents
                     </Button>
+                    }
                 </div>
             );
         }

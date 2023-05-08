@@ -59,7 +59,7 @@ export const CreateBots: React.FunctionComponent = observer(() => {
                         <Select defaultValue="8" style={{width: '20%', marginBottom: '10px'}}
                                 onChange={(value: any) => setNumberOfFranchises(value)}>
                             <Option value="8">8</Option>
-                            <Option value="16">16</Option>
+                            {/*<Option value="10">10</Option>*/}
                         </Select>
                     </div>
                         <Button style={buttonStyles}

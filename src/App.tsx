@@ -66,6 +66,8 @@ const App: React.FunctionComponent = observer(() => {
                 .then(json => {
                     console.log(json)
                     localStorage.setItem('email', json.email);
+                    store.setIsLoggedIn(true)
+                    setIsLoggedIn(true)
                     store.setUser(json.email);
                 })
                 .catch((response) => {
