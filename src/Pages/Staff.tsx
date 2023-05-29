@@ -16,39 +16,36 @@ export const Staff: React.FunctionComponent = observer(() => {
         if (store.User.franchise.seasonSet.length === 1) {
             introJs().start()
         }
-    }, [])
+    }, [store.User.franchise.seasonSet.length])
 
-    if (store.User.franchise == null)
-        return <SmallLoading animation="ld ld-bounce"/>
-    else {
-        return (
-            <div>
-                <Row gutter={[0,24]}>
-                    <Col span={24}>
-                        <div data-intro="Each season you will sign a General Manager and Coach to help your team.
+    return (
+        <div>
+            <Row gutter={[0, 24]}>
+                <Col span={24}>
+                    <div data-intro="Each season you will sign a General Manager and Coach to help your team.
                         They have unique traits and attributes."
-                             data-step={1} className="card-demo">
+                         data-step={1} className="card-demo">
                         <StaffInfo/>
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={24}>
-                        <div data-intro="Click here to simulate opponent staff signings." data-step={2} className="card-demo">
+                    </div>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={24}>
+                    <div data-intro="Click here to simulate opponent staff signings." data-step={2}
+                         className="card-demo">
                         <SetStaffButton/>
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={24}>
-                        <div data-intro="Please sign your staff. Then go to draft!" data-step={3} className="card-demo">
+                    </div>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={24}>
+                    <div data-intro="Please sign your staff. Then go to draft!" data-step={3} className="card-demo">
                         <StaffSelect/>
-                        </div>
-                    </Col>
-                </Row>
-            </div>
-        );
-    }
+                    </div>
+                </Col>
+            </Row>
+        </div>
+    );
 })
 
 export default Staff;

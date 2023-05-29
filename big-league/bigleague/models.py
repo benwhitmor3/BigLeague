@@ -2,7 +2,8 @@ import random
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db.models import Sum
+from django.db.models import Sum, Count
+from itertools import combinations
 
 
 class MyUserManager(BaseUserManager):
@@ -90,9 +91,7 @@ class Franchise(models.Model):
         clubs = self.starters().filter(suit=Suit.CLUB).count()
         suit_bonus = 0
         # spade adjustment
-        if spades <= 1:
-            suit_bonus += 0
-        else:
+        if spades > 1:
             suit_bonus -= spades * (spades - 1)
         # heart adjustment
         suit_bonus += hearts * (5 - hearts)
@@ -116,12 +115,9 @@ class League(models.Model):
         return self.player_set.filter(year__gt=1, contract__isnull=True, franchise__isnull=True)
 
     def schedule(self):
-        franchises = self.franchise_set.all()
-        schedule = []
         # everybody plays each other once schedule
-        for base in range(0, franchises.count()):
-            for other in range(base + 1, franchises.count()):
-                schedule.append([franchises[base], franchises[other]])
+        franchises = self.franchise_set.all()
+        schedule = [[base, other] for base, other in combinations(franchises, 2)]
         return schedule
 
     def player_epv_by_percentile(self, percentile):
@@ -187,8 +183,10 @@ class GM(models.Model):
 
     def trainer_factor(self, franchise):
         if self.trait == Trait.TRAINER:
-            players = franchise.player_set.filter(trainer=False).order_by('-pv')[0:franchise.action.number_of_actions]
-            for player in players:
+            players = franchise.player_set.filter(trainer=False)
+            # use overall value to rank players
+            players = sorted(players, key=lambda player: player.overall_value(), reverse=True)
+            for player in players[0:franchise.action.number_of_actions]:
                 player.trainer = True
                 player.save()
                 franchise.action.number_of_actions -= 1
@@ -307,29 +305,35 @@ class Player(models.Model):
     def is_free_agent(self):
         return True if self.year > 1 and self.contract is None and self.franchise is None else False
 
+    def overall_value(self):
+        age_weight, pv_weight = 0.2, 0.8
+        return (age_weight * (30 - self.age)) + pv_weight * self.pv
+
     def classification(self):
-        if self.epv > self.franchise.league.player_epv_by_percentile(90):
+        league = self.franchise.league
+        if self.epv > league.player_epv_by_percentile(90):
             return "superstar"
-        if self.epv > self.franchise.league.player_epv_by_percentile(80):
+        if self.epv > league.player_epv_by_percentile(80):
             return "allstar"
-        if self.epv > self.franchise.league.player_epv_by_percentile(60):
+        if self.epv > league.player_epv_by_percentile(60):
             return "good"
-        if self.epv > self.franchise.league.player_epv_by_percentile(40):
+        if self.epv > league.player_epv_by_percentile(40):
             return "average"
         return "below_average"
 
     def develop(self):
+        age_ranges_development = {
+            (18, 20): 1,
+            (21, 23): 0,
+            (24, 26): -1,
+            (27, 30): -2
+        }
         self.age, self.year = self.age + 1, self.year + 1
-
         standard_deviation = 1
-        if self.age <= 20:
-            self.pv += random.gauss(1, standard_deviation)
-        elif 21 <= self.age <= 23:
-            self.pv += random.gauss(0, standard_deviation)
-        elif 24 <= self.age <= 26:
-            self.pv += random.gauss(-1, standard_deviation)
-        else:
-            self.pv += random.gauss(-2, standard_deviation)
+        for age_range, development in age_ranges_development.items():
+            if age_range[0] <= self.age <= age_range[1]:
+                self.pv += random.gauss(development, standard_deviation)
+                break
 
         if self.trainer:
             self.pv += 1
@@ -363,19 +367,18 @@ class Player(models.Model):
             grade = 3
 
         if self.contract != 0:
-            salary = grade * (self.epv / (self.contract + 1))
+            divisor = self.contract + 1
+            salary = grade * (self.epv / divisor)
             if self.renew == "repeat":
-                salary += 2 * (self.epv / (self.contract + 1))
+                salary += 2 * (self.epv / divisor)
             elif self.renew == "non-repeat":
-                salary += 1 * (self.epv / (self.contract + 1))
-            if self.t_option != 0:
-                salary += ((self.contract - self.t_option) if self.t_option is not None else 0) * (
-                        self.epv / (self.contract + 1))
-            if self.p_option != 0:
-                salary -= 0.5 * ((self.contract - self.p_option) if self.p_option is not None else 0) * (
-                        self.epv / (self.contract + 1))
+                salary += (self.epv / divisor)
+            if self.t_option is not None and self.t_option > 0:
+                salary += (self.contract - self.t_option) * (self.epv / divisor)
+            if self.p_option is not None and self.p_option > 0:
+                salary -= 0.5 * (self.contract - self.p_option) * (self.epv / divisor)
             if self.age >= 27:
-                salary -= (self.age - 26) * (self.epv / (self.contract + 1))
+                salary -= (self.age - 26) * (self.epv / divisor)
         else:
             salary = None
 
@@ -391,12 +394,10 @@ class Player(models.Model):
                 grade -= 2
             elif self.renew == "non-repeat":
                 grade -= 1
-            if self.t_option:
-                if self.t_option > 0:
-                    grade -= (self.contract - self.t_option)
-            if self.p_option:
-                if self.p_option > 0:
-                    grade += 0.5 * (self.contract - self.p_option)
+            if self.t_option is not None and self.t_option > 0:
+                grade -= (self.contract - self.t_option)
+            if self.p_option is not None and self.p_option > 0:
+                grade += 0.5 * (self.contract - self.p_option)
             if self.age >= 27:
                 grade += self.age - 26
         else:
@@ -482,9 +483,6 @@ class Action(models.Model):
 
     def __str__(self):
         return self.franchise.franchise
-
-    # def action_simulator(self, franchise):
-    #     print(franchise)
 
 
 class Season(models.Model):

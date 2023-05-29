@@ -13,7 +13,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
 
-        const non_scouter_columns = [
+        const nonScouterColumns = [
             {
                 title: 'Name',
                 dataIndex: 'name',
@@ -157,7 +157,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
         ];
 
 
-        let sEPV_column =
+        let sEPVColumn =
             {
                 title: 'S EPV',
                 dataIndex: 'sEpv',
@@ -170,19 +170,19 @@ export const DraftTable: React.FunctionComponent = observer(() => {
         const columns = () => {
             if (store.User.franchise.gm != null)
                 if (store.User.franchise.gm.trait === "SCOUTER") {
-                    let scouter_columns = non_scouter_columns
-                    insertArray(non_scouter_columns, 3, sEPV_column)
-                    return scouter_columns
+                    const scouterColumns = [...nonScouterColumns];
+                    insertArray(nonScouterColumns, 3, sEPVColumn)
+                    return scouterColumns
                 } else {
-                    return non_scouter_columns
+                    return nonScouterColumns
                 }
-            else return non_scouter_columns
+            else return nonScouterColumns
         }
 
         // need to make observable to update table (draftClass not being observed by ant d table)
         let draftClass: IObservableArray<PlayerTypeModelType> = observable(store.User.franchise.league.draftClass)
 
-        if (store.User?.franchise === undefined) return <div> loading</div>;
+        if (!store.User?.franchise) return <div> loading</div>;
         else {
             return (
                 <Table

@@ -6,9 +6,7 @@ import * as serviceWorker from './serviceWorker'
 
 import { createHttpClient } from 'mst-gql'
 import { RootStore } from './models'
-import { getSnapshot } from 'mobx-state-tree'
 import { StoreContext } from './models'
-// import {getToken} from "./components/Forms/token";
 
 
 const rootStore = RootStore.create(undefined, {
@@ -40,6 +38,3 @@ declare global {
         toJS: any
     }
 }
-
-// window.getSnapshot = getSnapshot;
-// window.token = getToken()

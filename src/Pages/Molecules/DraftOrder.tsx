@@ -10,7 +10,7 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
 
         const draft_order_border = (name: string | undefined) => {
 
-            if (store.User.league.draftingFranchise && store.User.league.draftingFranchise.franchise == name) {
+            if (store.User.league.draftingFranchise && store.User.league.draftingFranchise.franchise === name) {
                 return '2px dashed #ffc300'
             } else
                 return '1px solid #ffffff'
@@ -23,10 +23,10 @@ export const DraftOrder: React.FunctionComponent = observer(() => {
                 // using remained to deal with seocnd round of draft
                 store.User.league.setDraftingFranchise(store.User.league.draftOrder[idx])
             }
-        }, [])
+        })
 
 
-        if (store.User == undefined || store.User.franchise == undefined) return <div> loading</div>;
+        if (store.User === undefined || store.User.franchise === undefined) return <div> loading</div>;
         else {
             return (
                 <div>

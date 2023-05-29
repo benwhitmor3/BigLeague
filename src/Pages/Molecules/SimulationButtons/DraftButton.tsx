@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Button} from 'antd';
 import {observer} from "mobx-react";
@@ -9,13 +9,15 @@ import {mutateCreatePlayerQuery} from "../../Utils/queries";
 export const DraftButton: React.FunctionComponent = observer(() => {
 
         const store = useContext(StoreContext)
+        const [simulatingDraft, setSimulatingDraft] = useState<boolean>(false)
 
 
         const draftSimRepeat = (franchise: FranchiseTypeModelType, player: any) => {
-
-            let numOfPicks: number
+            setSimulatingDraft(true)
+            let timeForEachPick: number = 750;
             let currentTeamIndex: number = store.User.league.draftOrder.indexOf(franchise)
             let userTeamIndex: number = store.User.league.draftOrder.indexOf(store.User.franchise)
+            let numOfPicks: number
 
             if (userTeamIndex > currentTeamIndex) {
                 numOfPicks = userTeamIndex - currentTeamIndex
@@ -27,16 +29,30 @@ export const DraftButton: React.FunctionComponent = observer(() => {
                 numOfPicks = store.User.league.draftClassRemaining
             }
 
-            for (let i = 0; i < numOfPicks; i++) {
-                draftRepeater(i);
-            }
+            setTimeout(function () {
+                setSimulatingDraft(false)
+            }, timeForEachPick * numOfPicks);
 
             function draftRepeater(i: any) {
                 setTimeout(function () {
                     franchise = store.User.league.draftingFranchise
                     player = store.User.league.bestDraftPlayer
                     draftSim(franchise, player)
-                }, 650 * i);
+                }, timeForEachPick * i);
+            }
+
+            for (let i = 0; i < numOfPicks; i++) {
+                draftRepeater(i);
+            }
+        }
+
+        const setNextDraftingFranchise = (franchise: any) => {
+            try {
+                // make next franchise in draft order draftingFranchise
+                store.User.league.setDraftingFranchise(store.User.league.draftOrder[store.User.league.draftOrder.indexOf(franchise) + 1])
+            } catch (exception_var) {
+                // if at the end of draft order reset to first franchise in list
+                store.User.league.setDraftingFranchise(store.User.league.draftOrder[0])
             }
         }
 
@@ -63,25 +79,28 @@ export const DraftButton: React.FunctionComponent = observer(() => {
                     }
                 }, mutateCreatePlayerQuery,
                 undefined
-            )
-            try {
-                // make next franchise in draft order draftingFranchise
-                store.User.league.setDraftingFranchise(store.User.league.draftOrder[store.User.league.draftOrder.indexOf(franchise) + 1])
-            } catch (exception_var) {
-                // if at the end of draft order reset to beginning
-                store.User.league.setDraftingFranchise(store.User.league.draftOrder[0])
-            }
+            ).then(response => {
+                setNextDraftingFranchise(franchise)
+            })
         }
 
 
         return (
             <div>
                 {store.User.league.bestDraftPlayer ?
-                    <Button style={simButtonStyles}
-                            onClick={() => draftSimRepeat(store.User.league.draftingFranchise, store.User.league.bestDraftPlayer)}
-                            block>
-                        Draft Sim
-                    </Button>
+                    <>
+                        {!simulatingDraft
+                        ?
+                            <Button style={simButtonStyles}
+                                    onClick={() => draftSimRepeat(store.User.league.draftingFranchise, store.User.league.bestDraftPlayer)}
+                                    block>
+                                Draft Sim
+                            </Button>
+                        :
+                            <p></p>
+                        }
+
+                    </>
                     :
                     <h1 style={{textAlign: 'center'}}>
                         Go to OffSeason

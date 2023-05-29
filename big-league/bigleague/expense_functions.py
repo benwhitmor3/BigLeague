@@ -1,28 +1,29 @@
 from .models import *
-from django.db.models import Sum
 
 
 def season_expenses(franchise: Franchise, current_season: Season, season: int) -> int:
     total_expenses = 0
-    total_expenses += stadium_construction(franchise, season)
-    total_expenses += stadium_upkeep(franchise, season)
-    total_expenses += operating_cost()
-    total_expenses += advertising_cost(current_season)
-    total_expenses += salary_cost(franchise)
+    total_expenses += calculate_stadium_construction(franchise, season)
+    total_expenses += calculate_stadium_upkeep(franchise, season)
+    total_expenses += calculate_operating_cost()
+    total_expenses += calculate_advertising_cost(current_season.advertising)
+    total_expenses += calculate_salary_cost(franchise)
 
     return total_expenses
 
 
-def stadium_construction(franchise: Franchise, season: int) -> int:
+def calculate_stadium_construction(franchise: Franchise, season: int) -> int:
     if season == 1:
-        return (franchise.stadium.seats * 15000) + (franchise.stadium.boxes * 500000)
+        stadium = franchise.stadium
+        return (stadium.seats * 15_000) + (stadium.boxes * 500_000)
 
     return 0
 
 
-def stadium_upkeep(franchise: Franchise, season: int) -> int:
+def calculate_stadium_upkeep(franchise: Franchise, season: int) -> int:
     if season > 1:
-        return (franchise.stadium.seats * 200) + (franchise.stadium.boxes * 20000) + (franchise.stadium.grade * 200000)
+        stadium = franchise.stadium
+        return (stadium.seats * 200) + (stadium.boxes * 20_000) + (stadium.grade * 20_0000)
 
     return 0
 
@@ -31,13 +32,15 @@ def renovation():
     return "currently done via frontend"
 
 
-def operating_cost():
-    return 50000000
+def calculate_operating_cost() -> int:
+    return 50_000_000
 
 
-def advertising_cost(curr_season: Season) -> int:
-    return (2 ** (curr_season.advertising - 1)) * 1000000
+def calculate_advertising_cost(advertising: int) -> int:
+    return int(1_000_000 * (2 ** (advertising - 1)))
 
 
-def salary_cost(franchise: Franchise) -> int:
-    return Player.objects.filter(franchise=franchise).aggregate(Sum('salary'))['salary__sum'] * 1000000
+def calculate_salary_cost(franchise: Franchise) -> int:
+    players = Player.objects.filter(franchise=franchise)
+    salary_sum = sum(player.salary for player in players)
+    return salary_sum * 1_000_000

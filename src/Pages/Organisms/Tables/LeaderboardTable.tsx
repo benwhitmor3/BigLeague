@@ -1,9 +1,9 @@
 import React, {useContext} from 'react';
 import 'antd/dist/antd.css';
-import {Space, Table, Tag} from 'antd';
+import {Table} from 'antd';
 import {observer} from "mobx-react";
-import {IObservableArray, observable, toJS} from 'mobx';
-import {StoreContext, FranchiseTypeModelType, PlayerTypeModelType} from "../../../models";
+import {IObservableArray, observable} from 'mobx';
+import {StoreContext, FranchiseTypeModelType} from "../../../models";
 import {tableStyles} from "./TableStyles";
 
 
