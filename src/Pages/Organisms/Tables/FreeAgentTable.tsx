@@ -117,9 +117,8 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
                 if (store.User.franchise.league.freeAgentClassSigned.length > 0) {
                     insertArray(nonScouterColumns, 6, actionColumn)
                 }
-
                 if (store.User.franchise.gm.trait === "SCOUTER") {
-                    const scouterColumns = [...nonScouterColumns];
+                    let scouterColumns = nonScouterColumns;
                     insertArray(nonScouterColumns, 3, sEPVColumn)
                     return scouterColumns
                 } else {

@@ -170,7 +170,7 @@ export const DraftTable: React.FunctionComponent = observer(() => {
         const columns = () => {
             if (store.User.franchise.gm != null)
                 if (store.User.franchise.gm.trait === "SCOUTER") {
-                    const scouterColumns = [...nonScouterColumns];
+                    let scouterColumns = nonScouterColumns;
                     insertArray(nonScouterColumns, 3, sEPVColumn)
                     return scouterColumns
                 } else {

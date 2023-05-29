@@ -332,11 +332,11 @@ export const RosterTable: React.FunctionComponent<IFranchise> = observer(({franc
         const columns = () => {
             if (franchise.gm !== null)
                 if (franchise.gm.trait === "SCOUTER") {
-                    const scouterColumns = [...nonScouterColumns];
+                    let scouterColumns = nonScouterColumns;
                     insertArray(nonScouterColumns, 3, sEPV_column)
                     return scouterColumns
                 } else if (franchise.gm.trait === "TRAINER") {
-                    const trainerColumns = [...nonScouterColumns];
+                    let trainerColumns = nonScouterColumns;
                     insertArray(nonScouterColumns, 3, trainerColumn)
                     return trainerColumns
                 } else {
