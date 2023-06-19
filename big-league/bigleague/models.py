@@ -2,7 +2,7 @@ import random
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db.models import Sum, Count
+from django.db.models import Sum
 from itertools import combinations
 
 
@@ -302,6 +302,11 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+    def is_rookie(self):
+        if self.year == 1:
+            return True
+        return False
+
     def is_free_agent(self):
         return True if self.year > 1 and self.contract is None and self.franchise is None else False
 
@@ -311,15 +316,17 @@ class Player(models.Model):
 
     def classification(self):
         league = self.franchise.league
-        if self.epv > league.player_epv_by_percentile(90):
-            return "superstar"
-        if self.epv > league.player_epv_by_percentile(80):
-            return "allstar"
-        if self.epv > league.player_epv_by_percentile(60):
-            return "good"
-        if self.epv > league.player_epv_by_percentile(40):
-            return "average"
-        return "below_average"
+        epv_ranges = {
+            (90, 100): "superstar",
+            (80, 90): "allstar",
+            (60, 80): "good",
+            (40, 60): "average",
+            (0, 40): "below_average",
+        }
+        for epv_range, classification in epv_ranges.items():
+            percentile = epv_range[0]  # takes lower range value
+            if self.epv > league.player_epv_by_percentile(percentile):
+                return classification
 
     def develop(self):
         age_ranges_development = {
@@ -427,7 +434,7 @@ class PlayerHistory(models.Model):
     league = models.ForeignKey(League, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('season', 'name',)
+        unique_together = ('season', 'name', 'league')
 
     def __str__(self):
         return self.name

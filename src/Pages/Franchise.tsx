@@ -21,14 +21,13 @@ export const Franchise: React.FunctionComponent = observer(() => {
         }
     }, [store.User])
 
-    if (store.User?.league === undefined) {
+    if (store.User?.league === undefined)
         return (
             <h1 className="ld ld-jump-alt-in" style={{textAlign: 'center', marginTop: '40px', fontSize: '32px'}}>
                 Missing League
             </h1>
         )
-    }
-    else if (store.User?.league === null) {
+    else if (store.User?.league === null)
         return (
             <div
                 data-intro="Please read the instructions on the home page before starting. Once ready, create your league to begin your journey."
@@ -36,26 +35,22 @@ export const Franchise: React.FunctionComponent = observer(() => {
                 <CreateLeague/>
             </div>
         )
-    }
-    else if (store.User?.franchise === null) {
+    else if (store.User?.franchise === null)
         return (
             <div
                 data-step={1} className="card-demo">
                 <CreateFranchise setFranchise={setFranchise}/>;
             </div>
         )
-    }
-    else if (store.User.franchise.league.franchiseSet.length <= 1) {
+    else if (store.User.franchise.league.franchiseSet.length <= 1)
         return (
             <div
                 data-step={1} className="card-demo">
                 <CreateBots/>;
             </div>
         )
-    }
-    else {
+    else
         return <FranchiseCards franchise={franchise} setFranchise={setFranchise}/>
-    }
 })
 
 export default Franchise;

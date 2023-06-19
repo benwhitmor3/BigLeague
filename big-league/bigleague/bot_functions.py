@@ -109,31 +109,36 @@ def sign_player(player: Player):
     def generate_contract_length(_player: Player) -> int:
         classification = _player.classification()
 
-        if _player.year == 1:  # rookies
+        if _player.is_rookie():
             if classification in ["allstar", "superstar"]:
                 return random.choice([4, 5])
-            else:
+            else:  # good, average, below_average
                 return random.choice([3, 4, 5])
+        else:  # free agent
+            if classification == "superstar":
+                return random.choice([3, 4, 5])
+            if classification == "allstar":
+                return random.choice([2, 3, 4, 5])
+            if classification == "good":
+                return random.choice([1, 2, 3, 4, 5])
 
-        if classification == "superstar":
-            return random.choice([3, 4, 5])
-        if classification == "allstar":
-            return random.choice([2, 3, 4, 5])
-        if classification == "good":
-            return random.choice([1, 2, 3, 4, 5])
-        if classification == "average":
-            return random.choice([1, 2, 3, 4])
+            return random.choice([1, 2, 3])  # average, below_average
 
-        return random.choice([1, 2, 3])  # below_average
-
-    def generate_team_option(_player: Player) -> Optional[str]:
+    def generate_team_option(_player: Player) -> Optional[int]:
         classification = _player.classification()
-        if classification == "allstar":
-            return random.choice([None, None] + [None if _player.contract - 1 <= 0 else _player.contract - 1])
-        if classification in ["good", "average"]:
-            return random.choice([None, None] + [None if option <= 0 else option for option in
-                                                 [_player.contract - 2, _player.contract - 1]])
-        return None  # below_average or superstar
+
+        if _player.is_rookie():
+            if classification in ["allstar", "superstar"]:
+                return random.choice([None] + [None if _player.contract - 1 <= 0 else _player.contract - 1])
+            else:  # good, average, below_average
+                return random.choice([None])
+        else:  # free agents
+            if classification == "allstar":
+                return random.choice([None, None, None] + [None if _player.contract - 1 <= 0 else _player.contract - 1])
+            if classification in ["good", "average"]:
+                return random.choice([None, None] + [None if option <= 0 else option for option in
+                                                     [_player.contract - 2, _player.contract - 1]])
+            return None  # below_average or superstar
 
     def generate_player_option(_player: Player) -> Optional[int]:
         classification = _player.classification()
@@ -146,16 +151,23 @@ def sign_player(player: Player):
 
     def generate_player_renewal(_player: Player) -> str:
         classification = _player.classification()
-        if (_player.age + _player.contract) >= 30:
+
+        if _player.is_rookie():
+            if classification in ["superstar"]:
+                return "repeat"
+            if classification in ["allstar"]:
+                return "non-repeat"
+
+        will_retire = (_player.age + _player.contract) >= 30
+        will_degrade = (_player.age > 24 and classification not in ["superstar", "allstar"])
+        if will_retire or will_degrade:
             return "no"
-        if _player.contract > 3 and _player.age > 23 and classification not in ["superstar", "allstar"]:
-            return "no"
-        if _player.contract > 2 and _player.age > 27:
-            return "no"
-        if _player.age < 24 and classification in ["superstar", "allstar"]:
-            return random.choice(["no", "no", "no", "non-repeat", "non-repeat", "repeat", "repeat"])
-        if _player.age < 24 and classification in ["good", "average", "below_average"]:
-            return random.choice(["no", "no", "no", "non-repeat", "repeat"])
+
+        if _player.age < 24:
+            if classification in ["superstar", "allstar"]:
+                return random.choice(["no", "no", "no", "non-repeat", "non-repeat", "repeat", "repeat"])
+            else:
+                return random.choice(["no", "no", "no", "non-repeat", "repeat"])
 
         return random.choice(["no", "no", "no", "no", "no", "no", "repeat", "non-repeat"])
 

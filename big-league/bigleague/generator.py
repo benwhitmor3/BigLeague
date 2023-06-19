@@ -2,19 +2,12 @@ from django.db import IntegrityError, transaction
 from .models import *
 import random
 from random import gauss
-from .player_coach_names import PLAYER_NAMES, COACH_NAMES
+from .generated_names import PLAYER_NAMES, COACH_NAMES, FRANCHISE_NAMES
 
 
-def gen_franchise(league, num_of_franchises=7):
+def gen_franchise(league: League, num_of_franchises: int) -> str:
     """generates franchises and stadiums based on list of names"""
-    franchise_names = [
-        "Aces", "All Stars", "Avengers", "Aztecs", "Big Blues", "Big Red", "Blazers", "Cyclones", "Devils", "Dragons",
-        "Dream", "Dynamo", "Flames", "Flash", "Force", "Fury", "Golden Bears", "Groove", "Heatwave", "Hurricanes",
-        "Icons", "Jam", "Legends", "Lightning", "Masters", "Mavericks", "Monarchy", "Pioneers", "Pride", "Racers",
-        "Rebels", "Renegades", "Riptide", "Royals", "Soul", "Spartans", "Spirit", "Storm", "Strikers",
-        "Trojans", "United", "Violets", "Voodoo", "Warriors", "Wild", "Zephyrs"
-    ]
-    franchise_list = random.sample(franchise_names, k=num_of_franchises)
+    franchise_list = random.sample(FRANCHISE_NAMES, k=num_of_franchises)
     cities = City.objects.filter(league=league)
 
     franchises = []
@@ -37,7 +30,7 @@ def gen_franchise(league, num_of_franchises=7):
     Franchise.objects.bulk_create(franchises)
     Stadium.objects.bulk_create(stadiums)
 
-    franchises = Franchise.objects.filter(league=league)
+    franchises = Franchise.objects.filter(league=league)  # re-query to add user franchise
     seasons = [Season(franchise=franchise, season=1, fan_index=70) for franchise in franchises]
     actions = [Action(franchise=franchise) for franchise in franchises]
 
@@ -47,7 +40,7 @@ def gen_franchise(league, num_of_franchises=7):
     return "Successfully created " + str(num_of_franchises) + " franchises"
 
 
-def gen_city(league, num_of_cities=8):
+def gen_city(league: League, num_of_cities: int) -> str:
     """Generates cities based on a list of cities and city values."""
     cities = [
         "Los Angeles", "New York", "London", "Chicago", "San Francisco", "Washington", "Phoenix", "Indianapolis",
@@ -61,8 +54,10 @@ def gen_city(league, num_of_cities=8):
 
     City.objects.bulk_create(city_objects)
 
+    return "Successfully created " + str(len(cities_list)) + " cities"
 
-def gen_player(league, num_of_players=50, rookies=True):
+
+def gen_player(league: League, num_of_players: int, rookies: bool) -> str:
     """generates players with age determined by rookie criteria"""
     for _ in range(num_of_players):
 
@@ -73,16 +68,11 @@ def gen_player(league, num_of_players=50, rookies=True):
 
         suit = random.choices(['heart', 'spade', 'club', 'diamond'], weights=[15, 18, 15, 12], k=1)[0]
 
+        suit_base_pv = {"heart": 15, "spade": 18, "club": 16, "diamond": 17}
+
+        # create player value based on suit
         sd = 3
-        # create player value
-        if suit == "heart":
-            pv = gauss(15, sd)
-        elif suit == "spade":
-            pv = gauss(18, sd)
-        elif suit == "club":
-            pv = gauss(16, sd)
-        elif suit == "diamond":
-            pv = gauss(17, sd)
+        pv = gauss(suit_base_pv[suit], sd)
         # create estimated player value
         epv = pv + gauss(0, sd)
         # create scouter estimated player value
@@ -108,14 +98,18 @@ def gen_player(league, num_of_players=50, rookies=True):
             except IntegrityError:
                 continue  # Retry with a new name if IntegrityError occurs
 
+    return "Successfully created " + str(num_of_players) + " players"
 
-def gen_gm(league):
+
+def gen_gm(league: League) -> str:
     """Generates general managers with traits"""
     traits = ['facilitator', 'promoter', 'recruiter', 'scouter', 'suitor', 'trainer']
     GM.objects.bulk_create([GM(trait=trait, league=league) for trait in traits])
 
+    return "Successfully created " + str(len(traits)) + " GMs"
 
-def gen_coach(league, num_of_coaches=10):
+
+def gen_coach(league: League, num_of_coaches: int) -> str:
     """generates coaches with two attributes"""
     for _ in range(num_of_coaches):
         # coaches can have double teamwork or fame traits
@@ -125,8 +119,13 @@ def gen_coach(league, num_of_coaches=10):
             first_name, last_name = random.choice(COACH_NAMES)
             try:
                 with transaction.atomic():
-                    Coach.objects.create(name=f"{first_name} {last_name}",
-                                         attribute_one=attributes[0], attribute_two=attributes[1], league=league)
+                    Coach.objects.create(
+                        name=f"{first_name} {last_name}",
+                        attribute_one=attributes[0],
+                        attribute_two=attributes[1],
+                        league=league)
                     break  # Break the loop if the coach was created successfully
             except IntegrityError:
                 continue  # Retry with a new name if IntegrityError occurs
+
+    return "Successfully created " + str(num_of_coaches) + " coaches"

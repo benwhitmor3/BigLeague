@@ -233,6 +233,8 @@ class UpdatePlayerMutation(graphene.Mutation):
             player_input.p_option = None
         obj, player = Player.objects.update_or_create(
             name=player_input.name,
+            # need league as player names may duplicate between leagues
+            league=player_input.league_id,
             defaults={
                 'name': player_input.name,
                 'suit': player_input.suit,
