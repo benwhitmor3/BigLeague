@@ -15,7 +15,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
         const [visible, setVisible] = useState<boolean>(false)
         const [selectedPlayer, setSelectedPlayer] = useState<any>([]);
 
-        const non_scouter_columns = [
+        const nonScouterColumns = [
             {
                 title: 'Name',
                 dataIndex: 'name',
@@ -78,7 +78,7 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
         ];
 
 
-        let sEPV_column =
+        let sEPVColumn =
             {
                 title: 'S EPV',
                 dataIndex: 'sEpv',
@@ -113,25 +113,25 @@ export const FreeAgentTable: React.FunctionComponent = observer(() => {
 
 
         const columns = () => {
-            if (store.User.franchise.gm !== null)
+            if (store.User.franchise.gm !== null) {
                 if (store.User.franchise.league.freeAgentClassSigned.length > 0) {
-                    insertArray(non_scouter_columns, 6, actionColumn)
+                    insertArray(nonScouterColumns, 6, actionColumn)
                 }
-
                 if (store.User.franchise.gm.trait === "SCOUTER") {
-                    let scouter_columns = non_scouter_columns
-                    insertArray(non_scouter_columns, 3, sEPV_column)
-                    return scouter_columns
+                    let scouterColumns = nonScouterColumns;
+                    insertArray(nonScouterColumns, 3, sEPVColumn)
+                    return scouterColumns
                 } else {
-                    return non_scouter_columns
+                    return nonScouterColumns
                 }
-            return non_scouter_columns
+            }
+            return nonScouterColumns
         }
 
         // need to make observable to update table (draftClass not being observed by ant d table)
         let freeAgentClass: IObservableArray<PlayerTypeModelType> = observable(store.User.franchise.league.freeAgentClass)
 
-        if (store.User === undefined || store.User.franchise === undefined) return <div> loading</div>;
+        if (!store.User || !store.User.franchise) return <div> loading</div>;
         else {
             return (
                 <div>

@@ -34,79 +34,39 @@ export const LeagueTypeModel = LeagueTypeModelBase
     })
     .views(self => ({
         franchise(franchiseName: string) {
-            let franchise = self.franchiseSet.find((franchise) => {
-                if (franchise.franchise === franchiseName)
-                    return true;
-            });
-            return franchise
+            return self.franchiseSet.find((franchise) => franchise.franchise === franchiseName);
         },
         player(playerName: string) {
-            let player = self.playerSet.find((player) => {
-                if (player.name === playerName)
-                    return true;
-            });
-            return player
+            return self.playerSet.find((player) => player.name === playerName);
         },
         franchiseplayers(franchiseName: string) {
-            let franchiseplayers = self.playerSet.filter((player) => {
-                if (player.franchise)
-                    if (player.franchise.franchise === franchiseName)
-                        return true;
+            return self.playerSet.filter((player) => {
+                return player.franchise && player.franchise.franchise === franchiseName;
             });
-            return franchiseplayers
         },
         get draftClass() {
-            let draftClass = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year === 1)
-                    return player
-            })
-            return draftClass
+            return self.playerSet.filter((player: PlayerTypeModelType) => player.year === 1);
         },
         get draftClassDrafted() {
-            let draftClassDrafted = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year === 1 && player.franchise)
-                    return player
-            }).length
-            return draftClassDrafted
+            return self.playerSet.filter((player: PlayerTypeModelType) => player.year === 1 && player.franchise).length;
         },
         get draftClassRemaining(){
-            let draftClassRemaining = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year === 1 && player.franchise == null)
-                    return player
-            }).length
-            return draftClassRemaining
+            return self.playerSet.filter((player: PlayerTypeModelType) => player.year === 1 && !player.franchise).length;
         },
         get bestDraftPlayer() {
-            let draftClass = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year === 1 && player.franchise == null)
-                    return player
-            })
-            let bestDraftPlayer = draftClass.sort(function (a, b) {
-                // @ts-ignore
-                return b.pv - a.pv;
-            })
-            return bestDraftPlayer[0]
+            let draftClass = self.playerSet.filter((player: PlayerTypeModelType) => player.year === 1 && player.franchise === null);
+            let sortedPlayers = draftClass.sort((a, b) => b.overallValue - a.overallValue);
+            return sortedPlayers[0];
         },
         get freeAgentClass() {
-            let freeAgentClass = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year !== 1 && player.contract == null)
-                    return player
-            })
-            return freeAgentClass
+            return self.playerSet.filter((player: PlayerTypeModelType) => player.year !== 1 && !player.contract)
         },
         get freeAgentClassSigned() {
-            let freeAgentClassSigned = self.playerSet.filter((player: PlayerTypeModelType) => {
-                if (player.year !== 1 && player.contract == null && player.franchise)
-                    return player
-            })
-            return freeAgentClassSigned
+            return self.playerSet.filter((player: PlayerTypeModelType) => player.year !== 1 && !player.contract && player.franchise)
         },
         get draftOrder() {
-            let draftOrder = self.franchiseSet.sort(function (a, b) {
-                // @ts-ignore
-                return a.wins - b.wins;
-            })
-            return draftOrder
+            // @ts-ignore
+            return self.franchiseSet.sort((a, b) => a.wins - b.wins);
         },
         get franchisesWithoutGm(){
             return self.franchiseSet.map((franchise: FranchiseTypeModelType) => franchise.gm?.trait).filter((trait: any) => trait === undefined)

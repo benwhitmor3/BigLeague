@@ -1,20 +1,16 @@
 import pandas as pd
 from .expense_functions import season_expenses
 from .revenue_functions import season_revenue
-from .bot_functions import set_actions, set_advertising, set_ticket_price, set_box_price
+from .bot_functions import set_actions, set_ticket_price, set_box_price
 from .models import *
+from django.db.models import Avg, F
 
 
 def simulate_game(home, away):
     def sim_player_points(players) -> list:
-        points_list = []
-        for player in players:
-            simmed_points = random.gauss(player.pv, player.franchise.coach.standard_deviation_factor())
-            points_list.append(simmed_points)
-        return points_list
+        return [random.gauss(player.pv, player.franchise.coach.standard_deviation_factor()) for player in players]
 
     def generate_team_points(franchise):
-
         starter_points_list = sim_player_points(franchise.starters())
         rotation_points_list = sim_player_points(franchise.rotations())
 
@@ -23,28 +19,26 @@ def simulate_game(home, away):
         for starter, starter_points in zip(franchise.starters(), starter_points_list):
             if rotation_points_list:
                 if starter.poor_performance(starter_points) and starter_points < rotation_points_list[-1]:
-                    team_points += rotation_points_list[-1] - starter_points
-                del rotation_points_list[-1]
+                    bench_points = rotation_points_list[-1]
+                    team_points += bench_points - starter_points
+                    rotation_points_list.pop()
         return team_points
 
     ''''___________________________________Base Team Points____________________________________'''''
 
-    home_points = generate_team_points(home)
-    home_points += home.suit_bonus()
-    away_points = generate_team_points(away)
-    away_points += away.suit_bonus()
+    home_points = generate_team_points(home) + home.suit_bonus()
+    away_points = generate_team_points(away) + away.suit_bonus()
 
     '''__________________________more post_points coaching factors applied_______________________'''
 
-    # underdog coach factor
     home_points += home.coach.underdog_factor(away)
     away_points += away.coach.underdog_factor(home)
-    # teamwork coach factor
+
     home_points += home.coach.teamwork_factor()
     away_points += away.coach.teamwork_factor()
-    # home field advantage
+
     home_points += home.stadium.home_field_advantage_factor(away)
-    # clutch coach factor
+
     home_points += home.coach.clutch_factor(home_points, away_points)
     away_points += away.coach.clutch_factor(away_points, home_points)
 
@@ -115,18 +109,17 @@ def simulate_season(league: League, season: int):
         if franchise == Season.objects.filter(franchise__league=league, season=season).order_by('-wins', '-ppg')[
             0].franchise:
             current_season.championships = previous_season.championships + 1
-        # calculate fan base
-        current_season.fan_base = fan_base(current_season, franchise.stadium.city.city_value)
-        # calculate fan index
-        current_season.fan_index = fan_index(previous_season, current_season)
         # apply fame coaching boost
         current_season.fan_index += franchise.coach.fame_factor()
         # set advertising and prices for bot teams
         if current_season.franchise.user is None:
-            current_season.advertising = set_advertising()
-            current_season.save()
-            set_ticket_price(previous_season, current_season, franchise)
+            set_ticket_price(previous_season, current_season, franchise, games_played)
             set_box_price(previous_season, current_season, franchise)
+
+        # calculate fan base
+        current_season.fan_base = fan_base(current_season, franchise.stadium.city.city_value)
+        # calculate fan index
+        current_season.fan_index = fan_index(previous_season, current_season)
 
         # calculate season revenue
         current_season.revenue += season_revenue(franchise, previous_season, current_season, season, games_played)
@@ -164,39 +157,38 @@ def development(league):
 
 def contract_progression(league):
     """Progresses all contracts after each season. Once p_option or t_option are zero they are active."""
-    for signed_player in Player.objects.filter(league=league, contract__isnull=False):
-        # updating contract and option years (once option is zero it can be activated)
-        if signed_player.contract > 0:
-            signed_player.contract -= 1
-        if signed_player.t_option is not None and signed_player.t_option > 0:
-            signed_player.t_option -= 1
-        if signed_player.p_option is not None and signed_player.p_option > 0:
-            signed_player.p_option -= 1
-        # if contract expires release player from franchise
-        if signed_player.contract == 0:
-            signed_player.reset()
-        signed_player.save()
+    players = Player.objects.filter(league=league, contract__isnull=False)
+
+    for player in players:
+        player.contract = player.contract - 1 if player.contract > 0 else 0
+        player.t_option = player.t_option - 1 if player.t_option is not None and player.t_option > 0 else None
+        player.p_option = player.p_option - 1 if player.p_option is not None and player.p_option > 0 else None
+
+        if player.contract == 0:
+            player.reset()
+
+        player.save()
 
 
 def contract_option_true(league):
-    # COULD MAKE THIS POSITION BASED. WOULD BE KIND OF COOL. MAYBE NOT ENOUGH PLAYERS
-    """Determines if an active player option will be accepted. Team option only applied to bot franchises.
+    """ Determine if an active player option will be accepted.
     Player option is accepted if salary is less than 75% of the average league salary based on EPV.
-    Team option is accepted if salary is greater than 125% of the average league salary based on EPV."""
+    Team option is accepted if salary is greater than 125% of the average league salary based on EPV. """
+
     signed_players = Player.objects.filter(league=league, contract__isnull=False)
-    total_salary = signed_players.aggregate(Sum('salary'))['salary__sum']
-    total_epv = signed_players.aggregate(Sum('epv'))['epv__sum']
-    salary_per_epv = total_salary / total_epv
-    # player option
-    for player in Player.objects.filter(league=league, p_option=0):
-        if (player.salary / player.epv) < salary_per_epv * 0.75:
-            player.reset()
-            player.save()
-    # team option (bot franchises only)
-    for player in Player.objects.filter(league=league, franchise__user=None, t_option=0):
-        if (player.salary / player.epv) > salary_per_epv * 1.25:
-            player.reset()
-            player.save()
+    avg_salary_per_epv = signed_players.annotate(salary_per_epv=F('salary') / F('epv')).aggregate(Avg('salary_per_epv'))['salary_per_epv__avg']
+
+    # Player option
+    player_options_to_reset = Player.objects.filter(league=league, p_option=0, salary__lt=avg_salary_per_epv * F('epv') * 0.75)
+    for player in player_options_to_reset:
+        player.reset()
+        player.save()
+
+    # Team option (bot franchises only)
+    team_options_to_reset = Player.objects.filter(league=league, franchise__user=None, t_option=0, salary__gt=avg_salary_per_epv * F('epv') * 1.25)
+    for player in team_options_to_reset:
+        player.reset()
+        player.save()
 
 
 def renewal_true(league):
@@ -207,20 +199,17 @@ def renewal_true(league):
     for player in Player.objects.filter(league=league, franchise__user=None, contract=1,
                                         renew__in=["non-repeat", "repeat"]):
         if player.pv > pv_threshold:
-            if player.renew == "repeat":
-                player.contract += 1
-                player.save()
+            player.contract += 1
             if player.renew == "non-repeat":
-                player.contract += 1
                 player.renew = "no"
-                player.save()
+            player.save()
         else:
             player.renew = "no"
             player.save()
 
 
 def franchise_progression(league):
-    """degrade stadium by 1, remove gm, remove coach"""
+    """Degrade stadium by 1, remove gm, remove coach"""
     for franchise in Franchise.objects.filter(league=league):
         franchise.stadium.grade -= 1
         franchise.stadium.save()
@@ -230,85 +219,87 @@ def franchise_progression(league):
 
 
 def apply_actions(league, season_num):
-    """After actions have been selected. Applies factors, expenses, and revenues"""
+
+    available_actions = {
+        "stadium": {
+            "improved_bathrooms": {"boost": 1, "cost": 5_000_000},
+            "improved_concessions": {"boost": 1, "cost": 5_000_000},
+            "jumbotron": {"boost": 1, "cost": 5_000_000},
+            "upscale_bar": {"boost": 1, "cost": 5_000_000},
+            "hall_of_fame": {"boost": 2, "cost": 10_000_000},
+            "improved_seating": {"boost": 2, "cost": 10_000_000},
+            "improved_sound": {"boost": 2, "cost": 10_000_000},
+            "party_deck": {"boost": 2, "cost": 10_000_000},
+            "wi_fi": {"boost": 2, "cost": 10_000_000},
+        },
+        "home_field": {
+            "easy_runs": {"boost": 1, "cost": 20_000_000},
+            "fan_factor": {"boost": 1, "cost": 50_000_000},
+        },
+        "promotion": {
+            "fan_night": {"boost": 6, "cost": 2_000_000},
+            "family_game": {"boost": 6, "cost": 2_000_000},
+            "door_prizes": {"boost": 6, "cost": 2_000_000},
+            "mvp_night": {"boost": 10, "cost": 5_000_000},
+            "parade_of_champions": {"boost": 10, "cost": 5_000_000},
+        },
+    }
+
     for franchise in Franchise.objects.filter(league=league):
         season = Season.objects.get(franchise__franchise=franchise, franchise__league=league, season=season_num)
         stadium = Stadium.objects.get(franchise=franchise)
 
-        available_actions = {  # dictionaries are ordered as of python 3.7
-            # stadium improvements
-            "improved_bathrooms": {"type": "stadium", "boost": 1, "cost": 5000000},
-            "improved_concessions": {"type": "stadium", "boost": 1, "cost": 5000000},
-            "jumbotron": {"type": "stadium", "boost": 1, "cost": 5000000},
-            "upscale_bar": {"type": "stadium", "boost": 1, "cost": 5000000},
-            "hall_of_fame": {"type": "stadium", "boost": 2, "cost": 10000000},
-            "improved_seating": {"type": "stadium", "boost": 2, "cost": 10000000},
-            "improved_sound": {"type": "stadium", "boost": 2, "cost": 10000000},
-            "party_deck": {"type": "stadium", "boost": 2, "cost": 10000000},
-            "wi_fi": {"type": "stadium", "boost": 2, "cost": 10000000},
-            # home field improvements
-            "easy_runs": {"type": "home_field", "boost": 1, "cost": 20000000},
-            "fan_factor": {"type": "home_field", "boost": 1, "cost": 50000000},
-            # promoter improvements
-            "fan_night": {"type": "promotion", "boost": 6, "cost": 2000000},
-            "family_game": {"type": "promotion", "boost": 6, "cost": 2000000},
-            "door_prizes": {"type": "promotion", "boost": 6, "cost": 2000000},
-            "mvp_night": {"type": "promotion", "boost": 10, "cost": 5000000},
-            "parade_of_champions": {"type": "promotion", "boost": 10, "cost": 5000000}
-        }
-        for action_name, action_effect in available_actions.items():
-            action = getattr(franchise.action, action_name)
-            # use default False for reusable actions without _complete field
-            action_complete = getattr(franchise.action, action_name + "_complete", False)
-            if action is True and action_complete is False:
-                boost, cost = action_effect["boost"], action_effect["cost"]
-                if action_effect["type"] == "stadium":
-                    stadium.grade += boost
-                    stadium.max_grade += boost
-                if action_effect["type"] == "home_field":
-                    stadium.home_field_advantage += boost
-                if action_effect["type"] == "promotion":
-                    season.fan_index += boost
-                season.expenses += cost
-                setattr(franchise.action, action_name + "_complete", True)
+        for action_type, actions in available_actions.items():
+            for action_name, action_effect in actions.items():
+                action = getattr(franchise.action, action_name)
+                action_complete = getattr(franchise.action, action_name + "_complete", False)
+                if action and not action_complete:
+                    boost, cost = action_effect["boost"], action_effect["cost"]
+                    if action_type == "stadium":
+                        stadium.grade += boost
+                        stadium.max_grade += boost
+                    elif action_type == "home_field":
+                        stadium.home_field_advantage += boost
+                    elif action_type == "promotion":
+                        season.fan_index += boost
+                    season.expenses += cost
+                    setattr(franchise.action, action_name + "_complete", True)
 
-        # Concessions and Revenue (custom effects — hard to write clean function)
+        # These are actions that have more custom effects and are hard to standardize
         if franchise.action.fan_favourites:
             stadium.grade += 1
             stadium.max_grade += 1
             season.fan_index += 1
-            season.expenses += 10000000
+            season.expenses += 10_000_000
             franchise.action.fan_favourites = False
-        if franchise.action.gourmet_restaurant and franchise.action.gourmet_restaurant_complete is False:
-            season.revenue += int(random.gauss(10000000, 5000000))
-            season.expenses += 10000000
-            season.save()
+
+        if franchise.action.gourmet_restaurant and not franchise.action.gourmet_restaurant_complete:
+            base_revenue, restaurant_standard_deviation = 10_000_000, 5_000_000
+            season.revenue += int(random.gauss(base_revenue, restaurant_standard_deviation))
+            season.expenses += 10_000_000
             franchise.action.gourmet_restaurant_complete = True
+
         if franchise.action.beer_garden:
             season.fan_index += 2
             stadium.home_field_advantage += 1
-            stadium.save()
-            season.expenses += 6000000
-            season.save()
+            season.expenses += 6_000_000
             franchise.action.beer_garden = False
-        if franchise.action.naming_rights and franchise.action.naming_rights_complete is False:
-            season.revenue += int(random.gauss(50000000, 25000000))
-            season.save()
+
+        if franchise.action.naming_rights and not franchise.action.naming_rights_complete:
+            base_revenue, naming_standard_deviation = 50_000_000, 25_000_000
+            season.revenue += int(random.gauss(base_revenue, naming_standard_deviation))
             franchise.action.naming_rights_complete = True
+
         if franchise.action.event_planning:
             season.revenue += 5 * stadium.grade * stadium.city.city_value * stadium.seats
-            season.save()
             franchise.action.event_planning = False
 
-        # expenses for training a player
-        season.expenses += franchise.player_set.filter(trainer=True).count() * 5000000
+        season.expenses += franchise.player_set.filter(trainer=True).count() * 5_000_000
         season.save()
 
-        # reset number of actions to 2
         franchise.action.number_of_actions = 2
 
         stadium.save()
-        season.save()
         franchise.action.save()
         franchise.save()
 

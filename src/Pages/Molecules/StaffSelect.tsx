@@ -10,7 +10,7 @@ export const StaffSelect: React.FunctionComponent = observer(() => {
 
     const store = useContext(StoreContext)
 
-    const [franchise, setFranchise] = useState<any>(store.User ? store.User.franchise : null);
+    const [franchise] = useState<any>(store.User ? store.User.franchise : null);
     const [gmId, setGmId] = useState<string>(store.User.franchise.gm ? store.User.franchise.gm.id : '');
     const [coachId, setCoachId] = useState<string>(store.User.franchise.coach ? store.User.franchise.coach.id : '');
 

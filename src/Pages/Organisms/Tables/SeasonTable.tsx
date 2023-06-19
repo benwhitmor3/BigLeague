@@ -2,8 +2,8 @@ import React, {useContext, useState} from 'react';
 import 'antd/dist/antd.css';
 import {Table, Select} from 'antd';
 import {observer} from "mobx-react";
-import {toJS} from 'mobx';
-import {StoreContext} from "../../../models";
+import {IObservableArray, observable, toJS} from 'mobx';
+import {SeasonTypeModelType, StoreContext} from "../../../models";
 import {tableStyles} from "./TableStyles";
 
 const {Option} = Select;
@@ -122,7 +122,7 @@ export const SeasonTable: React.FunctionComponent = observer(() => {
         ];
 
         // get most recent season (franchise.seasonSet.length - 1) and map each franchise in that season
-        const [season, setSeason] = useState<any>(store.User.franchise.league.franchiseSet.map((franchise: any) => franchise.seasonSet[franchise.seasonSet.length - 1]));
+        const [season, setSeason] = useState<IObservableArray<SeasonTypeModelType>>(observable(store.User.franchise.league.franchiseSet.map((franchise: any) => franchise.seasonSet[franchise.seasonSet.length - 1])));
 
 
         return (

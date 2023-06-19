@@ -302,7 +302,6 @@ def apply_actions(league, season_num):
 
         # expenses for training a player
         season.expenses += franchise.player_set.filter(trainer=True).count() * 5000000
-        season.save()
 
         # reset number of actions to 2
         franchise.action.number_of_actions = 2

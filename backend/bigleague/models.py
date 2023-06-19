@@ -308,28 +308,30 @@ class Player(models.Model):
         return True if self.year > 1 and self.contract is None and self.franchise is None else False
 
     def classification(self):
-        if self.epv > self.franchise.league.player_epv_by_percentile(90):
+        league = self.franchise.league
+        if self.epv > league.player_epv_by_percentile(90):
             return "superstar"
-        if self.epv > self.franchise.league.player_epv_by_percentile(80):
+        if self.epv > league.player_epv_by_percentile(80):
             return "allstar"
-        if self.epv > self.franchise.league.player_epv_by_percentile(60):
+        if self.epv > league.player_epv_by_percentile(60):
             return "good"
-        if self.epv > self.franchise.league.player_epv_by_percentile(40):
+        if self.epv > league.player_epv_by_percentile(40):
             return "average"
         return "below_average"
 
     def develop(self):
+        age_ranges_development = {
+            (18, 20): 1,
+            (21, 23): 0,
+            (24, 26): -1,
+            (27, 30): -2
+        }
         self.age, self.year = self.age + 1, self.year + 1
-
         standard_deviation = 1
-        if self.age <= 20:
-            self.pv += random.gauss(1, standard_deviation)
-        elif 21 <= self.age <= 23:
-            self.pv += random.gauss(0, standard_deviation)
-        elif 24 <= self.age <= 26:
-            self.pv += random.gauss(-1, standard_deviation)
-        else:
-            self.pv += random.gauss(-2, standard_deviation)
+        for age_range, development in age_ranges_development.items():
+            if age_range[0] <= self.age <= age_range[1]:
+                self.pv += random.gauss(development, standard_deviation)
+                break
 
         if self.trainer:
             self.pv += 1
